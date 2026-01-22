@@ -1,0 +1,480 @@
+\chapter{Mô hình học xác suất}
+\label{ch:20}
+Ở chương này, chúng ta xem việc học tập như một hình thức lý luận không chắc chắn từ các quan sát và đưa ra các mô hình để đại diện cho thế giới bất định.
+
+Chương 12 đã chỉ ra sự phổ biến của sự không chắc chắn trong môi trường thực tế. Các tác nhân (agents) có thể xử lý sự không chắc chắn bằng cách sử dụng các phương pháp xác suất và lý thuyết quyết định, nhưng trước tiên chúng phải học các lý thuyết xác suất của thế giới từ kinh nghiệm đã biết. Chương này giải thích cách chúng có thể làm điều đó, bằng cách hình thành chính nhiệm vụ học tập như một quá trình suy luận xác suất (Phần \ref{sec:20.1}). Chúng ta sẽ thấy rằng quan điểm của Bayes về học tập là vô cùng mạnh mẽ, cung cấp các giải pháp chung cho các vấn đề về nhiễu, trang bị quá mức và dự đoán tối ưu. Nó cũng tính đến thực tế là một tác nhân kém toàn trí không bao giờ có thể chắc chắn lý thuyết nào về thế giới là đúng, nhưng vẫn phải đưa ra quyết định bằng cách sử dụng một số lý thuyết về thế giới. Chúng ta mô tả các phương pháp học mô hình xác suất — chủ yếu là mạng Bayes — trong Phần \ref{sec:20.2} và \ref{sec:20.3}. Một số tài liệu trong chương này khá toán học, mặc dù các bài học chung có thể được hiểu mà không cần đi sâu vào chi tiết. Người đọc có thể xem lại Chương 12 và 13 và xem qua Phụ lục A.
+\section{Học thống kê}
+\label{sec:20.1}
+
+Các khái niệm chính trong chương này, cũng như trong Chương 19, là \textbf{dữ liệu} và \textbf{giả thuyết}. Ở đây, dữ liệu là \textbf{bằng chứng} — nghĩa là các bản khởi tạo của một số hoặc tất cả các biến ngẫu nhiên mô tả miền. Các giả thuyết trong chương này là các lý thuyết xác suất về cách miền hoạt động, bao gồm các lý thuyết lôgic như một trường hợp đặc biệt.
+
+Hãy xem xét một ví dụ đơn giản. Những chiếc kẹo bất ngờ yêu thích của chúng ta có hai hương vị: anh đào (yum) và chanh (ugh). Nhà sản xuất có khiếu hài hước đặc biệt và gói từng viên kẹo trong cùng một lớp giấy bọc mờ đục, bất kể hương vị. Kẹo được bán trong các túi rất lớn, trong đó có năm loại — một lần nữa, không thể phân biệt được từ bên ngoài:
+\begin{center}
+\begin{itemize}
+    \item $h_1$: $100\%$ vị cherry,
+    \item $h_2$: $75\%$ vị cherry và $25\%$ vị chanh,
+    \item $h_3$: $50\%$ vị cherry và $50\%$ vị chanh,
+    \item $h_4$: $25\%$ vị cherry và $75\%$ vị chanh,
+    \item $h_5$: $100\%$ vị chanh.
+\end{itemize}
+\end{center}
+
+Cho một túi kẹo mới, biến ngẫu nhiên $H$ (đối với giả thuyết) biểu thị loại túi, với các giá trị có thể có từ $h_1$ đến $h_5$. Tất nhiên, $H$ không thể quan sát trực tiếp được. Khi các miếng kẹo được mở ra và kiểm tra, dữ liệu được tiết lộ — $D_1, D_2 ,. . ., D_N$, trong đó mỗi $D_i$ là một biến ngẫu nhiên với các giá trị có thể là quả anh đào và quả chanh. Nhiệm vụ cơ bản mà tác nhân phải đối mặt là dự đoán hương vị của miếng kẹo tiếp theo. Mặc dù sự tầm thường rõ ràng của nó, kịch bản này phục vụ cho việc giới thiệu nhiều vấn đề chính. Tác nhân thực sự cần phải suy ra một lý thuyết về thế giới của nó, mặc dù một lý thuyết rất đơn giản.
+
+\textbf{Học Bayes} chỉ đơn giản là tính toán xác suất của mỗi giả thuyết, đưa ra dữ liệu và đưa ra dự đoán trên cơ sở đó. Có nghĩa là, các dự đoán được thực hiện bằng cách sử dụng tất cả các giả thuyết, được tính theo xác suất của chúng, thay vì chỉ sử dụng một giả thuyết "tốt nhất" duy nhất. Theo cách này, việc học được rút ngắn thành suy luận có xác suất.
+
+Cho $D$ đại diện cho tất cả các dữ liệu, với giá trị quan sát được $d$. Các đại lượng quan trọng trong phương pháp Bayes là \textbf{giả thuyết tiên nghiệm} (hypothesis prior), $P (h_{i})$, và \textbf{khả năng xảy ra} (likelihood) của dữ liệu trong mỗi giả thuyết, $P(d| h_{i})$. Xác suất của mỗi giả thuyết đạt được theo quy tắc Bayes:
+\begin{equation}
+\label{eq:20.1}
+P(h_{i}|d) = \alpha P(d|h_{i})P(h_{i})
+\end{equation}
+Bây giờ, giả sử chúng ta muốn đưa ra dự đoán về một đại lượng X chưa biết. Sau đó chúng ta có:
+\begin{equation}
+\label{eq:20.2}
+P(X|d) = \sum_{i}P(X|h_{i})P(h_{i}|d)
+\end{equation}
+trong đó mỗi giả thuyết xác định một phân phối xác suất trên X. Phương trình này cho thấy rằng các dự đoán là trung bình có trọng số so với các dự đoán của các giả thuyết riêng lẻ, trong đó trọng số  $P(h_{i}|d)$ tỷ lệ với xác suất tiên nghiệm của $h_i$ và mức độ phù hợp của nó, theo Công thức \ref{eq:20.1}. Bản thân các giả thuyết về cơ bản là "trung gian" giữa dữ liệu thô và các dự đoán.
+
+Đối với ví dụ về kẹo, chúng ta sẽ giả định rằng phân phối tiên nghiệm trong $h_{1},\dots, h_5$ được đưa ra bởi $(0.1, 0.2, 0.4, 0.2, 0.1)$, như quảng cáo của nhà sản xuất. Khả năng xảy ra của dữ liệu được tính theo giả định rằng các quan sát là phân phối \textbf{i.i.d} (independent and identically distributed - phân phối độc lập và giống hệt nhau), do đó:
+\begin{equation}
+\label{eq:20.3}
+P(d|h_{i}) = \prod_{j}P(d_{j}|h_{j})
+\end{equation}
+
+Ví dụ, giả sử cái túi thực sự là một cái túi toàn vị chanh ($h_5$) và 10 viên kẹo đầu tiên đều là vị chanh; thì $P(d|h_{3})$ là $0.5^10$, vì một nửa số kẹo trong túi $h_3$ là vị chanh. Hình \ref{fig:20.1} (a) cho thấy xác suất hậu nghiệm của năm giả thuyết thay đổi như thế nào khi quan sát thấy dãy 10 viên kẹo vị chanh. Lưu ý rằng các xác suất bắt đầu bằng các giá trị tiên nghiệm của chúng, vì vậy $h_3$ ban đầu là lựa chọn có khả năng xảy ra nhất và vẫn như vậy sau khi 1 viên kẹo chanh được mở ra. Sau khi chưa gói 2 viên kẹo vị chanh, rất có thể  $h_4$; sau 3 hoặc nhiều hơn, $h_5$ (túi toàn vị chanh) là có khả năng nhất. Sau 10 liên tiếp, chúng ta khá chắc chắn về điều đó. Hình \ref{fig:20.1} (b) cho thấy xác suất dự đoán rằng viên kẹo tiếp theo là vị chanh, dựa trên Công thức (\ref{eq:20.2}). Như chúng ta mong đợi, nó tăng đơn điệu về phía 1.
+
+Ví dụ cho thấy rằng \textit{dự đoán của Bayes cuối cùng cũng chấp nhận với giả thuyết đúng}. Đây là đặc điểm của phương pháp học Bayes. Đối với bất kỳ giả thuyết nào trước đó cố định không loại trừ giả thuyết đúng, xác suất sau của bất kỳ giả thuyết sai nào, trong các điều kiện kỹ thuật nhất định, cuối cùng sẽ biến mất. Điều này xảy ra đơn giản vì xác suất tạo ra dữ liệu "không đặc trưng" vô thời hạn là rất nhỏ. (Điểm này tương tự với điểm được đưa ra trong phần thảo luận về phương pháp học PAC ở Chương 19.) Quan trọng hơn, \textit{dự đoán Bayes là tối ưu}, cho dù tập dữ liệu nhỏ hay lớn. Với giả thuyết trước đó, bất kỳ dự đoán nào khác được cho là sẽ ít đúng hơn.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/chapter20/fig20.1.png}
+    \caption{(a) Các xác suất hậu nghiệm $P(h_{i}|d_{1},\dots,d_{N})$ từ Công thức (\ref{eq:20.1}). Số lượng quan sát $N$ trong khoảng từ 1 đến 10, và mỗi quan sát là một viên kẹo vị chanh. (b) Dự đoán Bayes $P(D_{N+1} = lime | d_1,\dots,d_{N})$ từ Công thức (\ref{eq:20.2}).}
+    \label{fig:20.1}
+\end{figure}
+
+Tất nhiên, sự tối ưu của việc học theo phương pháp Bayes phải trả giá. Đối với các xác suất học tập thực sự, không gian giả thuyết thường rất lớn hoặc vô hạn, như chúng ta đã thấy trong Chương 19. Trong một số trường hợp, việc tổng kết trong Công thức (\ref{eq:20.2}) (hoặc tích phân, trong trường hợp liên tục) có thể được thực hiện một cách dễ dàng, nhưng trong hầu hết các trường hợp, chúng ta phải dùng đến các phương pháp gần đúng hoặc đơn giản hóa.
+
+Một phép gần đúng rất phổ biến - một phép gần đúng thường được áp dụng trong khoa học - là đưa ra các tính toán trước dựa trên một \textit{giả thuyết có thể xảy ra nhất} - nghĩa là, một $h_i$ tối đa hóa $P(h_{i}|d)$. Đây thường được gọi là một \textbf{giả thuyết tối đa posteriori} hoặc MAP (maximum a posteriori). Các dự đoán được thực hiện theo giả thuyết MAP $h_{MAP}$ xấp xỉ Bayes tức là $P(X|d) \approx P(X|h_{MAP})$. Trong ví dụ về kẹo của chúng ta, $h_{MAP} = h_5$ sau khi ba viên kẹo vị chanh liên tiếp được lấy ra, vì vậy việc học MAP sau đó dự đoán rằng viên kẹo thứ tư là vị chanh với xác suất 1,0 - một dự đoán nguy hiểm hơn nhiều so với dự đoán của Bayes là 0,8 trong Hình \ref{fig:20.1} (b). Khi có nhiều dữ liệu hơn, các dự đoán MAP và Bayesian trở nên gần gũi hơn, bởi vì các đối thủ cạnh tranh với giả thuyết MAP ngày càng ít xảy ra hơn.
+
+Mặc dù ví dụ này không cho thấy điều đó, nhưng việc tìm kiếm các giả thuyết MAP thường dễ dàng hơn nhiều so với học Bayes, bởi vì nó yêu cầu giải một bài toán tối ưu hóa thay vì một bài toán tổng hợp (hoặc tích hợp) lớn.
+
+Trong cả học Bayesian và học MAP, giả thuyết tiên nghiệm $P(h_{i})$ đóng một vai trò quan trọng. Chúng ta đã thấy trong Chương 19 rằng việc \textbf{overfitting} có thể xảy ra khi không gian giả thuyết quá phù hợp, tức là khi nó chứa nhiều giả thuyết phù hợp với tập dữ liệu. Phương pháp học Bayesian và MAP sử dụng phương pháp trước để \textit{xử lý sự phức tạp}. Thông thường, các giả thuyết phức tạp hơn có xác suất trước thấp hơn — một phần là do có quá nhiều giả thuyết trong số đó. Mặt khác, các giả thuyết phức tạp hơn có khả năng phù hợp với dữ liệu lớn hơn. (Trong trường hợp cực đoan, một bảng tra cứu có thể tái tạo dữ liệu chính xác.) Do đó, giả thuyết tiên nghiệm thể hiện sự cân bằng giữa độ phức tạp của một giả thuyết và mức độ phù hợp của nó với dữ liệu.
+
+Chúng ta có thể thấy ảnh hưởng của sự cân bằng này rõ ràng nhất trong trường hợp logic, trong đó $H$ chỉ chứa các \textit{giả thuyết xác định} (chẳng hạn như $h_1$, nói rằng mọi viên kẹo đều là anh đào). Trong trường hợp đó, $P(d|h_{i})$ là 1 nếu $h_i$ thích hợp và 0 nếu ngược lại. Nhìn vào phương trình (\ref{eq:20.1}), chúng ta thấy rằng $h_MAP$ khi đó sẽ là \textit{lý thuyết logic đơn giản nhất phù hợp với dữ liệu}. Do đó, việc học hỏi tối đa posteriori sẽ cung cấp một hiện thân tự nhiên của bài toán dao cạo râu của Ockham (Nhắc đến ở Chương 19).
+
+Một cái nhìn sâu sắc khác về sự cân bằng giữa độ phức tạp và mức độ phù hợp có được bằng cách tính logarit của Công thức (\ref{eq:20.1}). Việc chọn $h_MAP$ để tối đa hóa $P(d|h_{i})P(h_{i})$ tương đương với việc tối thiểu hóa:
+
+$$ -log_{2}P(d|h_{i}) - log_{2}P(h_{i})$$
+
+Sử dụng mối liên hệ giữa mã hóa thông tin và xác suất mà chúng ta đã giới thiệu trong Phần 19.3.3, chúng ta thấy rằng thuật ngữ $- log_{2}P(h_{i})$ bằng số bit cần thiết để xác định giả thuyết $h_i$. Hơn nữa, $- log_{2}P(d|h_{i})$ là số bit bổ sung cần thiết để chỉ định dữ liệu, dựa trên giả thuyết. (Để thấy điều này, hãy xem xét rằng không cần bit nếu giả thuyết dự đoán dữ liệu chính xác — như với $h_5$ và chuỗi kẹo vị chanh — và $log_{2}1 = 0$.) Do đó, học MAP đang chọn giả thuyết cung cấp giá trị \textit{nén tối đa} của dữ liệu. Nhiệm vụ tương tự được giải quyết trực tiếp hơn bằng phương pháp học \textbf{độ dài mô tả tối thiểu} (minimum description length), hoặc MDL. Trong khi việc học MAP thể hiện sự đơn giản bằng cách gán xác suất cao hơn cho các giả thuyết đơn giản hơn, thì MDL thể hiện nó trực tiếp bằng cách đếm các bit trong bảng mã nhị phân của các giả thuyết và dữ liệu.
+
+Một đơn giản hóa cuối cùng được cung cấp bằng cách giả định một phân phối đều tiên nghiệm trong không gian của các giả thuyết. Trong trường hợp đó, việc học MAP giảm xuống việc chọn một $h_i$ tối đa hóa $P(d|h_{i})$. Đây được gọi là giả thuyết \textbf{khả năng xảy ra tối đa} (maximum-likelihood), $h_ML$. Học theo khả năng tối đa rất phù hợp trong thống kê, một ngành mà nhiều nhà nghiên cứu không tin tưởng vào bản chất chủ quan của các giá trị giả thuyết. Đó là một cách tiếp cận hợp lý khi không có lý do gì để thích một giả thuyết này hơn một \textit{tiên nghiệm} khác — ví dụ, khi tất cả các giả thuyết đều phức tạp như nhau.
+
+Khi tập dữ liệu lớn, việc phân phối tiên nghiệm trên các giả thuyết ít quan trọng hơn — bằng chứng từ dữ liệu đủ mạnh để đưa phân phối tiên nghiệm lên các giả thuyết. Điều đó có nghĩa là học theo khả năng tối đa là một phép gần đúng với học Bayesian và MAP với các tập dữ liệu lớn, nhưng nó có vấn đề (như chúng ta sẽ thấy) với các tập dữ liệu nhỏ.
+\section{Học với dữ liệu đầy đủ}
+\label{sec:20.2}
+Nhiệm vụ chung của việc học một mô hình xác suất, dữ liệu đã cho được giả định được tạo ra từ mô hình đó, được gọi là \textbf{ước lượng mật độ} (density estimation). (Thuật ngữ này ban đầu được áp dụng cho các hàm mật độ xác suất cho các biến liên tục, nhưng bây giờ nó cũng được sử dụng cho các phân phối rời rạc.) Ước tính mật độ là một dạng học không giám sát. Phần này bao gồm trường hợp đơn giản nhất, nơi chúng ta có \textbf{dữ liệu đầy đủ} (complete data). Dữ liệu hoàn chỉnh khi mỗi điểm dữ liệu chứa các giá trị cho mọi biến trong mô hình xác suất đang được học. Chúng ta tập trung vào việc \textbf{học tham số } (parameter learning) — tìm các tham số số cho mô hình xác suất có cấu trúc cố định. Ví dụ, chúng ta có thể quan tâm đến việc tìm hiểu các xác suất có điều kiện trong một mạng Bayes với một cấu trúc nhất định. Chúng ta cũng sẽ xem xét ngắn gọn vấn đề cấu trúc học và ước lượng mật độ không tham số.
+\subsection{Học tham số Maximum-likelihood: Mô hình rời rạc}
+\label{subsec:20.2.1}
+% Tiếp tục 
+Giả sử chúng ta mua một túi kẹo chanh và kẹo anh đào từ một nhà sản xuất mới mà thành phần hương vị hoàn toàn không xác định được; phần quả anh đào có thể nằm trong khoảng từ 0 đến 1. Trong trường hợp đó, chúng ta có một chuỗi các giả thuyết liên tục. Tham số trong trường hợp này, mà chúng ta gọi là $\theta$, là tỷ lệ kẹo anh đào, và giả thuyết là $h_\theta$. (Tỷ lệ kẹo vị chanh chỉ là $1 - \theta$.) Nếu chúng ta giả định rằng tất cả các tỷ lệ đều có khả năng tiên nghiệm như nhau, thì phương pháp tiếp cận khả năng tối đa là hợp lý. Nếu chúng ta lập mô hình bằng mạng Bayes, chúng ta chỉ cần một biến ngẫu nhiên, Hương vị (hương vị của một loại kẹo được chọn ngẫu nhiên từ túi). Nó có các giá trị anh đào và chanh, trong đó xác suất của anh đào là $\theta$ (xem Hình \ref{fig:20.2} (a)). Bây giờ, giả sử chúng ta mở $N$ gói kẹo, trong đó $c$ là anh đào và $l = N - c$ là chanh. Theo Công thức \ref{eq:20.3}, khả năng hợp lý (likelihood) của tập dữ liệu cụ thể này là:
+$$P(d|h_{\theta}) = \prod_{j=1}^{N}P(d_{j}|h_{\theta}) = \theta^{c} . (1 - \theta)^{l}$$
+
+Giả thuyết khả năng xảy ra tối đa được đưa ra bởi giá trị của $\theta$ tối đa hóa kết quả này. Bởi vì hàm log là hàm đơn điệu, giá trị tương tự nhận được bằng cách lấy \textbf{log hàm tối đa hóa khả năng} (log likelihood):
+$$L(d|h_{\theta}) = logP(d|h_{\theta}) = \sum_{j=1}^{N}logP(d_{j}|h_{\theta}) = clog(\theta)  + llog(1 -\theta)$$
+
+(Bằng cách lấy logarit, chúng ta giảm tích số thành tổng trên dữ liệu, điều này thường dễ tối đa hóa hơn.) Để tìm giá trị khả năng xảy ra lớn nhất của $\theta$, chúng ta lấy đạo hàm $L$ tương ứng với $\theta$ và gán biểu thức kết quả bằng $0$:
+$$\frac{\delta L(d|h_{\theta})}{\delta\theta} = \frac{c}{\theta} - \frac{l}{1 - \theta} = 0 => \theta = \frac{c}{c + l} = \frac{c}{N}$$
+Có vẻ như chúng ta đã làm rất nhiều việc để khám phá ra điều hiển nhiên. Tuy nhiên, trên thực tế, chúng ta đã đưa ra một phương pháp tiêu chuẩn để học thông số có khả năng xảy ra tối đa, một phương pháp có khả năng ứng dụng rộng rãi:
+\begin{enumerate}
+\item Viết ra một biểu thức cho khả năng dữ liệu là một hàm của (các) tham số.
+\item Viết ra đạo hàm của hàm log khả năng hợp lý  đối với mỗi tham số.
+\item Tìm các giá trị tham số sao cho các đạo hàm bằng không.
+\end{enumerate}
+Bước khó nhất thường là bước cuối cùng. Trong ví dụ của chúng ta, điều đó thật tầm thường, nhưng chúng ta sẽ thấy rằng trong nhiều trường hợp, chúng ta cần sử dụng các thuật toán giải lặp hoặc các kỹ thuật tối ưu hóa số khác, như được mô tả trong Phần 4.2. (Chúng ta sẽ cần xác minh rằng ma trận Hessian là xác định âm.) Ví dụ này cũng minh họa một vấn đề quan trọng với khả năng học tối đa nói chung: \textit{khi tập dữ liệu đủ nhỏ mà một số sự kiện vẫn chưa được quan sát - đối với chẳng hạn, không có kẹo anh đào — giả thuyết khả năng xảy ra tối đa là dấu hiệu xác suất bằng không cho những sự kiện đó}. Nhiều thủ thuật khác nhau được sử dụng để tránh vấn đề này, chẳng hạn như khởi tạo số lượng cho mỗi sự kiện thành 1 thay vì 0.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/chapter20/fig20.2.png}
+    \caption{(a) Mô hình mạng Bayes cho trường hợp kẹo có tỷ lệ cherry và chanh không xác định. (b) Mô hình cho trường hợp màu sắc của giấy gói phụ thuộc (theo xác suất) vào hương vị kẹo.}
+    \label{fig:20.2}
+\end{figure}
+
+Hãy để chúng ta xem xét một ví dụ khác. Giả sử nhà sản xuất kẹo mới này muốn đưa ra một gợi ý nhỏ cho người tiêu dùng và sử dụng giấy gói kẹo có màu đỏ và xanh lá cây. Giấy gói cho mỗi viên kẹo được chọn theo xác suất, theo một số phân phối có điều kiện không xác định, tùy thuộc vào hương vị. Mô hình xác suất tương ứng được thể hiện trong Hình \ref{fig:20.2} (b). Lưu ý rằng nó có ba tham số: $\theta$, $\theta_1$ và $\theta_2$. Với những thông số này, khả năng nhìn thấy một viên kẹo anh đào trong một cái bao màu xanh lá cây có thể thu được từ mạng Bayes một cách dễ dàng:
+\begin{multline*}
+P(Flavor = cherry, Wrapper = green|h_{\theta,\theta_{1},\theta_2})\\
+= P(Flavor = cherry|h_{\theta,\theta_{1},\theta_2})P(Wrapper=green|Flavor=cherry,h_{\theta,\theta_{1} ,\theta_2}) \\
+= \theta · (1 - \theta_1)
+\end{multline*}
+
+Bây giờ chúng ta mở $N$ gói kẹo, trong đó $c$ là anh đào và $l$ là chanh. Số lượng giấy gói như sau: $r_c$ của kẹo anh đào có giấy bọc màu đỏ và $g_c$ có màu xanh lá cây, trong khi $r_l$ của kẹo chanh có màu đỏ và $g_l$ có màu xanh lá cây. Khả năng dữ liệu được cung cấp bởi:
+$$P(d|h_{\theta,\theta_{1},\theta_2}) = \theta^{c}(1-\theta)^{l}.\theta_{1}^{r_c}(1-\theta_{1})^{g_c}.\theta_{2}^{r_l}(1-\theta_{2})^{g_l}$$
+Sử dụng logarit ta có:
+$$L = [clog\theta + llog(1-\theta)] + [r_{c}log\theta_{1} + g_{c}log(1-\theta_{1})] + [r_{l}log\theta_{2} + g_{l}log(1-\theta_{2})]$$
+Lợi ích của việc lấy log là rất rõ ràng: hàm log khả năng hợp lý là tổng của ba số hạng, mỗi số hạng chứa một tham số duy nhất. Khi chúng ta lấy đạo hàm đối với từng tham số và đặt chúng bằng 0, chúng ta nhận được ba phương trình độc lập, mỗi phương trình chỉ chứa một tham số:
+\begin{align*}
+ \frac{\delta L}{\delta \theta} = \frac{c}{\theta} - \frac{l}{1 - \theta} = 0  &\Rightarrow \theta = \frac{c}{c + l} \\
+\frac{\delta L}{\delta \theta_{1}} = \frac{r_{c}}{\theta_{1}} - \frac{g_{c}}{1 - \theta_{1}} = 0  &\Rightarrow \theta_{1} = \frac{r_{c}}{r_{c} + g_{c}} \\
+\frac{\delta L}{\delta \theta_{2}} = \frac{r_{l}}{\theta_{2}} - \frac{g_{l}}{1 - \theta_{2}} = 0  &\Rightarrow \theta_{2} = \frac{r_{l}}{r_{l} + g_{l}}    
+\end{align*}
+
+Đáp án cho $\theta$ giống như trước đó. Đáp án với $\theta_{1}$, xác suất để một viên kẹo anh đào có giấy bọc màu đỏ, là phần quan sát được của kẹo anh đào có giấy bọc màu đỏ, và tương tự cho $\theta_{2}$.
+
+Những kết quả này khá phù hợp, và dễ dàng thấy rằng chúng có thể được mở rộng cho bất kỳ mạng Bayes nào có xác suất có điều kiện được biểu diễn dưới dạng bảng. Điểm quan trọng nhất là \textit{với dữ liệu đầy đủ, bài toán học tham số khả năng tối đa cho mạng Bayes sẽ phân tách thành các bài toán học riêng biệt, mỗi bài toán một tham số}. Điểm thứ hai là các giá trị tham số cho một biến, với cha mẹ của nó, chỉ là tần số quan sát của các giá trị biến cho mỗi cài đặt của giá trị cha. Như trước đó, chúng ta phải cẩn thận để tránh các số 0 khi tập dữ liệu nhỏ.
+\subsection{Mô hình Bayes ngây thơ}
+\label{subsec:20.2.2}
+Có lẽ mô hình mạng Bayes phổ biến nhất được sử dụng trong học máy là mô hình \textbf{Bayes ngây thơ} được giới thiệu lần đầu ở trang 402. Trong mô hình này, biến "lớp" C (được dự đoán) là biến gốc và các biến "thuộc tính" $X_i$ là những chiếc lá. Mô hình là "ngây thơ" bởi vì nó giả định rằng các thuộc tính là độc lập có điều kiện với nhau, với cho trước các lớp. (Mô hình trong Hình \ref{fig:20.2} (b) là một mô hình Bayes ngây thơ với lớp Flavor và chỉ một thuộc tính, Wrapper.) Trong trường hợp biến Boolean, các tham số là:
+$$\theta = P(C = true), \theta_{i1} = P(X_{i} = true |C = true), \theta_{i2} = P(X_{i} = true |C = false)$$
+Các giá trị tham số khả năng tối đa được tìm thấy theo cách giống hệt như trong Hình \ref{fig:20.2} (b). Khi mô hình đã được huấn luyện theo cách này, nó có thể được sử dụng để phân loại các mẫu mới mà biến lớp C không được quan sát. Với các giá trị thuộc tính quan sát $x_1,\dots , x_{n}$, xác suất của mỗi lớp được cho bởi:
+$$P(C | x_1 , \dots , x_{n}) = \alpha P(C) \prod_i P(x_{i} |C)$$
+Dự đoán xác định có thể thu được bằng cách chọn lớp có khả năng xảy ra nhất. Hình \ref{fig:20.3} cho thấy đường cong học tập của phương pháp này khi nó được áp dụng cho vấn đề nhà hàng từ Chương 19. Phương pháp học khá tốt nhưng không tốt như học cây quyết định; điều này trước hết là vì giả thuyết đúng - là cây quyết định - không thể biểu diễn chính xác bằng cách sử dụng mô hình Bayes ngây thơ. Học tập của Naive Bayes hóa ra lại hoạt động tốt một cách đáng ngạc nhiên trong một loạt các ứng dụng; phiên bản tăng cường là một trong những thuật toán học tập có mục đích chung hiệu quả nhất. Việc học Naive Bayes chia tỷ lệ tốt với các xác suất rất lớn: với $n$ thuộc tính Boolean, chỉ có $2n + 1$ tham số và không cần tìm kiếm để tìm $h_{ML}$, giả thuyết Bayes ngây thơ có khả năng tối đa. Cuối cùng, hệ thống học tập Bayes ngây thơ đối phó tốt với dữ liệu bị nhiễu hoặc bị thiếu và có thể đưa ra các dự đoán xác suất khi phù hợp. Hạn chế chính của chúng là thực tế là giả định độc lập có điều kiện hiếm khi chính xác; như đã lưu ý ở trang 403, giả định dẫn đến xác suất quá tự tin thường rất gần với 0 hoặc 1, đặc biệt là với số lượng lớn các thuộc tính.
+\subsection{Mô hình generative và discriminative}
+\label{subsec:20.2.3}
+Chúng ta có thể phân biệt hai loại mô hình học máy được sử dụng cho bộ phân loại: tổng quát và phân biệt. \textbf{Mô hình tổng quát} mô hình hóa phân phối xác suất của mỗi lớp. Ví dụ: trình phân loại văn bản Bayes ngây thơ từ Phần 12.6.1 tạo ra một mô hình riêng biệt cho từng loại văn bản có thể có — một cho thể thao, một cho thời tiết, v.v. Mỗi mô hình bao gồm xác suất trước của danh mục — ví dụ $P (Category = weather)$ —cũng như xác suất có điều kiện $P (Inputs | Category = weather)$. Từ đó, chúng ta có thể tính toán xác suất chung $P (Inputs, Category = weather)$ và chúng ta có thể tạo ra một lựa chọn ngẫu nhiên các từ đại diện cho các văn bản trong danh mục thời tiết.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/chapter20/fig20.3.png}
+    \caption{Đường cong học tập cho cách học Bayes ngây thơ áp dụng cho vấn đề nhà hàng từ Chương 19 và đường cong học tập cho việc học cây quyết định được hiển thị để so sánh.}
+    \label{fig:20.3}
+\end{figure}
+
+Một \textbf{mô hình phân biệt} trực tiếp tìm hiểu ranh giới quyết định giữa các lớp. Tức là, nó học $P (Category | Inputs)$. Với các đầu vào ví dụ, một mô hình phân biệt sẽ tạo ra một danh mục đầu ra, nhưng bạn không thể sử dụng mô hình phân biệt để tạo ra các từ ngẫu nhiên đại diện cho một danh mục. Hồi quy logistic, cây quyết định và máy vectơ hỗ trợ đều là các mô hình phân biệt.
+
+Vì các mô hình phân biệt tập trung vào việc xác định ranh giới quyết định - nghĩa là thực sự thực hiện nhiệm vụ phân loại mà họ được yêu cầu - chúng có xu hướng hoạt động tốt hơn trong giới hạn, với một lượng dữ liệu đào tạo tùy ý. Tuy nhiên, với dữ liệu hạn chế, trong một số trường hợp, một mô hình tổng hợp hoạt động tốt hơn. (Ng và Jordan, 2002) so sánh trình phân loại Bayes ngây thơ chung chung với trình phân loại hồi quy logistic phân biệt trên 15 tập dữ liệu (nhỏ) và thấy rằng với lượng dữ liệu tối đa, mô hình phân biệt hoạt động tốt hơn trên 9 trong số 15 tập dữ liệu, nhưng chỉ với một lượng nhỏ dữ liệu, mô hình tổng hợp hoạt động tốt hơn trên 14 trong số 15 tập dữ liệu.
+\subsection{Học tham số Maximum-likelihood: Mô hình liên tục}
+\label{subsec:20.2.4}
+%continutes
+Các mô hình xác suất liên tục như mô hình \textbf{Gaussian tuyến tính} được trình bày trên trang 422. Bởi vì các biến liên tục có mặt ở khắp nơi trong các ứng dụng trong thế giới thực, điều quan trọng là phải biết cách tìm hiểu các tham số của mô hình liên tục từ dữ liệu. Các nguyên tắc cho việc học có khả năng xảy ra tối đa là giống hệt nhau trong các trường hợp liên tục và rời rạc.
+
+Chúng ta hãy bắt đầu với một trường hợp rất đơn giản: học các tham số của hàm mật độ Gauss trên một biến duy nhất. Tức là, chúng ta giả sử dữ liệu được tạo như sau:
+$$P(x) = \frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}$$
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/chapter20/fig20.4.png}
+    \caption{(a) Mô hình Gaussian tuyến tính được mô tả là $y = \theta_{1}x + \theta_{1}$ cộng với nhiễu Gaussian với phương sai cố định. (b) Tập hợp 50 điểm dữ liệu được tạo ra từ mô hình này và dòng phù hợp nhất.}
+    \label{fig:20.4}
+\end{figure}
+
+
+Các tham số của mô hình này là giá trị trung bình $\mu$ và độ lệch chuẩn $\sigma$. (Chú ý rằng "hằng số" chuẩn hóa phụ thuộc vào $\sigma$, vì vậy chúng ta không thể bỏ qua nó.) Cho các giá trị quan sát là $x_{1} ,\dots, x_{N}$. Sau đó, hàm log khả năng hợp lý là:
+$$L = \sum_{j=1}^{N}log\frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{(x-\mu)^2}{2\sigma^2}} = N(-log\sqrt{2\pi} - log\sigma) - \sum_{j=1}^{N}\frac{(x_{j} - \mu)^2}{2\sigma^2}$$
+
+Đặt các đạo hàm bằng 0, chúng ta thu được:
+\begin{equation}
+\label{eq:20.4}
+\begin{split}
+\frac{\delta L}{\delta \mu} = -\frac{1}{\sigma^2}\sum_{j=1}^{N}(x_{j} - \mu) = 0 &\Rightarrow \mu = \frac{\sum_{j}x_{j}}{N} \\
+\frac{\delta L}{\delta \sigma} = -\frac{N}{\sigma} + \frac{1}{\sigma^3}\sum_{j=1}^{N}(x_{j} - \mu)^2 = 0 &\Rightarrow \sigma = \sqrt{\frac{\sum_{j}(x_{j}-\mu)^2}{N}}
+\end{split}
+\end{equation}
+Nghĩa là, giá trị khả năng xảy ra lớn nhất của giá trị trung bình là giá trị trung bình mẫu và giá trị khả năng xảy ra lớn nhất của độ lệch chuẩn là căn bậc hai của phương sai mẫu. Một lần nữa, đây là những kết quả chấp nhận được.
+
+Bây giờ hãy xem xét một mô hình tuyến tính-Gaussian với một biến cha liên tục X và một biến con Y liên tục. Như đã giải thích ở trang 422, Y có phân phối Gauss có giá trị trung bình phụ thuộc tuyến tính vào giá trị của X và độ lệch chuẩn của nó là cố định. Để tìm hiểu phân phối có điều kiện $P(Y | X)$, chúng ta có thể tối đa hóa khả năng có điều kiện:
+\begin{equation}
+\label{eq:20.5}
+P(y|x) = \frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{(y-(\theta_{1}x + \theta_{2}))^2}{2\sigma^2}}
+\end{equation}
+Ở đây, các tham số là $\theta_1$, $\theta_2$ và $\sigma$. Dữ liệu là tập hợp các cặp $(x_{j}, y_{j})$, như được minh họa trong Hình \ref{fig:20.4}. Sử dụng các phương pháp thông thường, chúng ta có thể tìm giá trị khả năng xảy ra lớn nhất của các tham số. Vấn đề ở đây là khác nhau. Nếu chúng ta chỉ xem xét các tham số $\theta_1$ và $\theta_1$ xác định mối quan hệ tuyến tính giữa $x$ và $y$, thì rõ ràng rằng việc hàm log tối đa hóa khả năng đối với các tham số này cũng giống như tối thiểu hóa tử số $(y - (\theta_{1}x + \theta_{2}))^2$ trong số mũ của phương trình \ref{eq:20.5}. Đây là tổn thất $L_2$, sai số bình phương giữa giá trị thực tế $y$ và dự đoán $\theta_{1}x + \theta_{2}$.
+
+Đây là đại lượng được tối thiểu hóa bằng quy trình \textbf{hồi quy tuyến tính} tiêu chuẩn được mô tả trong Phần 19.6. Bây giờ chúng ta có thể hiểu tại sao: \textit{giảm thiểu tổng sai số bình phương cho ra mô hình đường thẳng có khả năng xảy ra tối đa, miễn là dữ liệu được tạo với nhiễu Gaussian có phương sai cố định}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/chapter20/fig20.5.png}
+    \caption{Ví dụ về phân phối $Beta(a, b)$ cho các giá trị khác nhau của $(a, b)$.}
+    \label{fig:20.5}
+\end{figure}
+
+\subsection{Học tham số Bayes}
+\label{subsec:20.2.5}
+Học theo khả năng tối đa làm phát sinh các thủ tục đơn giản, nhưng nó có những khiếm khuyết nghiêm trọng với các tập dữ liệu nhỏ. Ví dụ: sau khi nhìn thấy một viên kẹo anh đào, giả thuyết khả năng xảy ra tối đa là chiếc túi đó là $100\%$ anh đào (tức là $\theta = 1.0$). Trừ khi giả thuyết tiên nghiệm là các túi phải là anh đào hoặc toàn bộ là vị chanh, thì đây không phải là một kết luận hợp lý. Nhiều khả năng chiếc túi là hỗn hợp của chanh và anh đào. Cách tiếp cận Bayes đối với việc học tham số bắt đầu với một giả thuyết trước đó và cập nhật phân phối khi dữ liệu đến.
+
+Ví dụ về kẹo trong Hình \ref{fig:20.2} (a) có một tham số, $\theta$: xác suất để một miếng kẹo được lựa chọn chính xác có vị anh đào. Theo quan điểm Bayes, $\theta$ là giá trị (chưa biết) của một biến ngẫu nhiên $\Theta$ xác định không gian giả thuyết; giả thuyết tiên nghiệm là phân phối trước trên $P(\Theta)$. Do đó, $P (\Theta = \theta)$ là xác suất tiên nghiệm để trong túi có một phần $\theta$ kẹo anh đào. 
+
+Nếu tham số $\theta$ có thể là bất kỳ giá trị nào trong khoảng từ 0 đến 1, thì $P (\Theta)$ là hàm mật độ xác suất liên tục (xem Phần A.3). Nếu chúng ta không biết gì về các giá trị có thể có của $\theta$, chúng ta có thể sử dụng hàm mật độ đồng nhất $P(\theta) = Uniform (\theta; 0, 1)$, cho biết tất cả các giá trị đều có khả năng như nhau.
+
+Một họ hàm mật độ xác suất linh hoạt hơn được gọi là \textbf{phân phối beta}. Mỗi phân phối beta được xác định bởi hai \textbf{siêu tham số } $a$ và $b$ sao cho:
+\begin{equation}
+\label{eq:20.6}
+Beta(\theta;a,b) = \alpha\theta^{a-1}(1-\theta)^{b-1},
+\end{equation}
+cho $\theta$ trong khoảng $[0, 1]$. Hằng số chuẩn hóa $\alpha$, làm cho phân phối tích hợp thành $1$, phụ thuộc vào $a$ và $b$. Hình \ref{fig:20.5} cho thấy sự phân bố trông như thế nào đối với các giá trị khác nhau của $a$ và $b$. Giá trị trung bình của phân phối beta là $\frac{a}{a+b}$, vì vậy các giá trị lớn hơn của $a$ gợi ý niềm tin rằng $\theta$ gần với 1 hơn là 0. Giá trị lớn hơn của $a + b$ làm cho phân phối đạt đỉnh hơn, cho thấy sự chắc chắn hơn về giá trị của $\theta$. Nó chỉ ra rằng hàm mật độ đồng nhất giống như $Beta (1, 1)$: giá trị trung bình là $\frac{1}{2}$ và phân phối là phẳng.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/chapter20/fig20.6.png}
+    \caption{Một mạng Bayes tương ứng với một quá trình học Bayes. Các phân phối hậu nghiệm cho các biến tham số  $\Theta, \Theta_1$ và $\Theta_2$ có thể được suy ra từ các phân phối tiên nghiệm của chúng và bằng chứng trong $Flavor_i$ và $Wrapper_i$.}
+    \label{fig:20.6}
+\end{figure}
+
+Bên cạnh tính linh hoạt của nó, họ beta còn có một đặc tính tuyệt vời khác: nếu $\theta$ có phân phối tiên nghiệm là $Beta(a, b)$, thì sau khi một điểm dữ liệu được quan sát, phân phối sau cho $\theta$ cũng là một phân phối beta. Nói cách khác, bản Beta đang được cập nhật. Họ beta được gọi là \textbf{liên hợp trước} (conjugate prior) cho họ phân phối cho một biến Boolean. Hãy xem cách này hoạt động như thế nào. Giả sử chúng ta quan sát một viên kẹo anh đào; sau đó chúng ta có:
+\begin{align*}
+P(\theta|D_{1}=cherry) &= \alpha P(D_{1}=cherry|\theta)P(\theta) \\
+&= \alpha^{'} \theta.Beta(\theta;a,b) = \alpha^{'}\theta.\theta^{a-1}(1-\theta)^{b-1} \\
+&= \alpha^{'}\theta^{a}(1-\theta)^{b-1}=\alpha^{'}Beta(\theta;a+1,b).
+\end{align*}
+Vì vậy, sau khi nhìn thấy một viên kẹo anh đào, chúng ta chỉ cần tăng một tham số để lấy phần sau; tương tự, sau khi nhìn thấy một viên kẹo chanh, chúng ta tăng tham số b. Do đó, chúng ta có thể xem các siêu tham số a và b là \textbf{số đếm ảo} (virtual counts), theo nghĩa là phân phối Beta(a, b) trước đó hoạt động chính xác như thể chúng ta đã bắt đầu với phân phối đều $Beta(1, 1)$ trước đó và thấy $a - 1$ viên kẹo anh đào và $b-1$ viên kẹo vị chanh thực tế.
+
+Bằng cách kiểm tra chuỗi phân phối beta cho các giá trị tăng dần của a và b, giữ cho tỷ lệ cố định, chúng ta có thể thấy một cách sinh động cách phân phối sau đối với tham số $\theta$ thay đổi khi dữ liệu đến. Ví dụ, giả sử một túi kẹo thực tế có $75\%$ là quả anh đào. Hình \ref{fig:20.5} (b) cho thấy trình tự $Beta (3, 1)$, $Beta (6, 2)$, $Beta (30, 10)$. Rõ ràng, phân phối đang hội tụ đến một đỉnh hẹp xung quanh giá trị thực của $\theta$. Khi đó, đối với các tập dữ liệu lớn, phương pháp học Bayes (ít nhất là trong trường hợp này) hội tụ cùng một câu trả lời giống như phương pháp học theo khả năng tối đa.
+
+Bây giờ chúng ta hãy xem xét một trường hợp phức tạp hơn. Mạng trong Hình \ref{fig:20.2} (b) có ba tham số, $\theta$, $\theta_1$ và $\theta_2$, trong đó $\theta_1$ là xác suất của một cái vỏ màu đỏ trên một viên kẹo anh đào và $\theta_2$ là xác suất của một cái vỏ màu đỏ trên một viên kẹo chanh. Giả thuyết Bayes trước đó phải bao gồm cả ba tham số — nghĩa là, chúng ta cần xác định $P(\Theta, \Theta_{1}, \Theta_{2})$. Thông thường, chúng ta giả định \textbf{sự độc lập của tham số} (parameter independence):
+$$P(\Theta,\Theta_{1},\Theta_{2}) = P(\Theta)P(\Theta_{1})P(\Theta_{2})$$
+
+Với giả định này, mỗi tham số có thể có bản phân phối beta của riêng nó được cập nhật riêng khi dữ liệu đến. Hình \ref{fig:20.6} cho thấy cách chúng ta có thể kết hợp giả thuyết tiên nghiệm và bất kỳ dữ liệu nào vào mạng Bayes, trong đó chúng ta có một nút cho mỗi biến tham số.
+
+Các nút $\Theta, \Theta_{1}, \Theta_{2}$ không có cha mẹ. Đối với lần quan sát thứ $i$ về một gói và hương vị tương ứng của một miếng kẹo, chúng ta thêm các nút $Wrapper_i$ và $Flavor_i$. $Flavor_i$ phụ thuộc vào thông số hương vị $\Theta$:
+$$P(Flavor_{1}=cherry|\Theta = \theta) = \theta$$
+Còn $Wrapper_i$ phụ thuộc vào $\Theta_{1}$ và $\Theta_{2}$:
+\begin{align*}
+P(Wrapper_{i} = red | Flavor_{i} = cherry, \Theta_{1} = \theta_{1} ) &= \theta_1 \\
+P(Wrapper_{i} = red | Flavor_{i} = lime, \Theta_{2} = \theta_{2} ) = \theta_{2}. 
+\end{align*}
+
+Bây giờ, toàn bộ quá trình học Bayes cho mạng Bayes ban đầu trong Hình \ref{fig:20.2} (b) có thể được hình thành như một bài toán suy luận trong mạng Bayes dẫn xuất được hiển thị trong Hình \ref{fig:20.6}, trong đó dữ liệu và tham số trở thành các nút. Khi chúng ta đã thêm tất cả các nút bằng chứng mới, sau đó chúng ta có thể truy vấn các biến tham số (trong trường hợp này là $\Theta, \Theta_{1}, \Theta_{2}$ ). Theo công thức này, \textit{chỉ có một thuật toán học - thuật toán suy luận cho mạng Bayes}.
+
+Tất nhiên, bản chất của các mạng này hơi khác so với các mạng trong Chương 13 vì có thể có số lượng lớn các biến bằng chứng đại diện cho tập huấn luyện và sự phổ biến của các biến tham số có giá trị liên tục. Có thể suy luận chính xác ngoại trừ những trường hợp rất đơn giản như mô hình Bayes ngây thơ. Việc học thường sử dụng các phương pháp suy luận gần đúng như MCMC (Phần 13.4.2); nhiều gói phần mềm thống kê kết hợp việc triển khai MCMC hiệu quả cho mục đích này.
+
+\subsection{Hồi quy tuyến tinh Bayes}
+%continues
+\label{subsec:20.2.6}
+
+Ở đây chúng ta minh họa cách áp dụng phương pháp Bayes cho một nhiệm vụ thống kê tiêu chuẩn: hồi quy tuyến tính. Cách tiếp cận thông thường được mô tả trong Phần 19.6 là giảm thiểu tổng sai số bình phương và được giải thích lại trong Phần \ref{subsec:20.2.4}là tối đa hóa khả năng giả định mô hình lỗi Gaussian. Những điều này tạo ra một giả thuyết tốt nhất: một đường thẳng với các giá trị cụ thể cho độ dốc và điểm giao nhau và một phương sai cố định cho sai số dự đoán tại bất kỳ điểm nào đã cho. Không có thước đo nào để đánh giá mức độ tin cậy đối với các giá trị độ dốc và giá trị chặn.
+
+Hơn nữa, nếu một người đang dự đoán một giá trị cho một điểm dữ liệu không nhìn thấy khác xa các điểm dữ liệu quan sát, thì dường như không có ý nghĩa gì khi giả định một lỗi dự đoán giống như lỗi dự đoán cho một điểm dữ liệu ngay bên cạnh một điểm dữ liệu quan sát . Sẽ có vẻ hợp lý hơn nếu sai số dự đoán càng lớn, điểm dữ liệu càng xa dữ liệu quan sát, bởi vì một thay đổi nhỏ trong độ dốc sẽ gây ra sự thay đổi lớn trong giá trị dự đoán cho một điểm ở xa.
+
+Phương pháp Bayes khắc phục được cả hai vấn đề này. Ý tưởng chung, như trong phần trước, là đặt trước các tham số của mô hình — ở đây, các hệ số của mô hình tuyến tính và phương sai nhiễu — và sau đó tính tham số hậu nghiệm cho dữ liệu. Đối với dữ liệu đa biến và mô hình nhiễu không xác định, điều này dẫn đến khá nhiều đại số tuyến tính, vì vậy chúng ta tập trung vào một trường hợp đơn giản: dữ liệu đơn biến, mô hình bị ràng buộc đi qua gốc và nhiễu đã biết: phân phối chuẩn với phương sai $\sigma^2$. Sau đó, chúng ta chỉ có một tham số $\theta$ với mô hình là:
+\begin{equation}
+\label{eq:20.7}
+P(y|x,\theta) = \mathrm{N}(y;\theta x,\sigma_{y}^{2}) = \frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{1}{2}(\frac{(y-\theta x)^2}{\sigma^2})}.
+\end{equation}
+Vì hàm log khả năng hợp lý là bậc hai trong $\theta$, dạng thích hợp cho một liên hợp trước (conjugate prior) trên $\theta$ cũng là một Gaussian. Điều này đảm bảo rằng hậu nghiệm của $\theta$ cũng sẽ là Gaussian. Chúng ta sẽ giả định giá trị trung bình $\theta_0$ và phương sai $\sigma_{0}^{2}$ cho giá trị trước, do đó:
+\begin{equation}
+\label{eq:20.8}
+P(\theta) = \mathrm{N}(\theta;\theta_{0},\sigma_{0}^{2}) = \frac{1}{\sigma_{0}\sqrt{2\pi}}e^{-\frac{1}{2}(\frac{(\theta-\theta_{0})^2}{\sigma_{0}^{2}})}.
+\end{equation}
+Tùy thuộc vào dữ liệu được mô hình hóa, người ta có thể có một số ý tưởng về loại độ dốc nào sẽ xảy ra, hoặc có thể hoàn toàn bất khả tri. Trong trường hợp thứ hai, nên chọn $\theta_0$ là 0 và $\sigma_{0}^{2}$ là lớn — cái gọi là \textbf{không có thông tin tiên nghiệm} (uninformative prior). Cuối cùng, chúng ta có thể giả định một $P(x)$ trước đó cho giá trị $x$ của mỗi điểm dữ liệu, nhưng điều này hoàn toàn không quan trọng đối với phân tích vì nó không phụ thuộc vào $\theta$.
+
+Bây giờ quá trình thiết lập đã hoàn tất, vì vậy chúng ta có thể tính hậu nghiệm cho $\theta$ bằng cách sử dụng Công thức \ref{eq:20.1}: $P(\theta|d) \propto P(d|\theta)P(\theta)$. Các điểm dữ liệu quan sát được là $d = (x_{1}, y_{1}) ,\dots , (x_{N}, y_{N})$, vì vậy hàm log khả năng hợp lý thu được từ Công thức \ref{eq:20.7} như sau:
+
+\begin{align*}
+P(d|\theta) &= (\prod_{i}P(x_{i}))\prod_{i}P(y_{i}|x_{i},\theta) = \alpha \prod_{i}e^{-\frac{1}{2}(\frac{(y_{i}-\theta x_{i})^2}{\sigma^2})} \\
+&= \alpha e^{-\frac{1}{2}\sum_{i}(\frac{(y_{i}-\theta x_{i})^2}{\sigma^2}))}
+\end{align*}
+
+trong đó chúng ta đã hấp thụ các giá trị gốc $x$ và các hằng số chuẩn hóa cho $N$ Gaussian thành một hằng số $\alpha$ độc lập với $\theta$. Bây giờ chúng ta kết hợp tham số này và tham số trước từ Phương trình \ref{eq:20.8} để thu được xác suất hậu nghiệm:
+$$P(\theta|d) = \alpha^{''}e^{-\frac{1}{2}(\frac{(\theta-\theta_{0})^2}{\sigma_{0}^{2}})}e^{-\frac{1}{2}\sum_{i}(\frac{(y_{i}-\theta x_{i})^2}{\sigma^2}))}$$
+Mặc dù điều này trông phức tạp, nhưng mỗi số mũ là một hàm bậc hai của $\theta$, vì vậy tổng của hai số mũ cũng bằng nhau. Do đó, toàn bộ biểu thức đại diện cho một phân phối Gaussian cho $\theta$. Sử dụng các thao tác đại số tương tự như trong Phần 14.4, chúng ta nhận thấy:
+$$P(\theta|d) = \alpha^{'''}e^{-\frac{1}{2}\frac{(\theta-\theta_{N})^2}{\sigma_{N}^{2}}}$$
+với giá trị trung bình và phương sai “cập nhật” được cung cấp bởi:
+$$\theta_{N} = \frac{\sigma^{2}\theta_{0} + \sigma_{0}^{2}\sum_{i}x_{i}y_{i}}{\sigma^2 + \sigma_{0}^{2}\sum_{i}x_{i}^{2}}$$
+
+Hãy xem các công thức này để biết ý nghĩa của chúng. Khi dữ liệu được tập trung tại một nhỏ hẹp của trục $x$ gần điểm gốc, $\sum_{i}x_{i}^{2}$ sẽ nhỏ và phương sai sau $\sigma_{N}^2$ sẽ lớn, gần bằng phương sai trước $\sigma_{0}^{2}$. Điều này giống như người ta mong đợi: dữ liệu không làm hạn chế quá trình xoay của đường xung quanh điểm gốc. Ngược lại, khi dữ liệu được trải rộng dọc theo trục, $\sum_{i}x_{i}^2$ sẽ lớn và phương sai hậu nghiệm $\sigma_{N}^2$ sẽ nhỏ, gần bằng $\sigma_{N}^2/(\sum_{i}x_{i}^{2})$, do đó, hệ số góc sẽ bị ràng buộc rất chặt.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/chapter20/fig20.7.png}
+    \caption{Hồi quy tuyến tính Bayes với mô hình bị ràng buộc đi qua điểm gốc và phương sai nhiễu cố định $\sigma^{2} = 0.2$. Các đường bao ở độ lệch chuẩn $± 1$, $± 2$ và $± 3$ được hiển thị cho mật độ dự đoán. (a) Với ba điểm dữ liệu gần điểm gốc, độ dốc khá không chắc chắn, với $\sigma_{N}^{2} \approx 0.3861$. Lưu ý mức độ không chắc chắn tăng lên theo khoảng cách từ các điểm dữ liệu quan sát. (b) Với hai điểm dữ liệu bổ sung ở xa hơn, độ dốc $\theta$ bị ràng buộc rất chặt chẽ, với $\sigma_{N}^{2} \approx 0.0286$. Phương sai còn lại trong mật độ dự đoán gần như hoàn toàn do nhiễu cố định $\sigma^2$.}
+    \label{fig:20.7}
+\end{figure}
+Để đưa ra dự đoán tại một điểm dữ liệu cụ thể, chúng ta phải tích hợp các giá trị có thể có của $\theta$, như được đề xuất bởi Công thức \ref{eq:20.2}:
+\begin{align*}
+P(y|x,d) &= \int_{-\infty}{\infty}P(y|x,d,\theta)P(\theta|x,d)d\theta = \int_{-\infty}{\infty}P(y|x,\theta)P(\theta|d)d\theta \\
+&= \alpha \int_{-\infty}{\infty} e^{-\frac{1}{2}(\frac{(y-\theta x)^{2}}{\sigma^{2}})}e^{-\frac{1}{2}(\frac{(\theta - \theta_{N})^{2}}{\sigma_{N}^{2})}} d\theta.
+\end{align*}
+
+Một lần nữa, tổng của hai số mũ là một hàm bậc hai của $\theta$, vì vậy chúng ta có một Gaussian trên $\theta$ có tích phân là 1. Các số hạng còn lại trong $y$ tạo thành một Gaussian khác:
+$$P(y|x,d) \propto e^{-\frac{1}{2}(\frac{(y-\theta_{N}x)^{2}}{\sigma^{2} + \sigma_{N}^{2}x^{2}})}$$
+Nhìn vào biểu thức này, chúng ta thấy rằng dự đoán trung bình cho $y$ là $\theta_{N}x$, nghĩa là nó dựa trên trung bình hậu nghiệm của $\theta$. Phương sai của dự đoán được đưa ra bởi mô hình nhiễu $\sigma^2$ cộng với một số hạng tỷ lệ với $x^2$, có nghĩa là độ lệch chuẩn của dự đoán tăng tiệm cận tuyến tính với khoảng cách từ điểm gốc. Hình \ref{fig:20.7} minh họa hiện tượng này. Như đã lưu ý ở phần đầu của phần này, việc có độ không chắc chắn cao hơn đối với các dự đoán xa hơn các điểm dữ liệu quan sát có ý nghĩa hoàn hảo.
+\subsection{Học kiến trúc mạng Bayes}
+\label{subsec:20.2.7}
+Cho đến nay, chúng ta đã giả định rằng cấu trúc của mạng Bayes đã được đưa ra và chúng ta chỉ đang cố gắng tìm hiểu các tham số. Cấu trúc của mạng thể hiện kiến thức nhân quả cơ bản về miền mà một chuyên gia hoặc thậm chí một người dùng ngây thơ thường dễ dàng cung cấp. Tuy nhiên, trong một số trường hợp, mô hình nhân quả có thể không có sẵn hoặc không chắc chắn— ví dụ, một số công ty nhất định từ lâu đã tuyên bố rằng hút thuốc lá không gây ung thư và các tập đoàn khác khẳng định rằng nồng độ $CO_2$ không ảnh hưởng đến khí hậu — vì vậy điều quan trọng là phải hiểu cách cấu trúc của mạng Bayes có thể được học từ dữ liệu. Phần này đưa ra một bản phác thảo ngắn gọn về các ý chính.
+
+Cách tiếp cận rõ ràng nhất là tìm kiếm một mô hình tốt. Chúng ta có thể bắt đầu với một mô hình không chứa liên kết và bắt đầu thêm cha mẹ cho mỗi nút, điều chỉnh các tham số với các phương pháp chúng ta vừa đề cập và đo độ chính xác của mô hình kết quả. Ngoài ra, chúng ta có thể bắt đầu với phỏng đoán ban đầu về cấu trúc và sử dụng tính năng leo đồi hoặc tìm kiếm mô phỏng để thực hiện sửa đổi, kiểm tra lại các thông số sau mỗi lần thay đổi cấu trúc. Các sửa đổi có thể bao gồm đảo ngược, thêm hoặc xóa các liên kết. Chúng ta không được tạo ra các chu kỳ trong quá trình, vì vậy nhiều thuật toán giả định rằng một thứ tự được đưa ra cho các biến và rằng một nút chỉ có thể có cha trong số những nút đến sớm hơn trong thứ tự (giống như trong quá trình xây dựng trong Chương 13). Để có tính tổng quát đầy đủ, chúng ta cũng cần tìm kiếm các thứ tự có thể có.
+
+Có hai phương pháp thay thế để quyết định khi nào một cấu trúc tốt đã được tìm thấy. Đầu tiên là kiểm tra xem liệu các khẳng định độc lập có điều kiện ẩn trong cấu trúc có thực sự thỏa mãn trong dữ liệu hay không. Ví dụ: việc sử dụng mô hình Bayes ngây thơ cho vấn đề nhà hàng giả định rằng:
+$$P(Hungry, Bar | WillWait) = P(Hungry | WillWait) P(Bar | WillWait)$$
+và chúng ta có thể kiểm tra dữ liệu xem có cùng phương trình giữa các tần số có điều kiện tương ứng hay không. Nhưng ngay cả khi cấu trúc mô tả bản chất nhân quả thực sự của miền, các biến động thống kê trong tập dữ liệu có nghĩa là phương trình sẽ không bao giờ được thỏa mãn chính xác, vì vậy chúng ta cần thực hiện một kiểm tra thống kê thích hợp để xem liệu có đủ bằng chứng cho giả thuyết độc lập không bị vi phạm. Mức độ phức tạp của mạng kết quả sẽ phụ thuộc vào ngưỡng được sử dụng cho thử nghiệm này — kiểm tra tính độc lập càng chặt chẽ, càng nhiều liên kết được thêm vào và nguy cơ overfitting càng lớn.
+
+Một cách tiếp cận phù hợp hơn với các ý tưởng trong chương này là đánh giá mức độ mà mô hình đề xuất giải thích dữ liệu (theo nghĩa xác suất). Tuy nhiên, chúng ta phải cẩn thận khi đo lường điều này. Nếu chúng ta chỉ cố gắng tìm giả thuyết khả năng xảy ra tối đa, chúng ta sẽ kết thúc với một mạng được kết nối đầy đủ, bởi vì việc thêm nhiều nút cha mẹ hơn vào một nút không thể làm giảm khả năng xảy ra. Chúng ta buộc phải trừng phạt sự phức tạp của mô hình theo một cách nào đó. Phương pháp MAP (hoặc MDL) chỉ đơn giản là trừ đi một hình phạt từ khả năng xảy ra của mỗi cấu trúc (sau khi điều chỉnh tham số) trước khi so sánh các cấu trúc khác nhau. Phương pháp Bayes đặt mối quan hệ trước lên các cấu trúc và thông số. Thường có quá nhiều cấu trúc để tính tổng (siêu cấp số nhân về số lượng biến), vì vậy hầu hết các học viên sử dụng MCMC để lấy mẫu các cấu trúc.
+
+Việc xử lý độ phức tạp (cho dù bằng phương pháp MAP hay Bayes) giới thiệu một kết nối quan trọng giữa cấu trúc tối ưu và bản chất của biểu diễn cho các phân phối tùy chọn trong mạng. Với phân phối dạng bảng, mức phạt phức tạp đối với phân phối của một nút tăng lên theo cấp số nhân với số lượng cha mẹ, nhưng với phân phối ồn ào- HOẶC, nó chỉ phát triển theo tuyến tính. Điều này có nghĩa là việc học với các mô hình nhiễu-OR (hoặc các mô hình được tham số hóa nhỏ gọn khác) có xu hướng tạo ra các cấu trúc đã học với nhiều phụ huynh hơn là học với các phân phối dạng bảng.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/chapter20/fig20.8.png}
+    \caption{(a) Đồ thị 3D của hỗn hợp Gaussian từ Hình \ref{fig:20.12} (a). (b) Một mẫu 128 điểm từ hỗn hợp, cùng với hai điểm truy vấn (hình vuông nhỏ màu cam) và 10 điểm lân cận gần nhất của chúng (hình tròn lớn và hình tròn nhỏ hơn ở bên phải).}
+    \label{fig:20.8}
+\end{figure}
+\subsection{Ước lượng mật độ với mô hình phi tham số}
+\label{subsec:20.2.8}
+Có thể học một mô hình xác suất mà không cần đưa ra bất kỳ giả định nào về cấu trúc và tham số hóa của nó bằng cách áp dụng các phương pháp phi tham số của Phần 19.7. Nhiệm vụ \textbf{ước tính mật độ không tham số } (nonparametric density estimation) thường được thực hiện trong các miền liên tục, chẳng hạn như được thể hiện trong Hình \ref{fig:20.8} (a). Hình bên cho thấy một hàm mật độ xác suất trên một không gian được xác định bởi hai biến liên tục. Trong Hình \ref{fig:20.8} (b), chúng ta thấy một mẫu các điểm dữ liệu từ hàm mật độ này. Câu hỏi đặt ra là chúng ta có thể khôi phục mô hình từ các mẫu không?
+
+Đầu tiên chúng ta sẽ xem xét các mô hình \textbf{k-hàng xóm gần nhất} (k-nearest-neighbors). (Trong Chương 19, chúng ta đã xem các mô hình láng giềng gần nhất để phân loại và hồi quy; ở đây chúng ta xem chúng để ước tính mật độ.) Với một mẫu điểm dữ liệu, để ước tính mật độ xác suất chưa biết tại một điểm truy vấn x, chúng ta có thể đơn giản đo mật độ của điểm dữ liệu trong vùng lân cận của x. Hình \ref{fig:20.8} (b) cho thấy hai điểm truy vấn (hình vuông nhỏ). Đối với mỗi điểm truy vấn, chúng ta đã vẽ một vòng tròn nhỏ nhất bao quanh 10 lân cận — 10 lân cận gần nhất. Chúng ta có thể thấy rằng vòng tròn trung tâm lớn, có nghĩa là có mật độ thấp ở đó, và vòng tròn bên phải nhỏ, có nghĩa là có mật độ cao ở đó. Trong Hình \ref{fig:20.9}, chúng ta hiển thị ba đồ thị ước tính mật độ sử dụng k-láng giềng gần nhất, cho các giá trị khác nhau của k. Rõ ràng là (b) là đúng, trong khi (a) quá nhọn (k quá nhỏ) và (c) quá mịn (k quá lớn).
+
+Một khả năng khác là sử dụng các \textbf{hàm nhân} (kernel functions), như chúng ta đã làm đối với hồi quy có trọng số cục bộ. Để áp dụng mô hình hạt nhân vào ước tính mật độ, hãy giả sử rằng mỗi điểm dữ liệu tạo ra một hàm mật độ nhỏ của riêng nó. Ví dụ, chúng ta có thể sử dụng Gaussian hình cầu với độ lệch chuẩn w dọc theo mỗi trục. Sau đó, mật độ ước tính tại điểm truy vấn x là giá trị trung bình của các nhân dữ liệu:
+$$P(x) = \frac{1}{N}\sum_{j=1}^{N}\mathcal{K}(x,x_{j}) \text{ với } \mathcal{K}(x,x_{j}) = \frac{1}{(w^{2}\sqrt{2\pi})^{d}}e^{-\frac{-D(x,x_{j})^{2}}{2w^{2}}},$$
+với $d$ là số chiều của $x$ và $D$ là hàm khoảng cách Euclid. Chúng ta vẫn gặp vấn đề về việc chọn một giá trị phù hợp cho độ rộng hạt nhân $w$; Hình \ref{fig:20.10} cho thấy các giá trị quá nhỏ, vừa phải và quá lớn. Giá trị tốt của $w$ có thể được chọn bằng cách sử dụng xác nhận chéo (cross-validation).
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/chapter20/fig20.9.png}
+    \caption{Ước tính mật độ sử dụng k-láng giềng gần nhất, áp dụng cho dữ liệu trong Hình \ref{fig:20.8} (b), cho k = 3, 10 và 40 tương ứng. k = 3 là quá nhọn, 40 là quá mịn, và 10 là vừa phải. Giá trị tốt nhất của k có thể được chọn bằng cách xác nhận chéo.}
+    \label{fig:20.9}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/chapter20/fig20.10.png}
+    \caption{Ước tính mật độ sử dụng hạt nhân cho dữ liệu trong Hình \ref{fig:20.8} (b), sử dụng hạt nhân Gaussian với $w = 0.02$, $0.07$ và $0.20$ tương ứng. $w = 0.07$ là đúng.}
+    \label{fig:20.10}
+\end{figure}
+\section{Học với biến ẩn: Thuật toán EM}
+\label{sec:20.3}
+Phần trước đã xử lý trường hợp hoàn toàn có thể quan sát được. Nhiều vấn đề trong thế giới thực có các \textbf{biến ẩn} - hidden variables (đôi khi được gọi là \textbf{biến tiềm ẩn} - latent variables), không thể quan sát được trong dữ liệu. Ví dụ, hồ sơ y tế thường bao gồm các triệu chứng quan sát được, chẩn đoán của bác sĩ, phương pháp điều trị được áp dụng và có lẽ là kết quả của việc điều trị, nhưng chúng hiếm khi chứa một quan sát trực tiếp về bản thân bệnh! (Lưu ý rằng chẩn đoán không phải là bệnh; nó là hệ quả nhân quả của các triệu chứng được quan sát, lần lượt là do bệnh gây ra.) Người ta có thể hỏi, "Nếu bệnh không được quan sát, chúng ta có thể xây dựng một mô hình chỉ dựa trên các biến quan sát? " Câu trả lời xuất hiện trong Hình \ref{fig:20.11}, cho thấy một mô hình chẩn đoán nhỏ, hư cấu cho bệnh tim. Có ba yếu tố khuynh hướng có thể quan sát được và ba triệu chứng có thể quan sát được (quá buồn để gọi tên). Giả sử rằng mỗi biến có ba giá trị có thể có (ví dụ: không có, trung bình và nghiêm trọng). Loại bỏ biến ẩn khỏi mạng trong (a) thu được mạng trong (b); tổng số tham số tăng từ 78 lên 708. Do đó, \textit{các biến ẩn có thể làm giảm đáng kể số lượng tham số cần thiết để chỉ định một mạng Bayes}. Điều này có thể làm giảm đáng kể lượng dữ liệu cần thiết để tìm hiểu các tham số.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/chapter20/fig20.11.png}
+    \caption{(a) Một mạng lưới chẩn đoán đơn giản cho bệnh tim, được giả định là một biến ẩn. Mỗi biến có ba giá trị có thể có và được gắn nhãn với số lượng các tham số độc lập trong phân phối có điều kiện của nó; tổng số là 78. (b) Mạng tương đương bị xóa HeartDisease. Lưu ý rằng các biến số triệu chứng không còn độc lập có điều kiện đối với cha mẹ của chúng. Mạng này yêu cầu 708 tham số.}
+    \label{fig:20.11}
+\end{figure}
+
+Các biến ẩn rất quan trọng, nhưng chúng làm phức tạp thêm vấn đề học tập. Ví dụ, trong Hình \ref{fig:20.11} (a), không rõ ràng làm thế nào để học phân phối có điều kiện cho HeartDisease, dựa trên cha mẹ của nó, bởi vì chúng ta không biết giá trị của HeartDisease trong từng trường hợp; cùng một vấn đề nảy sinh trong việc tìm hiểu các phân phối cho các triệu chứng. Phần này mô tả một thuật toán được gọi là \textbf{kỳ vọng-tối đa hóa} (expectation–maximization), hoặc EM, giải quyết vấn đề này theo một cách rất tổng quát. Chúng ta sẽ đưa ra ba ví dụ và sau đó cung cấp một mô tả chung. Lúc đầu, thuật toán có vẻ giống như ma thuật, nhưng một khi trực giác đã được phát triển, người ta có thể tìm thấy các ứng dụng cho EM trong một loạt các vấn đề học tập.
+\subsection{Phân cụm không giám sát: Học mô hình Gauss hỗn hợp}
+\label{subsec:20.3.1}
+\textbf{Phân cụm không giám sát} (unsupervised clustering) là vấn đề phân biệt nhiều danh mục trong một tập hợp các đối tượng. Việc không được giám sát bởi vì các nhãn danh mục không được cung cấp. Ví dụ, giả sử chúng ta ghi lại quang phổ của một trăm nghìn ngôi sao; có các loại sao khác nhau được tiết lộ bởi quang phổ không, và nếu có thì có bao nhiêu loại và đặc điểm của chúng là gì? Tất cả chúng ta đều quen thuộc với các thuật ngữ như “sao khổng lồ đỏ” và “sao lùn trắng”, nhưng các ngôi sao không mang những nhãn này trên mũ của chúng — các nhà thiên văn học đã phải thực hiện phân nhóm không giám sát để xác định các loại này. Các ví dụ khác bao gồm việc xác định các loài, chi, bộ, ngành, v.v. trong phân loại Linnaean và việc tạo ra các loại tự nhiên cho các vật thể thông thường (xem Chương 10).
+
+Phân nhóm không được giám sát bắt đầu với dữ liệu. Hình \ref{fig:20.12} (b) cho thấy 500 điểm dữ liệu, mỗi điểm chỉ định giá trị của hai thuộc tính liên tục. Các điểm dữ liệu có thể tương ứng với các ngôi sao và các thuộc tính có thể tương ứng với cường độ quang phổ ở hai tần số cụ thể.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/chapter20/fig20.12.png}
+    \caption{(a) Một mô hình hỗn hợp Gaussian với ba thành phần; trọng số (từ trái sang phải) là $0.2$, $0.3$ và $0.5$. (b) 500 điểm dữ liệu được lấy mẫu từ mô hình trong (a). (c) Mô hình được EM xây dựng lại từ dữ liệu trong (b).}
+    \label{fig:20.12}
+\end{figure}
+Tiếp theo, chúng ta cần hiểu loại phân phối xác suất nào có thể đã tạo ra dữ liệu. Phân cụm giả định rằng dữ liệu được tạo ra từ một \textbf{phân phối hỗn hợp} (mixture distribution), $P$. Một phân phối như vậy có $k$ \textbf{thành phần} (components), mỗi thành phần là một phân phối theo đúng nghĩa của nó. Điểm dữ liệu được tạo ra trước tiên bằng cách chọn một thành phần và sau đó tạo một mẫu từ thành phần đó. Gọi biến ngẫu nhiên $C$ biểu thị thành phần, với các giá trị $1,\dots,k$; thì sự phân bố hỗn hợp được đưa ra bởi:
+$$P(x) = \sum_{i}^{k}P(C=i)P(x|C=i),$$
+trong đó $x$ đề cập đến giá trị của các thuộc tính cho một điểm dữ liệu. Đối với dữ liệu liên tục, một lựa chọn tự nhiên cho các phân bố thành phần là Gaussian đa biến, tạo ra cái gọi là \textbf{phân phối hỗn hợp Gauss} (mixture of Gaussians). Các tham số của hỗn hợp Gaussian là $w_{i} = P(C = i)$ (trọng lượng của từng thành phần), $\mu_i$ (giá trị trung bình của từng thành phần) và $\sum_i$ (hiệp phương sai của từng thành phần). Hình \ref{fig:20.12} (a) cho thấy một hỗn hợp của ba Gaussia; hỗn hợp này trên thực tế là nguồn của dữ liệu trong (b) cũng như là mô hình được thể hiện trong Hình 20.8 (a).
+
+Khi đó, vấn đề phân cụm không được giám sát là khôi phục một mô hình hỗn hợp Gaussian như mô hình trong Hình \ref{fig:20.12} (a) từ dữ liệu thô như trong Hình \ref{fig:20.12} (b). Rõ ràng, nếu chúng ta biết thành phần nào đã tạo ra từng điểm dữ liệu, thì sẽ dễ dàng khôi phục thành phần Gaussian: chúng ta chỉ có thể chọn tất cả các điểm dữ liệu từ một thành phần nhất định và sau đó áp dụng (phiên bản đa biến của) Phương trình \ref{eq:20.4} để điều chỉnh các tham số của Gaussian với một tập dữ liệu. Mặt khác, nếu chúng ta biết các tham số của mỗi thành phần, thì chúng ta có thể, ít nhất theo nghĩa xác suất, chỉ định mỗi điểm dữ liệu cho một thành phần.
+
+Vấn đề là chúng ta không biết các phép gán cũng như các tham số. Ý tưởng cơ bản của EM trong bối cảnh này là giả sử rằng chúng ta biết các tham số của mô hình và sau đó suy ra xác suất mà mỗi điểm dữ liệu thuộc về mỗi thành phần. Sau đó, chúng ta trang bị lại các thành phần cho dữ liệu, trong đó mỗi thành phần được phù hợp với toàn bộ tập dữ liệu với mỗi điểm được tính trọng số bởi xác suất nó thuộc về thành phần đó. Quá trình lặp lại cho đến khi hội tụ. Về cơ bản, chúng ta đang “hoàn thiện” dữ liệu bằng cách suy ra sự phân tán xác suất đối với các biến ẩn — mỗi điểm dữ liệu thuộc về thành phần nào — dựa trên mô hình hiện tại. Đối với hỗn hợp Gaussian, chúng ta khởi tạo các tham số mô hình hỗn hợp tùy ý và sau đó lặp lại hai bước sau:
+\begin{enumerate}
+    \item Bước E: Tính xác suất $p_{ij} = P(C = i | x_{j})$, xác suất dữ liệu $x_j$ được tạo bởi thành phần $i$. Theo quy tắc Bayes, ta có $p_{ij} = \alpha P(x_{j} | C = i)P(C = i)$. Thuật ngữ $P(x_{j} | C = i)$ chỉ là xác suất tại $x_j$ của phân phối Gauss thứ $i$, và thuật ngữ $P(C = i)$ chỉ là tham số trọng số của phân phối Gauss thứ $i$. Xác định $n_{i} = \sum_{j} p_{ij}$, số điểm dữ liệu hiệu dụng hiện được gán cho thành phần i.
+    \item Bước M: Tính toán trọng số trung bình, hiệp phương sai và trọng số thành phần mới bằng cách sử dụng các bước sau theo trình tự:
+    \begin{align*}
+        \mu_{i} &\gets \sum_{j} p_{ij}x_{j}/n_{i} \\
+        \sum_i &\gets \sum_{j}p_{ij}(x_{j}-\mu_{j})(x_{j} - \mu_{j})^{T}/n_{i} \\
+        w_{i} &\gets n_{i}/N
+    \end{align*}
+\end{enumerate}
+trong đó $N$ là tổng số điểm dữ liệu. Bước E, hay bước kỳ vọng, có thể được xem như tính toán các giá trị kỳ vọng $p_{ij}$ của các \textbf{biến chỉ báo ẩn} (indicator variables) $Z_{ij}$, trong đó $Z_{ij}$ là 1 nếu dữ liệu $x_j$ được tạo bởi thành phần thứ i và 0 nếu không. Bước M, hoặc bước tối đa hóa, tìm các giá trị mới của các tham số  hàm tối đa hóa khả năng hợp lý của dữ liệu, với các giá trị dự kiến của các biến chỉ báo ẩn.
+
+Mô hình cuối cùng mà EM học được khi nó được áp dụng cho dữ liệu trong Hình \ref{fig:20.12} (a) được thể hiện trong Hình \ref{fig:20.12} (c); hầu như không thể phân biệt được với mô hình gốc mà từ đó dữ liệu được tạo ra (đường ngang). Hình \ref{fig:20.13} (a) vẽ biểu đồ hàm log khả năng hợp lý của dữ liệu theo mô hình hiện tại khi EM tiến triển.
+
+Có hai điểm cần lưu ý. Đầu tiên, hàm log khả năng hợp lý cho mô hình đã học cuối cùng cao hơn một chút so với mô hình ban đầu, từ đó dữ liệu được tạo ra. Điều này có vẻ lạ lùng, nhưng nó chỉ phản ánh thực tế là dữ liệu được tạo ngẫu nhiên và có thể không cung cấp phản ánh chính xác về mô hình cơ bản. Điểm thứ hai là \textit{EM tăng hàm log khả năng hợp lý của dữ liệu ở mỗi lần lặp lại}. Thực tế này có thể được chứng minh một cách tổng quát. Hơn nữa, trong một số điều kiện nhất định (trong hầu hết các trường hợp), EM có thể được chứng minh là có khả năng đạt mức tối đa cục bộ. (Trong một số trường hợp hiếm hoi, nó có thể đạt đến điểm toàn cục hoặc thậm chí là cực nhỏ cục bộ.) Theo nghĩa này, EM tương tự như thuật toán leo đồi dựa trên độ dốc, nhưng lưu ý rằng nó không có tham số "kích thước bước".
+
+Không phải lúc nào mọi thứ cũng diễn ra tốt đẹp như Hình \ref{fig:20.13} (a) có thể gợi ý. Ví dụ, có thể xảy ra trường hợp một thành phần Gaussian thu nhỏ lại để nó chỉ bao phủ một điểm dữ liệu duy nhất. Khi đó phương sai của nó sẽ bằng 0 và khả năng của nó sẽ đi đến vô cùng! Nếu chúng ta không biết có bao nhiêu thành phần trong hỗn hợp, chúng ta phải thử các giá trị khác nhau của k và xem cái nào là tốt nhất; đó có thể là một nguồn lỗi. Một vấn đề khác là hai thành phần có thể "hợp nhất", có được các trung bình và phương sai giống hệt nhau và chia sẻ các điểm dữ liệu của chúng. Những loại cực đại địa phương này là những vấn đề nghiêm trọng, đặc biệt là ở trường hợp biến nhiều chiều. Một giải pháp là đặt trước các thông số mô hình và áp dụng phiên bản MAP của EM. Cách khác là khởi động lại một hợp phần với các tham số ngẫu nhiên mới nếu nó quá nhỏ hoặc quá gần với một thành phần khác. Khởi tạo hợp lý cũng có ích.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/chapter20/fig20.13.png}
+    \caption{Đồ thị thể hiện hàm log khả năng hợp lý của dữ liệu, $L$, như một hàm của phép lặp EM. Đường ngang thể hiện hàm log khả năng hợp lý theo mô hình thực. (a) Đồ thị cho mô hình hỗn hợp Gauss trong Hình \ref{fig:20.12}. (b) Đồ thị cho mạng Bayes trong Hình \ref{fig:20.14} (a).}
+    \label{fig:20.13}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/chapter20/fig20.14.png}
+    \caption{((a) Một mô hình hỗn hợp cho ví dụ về kẹo. Tỷ lệ hương vị khác nhau, giấy gói và sự hiện diện của các lỗ phụ thuộc vào túi, điều này không được quan sát thấy. (b) Mạng Bayes cho hỗn hợp Gauss. Giá trị trung bình và hiệp phương sai của các biến quan sát $X$ phụ thuộc vào thành phần $C$.}
+    \label{fig:20.14}
+\end{figure}
+\subsection{Học giá trị tham số mạng Bayes cho biến ẩn}
+\label{subsec:20.3.2}
+Để tìm hiểu một mạng Bayes với các biến ẩn, chúng ta áp dụng các thông tin chi tiết tương tự đã hoạt động cho các phân phối hỗn hợp Gauss. Hình \ref{fig:20.14} (a) thể hiện một tình huống trong đó có hai túi kẹo được trộn với nhau. Kẹo được mô tả bởi ba đặc điểm: ngoài Hương vị (Flavor) và Vỏ bọc (Wrapper), một số kẹo có Lỗ  (Hole) ở giữa và một số thì không. Sự phân bố kẹo trong mỗi túi được mô tả bằng mô hình \textbf{Bayes ngây thơ}: các đặc trưnglà độc lập, cho từng túi, nhưng phân phối xác suất có điều kiện cho mỗi đặc điểm phụ thuộc vào túi. Các tham số như sau: $\theta$ là xác suất trước để một viên kẹo đến từ Túi 1; $\theta_{F1}$ và $\theta_{F2}$ là xác suất để hương vị là anh đào, cho rằng kẹo đến từ Túi 1 hoặc Túi 2 tương ứng; $\theta_{W1}$ và $\theta_{W2}$ cho các xác suất mà lớp bọc có màu đỏ; và $\theta_{H1}$ và $\theta_{H2}$ cho xác suất kẹo có lỗ.
+
+Mô hình tổng thể là mô hình hỗn hợp: tổng có trọng số của hai phân phối khác nhau, mỗi phân phối là tích của các phân phối độc lập, đơn biến. (Trên thực tế, chúng ta cũng có thể lập mô hình hỗn hợp Gaussian như một mạng Bayes, như trong Hình \ref{fig:20.14} (b).) Trong hình, cái túi là một biến ẩn bởi vì, một khi các viên kẹo đã được trộn với nhau, chúng ta không còn biết mỗi cái kẹo đến từ túi nào. Trong trường hợp như vậy, chúng ta có thể phục hồi các mô tả của hai túi bằng cách quan sát kẹo từ hỗn hợp? Hãy để chúng ta làm việc thông qua một lần lặp lại EM cho vấn đề này. Đầu tiên, hãy xem dữ liệu. Chúng ta đã tạo 1000 mẫu từ một mô hình có các thông số thực như sau:
+\begin{equation}
+\label{eq:20.9}
+\theta = 0.5, \theta_{F1} = \theta_{W1} = \theta_{H1} = 0.8, \theta_{F2} = \theta_{W2} = \theta_{H2} = 0.3 .
+\end{equation}
+Có nghĩa là, kẹo có khả năng đến từ một trong hai túi như nhau; loại đầu tiên chủ yếu là anh đào với giấy bọc màu đỏ và có lỗ; thứ hai chủ yếu là vị chanh với giấy bọc màu xanh lá cây và không có lỗ. Số lượng cho tám loại kẹo có thể có như sau:
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+           & \multicolumn{2}{l|}{W = red} & \multicolumn{2}{l|}{W = green} \\ \hline
+           & H = 1         & H = 0        & H = 1          & H = 0         \\ \hline
+F = cherry & 273           & 93           & 104            & 90            \\ \hline
+F = lime   & 79            & 100          & 94             & 167           \\ \hline
+\end{tabular}
+\end{table}
+Chúng ta bắt đầu bằng cách khởi tạo các tham số. Để đơn giản về mặt số, chúng ta tùy ý chọn (trong thực tế, tốt hơn là chọn chúng một cách ngẫu nhiên, để tránh cực đại cục bộ do đối xứng):
+\begin{equation}
+\label{eq:20.10}
+\theta^{(0)} = 0.6, \theta_{F1}^{(0)} = \theta_{W1}^{(0)} = \theta_{H1}^{(0)} = 0.6, \theta_{F2}^{(0)} = \theta_{W2}^{(0)} = \theta_{H2}^{(0)} = 0.4 .
+\end{equation}
+Đầu tiên, chúng ta hãy làm việc với tham số $\theta$. Trong trường hợp hoàn toàn có thể quan sát được, chúng ta sẽ ước tính điều này trực tiếp từ số lượng kẹo \textit{quan sát được} (observed counts) từ túi 1 và 2. Vì túi là một biến ẩn, thay vào đó chúng ta tính toán \textit{số lượng dự kiến} (expected counts). Số lượng kỳ vọng $\hat{N}(Bag = 1$) là tổng của tất cả các viên kẹo, của xác suất viên kẹo đến từ túi 1:
+$$\theta^{(1)} = \hat{N}(Bag=1)/N = \sum_{j=1}^{N}P(Bag=1|flavor_{j}, wrapper_{j}, holes_{j})/N.$$
+Các xác suất này có thể được tính bằng bất kỳ thuật toán suy luận nào cho mạng Bayes. Đối với mô hình Bayes ngây thơ, chẳng hạn như mô hình trong ví dụ của chúng ta, chúng ta có thể thực hiện suy luận "bằng tay", sử dụng quy tắc Bayes và áp dụng độc lập có điều kiện:
+$$\theta^{(1)} = \frac{1}{N}\sum_{j=1}^{N}\frac{P(flavor_{j}|Bag=1)P(wrapper_{j}|Bag=1)P(holes_{j}|Bag=1)P(Bag=1)}{\sum_{i}P(flavor_{j}|Bag=i)P(wrapper_{j}|Bag=i)P(holes_{j}|Bag=i)P(Bag=i)}.$$
+
+Áp dụng công thức này cho 273 viên kẹo anh đào bọc màu đỏ có lỗ, chúng ta nhận được phần thưởng là:
+$$\frac{273}{1000}.\frac{\theta_{F1}^{(0)}\theta_{W1}^{(0)}\theta_{H1}^{(0)}\theta^{(0)}}{\theta_{F1}^{(0)}\theta_{W1}^{(0)}\theta_{H1}^{(0)}\theta^{(0)} + \theta_{F2}^{(0)}\theta_{W2}^{(0)}\theta_{H2}^{(0)}\theta^{(0)}(1-\theta^{(0)})} \approx 0.22797$$
+Tiếp tục với bảy loại kẹo khác trong bảng đếm, ta thu được $\theta^{(1)} = 0.6124$.
+
+Bây giờ chúng ta hãy xem xét các tham số khác, chẳng hạn như $\theta_{F1}$. Trong trường hợp hoàn toàn có thể quan sát được, chúng ta sẽ ước tính điều này trực tiếp từ số lượng kẹo anh đào và kẹo chanh quan sát được từ túi 1. Số lượng kẹo anh đào dự kiến từ túi 1 được cho bởi:
+$$\sum_{j:flavor_{j}=cherry}P(Bag=1|Flavor_{j}=cherry,wrapper_{j},holes_{j}.$$
+Một lần nữa, các xác suất này có thể được tính bằng bất kỳ thuật toán mạng Bayes nào. Hoàn tất quá trình này, chúng ta nhận được các giá trị mới của tất cả các tham số:
+\begin{equation}
+\label{eq:20.11}
+\begin{split}
+\theta^{(1)} = 0.6124, \theta_{F1}^{(1)} = 0.6684, \theta_{W1}^{(1)} = 0.6483, \theta_{H1}^{(1)} = 0.6558, \\
+\theta_{F2}^{(1)} = 0.3887, \theta_{W2}^{(1)} = 0.3817, \theta_{H2}^{(1)} = 0.3827 .
+\end{split}
+\end{equation}
+Hàm log khả năng hợp lý của dữ liệu tăng từ khoảng $-2044$ ban đầu lên khoảng $-2021$ sau lần lặp đầu tiên, như thể hiện trong Hình \ref{fig:20.13} (b). Tức là, bản cập nhật cải thiện khả năng xảy ra với hệ số khoảng $e^{23} \approx 10^10$. Đến lần lặp thứ mười, mô hình đã học là phù hợp hơn so với mô hình ban đầu ($L = - 1982.214$). Sau đó, tiến độ trở nên rất chậm. Điều này không có gì lạ với EM, và nhiều hệ thống thực tế kết hợp EM với một thuật toán dựa trên gradient như Newton – Raphson (xem Chương 4) cho giai đoạn cuối của quá trình học.
+
+Bài học chung từ ví dụ này là \textit{các lần cập nhật tham số cho việc học mạng Bayes với các biến ẩn có sẵn trực tiếp từ kết quả suy luận trên mỗi ví dụ. Hơn nữa, chỉ cần xác suất cục bộ sau cho mỗi tham số}. Ở đây, "cục bộ" có nghĩa là bảng xác suất có điều kiện (CPT) cho mỗi biến $X_i$ có thể được học từ các xác suất sau chỉ liên quan đến $X_i$ và cha mẹ của nó là $U_i$. Xác định $\theta_{ijk}$ là tham số CPT $P(X_{i} = x_{ij} | U_{i} = u_{ik})$, cập nhật được đưa ra bởi các số lượng mong đợi chuẩn hóa như sau:
+$$\theta_{ijk} \gets \hat{N}(X_{i} = x_{ij}, U_{i} = u_{ik} )/\hat{N}(U_{i} = u_{ik}) .$$
+Các số đếm dự kiến thu được bằng cách tổng hợp các ví dụ, tính toán xác suất $P(X_{i} = x_{ij}, U_{i} = u_{ik})$ cho mỗi bằng cách sử dụng bất kỳ thuật toán suy luận Bayes nào. Đối với các thuật toán chính xác — bao gồm loại bỏ biến — tất cả các xác suất này đều có thể đạt được trực tiếp dưới dạng thành phần đi kèm của suy luận tiêu chuẩn, không cần tính toán thêm dành riêng cho việc học. Hơn nữa, thông tin cần thiết cho việc học có sẵn cục bộ cho mỗi tham số.
+
+Đứng lại một chút, chúng ta có thể nghĩ về những gì thuật toán EM đang thực hiện trong bài kiểm tra này là khôi phục bảy tham số ($\theta, \theta_{F1}, \theta_{W1}, \theta_{H1}, \theta_{F2}, \theta_{W2}, \theta_{H2}$) từ bảy ($2^3 - 1$) số đếm được quan sát trong dữ liệu. (Số đếm thứ tám được cố định bởi thực tế là tổng số đếm là 1000.) Nếu mỗi viên kẹo được mô tả bởi hai thuộc tính thay vì ba (giả sử bỏ qua các lỗ), chúng ta sẽ có năm tham số ($\theta, \theta_{F1}, \theta_{W1}, \theta_{F2}, \theta_{W2}$) nhưng chỉ có ba ($2^2 - 1$) số đếm được quan sát. Trong trường hợp này, không thể khôi phục khối lượng hỗn hợp $\theta$ hoặc đặc trưng của hai túi đã trộn với nhau. Chúng ta nói rằng mô hình hai thuộc tính không thể \textbf{xác định được} (identifiable).
+
+Khả năng nhận dạng trong mạng Bayes là một vấn đề phức tạp. Lưu ý rằng ngay cả với ba thuộc tính và bảy số đếm, chúng ta không thể khôi phục một mô hình duy nhất, bởi vì có hai mô hình quan sát tương đương với biến Túi bị lộn. Tùy thuộc vào cách các tham số được khởi tạo, EM sẽ hội tụ về một mô hình trong đó túi 1 chủ yếu là anh đào và túi 2 chủ yếu là vị chanh, hoặc ngược lại. Loại này nếu không thể nhận dạng là không thể tránh khỏi với các biến không bao giờ được quan sát.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/chapter20/fig20.15.png}
+    \caption{Một mạng Bayesian động dãn ra đại diện cho một mô hình Markov ẩn.}
+    \label{fig:20.15}
+\end{figure}
+\subsection{Học mô hình Markov ẩn}
+\label{subsec:20.3.3}
+Ứng dụng EM cuối cùng của chúng ta liên quan đến việc học các xác suất chuyển trong các mô hình Markov ẩn (HMM). Nhớ lại Phần 14.3 rằng một mô hình Markov ẩn có thể được biểu diễn bằng một mạng Bayes động với một biến trạng thái rời rạc, như được minh họa trong Hình \ref{fig:20.15}. Mỗi điểm dữ liệu bao gồm một chuỗi quan sát có độ dài hữu hạn, vì vậy vấn đề là tìm hiểu các xác suất chuyển đổi từ một tập hợp các chuỗi quan sát (hoặc chỉ từ một chuỗi dài).
+
+Chúng ta đã biết cách tìm hiểu lưới Bayes, nhưng có một điều phức tạp: trong lưới Bayes, mỗi tham số là khác biệt; Mặt khác, trong một mô hình Markov ẩn, các xác suất chuyển đổi riêng lẻ từ trạng thái $i$ sang trạng thái $j$ tại thời điểm $t$, $\theta_{ijt} = P(X_{t + 1} = j | X_{t} = i)$, được lặp lại theo thời gian - điều đó là, $\theta_{ijt} = \theta_{ij}$ với mọi $t$. Để ước tính xác suất chuyển đổi từ trạng thái $i$ sang trạng thái $j$, chúng ta chỉ cần tính tỷ lệ thời gian dự kiến mà hệ thống trải qua quá trình chuyển đổi sang trạng thái $j$ khi ở trạng thái $i$:
+$$\theta_{ij} \gets \sum_{t}\hat{N}(X_{t+1}=j,X_{t}=i)/\sum_{t}\hat{N}(X_{t}=i)$$
+
+Số lượng mong đợi được tính bằng thuật toán suy luận HMM. \textbf{Thuật toán tiến-lùi} (forward–backward) thể hiện trong Hình 14.4 có thể được sửa đổi rất dễ dàng để tính toán các khả năng cần thiết. Một điểm quan trọng là các xác suất cần thiết có được bằng cách \textbf{làm mịn} (smoothing) chứ không phải \textbf{lọc} (filtering.). Lọc cung cấp phân phối xác suất của trạng thái hiện tại cho trước, nhưng làm trơn cung cấp phân phối cho tất cả bằng chứng, bao gồm cả những gì xảy ra sau khi một chuyển đổi cụ thể xảy ra. Bằng chứng trong một vụ án giết người thường được thu thập sau khi tội phạm (tức là quá trình chuyển đổi từ trạng thái i sang trạng thái j) đã diễn ra.
+\subsection{Công thức tổng quát của thuật toán EM}
+\label{subsec:20.3.4}
+Chúng ta đã thấy một số trường hợp của thuật toán EM. Mỗi liên quan đến việc tính toán các giá trị mong đợi của các biến ẩn cho mỗi ví dụ và sau đó tính toán lại các tham số, sử dụng các giá trị mong đợi như thể chúng là các giá trị quan sát. Gọi $x$ là tất cả các giá trị quan sát trong tất cả các ví dụ, gọi $Z$ là tất cả các biến ẩn cho tất cả các ví dụ và gọi $\theta$ là tất cả các tham số của mô hình xác suất. Sau đó, thuật toán EM là
+$$\theta^{(i+1)} = argmax_{\theta}\sum_{z}P(Z=z|x,\theta^{(i)})L(x,Z=z|\theta).$$
+Tóm lại, phương trình này là thuật toán EM. Bước E là tính toán tổng, là kỳ vọng về hàm log khả năng hợp lý của dữ liệu "đã đầy đủ" đối với phân phối $P (Z = z | x,\theta^{(i)})$, là phần sau trên các biến ẩn, với dữ liệu. Bước M là tối đa hóa hàm khả năng hợp lý được mong đợi này đối với các tham số. Đối với hỗn hợp Gaussian, các biến ẩn là $Z_{ij}s$, trong đó $Z_{ij}$ là 1 nếu ví dụ $j$ được tạo bởi thành phần $i$. Đối với mạng Bayes, $Z_{ij}$ là giá trị của biến không quan sát được $X_i$ trong mẫu $j$. Đối với HMM, $Z_{jt}$ là trạng thái của chuỗi trong mẫu $j$ tại thời điểm $t$. Bắt đầu từ dạng tổng quát, có thể rút ra thuật toán EM cho một ứng dụng cụ thể sau khi các biến ẩn thích hợp đã được xác định.
+
+Ngay khi chúng ta hiểu được ý tưởng chung về EM, chúng ta sẽ dễ dàng tìm ra tất cả các loại biến thể và cải tiến. Ví dụ, trong nhiều trường hợp, bước E — việc tính toán các hậu nghiệm đối với các biến ẩn — là không thể thực hiện được, như trong các mạng Bayes lớn. Hóa ra là người ta có thể sử dụng E-step gần đúng mà vẫn có được một thuật toán học tập hiệu quả. Với thuật toán lấy mẫu như MCMC (xem Phần 13.4), quá trình học tập rất trực quan: mỗi trạng thái (cấu hình của biến ẩn và biến quan sát) được MCMC truy cập được xử lý như thể nó là một quan sát hoàn chỉnh. Do đó, các thông số có thể được cập nhật trực tiếp sau mỗi lần chuyển đổi MCMC. Các hình thức suy luận gần đúng khác, chẳng hạn như phương pháp biến phân và truyền bá niềm tin lặp lại, cũng tỏ ra hiệu quả đối với việc học các mạng rất lớn.
+\subsection{Học kiến trúc mạng Bayes với biến ẩn}
+\label{subsec:20.3.5}
+Trong Phần \ref{subsec:20.2.7}, chúng ta đã thảo luận về vấn đề học cấu trúc mạng Bayes với dữ liệu đầy đủ. Khi các biến không được quan sát ảnh hưởng đến dữ liệu quan sát, mọi thứ trở nên khó khăn hơn. Trong trường hợp đơn giản nhất, một người chuyên gia có thể cho thuật toán học biết rằng một số biến ẩn nhất định tồn tại, để thuật toán tìm vị trí cho chúng trong cấu trúc mạng. Ví dụ, một thuật toán có thể cố gắng tìm hiểu cấu trúc được hiển thị trong Hình \ref{fig:20.11} (a), với thông tin rằng HeartDisease (một biến ba giá trị) nên được đưa vào mô hình. Như trong trường hợp dữ liệu hoàn chỉnh, thuật toán tổng thể có một vòng lặp bên ngoài tìm kiếm trên các cấu trúc và một vòng lặp bên trong phù hợp với các tham số mạng được cung cấp cho cấu trúc.
+
+Nếu thuật toán học không được cho biết biến ẩn nào tồn tại, thì có hai lựa chọn: hoặc giả sử rằng dữ liệu thực sự đầy đủ — điều này có thể buộc thuật toán phải học một mô hình chuyên sâu về tham số như mô hình trong Hình \ref{fig:20.11} (b) - hoặc thêm vào các biến ẩn mới để đơn giản hóa mô hình. Cách tiếp cận thứ hai có thể được thực hiện bằng cách bao gồm các lựa chọn sửa đổi mới trong tìm kiếm cấu trúc: ngoài việc sửa đổi các liên kết, thuật toán có thể thêm hoặc xóa một biến ẩn hoặc thay đổi độ hiếm của nó. Tất nhiên, thuật toán sẽ không biết rằng biến mới mà nó đã phát minh ra được gọi là HeartDisease; nó cũng không có tên có ý nghĩa cho các giá trị. May mắn thay, các biến ẩn mới được thêm vào thường sẽ được kết nối với các biến đã tồn tại trước đó, vì vậy một người chuyên gia thường có thể kiểm tra các phân phối có điều kiện cục bộ liên quan đến biến mới và xác định ý nghĩa của nó.
+
+Như trong trường hợp dữ liệu hoàn chỉnh, việc học cấu trúc khả năng tối đa thuần túy sẽ dẫn đến một mạng được kết nối hoàn toàn (hơn nữa, một mạng không có biến ẩn), vì vậy cần phải có một số hình thức phạt phức tạp. Chúng ta cũng có thể áp dụng MCMC để lấy mẫu nhiều cấu trúc mạng có thể có, từ đó ước lượng phương pháp học Bayes. Ví dụ, chúng ta có thể học phân phối hỗn hợp Gauss với một số thành phần chưa biết bằng cách lấy mẫu trên số lượng; sự phân bố sau gần đúng cho số lượng phân phối Gauss được đưa ra bởi các tần số lấy mẫu của quá trình MCMC.
+
+Đối với trường hợp dữ liệu đầy đủ, vòng lặp bên trong để tìm hiểu các tham số là rất nhanh - chỉ là vấn đề trích xuất các tần số có điều kiện từ tập dữ liệu. Khi có các biến thể ẩn, vòng lặp bên trong có thể bao gồm nhiều lần lặp lại EM hoặc một thuật toán dựa trên gradient, và mỗi lần lặp lại liên quan đến việc tính toán các xác suất hậu nghiệm trong mạng Bayes, bản thân nó là một bài toán NP khó. Đến nay, cách tiếp cận này đã được chứng minh là không thực tế đối với việc học các mô hình phức tạp.
+
+Một cải tiến có thể có là cái gọi là \textbf{thuật toán EM cấu trúc} (structural EM), hoạt động theo cách giống như EM thông thường (tham số) ngoại trừ việc thuật toán có thể cập nhật cấu trúc cũng như các tham số. Cũng giống như EM thông thường sử dụng các tham số hiện tại để tính toán các số lượng mong đợi trong bước E và sau đó áp dụng các số đếm đó trong bước M để chọn các tham số mới, cấu trúc EM sử dụng cấu trúc hiện tại để tính toán các số lượng mong đợi và sau đó áp dụng các số lượng đó trong bước M để đánh giá khả năng hợp lý có các cấu trúc mới tiềm năng. (Điều này trái ngược với phương pháp vòng ngoài / vòng trong, phương pháp tính toán số lượng dự kiến mới cho mỗi cấu trúc tiềm năng.) Bằng cách này, EM cấu trúc có thể thực hiện một số thay đổi cấu trúc đối với mạng mà không cần tính lại số lượng dự kiến một lần và có khả năng học cấu trúc lưới Bayes không tầm thường. Structural EM có một không gian tìm kiếm trên không gian của các cấu trúc chứ không phải là không gian của các cấu trúc và tham số. Tuy nhiên, vẫn còn nhiều việc phải làm trước khi chúng ta có thể nói rằng vấn đề học cấu trúc đã được giải quyết.
+\section{Tổng kết}
+Các phương pháp học tập thống kê bao gồm từ tính toán trung bình đơn giản đến xây dựng các mô hình phức tạp như mạng Bayes. Chúng có các ứng dụng trong khoa học máy tính, kỹ thuật, sinh học tính toán, khoa học thần kinh, tâm lý học và vật lý. Chương này đã trình bày một số ý tưởng cơ bản và đưa ra hương vị của các cơ sở toán học. Những điểm chính như sau:
+\begin{itemize}
+    \item \textbf{Phương pháp học Bayes} (Bayesian learning)xây dựng phương pháp học tập như một hình thức suy luận xác suất, sử dụng các quan sát để cập nhật phân phối tiên nghiệm cho các giả thuyết. Cách tiếp cận này cung cấp một cách tốt để triển khai bài toán dao cạo của Ockham, nhưng nhanh chóng trở nên khó thực hiện đối với các không gian giả thuyết phức tạp.
+    \item \textbf{Tối đa một phương pháp học posteriori} (Maximum a posteriori - MAP) lựa chọn một giả thuyết có khả năng xảy ra nhất với dữ liệu. Giả thuyết trước đó vẫn được sử dụng và phương pháp này thường dễ hiểu hơn so với phương pháp học Bayes đầy đủ.
+    \item \textbf{Việc học theo khả năng tối đa} (Maximum-likelihood - ML) chỉ đơn giản là chọn giả thuyết tối đa hóa khả năng của dữ liệu; nó tương đương với việc học MAP với phân phối đều tiên nghiệm cho tham số đó. Trong các trường hợp đơn giản như hồi quy tuyến tính và các mạng Bayes có thể quan sát được đầy đủ, các giải pháp có khả năng xảy ra tối đa có thể dễ dàng tìm thấy ở dạng đóng. \textbf{Học tập Bayes ngây thơ} là một kỹ thuật đặc biệt hiệu quả có quy mô tốt.
+    \item Khi một số biến bị ẩn, các giải pháp khả năng xảy ra tối đa cục bộ có thể được tìm thấy bằng cách sử dụng thuật toán \textbf{tối đa hóa kỳ vọng} (expectation maximization - EM). Các ứng dụng bao gồm phân cụm không nhìn thấy bằng cách sử dụng hỗn hợp Gaussian, học các mạng Bayes và học các mô hình Markov ẩn.
+    \item Học cấu trúc của mạng Bayes là một ví dụ về \textbf{lựa chọn mô hình} (model selection). Điều này thường liên quan đến việc tìm kiếm rời rạc trong không gian của các cấu trúc. Cần có một số phương pháp để đánh đổi độ phức tạp của mô hình so với mức độ phù hợp.
+    \item  \textbf{Mô hình phi tham số } (Nonparametric models) thể hiện một phân phối sử dụng tập hợp các điểm dữ liệu. Do đó, số lượng tham số tăng lên với tập huấn luyện. Các phương thức láng giềng gần nhất xem xét các ví dụ gần nhất với điểm được đề cập, trong khi các phương thức hạt nhân tạo thành một tổ hợp có trọng số khoảng cách của tất cả các mẫu.   
+\end{itemize}
+
+Học tập thống kê tiếp tục là một lĩnh vực nghiên cứu rất tích cực. Những bước tiến to lớn đã được thực hiện cả về lý thuyết và thực hành, đến mức có thể học được hầu hết mọi mô hình mà suy luận chính xác hoặc gần đúng là khả thi.

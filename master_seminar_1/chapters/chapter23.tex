@@ -1,0 +1,291 @@
+\chapter{Xử lý ngôn ngữ tự nhiên}
+Khoảng 100.000 năm trước, con người học cách nói, và khoảng 5.000 năm trước họ học viết. Sự phức tạp và đa dạng của ngôn ngữ loài người khiến Homo sapiens trở nên khác biệt với tất cả các loài khác. Tất nhiên, có những đặc điểm khác của con người: không loài nào khác mặc quần áo, sáng tạo nghệ thuật hoặc dành hai giờ mỗi ngày trên mạng xã hội theo cách mà con người vẫn làm. Nhưng khi Alan Turing đề xuất bài kiểm tra về trí thông minh của mình, ông dựa trên ngôn ngữ, không phải nghệ thuật hay đồ trang trí, có lẽ vì phạm vi phổ quát của nó và bởi vì ngôn ngữ nắm bắt rất nhiều hành vi thông minh: một diễn giả (hoặc nhà văn) có mục tiêu truyền đạt kiến thức , sau đó chuẩn bị một số ngôn ngữ để trình bày kiến thức và hành động để đạt được mục tiêu. Người nghe (hoặc người đọc) cảm nhận ngôn ngữ và suy ra ý nghĩa. Kiểu giao tiếp thông qua ngôn ngữ này đã cho phép nền văn minh phát triển; nó là phương tiện chính của chúng ta để truyền tải kiến thức, văn hóa, luật pháp, khoa học và công nghệ. Có ba lý do chính để máy tính thực hiện xử lý ngôn ngữ tự nhiên (NLP):
+\begin{itemize}
+    \item Để giao tiếp với con người. Trong nhiều tình huống, thật thuận tiện khi con người có thể sử dụng lời nói để tương tác với máy tính, và trong hầu hết các tình huống, sử dụng ngôn ngữ tự nhiên sẽ thuận tiện hơn là ngôn ngữ hình thức như phép vị từ bậc nhất.
+    \item Để học. Con người đã viết ra rất nhiều kiến thức bằng ngôn ngữ tự nhiên. Chỉ riêng Wikipedia đã có 30 triệu trang dữ kiện như “Bush babies là loài linh trưởng nhỏ sống về đêm,” trong khi hầu như không có bất kỳ nguồn dữ kiện nào như thế này được viết theo logic chính thống. Nếu chúng ta muốn hệ thống của mình hiểu biết nhiều, nó phải hiểu ngôn ngữ tự nhiên tốt hơn.
+    \item Để nâng cao hiểu biết khoa học về ngôn ngữ và sử dụng ngôn ngữ, sử dụng các công cụ của AI kết hợp với ngôn ngữ học, tâm lý học nhận thức và khoa học thần kinh.
+\end{itemize}
+
+Trong chương này, chúng ta sẽ xem xét các mô hình toán học khác nhau cho ngôn ngữ và thảo luận về các nhiệm vụ có thể đạt được khi sử dụng chúng.
+\section{Mô hình ngôn ngữ}
+Các ngôn ngữ hình thức, chẳng hạn như logic bậc nhất, được định nghĩa chi tiết, như chúng ta đã thấy trong Chương 8. Một ngữ pháp xác định cú pháp của câu chuẩn mực và các quy tắc ngữ nghĩa xác định ý nghĩa.
+
+Các ngôn ngữ tự nhiên, chẳng hạn như tiếng Anh hoặc tiếng Trung, không thể được mô tả tỉ mỉ như vậy:
+\begin{itemize}
+    \item Các đánh giá ngôn ngữ ở mỗi người khác nhau và tùy từng thời điểm. Mọi người đều đồng ý rằng "Not to be invited is sad” là một câu ngữ pháp tiếng Anh, nhưng mọi người không đồng ý về ngữ pháp của “To be not invited is sad”.
+    \item Ngôn ngữ tự nhiên không rõ ràng (“He saw her duck” có thể có nghĩa là cô ấy sở hữu một con vịt hoặc cô ấy thực hiện một động tác nhào lộn xuống nước) và mơ hồ (“That's great!” Không chỉ rõ chính xác nó tuyệt vời như thế nào, cũng như nó là gì).
+    \item Ánh xạ từ ký hiệu đến đối tượng không được định nghĩa chính thức. Theo logic bậc nhất, hai lần sử dụng ký tự “Richard” phải đề cập đến cùng một người, nhưng trong ngôn ngữ tự nhiên, hai lần xuất hiện của cùng một từ hoặc cụm từ có thể ám chỉ những sự vật khác nhau.
+\end{itemize}
+
+Nếu chúng ta không thể phân biệt rõ ràng toán tử Boolean giữa các chuỗi có ngữ pháp và không có ngữ pháp, thì ít nhất chúng ta có thể nói mức độ có thể xảy ra hoặc không chắc của từng chuỗi.
+
+Chúng ta định nghĩa một mô hình ngôn ngữ là một phân phối xác suất mô tả khả năng xảy ra của bất kỳ chuỗi nào. Một mô hình như vậy sẽ nói rằng "Do I dare disturb the universe?" có xác suất hợp lý là một chuỗi tiếng Anh, nhưng "Universe dare the I disturb do?" cực kỳ khó xảy ra.
+
+Với mô hình ngôn ngữ, chúng tôi có thể dự đoán những từ nào có khả năng xuất hiện tiếp theo trong một văn bản và từ đó đề xuất các cách hoàn thiện cho một email hoặc tin nhắn văn bản. Chúng ta có thể tính toán những thay đổi nào đối với một văn bản sẽ làm cho nó dễ xảy ra hơn, và do đó đề xuất các chỉnh sửa chính tả hoặc ngữ pháp. Với một cặp mô hình, chúng tôi có thể tính toán bản dịch có khả năng xảy ra nhất của một câu. Với một số mẫu cặp câu hỏi/câu trả lời, ta có thể tính toán câu trả lời có nhiều khả năng nhất cho một câu hỏi. Vì vậy, các mô hình ngôn ngữ là trọng tâm của một loạt các nhiệm vụ ngôn ngữ tự nhiên. Bản thân nhiệm vụ mô hình hóa ngôn ngữ cũng đóng vai trò như một tiêu chuẩn chung để đo lường sự tiến bộ trong việc hiểu ngôn ngữ.
+\subsection{Mô hình bag-of-words}
+Phần 12.6.1 giải thích cách mô hình Bayes ngây thơ dựa trên sự hiện diện của các từ cụ thể, phân loại câu thành các loại một cách đáng tin cậy; ví dụ câu (1) dưới đây được phân loại là kinh doanh và (2) là thời tiết
+\begin{enumerate}
+    \item Cổ phiếu tăng vào thứ Hai, với các chỉ số chính tăng 1\% do sự lạc quan vẫn tồn tại trong mùa thu nhập quý đầu tiên
+    \item Mưa lớn tiếp tục đổ xuống phần lớn bờ biển phía đông vào thứ Hai, với cảnh báo lũ lụt được ban hành ở Thành phố New York và các địa điểm khác.
+\end{enumerate}
+
+Trong phần này, ta xem xét lại mô hình Bayes ngây thơ, sử dụng mô hình này như một mô hình ngôn ngữ đầy đủ. Điều đó có nghĩa là ta không chỉ muốn biết danh mục nào có nhiều khả năng xảy ra nhất cho mỗi câu; chúng ta muốn có một phân phối xác suất chung cho tất cả các câu và danh mục. Điều đó cho thấy chúng ta nên xem xét tất cả các từ trong câu. Cho một câu bao gồm các từ $w_1, w_2, ... w_N$ (mà chúng ta sẽ viết là $w_{1:N}$, như trong Chương 14), công thức Bayes ngây thơ (Phương trình (12.21)) cho chúng ta
+$$P(Class|w_{1:N}) = \alpha P(Class)\prod_j P(w_j|Class)$$
+
+Ứng dụng của Naive Bayes với các chuỗi từ được gọi là mô hình bag-of-words. Là một mô hình tổng quát mô tả một quá trình tạo ra một câu: Hãy tưởng tượng rằng đối với mỗi danh mục (kinh doanh, thời tiết, v.v.) chúng ta có một túi chứa đầy các từ (bạn có thể tưởng tượng mỗi từ được viết trên một tờ giấy bên trong túi; từ phổ biến hơn, càng có nhiều phiếu bị trùng lặp). Để tạo văn bản, trước tiên hãy chọn một trong các túi và loại bỏ các túi khác. Đưa tay vào túi đó và rút ra một từ ngẫu nhiên; đây sẽ là từ đầu tiên của câu. Sau đó đặt từ lại và rút từ thứ hai. Lặp lại cho đến khi một chỉ báo cuối câu (ví dụ: dấu chấm) được rút.
+
+Mô hình này rõ ràng là sai: nó giả định sai rằng mỗi từ là độc lập với những từ khác, và do đó nó không tạo ra các câu tiếng Anh mạch lạc. Nhưng nó cho phép chúng tôi phân loại với độ chính xác tốt bằng cách sử dụng công thức Bayes ngây thơ: các từ “cổ phiếu” và “thu nhập” là bằng chứng rõ ràng cho phần kinh doanh, trong khi “mưa” và “nhiều mây” gợi ý phần thời tiết.
+
+Chúng ta có thể tìm hiểu các xác suất cần thiết cho mô hình này thông qua đào tạo có giám sát trên phần nội dung hoặc tập văn bản, trong đó mỗi đoạn văn bản được gắn nhãn bằng một lớp. Một kho ngữ liệu thường bao gồm ít nhất một triệu từ văn bản và ít nhất hàng chục nghìn từ vựng riêng biệt. Gần đây, chúng ta đang thấy những kho ngữ liệu lớn hơn đang được sử dụng, chẳng hạn như 2,5 tỷ từ trong Wikipedia hoặc kho ngữ liệu iWeb 14 tỷ từ được lấy từ 22 triệu trang web.
+
+Từ một kho dữ liệu, chúng tôi có thể ước tính xác suất trước của mỗi danh mục, $P(Class)$, bằng cách đếm mức độ phổ biến của mỗi danh mục. Chúng tôi cũng có thể sử dụng số đếm để ước tính xác suất có điều kiện của mỗi từ cho danh mục $P(w_j|Class)$. Ví dụ: nếu chúng ta thấy 3000 văn bản và 300 trong số đó được phân loại là kinh doanh, thì chúng tôi có thể ước tính $P(Class = kinh doanh) \approx 300/3000 = 0.1$. Và nếu trong danh mục kinh doanh, chúng ta thấy 100.000 từ và từ “cổ phiếu” xuất hiện 700 lần, thì chúng ta có thể ước tính $P(cổ phiếu|Class = kinh doanh) \approx 700/100000 = 0.007$. Ước lượng bằng cách đếm hoạt động tốt khi chúng ta có số đếm cao (và phương sai thấp), nhưng chúng ta sẽ thấy trong Phần 23.1.4 một cách tốt hơn để ước tính xác suất khi số đếm thấp.
+
+Đôi khi, một cách tiếp cận học máy khác, chẳng hạn như hồi quy logistic, mạng nơ-ron hoặc máy vectơ hỗ trợ, thậm chí có thể hoạt động tốt hơn Bayes ngây thơ. Các đặc trưng của mô hình học máy là các từ trong từ vựng: “a,” “aardvark,” ..., “zyzzyva” và các giá trị là số lần mỗi từ xuất hiện trong văn bản (hoặc đôi khi chỉ là giá trị Boolean cho biết từ đó có xuất hiện hay không). Điều đó làm cho vectơ đối tượng lớn và thưa thớt — chúng ta có thể có 100.000 từ trong mô hình ngôn ngữ và do đó vectơ đối tượng có độ dài 100.000, nhưng đối với một văn bản ngắn thì hầu như tất cả các đối tượng sẽ bằng không.
+
+Như chúng ta đã thấy, một số mô hình học máy hoạt động tốt hơn khi chúng ta thực hiện trích chọn đặc trưng, giới hạn trong một tập hợp con của các từ dưới dạng đặc trưng. Chúng ta có thể loại bỏ các từ rất hiếm (và do đó có sự khác biệt cao trong khả năng dự đoán của chúng), cũng như các từ phổ biến cho tất cả các lớp (chẳng hạn như “the”) nhưng không phân biệt giữa các lớp. Chúng ta cũng có thể kết hợp các đặc trưng khác với các đặc trưng dựa trên từ của chúng ta; ví dụ: nếu chúng tôi đang phân loại thư email, chúng tôi có thể thêm các đặc trưng như người gửi, thời gian thư được gửi, các từ trong tiêu đề chủ đề, sự hiện diện của dấu câu không chuẩn, tỷ lệ phần trăm chữ hoa, liệu có tệp đính kèm không, v.v.
+
+Lưu ý rằng nó không dễ để quyết định một từ là gì. “Aren’t” là một từ hay nên chia nó thành “aren/’/t” hay “are/n’t,” hay cách nào khác? Quá trình chia một văn bản thành một chuỗi các từ được gọi là tokenizer.
+\subsection{Mô hình N-gram word}
+Mô hình bag-of-words có những hạn chế. Ví dụ: từ "quarter" phổ biến trong cả danh mục kinh doanh và thể thao. Nhưng chuỗi bốn từ “first quarter earnings
+report” chỉ phổ biến trong kinh doanh và “fourth quarter touchdown passes” chỉ phổ biến trong thể thao. Chúng ta muốn mô hình của mình tạo ra sự khác biệt đó. Ta có thể điều chỉnh mô hình cụm từ bằng cách coi các cụm từ đặc biệt như “first quarter earnings report” như thể chúng là những từ đơn lẻ, nhưng cách tiếp cận nguyên tắc hơn là giới thiệu một mô hình mới, trong đó mỗi từ phụ thuộc vào các từ trước đó. Chúng ta có thể bắt đầu bằng cách tạo một từ phụ thuộc vào tất cả các từ trước đó trong một câu:
+$$P(w_{1:N}) = \prod_{j=1}^N P(w_j|w_{1:j-1})$$
+Mô hình này theo nghĩa hoàn toàn “đúng” ở chỗ nó nắm bắt được tất cả các tương tác có thể có giữa các từ, nhưng nó không thực tế: với vốn từ vựng 100.000 từ và độ dài câu là 40, mô hình này sẽ có 10200 tham số để ước tính. Chúng ta có thể sử dụng mô hình chuỗi Markov, chỉ xem xét sự phụ thuộc giữa n từ liền kề. Đây được gọi là mô hình n-gram: một chuỗi các ký hiệu viết có độ dài n được gọi là n-gram, với các trường hợp đặc biệt là “unigram” cho 1 gram, “bigram ”Cho 2 gam và“ bát quái ”cho 3 gam. Trong mô hình n-gram, xác suất của mỗi từ chỉ phụ thuộc vào n-1 từ trước đó:
+\begin{align*}
+P(w_j|w_{1:j-1}) &= P(w_j|w_{j-n+1:j-1})\\
+P(w_{1:N}) &= \prod_{j=1}^N P(w_j|w_{j-n+1:j-1})
+\end{align*}
+\subsection{Các mô hình n-gram khác}
+Một thay thế cho mô hình từ n-gram là mô hình cấp ký tự trong đó mô hình xác suất của mỗi ký tự được xác định bởi n - 1 ký tự trước đó. Cách tiếp cận này hữu ích cho việc xử lý các từ không xác định và các ngôn ngữ có xu hướng chạy các từ lại với nhau, như trong từ tiếng Đan Mạch “Speciallægepraksisplanlægningsstabiliseringsperiode.”
+
+Các mô hình cấp ký tự rất phù hợp cho nhiệm vụ nhận dạng ngôn ngữ: cho một văn bản, xác định ngôn ngữ đó được viết bằng ngôn ngữ nào. Ngay cả với các văn bản rất ngắn như “Hello, world” hoặc “Wie geht's dir”, các mô hình chữ cái n-gram có thể xác định thứ nhất là tiếng Anh và thứ hai là tiếng Đức, nói chung đạt độ chính xác hơn 99\%. (Các ngôn ngữ có liên quan mật thiết với nhau như tiếng Thụy Điển và tiếng Na Uy khó phân biệt hơn và yêu cầu các mẫu dài hơn; ở đó, độ chính xác nằm trong khoảng 95\%). Các mô hình nhân vật làm tốt một số nhiệm vụ phân loại, chẳng hạn như quyết định rằng “dextroamphetamine” là tên một loại ma túy, “Kallenberger” là tên người và “Plattsburg” là tên thành phố, ngay cả khi chúng ta chưa bao giờ nhìn thấy những từ này trước đây.
+
+Một mô hình khác là mô hình skip-gram, trong đó chúng ta đếm các từ gần nhau, nhưng bỏ qua một từ (hoặc nhiều hơn) giữa chúng. Ví dụ: với văn bản tiếng Pháp “je ne comprends pas”, biểu đồ 1-skip-bigrams là “je comprends” và “ne pas”. Việc thu thập những điều này giúp tạo ra một mô hình tiếng Pháp tốt hơn, bởi vì nó cho chúng ta biết về cách chia từ (“je” đi với “comprends”, không phải “comprend”) và phủ định (“ne” đi với “pas”); chúng tôi sẽ không nhận được điều đó chỉ từ bigram thông thường.
+\subsection{Mô hình Smoothing n-gram}
+Các n-gram xuất hiện nhiều như “of the” có số lượng lớn trong ngữ liệu đào tạo, vì vậy ước tính xác suất của chúng có khả năng chính xác: với một ngữ liệu đào tạo khác, chúng tôi sẽ nhận được ước tính tương tự. Các n-gram xuất hiện ít có số lượng nhỏ bị nhiễu ngẫu nhiên - chúng có phương sai cao. Các mô hình của chúng ta sẽ hoạt động tốt hơn nếu chúng ta có thể làm mịn phương sai đó.
+
+Hơn nữa, luôn có khả năng chúng ta sẽ được yêu cầu đánh giá một văn bản có chứa một từ không xác định hoặc out-of-volcabulary: một từ chưa bao giờ xuất hiện trong kho ngữ liệu đào tạo. Nhưng sẽ là một sai lầm khi gán một từ như vậy với xác suất bằng 0, vì khi đó xác suất của cả câu, $P(w_{1: N})$, sẽ bằng 0.
+
+Một cách để mô hình học các từ chưa biết là thay các từ đó trong ngữ liệu bằng các ký tự đặc biệt, chẳng hạn <UNK>. Chúng ta có thể quyết định giữ lại một số lượng từ, chẳng hạn 50.000 từ, hoặc những từ xuất hiện với tỉ lệ lớn hơn 0.0001\%, và thay đổi các từ còn lại với <UNK>. <UNK> được tính như các n-gram khác. Đôi khi các ký hiệu của từ không xác định khác nhau được sử dụng cho các loại khác nhau. Ví dụ: một chuỗi chữ số có thể được thay thế bằng <NUM> hoặc địa chỉ email bằng <EMAIL>.
+
+Ngay cả khi chúng ta đã xử lý các từ không xác định, chúng ta vẫn gặp vấn đề về n-gram không nhìn thấy được. Ví dụ: kiểm tra một văn bản có thể chứa cụm từ "colorless aquamarine ideas”, ba từ mà chúng ta có thể đã thấy riêng lẻ trong kho tài liệu đào tạo, nhưng không bao giờ theo thứ tự đó. Vấn đề là một số n-gram có xác suất xuất hiện thấp trong kho dữ liệu đào tạo, trong khi những n-gram có xác suất thấp tương đương khác lại không xuất hiện. Chúng ta không muốn mộ số trong số chúng có xác suất bằng 0 trong khi những n-gram khác có xác suất dương nhỏ; chúng ta muốn áp dụng làm mịn (smoothing) cho tất cả các n-gram tương tự — dự trữ một số khối lượng xác suất của mô hình cho n-gam nghịch đảo, để giảm phương sai của mô hình.
+
+Phương pháp làm mịn đơn giản nhất được Pierre-Simon Laplace đề xuất vào thế kỷ 18 để ước tính xác suất của các sự kiện hiếm, chẳng hạn như mặt trời không mọc vào ngày mai. Lý thuyết (không chính xác) của Laplace về hệ mặt trời cho rằng nó có tuổi đời khoảng N = 2 triệu ngày. Theo dữ liệu, không có trường hợp sau hai triệu ngày mặt trời không mọc, nhưng chúng tôi không muốn nói rằng xác suất chính xác là 0. Laplace đã chỉ ra rằng nếu chúng ta áp dụng một chuẩn trước đó và kết hợp điều đó với bằng chứng cho đến nay, chúng ta sẽ có được ước tính tốt nhất là 1 / (N + 2) cho xác suất mặt trời không mọc vào ngày mai - nó sẽ hoặc nó sẽ không. (đó là 2 ở mẫu số) và một người trước đó đồng nhất nói rằng nó có khả năng là không (đó là 1 trong tử số). Làm mịn Laplace (còn gọi là làm mịn bổ trợ) là một bước đi đúng hướng, nhưng đối với nhiều ứng dụng ngôn ngữ tự nhiên, nó hoạt động kém.
+
+Một lựa chọn khác là mô hình dự phòng, trong đó chúng ta bắt đầu bằng cách ước tính số lượng n-gam, nhưng đối với bất kỳ chuỗi cụ thể nào có số lượng thấp (hoặc không), chúng ta lùi về (n - 1)-gam. Làm mịn nội suy tuyến tính là một mô hình dự phòng kết hợp các mô hình trigram, bigram và unigram bằng nội suy tuyến tính. Nó xác định ước tính xác suất là
+$$P'(c_i|c_{i-2:i-1}) = \lambda_3 P(c_i|c{i-2:i-1}) + \lambda_2 P(c_i|c_{i-1}) + \lambda_1 P(c_i)$$
+trong đó $\lambda_3 \lambda_2 \lambda_1 = 1$. Các giá trị tham số $\lambda_i$ có thể cố định hoặc chúng có thể được huấn luyện bằng một thuật toán tối đa hóa kỳ vọng. Cũng có thể có các giá trị của $\lambda_i$ phụ thuộc vào số đếm: nếu chúng ta có số lượng trigrams lớn, thì chúng ta đánh trọng số chúng tương đối nhiều hơn; nếu chỉ có một số lượng nhỏ, thì chúng ta đặt trọng số nhiều hơn vào các mô hình bigram và unigram.
+
+Một nhóm các nhà nghiên cứu đã phát triển các kỹ thuật làm mịn được cải thiện đáng kể (chẳng hạn như Witten-Bell và Kneser-Ney), trong khi một nhóm khác đề xuất thu thập một kho dữ liệu lớn hơn để các kỹ thuật làm mịn đơn giản cũng hoạt động tốt (một cách tiếp cận như vậy được gọi là stupid backoff”). Cả hai đều đạt được cùng một mục tiêu: giảm sự khác biệt trong mô hình ngôn ngữ.
+\subsection{Biểu diễn từ}
+N-gram có thể cung cấp cho chúng ta một mô hình dự đoán chính xác xác suất của các chuỗi từ, cho chúng tôi biết rằng, ví dụ: “a black cat” là một cụm từ tiếng Anh có nhiều khả năng hơn “black cat a” vì “a black cat” xuất hiện trong khoảng 0,000014\% trigram trong kho ngữ liệu đào tạo, trong khi "black cat a" hoàn toàn không xuất hiện. Mọi thứ mà mô hình từ n-gram biết, nó học được từ số lượng các chuỗi từ cụ thể.
+
+Nhưng một người bản ngữ nói tiếng Anh sẽ kể một câu chuyện khác: “a black cat” là hợp lệ vì nó theo một mẫu quen thuộc (mạo từ-danh từ), trong khi “cat black a” thì không.
+
+Bây giờ hãy xem xét cụm từ "the fulvous kitten". Một người nói tiếng Anh có thể nhận ra điều này cũng theo mô hình mạo từ-tính từ-danh từ (thậm chí một người nói không biết rằng “fulvous” có nghĩa là “nâu vàng” có thể nhận ra rằng hầu hết các từ kết thúc bằng “-ous” đều là tính từ). Hơn nữa, người nói sẽ nhận ra mối liên hệ cú pháp chặt chẽ giữa “a” và “the,” cũng như mối quan hệ ngữ nghĩa gần gũi giữa “cat” và “kitten”. Do đó, sự xuất hiện của “a black cat” trong dữ liệu là bằng chứng, thông qua khái quát, rằng “the fulvous kitten” cũng là tiếng Anh hợp lệ.
+
+Mô hình n-gram bỏ sót sự khái quát này vì nó là mô hình nguyên tử: mỗi từ là một nguyên tử, khác biệt với mọi từ khác, không có cấu trúc bên trong. Trong suốt cuốn sách này, chúng ta đã thấy rằng các mô hình cấu trúc hoặc mô hình có cấu trúc cho phép tạo ra biểu đạt mạnh mẽ hơn và khả năng khái quát hóa tốt hơn. Chúng ta sẽ thấy trong Phần 24.1 rằng một mô hình phân tích được gọi là nhúng từ mang lại khả năng tổng quát hóa tốt hơn.
+
+Một loại mô hình cấu trúc từ là từ điển, thường được xây dựng thủ công. Ví dụ: WordNet là một từ điển mã nguồn mở, được quản lý thủ công ở định dạng có thể đọc được bằng máy, đã được chứng minh là hữu ích cho nhiều ứng dụng ngôn ngữ tự nhiên. Dưới đây là ví dụ WordNet cho “kitten”:
+
+"kitten" <noun.animal> ("young domestic cat") IS A: young\_mammal
+
+"kitten" <verb.body> ("give birth to kittens")
+
+EXAMPLE: "our cat kittened again this year"
+
+WordNet sẽ giúp tách các danh từ khỏi các động từ và nhận được các danh mục cơ bản (mèo con là động vật có vú non, động vật có vú, là động vật), nhưng nó sẽ không cho bạn biết chi tiết về hình dáng của một con mèo con hoặc hành động như thế nào. WordNet sẽ cho bạn biết rằng hai lớp phụ của mèo là mèo Xiêm và mèo Manx, nhưng sẽ không cho bạn biết thêm về các giống mèo.
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.9\textwidth]{images/chapter23/23.1.PNG} 
+\caption{Các thẻ part-of-speech (với một từ ví dụ cho mỗi thẻ) cho kho ngữ liệu Penn Treebank. Ở đây "3rd-sing” là từ viết tắt của “ngôi thứ ba thì hiện tại số ít”.}
+\label{fig231}
+\end{figure*}
+\subsection{Gắn thẻ cho các thành phần của câu}
+Một cách cơ bản để phân loại các từ là theo thành phần của câu (POS - Part-of-Speech), còn được gọi là phân loại từ vựng hoặc thẻ: danh từ, động từ, tính từ, v.v. Các phần của câu cho phép các mô hình ngôn ngữ nắm bắt những khái quát như “tính từ thường đứng trước danh từ trong tiếng Anh”. (Trong các ngôn ngữ khác, chẳng hạn như tiếng Pháp, thì ngược lại (nói chung)).
+
+Ta đều đồng ý rằng “danh từ” và “động từ” là các phần của một câu, nhưng khi chúng ta đi vào chi tiết thì không có một danh sách chính xác nào. Hình \ref{fig231} cho thấy 45 thẻ được sử dụng trong Penn Treebank, một kho ngữ liệu gồm hơn ba triệu từ văn bản được chú thích bằng các thẻ part-of-speech. Như chúng ta sẽ thấy ở phần sau, Penn Treebank cũng chú thích nhiều câu bằng cây phân tích cú pháp, từ đó ngữ liệu được đặt tên.
+
+Nhiệm vụ gán loại từ vựng cho mỗi từ trong câu được gọi là gắn thẻ cho các thành phần của câu. Mặc dù không thú vị lắm theo đúng nghĩa của nó, nhưng nó là một bước đầu tiên hữu ích trong nhiều nhiệm vụ NLP khác, chẳng hạn như trả lời câu hỏi hoặc dịch thuật. Ngay cả đối với một nhiệm vụ đơn giản như tổng hợp tiếng nói (text-to-speech), điều quan trọng là phải biết rằng danh từ “record” được phát âm khác với động từ “record”. Trong phần này, chúng ta sẽ xem hai mô hình quen thuộc có thể được áp dụng cho tác vụ gắn thẻ như thế nào.
+
+Một mô hình phổ biến để gắn thẻ POS là mô hình Markov ẩn (HMM). Nhớ lại phần 14.3 rằng mô hình Markov ẩn nhận một chuỗi quan sát và dấu hiệu theo thời gian và dự đoán các trạng thái ẩn có khả năng nhất có thể đã tạo ra chuỗi đó. Đối với gắn thẻ POS, dấu hiệu là chuỗi các từ,$W_{1:N}$ và các trạng thái ẩn là các danh mục từ vựng $C{1:N}$.
+
+HMM là một mô hình tổng quát nói rằng cách để tạo ra ngôn ngữ là bắt đầu ở một trạng thái, chẳng hạn như IN, trạng thái cho giới từ và sau đó đưa ra hai lựa chọn: từ nào (chẳng hạn như "from") nên được phát ra và trạng thái nào (chẳng hạn như DT) sẽ đến tiếp theo. Mô hình không xem xét bất kỳ ngữ cảnh nào khác ngoài trạng thái hiện tại của câu, cũng như không có bất kỳ ý tưởng nào về những gì câu thực sự đang cố gắng truyền đạt. Tuy nhiên, đây là một mô hình hữu ích — nếu chúng ta áp dụng thuật toán Viterbi (Phần 14.2.3) để tìm chuỗi các trạng thái ẩn (thẻ) có khả năng xảy ra nhất, nghiên cứu chỉ ra rằng việc gắn thẻ đạt được độ chính xác rất cao; thường khoảng 97%.
+
+Để tạo HMM cho gắn thẻ POS, chúng tôi cần mô hình chuyển tiếp, mô hình này cho xác suất một phần của câu nối tiếp bởi một phần khác,$P(C_t|C_{t-1})$ và mô hình cảm biến $P(W_t|C_t)$.
+
+Một điểm yếu của các mô hình HMM là mọi thứ chúng ta biết về ngôn ngữ phải được thể hiện dưới dạng các mô hình chuyển đổi và cảm biến. Phần câu của từ hiện tại chỉ được xác định theo xác suất trong hai mô hình này và phần của từ trước đó. Chẳng hạn, không có cách nào dễ dàng để một người phát triển hệ thống nói rằng bất kỳ từ nào kết thúc bằng “ous” đều có thể là một tính từ, cũng như trong cụm từ "attorney general”, attorney là một danh từ, không phải là một tính từ.
+
+May mắn thay, hồi quy logistic không có khả năng biểu diễn thông tin như thế này. Trong mô hình hồi quy logistic, đầu vào là một vectơ, x, của các giá trị đặc trưng. Sau đó, chúng ta lấy tích,$ w \cdot x$, của những tính năng đó với một vectơ trọng số w được điều chỉnh trước và biến tổng đó thành một số từ 0 đến 1 có thể được hiểu là xác suất đầu vào là một mẫu positive của một danh mục.
+
+Các trọng số trong mô hình hồi quy logistic tương ứng với mức độ dự đoán của từng đặc trưng đối với từng danh mục; các giá trị trọng số được học bằng cách Gradient Descent. Đối với gắn thẻ POS, chúng tôi sẽ xây dựng 45 mô hình hồi quy logistic khác nhau, một mô hình cho mỗi phần của bài phát biểu và hỏi từng mô hình về khả năng xảy ra từ ví dụ thuộc danh mục đó, với các giá trị đặc trưng cho từ đó trong ngữ cảnh cụ thể của nó.
+
+Hồi quy logistic không có khái niệm về một chuỗi các đầu vào - bạn cung cấp cho nó một vectơ đặc trưng (thông tin về một từ duy nhất) và nó tạo ra một đầu ra (một thẻ). Nhưng chúng ta có thể buộc hồi quy logistic xử lý một chuỗi với tìm kiếm tham lam: bắt đầu bằng cách chọn danh mục có khả năng xảy ra nhất cho từ đầu tiên và tiếp tục với các từ còn lại theo thứ tự từ trái sang phải. Ở mỗi bước, danh mục $c_i$ được chỉ định theo
+$$c_i = argmax P(c'|w_{1:N}, c_{1:i-1}),  c' \in Categories$$
+Nghĩa là, bộ phân loại được phép xem xét bất kỳ đặc trưng nào không thuộc danh mục cho bất kỳ từ nào ở bất kỳ vị trí nào trong câu (vì tất cả các đặc trưng này đều cố định), cũng như bất kỳ danh mục nào đã được chỉ định trước đó.
+
+Lưu ý rằng tìm kiếm tham lam lựa chọn danh mục cuối cùng cho mỗi từ, và sau đó chuyển sang từ tiếp theo; nếu sự lựa chọn đó mâu thuẫn với dấu hiệu sau đó trong câu, không có khả năng quay trở lại và đảo ngược sự lựa chọn. Điều đó làm cho thuật toán nhanh chóng. Ngược lại, thuật toán Viterbi giữ một bảng tất cả các lựa chọn danh mục có thể có ở mỗi bước và luôn có tùy chọn thay đổi. Điều đó làm cho thuật toán chính xác hơn, nhưng chậm hơn. Đối với cả hai thuật toán, một thỏa hiệp là tìm kiếm chùm, trong đó chúng tôi xem xét mọi danh mục có thể có ở mỗi bước thời gian, nhưng sau đó chỉ giữ lại các thẻ $b$ có nhiều khả năng nhất, loại bỏ các thẻ khác ít khả năng hơn. Thay đổi $b$ giao dịch tốc độ so với độ chính xác.
+
+Mô hình Naive Bayes và Hidden Markov là mô hình tổng quát. Có nghĩa là, chúng học phân phối xác suất chung, $P (W, C)$ và chúng ta có thể tạo một câu ngẫu nhiên bằng cách lấy mẫu từ phân phối xác suất đó để lấy một từ đầu tiên (với danh mục) của câu, và sau đó thêm các từ lần lượt vào một thời gian.
+
+Mặt khác, hồi quy logistic là một mô hình phân biệt. Nó học phân phối xác suất có điều kiện $P (C | W)$, có nghĩa là nó có thể chỉ định các danh mục cho một chuỗi các từ, nhưng nó không thể tạo ra các câu ngẫu nhiên. Nói chung, các nhà nghiên cứu nhận thấy rằng các mô hình phân biệt có tỷ lệ lỗi thấp hơn, có lẽ vì chúng mô hình hóa đầu ra dự kiến trực tiếp và có lẽ vì chúng giúp nhà phân tích tạo ra các tính năng bổ sung dễ dàng hơn. Tuy nhiên, các mô hình tổng quát có xu hướng hội tụ nhanh hơn, và do đó có thể được ưu tiên hơn khi thời gian đào tạo có sẵn ngắn hoặc khi có dữ liệu đào tạo hạn chế.
+\subsection{So sánh các mô hình ngôn ngữ}
+Để có cảm nhận về các mô hình n-gram khác nhau như thế nào, chúng tôi đã xây dựng các mô hình unigram (tức là bag-ofwords), bigram, trigram và 4-gram trên các từ trong cuốn sách này và sau đó lấy mẫu ngẫu nhiên các chuỗi từ từ mỗi bốn mô hình.
+
+Từ thí nghiệm này, có thể thấy rõ rằng mô hình unigram là một mô hình xấp xỉ rất kém của tiếng Anh và mô hình 4-gram là không hoàn hảo nhưng tốt hơn nhiều.
+
+Có một giới hạn đối với các mô hình n-gram - khi n tăng lên, chúng sẽ tạo ra ngôn ngữ trôi chảy hơn, nhưng chúng có xu hướng tái tạo nguyên văn các đoạn văn dài từ dữ liệu đào tạo của mình, thay vì tạo ra văn bản mới. Các mô hình ngôn ngữ với các biểu diễn phức tạp hơn của từ và ngữ cảnh có thể làm tốt hơn.
+\section{Ngữ pháp}
+Trong Chương 7, chúng ta đã sử dụng Backus – Naur Form (BNF) để viết ra một ngữ pháp cho ngôn ngữ logic bậc nhất. Ngữ pháp là một tập hợp các quy tắc xác định cấu trúc cây của các cụm từ, và một ngôn ngữ là tập hợp các câu tuân theo các quy tắc đó.
+
+Ngôn ngữ tự nhiên không hoạt động chính xác như ngôn ngữ hình thức của logic bậc nhất — chúng không có ranh giới cứng giữa câu được phép và câu không được phép, cũng như không có cấu trúc cây xác định duy nhất cho mỗi câu. Tuy nhiên, cấu trúc thứ bậc rất quan trọng trong ngôn ngữ tự nhiên. Từ “Cổ phiếu” trong “Cổ phiếu tăng giá vào Thứ Hai” không chỉ là một từ, cũng không chỉ là một danh từ; trong câu này nó cũng bao gồm một cụm danh từ, là chủ ngữ của cụm động từ sau. Các phân loại cú pháp như cụm danh từ hoặc cụm động từ giúp ràng buộc các từ có thể xảy ra tại mỗi điểm trong một câu và cấu trúc cụm từ cung cấp một khuôn khổ cho ý nghĩa hoặc ngữ nghĩa của câu.
+
+Có nhiều mô hình ngôn ngữ dựa trên ý tưởng về cấu trúc cú pháp phân cấp; trong phần này, chúng tôi sẽ mô tả một mô hình phổ biến được gọi là ngữ pháp xác suất không theo ngữ cảnh (probabilistic context-free grammar), hoặc PCFG. Ngữ pháp xác suất chỉ định một xác suất cho mỗi chuỗi và "không theo ngữ cảnh" có nghĩa là bất kỳ quy tắc nào cũng có thể được sử dụng trong bất kỳ ngữ cảnh nào: các quy tắc cho một cụm danh từ ở đầu câu cũng giống như cho một cụm danh từ khác sau đó trong và nếu cụm từ giống nhau xuất hiện ở hai vị trí, thì nó phải có cùng xác suất mỗi lần.
+Ta tạo ra một mô hình PCFG cho một phần nhỏ của tiếng Anh, gọi ngôn ngữ này là $E_0$ (hình \ref{fig232}).
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.9\textwidth]{images/chapter23/23_2.PNG} 
+\caption{Mô hình PCFG cho ngôn ngữ $E_0$.}
+\label{fig232}
+\end{figure*}
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.9\textwidth]{images/chapter23/23_3.PNG} 
+\caption{Từ vựng cho ngôn ngữ $E_0$.}
+\label{fig233}
+\end{figure*}
+\subsection{Từ vựng}
+Từ vựng, hoặc danh sách các từ được phép, được định nghĩa trong Hình \ref{fig233}. Mỗi danh mục từ vựng kết thúc bằng ... để chỉ ra rằng có những từ khác trong danh mục. Đối với danh từ, tên, động từ, tính từ và trạng từ, về nguyên tắc, việc liệt kê tất cả các từ là không khả thi. Không chỉ có hàng chục nghìn thành viên trong mỗi lớp, mà những lớp mới - như humourbrag hoặc microbiome - đang được bổ sung liên tục. Năm loại này được gọi là các lớp mở. Đại từ, đại từ tương đối, mạo từ, giới từ và liên từ được gọi là các lớp đóng; chúng có một số lượng nhỏ các từ, và thay đổi trong hàng thế kỷ, không phải hàng tháng. Ví dụ, “thee” và “thou” là những đại từ được sử dụng phổ biến vào thế kỷ 17, đang bị suy giảm vào thế kỷ 19 và ngày nay chỉ còn được thấy trong thơ ca và một số phương ngữ khu vực.
+\section{Phân tích cú pháp}
+Phân tích cú pháp là quá trình phân tích một chuỗi từ để khám phá cấu trúc cụm từ của nó, theo các quy tắc của ngữ pháp. Chúng ta có thể coi nó như một tìm kiếm cây phân tích cú pháp hợp lệ có lá là các từ của chuỗi. Hình \ref{fig234} cho thấy rằng chúng ta có thể bắt đầu với ký hiệu S và tìm kiếm từ trên xuống, hoặc chúng ta có thể bắt đầu với các từ và tìm kiếm từ dưới lên. Tuy nhiên, các chiến lược phân tích cú pháp thuần túy từ trên xuống hoặc từ dưới lên có thể không hiệu quả vì chúng có thể khiến nỗ lực lặp lại trong các khu vực của không gian tìm kiếm dẫn đến ngõ cụt. Hãy xem xét hai câu sau:
+
+Have the students in section 2 of Computer Science 101 take the exam
+
+Have the students in section 2 of Computer Science 101 taken the exam?
+Mặc dù chúng có chung 10 từ đầu tiên, nhưng những câu này có các phân đoạn rất khác nhau, bởi vì câu đầu tiên là một lệnh và câu thứ hai là một câu hỏi. Thuật toán phân tích cú pháp từ trái sang phải sẽ phải đoán xem từ đầu tiên là một phần của lệnh hay câu hỏi và sẽ không thể biết liệu đoán đó có đúng cho đến ít nhất là từ thứ mười một, take hoặc taken. Nếu thuật toán đoán sai, nó sẽ phải dò ngược lại toàn bộ từ đầu tiên và phân tích lại toàn bộ câu theo cách hiểu khác.
+
+Để tránh sự kém hiệu quả này, chúng ta có thể sử dụng quy hoạch động: mỗi khi chúng ta phân tích một chuỗi con, hãy lưu trữ kết quả để chúng tôi không phải phân tích lại sau này. Ví dụ: khi chúng tôi phát hiện ra rằng “các học sinh của Khoa học Máy tính 101” là NP, chúng ta có thể ghi lại kết quả đó trong một cấu trúc dữ liệu được gọi là biểu đồ. Một thuật toán thực hiện điều này được gọi là trình phân tích cú pháp biểu đồ. Bởi vì chúng tôi đang xử lý các ngữ pháp không có ngữ cảnh, bất kỳ cụm từ nào được tìm thấy trong ngữ cảnh của một nhánh của cây tìm kiếm cũng có thể hoạt động tốt trong bất kỳ nhánh nào khác của cây tìm kiếm. Có nhiều loại trình phân tích cú pháp biểu đồ; chương này sẽ mô tả một phiên bản xác suất của thuật toán phân tích cú pháp biểu đồ từ dưới lên được gọi là thuật toán CYK, theo tên những người phát minh ra nó, Ali Cocke, Daniel Younger và Tadeo Kasami.
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.9\textwidth]{images/chapter23/23_4.PNG} 
+\caption{Phân tích chuỗi “The wumpus is dead”.}
+\label{fig234}
+\end{figure*}
+Thuật toán CYK được mô tả trong hình \ref{fig235}. Thuật toán CYK sử dụng không gian là O($n^2m$) cho bảng P và T, trong đó n là số từ trong câu và m là số ký hiệu không phải trong ngữ pháp và cần thời gian là O($n^3m$). Nếu chúng ta muốn một thuật toán được đảm bảo hoạt động cho tất cả các ngữ pháp không có ngữ cảnh, thì chúng ta không thể làm tốt hơn thế. Nhưng thực ra ta chỉ muốn phân tích các ngôn ngữ tự nhiên, không phải tất cả các ngữ pháp khả thi. Các ngôn ngữ tự nhiên đã phát triển để trở nên dễ hiểu theo thời gian, không phức tạp nhất có thể, vì vậy có vẻ như chúng có thể phù hợp với thuật toán phân tích cú pháp nhanh hơn.
+
+Để cố gắng đạt được O(n), chúng ta có thể áp dụng tìm kiếm A* một cách khá đơn giản: mỗi trạng thái là một danh sách các mục (từ hoặc danh mục), như trong Hình \ref{234}. Trạng thái bắt đầu là một danh sách các từ và trạng thái mục tiêu là một mục duy nhất S. Chi phí của một trạng thái là nghịch đảo của xác suất của nó như được xác định bởi các quy tắc được áp dụng cho đến nay và có nhiều kinh nghiệm khác nhau để ước tính khoảng cách còn lại tới mục đích; phương pháp phỏng đoán tốt nhất đang được sử dụng hiện nay đến từ việc học máy được áp dụng cho một kho ngữ liệu các câu.
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.9\textwidth]{images/chapter23/23_5.PNG} 
+\caption{Thuật toán CYK.}
+\label{fig235}
+\end{figure*}
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.9\textwidth]{images/chapter23/23_6.PNG} 
+\caption{Cây cú pháp cho câu "Every wumpus smells”.}
+\label{fig236}
+\end{figure*}
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.9\textwidth]{images/chapter23/23_7.PNG} 
+\caption{Phân tích cú pháp theo kiểu phụ thuộc (trên) và phân tích cú pháp theo cấu trúc (dưới).}
+\label{fig237}
+\end{figure*}
+Với thuật toán A*, chúng ta không phải tìm kiếm toàn bộ không gian trạng thái và đảm bảo rằng phân tích cú pháp đầu tiên được tìm thấy sẽ có khả năng xảy ra cao nhất (giả sử là một phép thử có thể chấp nhận được). Điều này thường sẽ nhanh hơn CYK, nhưng (tùy thuộc vào chi tiết của ngữ pháp) vẫn chậm hơn O(n). Ví dụ về kết quả phân tích cú pháp được thể hiện trong Hình \ref{fig236}.
+
+Cũng giống như gắn thẻ POS, ta có thể sử dụng beam search để phân tích cú pháp, trong đó bất kỳ lúc nào chúng tôi chỉ xem xét $b$ phân tích cú pháp thay thế có thể xảy ra nhất. Điều này có nghĩa là chúng tôi không được đảm bảo sẽ tìm thấy trình phân tích cú pháp với xác suất cao nhất, nhưng (với việc triển khai cẩn thận) trình phân tích cú pháp có thể hoạt động trong thời gian O(n) và vẫn luôn tìm thấy trình phân tích cú pháp tốt nhất.
+
+Bộ phân tích cú pháp với beam search b = 1 được gọi là bộ phân tích cú pháp xác định. Một cách tiếp cận phân tích cú pháp quyết định phổ biến là phân tích cú pháp shift-reduce, trong đó chúng ta xem xét từng câu từng chữ, chọn tại mỗi điểm xem nên chuyển từ vào một chồng các thành phần hay giảm các thành phần trên cùng trên ngăn xếp theo một quy tắc ngữ pháp. Mỗi phong cách phân tích cú pháp đều có những tín đồ của nó trong cộng đồng NLP. Mặc dù có thể chuyển đổi hệ thống shift-reduce chuyển thành PCFG (và ngược lại).
+\subsection{Phân tích cú pháp phụ thuộc}
+Có một cách tiếp cận cú pháp thay thế được sử dụng rộng rãi được gọi là cú pháp phụ thuộc, giả định rằng cấu trúc cú pháp được hình thành bởi các quan hệ nhị phân giữa các mục từ vựng, mà không cần các thành phần cú pháp. Hình \ref{fig237} cho thấy một câu có phân tích cú pháp phụ thuộc và phân tích cú pháp cấu trúc cụm từ.
+
+Theo một nghĩa nào đó, ngữ pháp phụ thuộc và ngữ pháp cấu trúc chỉ là các biến thể. Chúng có thể chuyển đổi qua lại lẫn nhau. 
+\section{Ngữ pháp tăng cường}
+Cho đến nay, chúng ta đã xử lý các ngữ pháp không có ngữ cảnh. Nhưng không phải NP nào cũng có thể xuất hiện trong mọi bối cảnh với xác suất như nhau. Câu "I ate banana" là đúng, nhưng "Me ate banana" là không đúng ngữ pháp và "I ate badanna" thì không đúng từ vựng.
+
+Để tăng khả năng phân biệt các cụm từ trong phi ngữ cảnh, cần một số đặc trưng để diễn đạt cụm từ đó chi tiết hơn. Ví dụ: với danh từ có thể là 
+\begin{itemize}
+    \item Chủ ngữ hoặc tân ngữ: “I”, “me”
+    \item Phân chia thành các ngôi: “I”, “you”, “he/she/it"
+\end{itemize}
+Có thể biểu diện một cụm từ bao gồm cả các đặc trưng bổ sung của nó để biểu diễn rõ nghĩa hơn. Ví dụ:
+\begin{itemize}
+    \item Cụm danh từ là chủ ngữ, ngôi thứ nhất: NP(Sbj, 1S)
+    \item Cụm danh từ là tân ngữ, ngôi thứ ba: NP(Obj, 3S)
+\end{itemize}
+Lexicalized PCFG là một loại ngữ pháp tăng cường cho phép chúng ta chỉ định các xác suất dựa trên các thuộc tính của các từ trong một cụm từ không chỉ là các danh mục cú pháp. Dữ liệu thực sự sẽ rất thưa thớt nếu xác suất của một câu 40 từ phụ thuộc vào tất cả 40 từ — đây là vấn đề tương tự mà chúng tôi đã lưu ý với n-gram. Để đơn giản hóa, chúng tôi giới thiệu khái niệm về đầu của một cụm từ — từ quan trọng nhất. Do đó, “banana” là phần chính trong NP - “a banana” và “ate” là phần chính trong VP - “ate a banana”. Ký hiệu VP(v) biểu thị một cụm từ có danh mục VP có từ chính là v. Hình \ref{fig238} minh họa Lexicalized PCFG.
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.6\textwidth]{images/chapter23/lex-PCFG.PNG} 
+\caption{Lexicalized PCFG}
+\label{fig238}
+\end{figure*}
+\subsection{Biểu đạt ngữ nghĩa}
+Chúng ta có thể sử dụng logic bậc nhất để biểu diễn ngữ nghĩa của mình. Một câu đơn giản “Ali loves Bo” sẽ có nghĩa là Loves(Ali, Bo). Nhưng các cụm từ cấu thành cái gì? Chúng ta có thể biểu diễn NP “Ali” bằng thuật ngữ lôgic Ali. Nhưng VP “loves Bo” không phải là một thuật ngữ logic cũng không phải là một câu logic hoàn chỉnh. Nói một cách trực quan, “loves Bo” là một mô tả có thể áp dụng hoặc không áp dụng cho một người cụ thể. (Trong trường hợp này, nó áp dụng cho Ali). Điều này có nghĩa là "loves Bo" là một vị từ, khi kết hợp với một thuật ngữ đại diện cho một người, sẽ tạo ra một câu logic hoàn chỉnh.
+
+Sử dụng ký hiệu $\lambda$, chúng ta có thể biểu diễn "Loves Bo" làm vị từ.
+$$\lambda xLoves(x,Bo)$$
+Bây giờ chúng ta cần một quy tắc nói rằng "một NP có ngữ nghĩa n theo sau bởi VP có ngữ nghĩa pred tạo ra một câu có ngữ nghĩa là kết quả của việc áp dụng pred cho n":
+$$S(pred(n)) \longrightarrow NP(n)VP(pred)$$
+Quy tắc cho chúng ta biết rằng cách giải thích ngữ nghĩa của "Ali Loves Bo" là
+$$(\lambda xLoves(x,Bo))(Ali)$$
+\section{Những yếu tố phức tạp trong ngôn ngữ tự nhiên}
+Có một số yếu tố phức tạp trong ngôn ngữ tự nhiên như:
+\textbf{Định lượng (Quantification)}: Xét ví dụ: “Every agent feels a breeze”. Liệu câu này có thể hiểu là: “Mọi tác nhân đều cảm nhận chung một làn gió” hay “Mỗi tác nhân cảm nhận một làn gió riêng biệt”? 
+\textbf{Ngữ dụng học (Pragmatics)}: biểu thị sự ảnh hưởng của ngữ cảnh đối với ngữ nghĩa. Ngữ nghĩa thường phụ thuộc vào ngữ cảnh tại thời điểm nói. Ví dụ:
+\begin{itemize}
+    \item “Tôi đi học hôm nay.”: Từ “tôi” phụ thuộc vào người nói, người nói khác nhau thì từ “tôi” biểu thị cho một chủ ngữ/nhân vật khác nhau. Tương tự, từ “hôm nay” phụ thuộc vào thời gian của câu nói tại thời điểm nói.
+\end{itemize}
+Một trường hợp khác của ngữ dụng là biểu đạt ý định của người nói. Lời nói của người nói biểu thị một hành động mà người nghe phải giải mã đó là loại hành động gì: hỏi, tuyên bố, ra lệnh… Ví dụ:
+\begin{itemize}
+    \item “nghiêm!”: Mặc dù câu này không có chủ ngữ, tuy nhiên ta đều hiểu rằng đây là một câu lệnh và chủ ngữ ở đây là người nghe
+\end{itemize}
+\textbf{Phụ thuộc khoảng cách xa (Long-distance dependencies)}: trường hợp một cụm từ nằm cách cách xa vị trí nó được đề cập đến trong câu, dẫn đến việc sẽ tạo nên các khoảng trống trên cấu trúc cây (ở vị trí đề cập đến). Ví dụ: “Who did the agent tell you to give the gold to [ ]?”. [ ] đề cập từ “Who” nằm ở đầu câu.
+\textbf{Thời gian và thì}: Giả sử chúng ta muốn thể hiện mối liên hệ giữa “Ali loves Boo” và “Ali loved Boo” hay vì để “loves” và “loved” là 2 từ có nghĩa không liên quan gì đến nhau. Một cách đơn giản để thể hiện mối liên hệ này:
+\begin{itemize}
+    \item $Verb(\lambda y\lambda x e \in Loves(x,y) 	\wedge During(Now, e)) \longrightarrow Loves$
+    \item $Verb(\lambda y\lambda x e \in Loves(x,y) 	\wedge After(Now, e)) \longrightarrow Loved$
+\end{itemize}
+\textbf{Mơ hồ trong ý nghĩa}: Xét ví dụ:
+\begin{itemize}
+    \item “Các bác sĩ thú y đã giúp đỡ chú chó cắn người hôm qua”
+    \item “Outside of a dog, a book is a person’s best friend”
+\end{itemize}
+Có thể thấy rằng, có rất nhiều câu mang ý nghĩa mơ hồ như vậy gây khó khan trong việc phân tích chúng.
+\subsection{Phân định nghĩa cho từ (Disambiguation)}
+Vì có nhiều yếu tố dẫn đến khó khan trong việc xác định nghĩa của từ, chúng ta cần kết hợp bốn mô hình sau:
+\begin{itemize}
+    \item Mô hình thế giới (world model): xác suất một mệnh đề xảy ra trong thế giới thực. Ví dụ trong đời thực, nhiều khả năng một người nói “Chết tôi rồi” có nghĩa là “Tôi đang gặp rắc rối lớn” hoặc “Tôi đã thua trò chơi này” hơn là họ thực sự đã chết.
+    \item Mô hình tinh thần (mental model): xác suất về ý định mà người nói muốn truyền đạt. Ví dụ: một người cảnh sát nói: “tôi không phải là tội phạm”. Mô hình thế giới sẽ đưa ra xác suất “người cảnh sát không phải là quyển sách” cao hơn “người cảnh sát không phải tội phạm”, tuy nhiên mô hình tinh thần sẽ cho ta biết nên chọn mệnh đề “người cảnh sát không phải tội phạm” vì nó phù hợp với ý định của người nói.
+    \item Mô hình ngôn ngữ (Language model): xác suất của câu văn dựa trên ý định muốn truyền đạt của người nói.
+    \item Mô hình âm thanh (acoustic model): với giao tiếp bằng giọng nói, mô hình đưa ra xác suất của đoạn âm thanh dựa trên ý định muốn truyền đạt của người nói.
+\end{itemize}
+\section{Các nhiệm vụ trong xử lý ngôn ngữ tự nhiên}
+Trong phần này, chúng tôi mô tả ngắn gọn một số nhiệm vụ chính của một lĩnh vực rất lớn như xử lý ngôn ngữ tự nhiên:
+
+\textbf{Nhận dạng giọng nói (speech recognition)} là nhiệm vụ chuyển đổi âm thanh thành văn bản. Sau đó, chúng ta có thể thực hiện các tác vụ khác (chẳng hạn như trả lời câu hỏi) trên văn bản kết quả. Các hệ thống hiện nay có tỉ lệ lỗi trên từ khoảng 3-5\% (tùy thuộc vào dữ liệu thử nghiệm), tương tự như người. Thách thức với hệ thống sử dụng tính năng nhận dạng giọng nói là phản hồi một cách thích hợp ngay cả khi có lỗi trên các từ riêng lẻ.
+
+\textbf{Tổng hợp văn bản thành giọng nói (text to speech)} là quá trình ngược lại — đi từ văn bản thành âm thanh. Thách thức của nhiệm vụ này là phát âm từng từ một cách chính xác và làm cho mỗi câu có vẻ tự nhiên, với những khoảng ngắt và nhấn mạnh phù hợp.
+
+\textbf{Dịch máy (machine translation)} chuyển văn bản từ ngôn ngữ này sang ngôn ngữ khác. Các hệ thống thường được đào tạo bằng cách sử dụng kho ngữ liệu song ngữ: một tập hợp các tài liệu được ghép nối, trong đó một mẫu cặp này là tiếng Anh và mẫu còn lại là tiếng Pháp. Các tài liệu không cần phải được chú thích dưới bất kỳ hình thức nào; hệ thống dịch máy học cách căn chỉnh các câu và cụm từ và sau đó khi được trình bày với một câu mới bằng một ngôn ngữ, có thể tạo bản dịch sang ngôn ngữ khác.
+
+\textbf{Khai thác thông tin (information extraction)} là quá trình thu nhận kiến thức bằng cách đọc một đoạn văn bản và tìm kiếm sự xuất hiện của các lớp đối tượng cụ thể và các mối quan hệ giữa chúng. Một nhiệm vụ điển hình là trích xuất các trường hợp địa chỉ từ các trang Web, với các trường cơ sở dữ liệu cho đường phố, thành phố, tiểu bang và mã zip; hoặc các trường hợp bão từ các bản tin thời tiết, với các trường về nhiệt độ, tốc độ gió và lượng mưa.
+
+\textbf{Truy xuất thông tin (information retrieval)} là nhiệm vụ tìm kiếm các tài liệu có liên quan và quan trọng đối với một truy vấn nhất định. Các công cụ tìm kiếm trên Internet như Google và Baidu thực hiện nhiệm vụ này hàng tỷ lần mỗi ngày.
+
+\textbf{Trả lời câu hỏi (question answering)} là một nhiệm vụ khác, trong đó một câu hỏi, chẳng hạn như "Ai đã thành lập Lực lượng Bảo vệ Bờ biển Hoa Kỳ?" và câu trả lời không phải là một danh sách các tài liệu như truy xuất thông tin mà là một câu trả lời thực tế: "Alexander Hamilton". Đã có những hệ thống trả lời câu hỏi từ những năm 1960 dựa vào phân tích cú pháp như đã thảo luận trong chương này, nhưng chỉ kể từ năm 2001, những hệ thống như vậy mới sử dụng tính năng truy xuất thông tin Web để gia tăng cơ bản phạm vi phủ sóng của chúng. Ngày nay có rất nhiều tập dữ liệu về trả lời câu hỏi đã được gán nhãn sẵn, giúp cho việc xây dựng các hệ thống trả lời câu hỏi như: chatbot, truy vấn thông tin từ văn bản... hoạt động với độ chính xác rất cao, tương đương con người.
+\section{Tổng kết}
+Chương này đã trình bày các điểm chính như:
+\begin{itemize}
+    \item Các mô hình ngôn ngữ xác suất dựa trên n-gram tổng hợp một lượng thông tin đáng ngạc nhiên về một ngôn ngữ. Chúng có thể thực hiện tốt các nhiệm vụ đa dạng như nhận dạng ngôn ngữ, sửa lỗi chính tả, phân tích tình cảm, phân loại thể loại và nhận dạng tên.
+    \item Các mô hình ngôn ngữ này có thể có hàng triệu đặc trưng, vì vậy việc xử lý trước và làm mịn dữ liệu để giảm nhiễu là rất quan trọng.
+    \item Trong việc xây dựng hệ thống ngôn ngữ thống kê, tốt nhất là bạn nên nghĩ ra một mô hình có thể sử dụng tốt các dữ liệu có sẵn, ngay cả khi mô hình đó có vẻ quá đơn giản.
+    \item Nhúng từ có thể mang lại sự trình bày phong phú hơn của các từ và các điểm tương đồng của chúng.
+    \item Để nắm bắt cấu trúc thứ bậc của ngôn ngữ, ngữ pháp cấu trúc cụm từ (và đặc biệt, ngữ pháp không theo ngữ cảnh) rất hữu ích. PCFG được sử dụng rộng rãi, cũng như phân tích ngữ pháp phụ thuộc.
+    \item Các câu trong ngôn ngữ không có ngữ cảnh có thể được phân tích cú pháp trong O($n^3$) thời gian bằng phân tích cú pháp biểu đồ như thuật toán CYK. Với một sự mất mát nhỏ về độ chính xác, các ngôn ngữ tự nhiên có thể được phân tích cú pháp trong thời gian O(n), sử dụng beam search hoặc trình phân tích cú pháp shift-reduce.
+    \item Treebank có thể là một tài nguyên để học ngữ pháp PCFG với các tham số.
+    \item Sẽ rất tiện lợi khi tăng cường ngữ pháp để xử lý các vấn đề như thỏa thuận chủ ngữ - động từ và trường hợp đại từ, và biểu diễn thông tin ở cấp độ từ thay vì chỉ ở cấp độ loại.
+    \item Ngữ pháp tăng cường giúp xử lý các vấn đề về từ vựng và cú pháp, giúp tăng cường ý nghĩa của câu.
+    \item Việc giải thích ngữ nghĩa cũng có thể được xử lý bằng một ngữ pháp tăng cường. Chúng ta có thể học ngữ pháp từ một kho câu hỏi được ghép nối với hình thức logic của câu hỏi hoặc với câu trả lời.
+    \item Ngôn ngữ tự nhiên rất phức tạp và khó nắm bắt theo một ngữ pháp chính thức.
+\end{itemize}

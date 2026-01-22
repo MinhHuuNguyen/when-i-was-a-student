@@ -1,0 +1,377 @@
+\chapter{Bài toán thỏa mãn ràng buộc (CSP)}
+Trong chương này, chúng ta sử dụng biểu diễn nhân tố (factored representation) cho mỗi trạng thái của một bài toán: gồm một tập các biến và mỗi biến có một giá trị. Bài toán có thể được giải khi mỗi biến được gán một giá trị mà thỏa mãn tất cả ràng buộc trên biến đó. Một bài toán được mô tả theo cách này  được gọi là bài toán thỏa mãn ràng buộc, hay bài toán CSP.\\
+Giải thuật tìm kiếm thỏa mãn ràng buộc CSP tận dụng cấu trúc của các trạng thái và sử dụng giải thuật  heuristics để tìm kiếm lời giải chấp nhận được cho các bài toán phức tạp. Ý tưởng chính là loại bỏ các trạng thái của không gian trạng thái bằng cách xác định các cặp biến-giá trị mà vi phạm các ràng buộc. Ngoài ra, khi sử dụng  CSP còn có thêm ưu điểm là các hành động và mô hình chuyển trạng thái có thể được suy ra từ mô tả của bài toán
+\section{Bài toán thỏa mãn ràng buộc}
+\subsection{Định nghĩa bài toán thỏa mãn ràng buộc}
+Một bài toán thỏa mãn ràng buộc CSP bao gồm 3 thành phần $X$, $D$, và $C$, trong đó\\
+$X =\left\{X_1, X_2, ..., X_n\right\}$ là một tập các biến,\\
+$D$ là một tập các miền giá trị, $D = \left\{D_1, ..., D_n\right\}$, mỗi biến $X_i$ có một miền giá trị $D_i$\\
+$C$ là tập hữu hạn các ràng buộc của bài toán.\\
+Một miền giá trị $D_i$ bao gồm một tập giá trị chấp nhận được của biến $X_i$, $D_i = \left\{v_1, ..., v_k\right\}$. Ví dụ, một biến nhị phân thì có miền giá trị $\left\{true, false\right\}$. Các biến khác nhau có thể có miền giá trị khác nhau với kích thước khác nhau.\\ Mỗi ràng buộc $C_j$ bao gồm một cặp $\left\langle {scope, rel} \right\rangle $, trong đó $scope$ là một tập các biến tham gia vào ràng buộc, và $rel$ là một quan hệ định nghĩa các giá trị mà các biến này có thể được gán. Ví dụ, $X_1$, $X_2$ đều có miền giá trị $\left\{1,2,3\right\}$, và ràng buộc $C$ nói rằng $X_1$ phải lớn hơn $X_2$, có thể được viết thành $\left\langle {\left( {{X_1},{X_2}} \right),\left\{ {\left( {3,1} \right),\left( {3,2} \right),\left( {2,1} \right)} \right\}} \right\rangle $ hoặc $\left\langle {\left( {{X_1},{X_2}} \right),{X_1} > {X_2}} \right\rangle $\\
+Trong bài toán CSP, cần tìm ra các phép gán giá trị cho các biến, $\left\{X_i = v_i, X_j = v_j, ...\right\}$. Một phép gán mà không vi phạm bất cứ ràng buộc nào của bài toán được gọi là phép gán phù hợp (consistent assignment). Một lời giải (solution) của bài toán được định nghĩa là  một phép gán đầy đủ các biến với giá trị (complete)  sao cho thỏa mãn tất cả các ràng buộc (consistent). Một phép gán không đầy đủ (partial assignment) là một phép gán mà trong đó một vài biến chưa được gán giá trị, và một lời giải không đầy đủ (partial solution) là một phép gán phù hợp và không đầy đủ. Nhìn chung, các bài toán CSPs thuộc lớp bài toán NP-đầy đủ, mặc dù có một số lớp bài toán con của CSPs có thể được giải một cách hiệu quả\\
+\subsection{Ví dụ về bài toán tô màu bản đồ (map coloring)}
+Chúng ra có một bản đồ của Australia thể hiện các bang của Australia và vùng lãnh thổ của mỗi bang ở hình \ref{bando}. Nhiệm vụ đặt ra là tô màu mỗi bang bằng 1 trong 3 màu $red, green, blue$ mà sao cho không có 2 bang liền kề nào được tô cùng 1 màu. Bài toán này có thể được biểu diễn thành 1 bài toán CSP, trong đó:
+\begin{itemize}
+    \item Tập hữu hạn các biến: $X = \left\{ {{\rm{W}}A,NT,Q,NSW,V,SA,T} \right\}$
+    \item Miền giá trị của từng biến $X_i$: $D_i = \left\{red, green, blue \right\}$
+    \item Tập các ràng buộc thể hiện các vùng liền kề nhau phải có màu khác nhau:
+\[C = \left\{ \begin{array}{l}
+SA \ne {\rm{W}}A,SA \ne NT,SA \ne Q,SA \ne NSW,SA \ne V,\\
+{\rm{W}}A \ne NT,NT \ne Q,Q \ne NSW,NSW \ne V,
+\end{array} \right\}\]
+    \item Các lời giải là các phép gán \textbf{đầy đủ} và \textbf{chính xác} (thỏa mãn tất cả các ràng buộc).
+    \item Một lời giải cho bài toán được thể hiện ở hình \ref{bando_solution}, \\$\left\{WA = red, NT= green, SA = blue, Q = red, NSW = green, V = red, T = green\right\}$
+\end{itemize}
+\begin{center}
+	\begin{figure}[H]
+		\begin{center}
+	\includegraphics[scale=1]{images/chapter06/bando.PNG}
+	\caption{Bài toán tô màu bản đồ}
+    \label{bando}
+		\end{center}
+	\end{figure}
+\end{center}
+\begin{center}
+	\begin{figure}[H]
+		\begin{center}
+	\includegraphics[scale=1]{images/chapter06/bando_solution.PNG}
+	\caption{Một lời giải của bài toán tô màu bản đồ}
+    \label{bando_solution}
+		\end{center}
+	\end{figure}
+\end{center}
+Bài toán có thể được biểu diễn bởi một đồ thị ràng buộc (constraint graph) như hình \ref{bando_graph}, trong đó mỗi nút của đồ thị biểu diễn một biến của bài toán, và mỗi cạnh biểu diễn một ràng buộc 
+\begin{center}
+	\begin{figure}[H]
+		\begin{center}
+	\includegraphics[scale=1]{images/chapter06/bando_graph.PNG}
+		\end{center}
+		\caption{Đồ thị ràng buộc của bài toán tô màu bản đồ}
+		\label{bando_graph}
+	\end{figure}
+\end{center}
+Câu hỏi đặt ra là tại sao lại xây dựng một vấn đề dưới dạng một bài toán CSP? Một lí do là việc mô hình hóa một vấn đề thành 1 bài toán CSP có thể nói là khá dễ dàng và tự nhiên dựa vào chính mô tả của vấn đề đó. Lí do tiếp theo là đã có rất nhiều nghiên cứu và phát triển trong nhiều năm làm cho công cụ giải bài toán CSP trở nên nhanh hơn và hiệu quả hơn. Thứ ba là công cụ giải bài toán CSP có thể nhanh chóng cắt bỏ các vùng lớn của không gian tìm kiếm, điều mà công cụ tìm kiếm trong không gian trạng thái đơn (atomic state-space) không thể.\\
+Với CSPs, một khi phát hiện ra rằng một phép gán không đầy đủ vi phạm 1 ràng buộc thì ta có thể ngay lập tức loại bỏ các cải tiến tiếp theo của phép gán đó. Hơn nữa, ta có thể thấy được tại sao một phép gán lại không phải là một lời giải của bài toán, biến nào vi phạm ràng buộc, từ đó có thể tập trung vào những biến quan trọng. Kết quả là, rất nhiều vấn đề khó giải bằng cách tìm kiếm trong không gian trạng thái đơn, có thể được giải nhanh chóng khi xây dựng thành một bài toán CSP.\\
+\subsection{Ví dụ: Bài toán lập lịch công việc (job-shop scheduling)}
+Xét một bài toán xếp lịch để lắp ráp một chiếc xe hơi. Toàn bộ công việc lắp ráp xe hơi được chia thành nhiều nhiệm vụ, và mỗi nhiệm vụ ta có thể mô hình thàn một biến, trong đó giá trị của mỗi biến là thời gian mà nhiệm vụ bắt đầu, được biểu diễn bằng đơn vị phút. Các ràng buộc của bài toán diễn tả một nhiệm vụ phải được bắt đầu và hoàn thành trước một nhiệm vụ khác, ví dụ, một chiếc bánh xe phải được lắp đặt trước khi cái nắp tròn đậy trục bánh xe được lắp vào. Các ràng buộc khác có thể biểu diễn rằng một nhiệm vụ thì mất khoảng thời gian cụ thể là bao lâu để hoàn thành.\\
+Xét một phần công việc trong lắp ráp xe hơi bao gồm 15 nhiệm vụ: lắp đặt trục xe (trước và sau), gắn tất cả 4 bánh xe (phải và trái, trước và sau), vặn chặt ốc ở mỗi bánh, gắn nắp tròn đậy trục bánh xe, và kiểm tra hoàn thành việc lắp ráp. Chúng ta có thể biểu diễn các nhiệm vụ này thành 15 biến:\\
+\[X = \left\{ \begin{array}{l}
+{Axle_F},{Axle_B},{Wheel_{RF}},{Wheel_{LF}},{Wheel_{RB}},{Wheel_{LB}},Nuts{RF},\\
+Nuts_{LF},Nuts_{RB},Nuts{LB},Cap_{RF},Cap_{LF},Cap_{RB},Cap_{LB}, Inspect
+\end{array} \right\}\]
+Tiếp theo, ta biểu diễn ràng buộc ưu tiên trước sau giữa các nhiệm vụ độc lập. Mỗi khi 1 nhiệm vụ $T_1$ phải thực hiện trước nhiệm vụ $T_2$, và $T_1$ mất khoảng thời gian $d_1$ để hoàn thành, ta thêm vào một ràng buộc số học dưới dạng
+$$T_1 +d_1 \leq T_2$$
+Trong bài toán trên, việc lắp trục bánh xe phải được thực hiện trước khi lắp bánh xe, và việc lắp một trục bánh xe mất 10 phút, khi đó ta viết được các ràng buộc
+$$ Axle_F + 10 \leq Wheel_{RF}; \hspace{2cm} Axle_F + 10 \leq Wheel_LF$$
+$$ Axle_B + 10 \leq Wheel_{RB}; \hspace{2cm} Axle_B + 10 \leq Wheel_LB$$
+Tiếp theo, ta phải lắp bánh xe vào, mỗi bánh lắp mất 1 phút, sau đó vặn chặt ốc mất 2 phút:
+$$Wheel_{RF}+1 \leq Nuts_{RF}; \hspace{2cm} Nuts_{RF} + 2 \leq Cap_{RF}$$
+$$Wheel_{LF}+1 \leq Nuts_{LF}; \hspace{2cm} Nuts_{LF} + 2 \leq Cap_{LF}$$
+$$Wheel_{RB}+1 \leq Nuts_{RB}; \hspace{2cm} Nuts_{RB} + 2 \leq Cap_{RB}$$
+$$Wheel_{LB}+1 \leq Nuts_{LB}; \hspace{2cm} Nuts_{LB} + 2 \leq Cap_{LB}$$
+Giả sử rằng chúng ta có 4 công nhân lắp đặt bánh xe, nhưng họ phải dùng chung một công cụ để lắp trục bánh xe. Do đó, ta cần một ràng buộc 'or' để diễn tả rằng $Axle_F$ và $Axle_B$ không được diễn ra đồng thời, phải một việc diễn ra trước, một việc diễn ra sau:
+$$(Axle_F + 10 \leq Axle_B) \textbf{or} (Axle_B + 10 \leq Axle_F. $$
+Ràng buộc trên có thể coi là một ràng buộc phức tạp, bao gồm cả số học cả logic, nhưng ràng buộc này vẫn loại bỏ được các cặp giá trị mà $Axle_F$ và $Axle_B$ có thể được gán.\\
+Chúng ta cũng cần các ràng buộc biểu diễn rằng nhiệm vụ kiểm tra $Inspect$ sẽ diễn ra cuối cùng và mất 3 phút. Với mỗi biến trừ biến $Inspect$ ta thêm một ràng buộc có dạng $X + d_X \leq Inspect$. Cuối cùng, giả sử toàn bộ công việc phải hoàn thành trong 30 phút, khi đó ta có thể đáp ứng yêu cầu này bằng cách giới hạn lại miền giá trị của tất cả các biến:\\
+$D_i = \left\{0,1,2,3, ..., 30\right\}$\\
+Bài toán cụ thể trên thường khá tầm thường để giải, nhưng phương pháp CSPs đã được thành công áp dụng cho các bài toàn xếp lịch như trên với hàng nghìn biến.
+\subsection{Các kiểu bài toán CSP}
+Dạng đơn giản nhất là bài toán CSP với miền giá trị\textbf{ hữu hạn và rời rạc} ví dụ như bài toán tô màu đồ thị và bài toán xếp lịch với thời gian hữu hạn. Bài toán 8 hậu cũng được xếp vào lớp bài toán này, trong đó các biến $Q_1, ..., Q_8$ tương ứng với các quân hậu ở cột 1 đến cột 8, và miền giá trị của mỗi biến xác định số hàng có thể di chuyển tới của mỗi con hậu trong mỗi cột, $D_i = \left\{1,2,3,4,5,6,7,8\right\}$, các ràng buộc của bài toán mô tả rằng không có bất cứ 2 con hậu nào nằm trên cùng một hàng hay trên cùng một đường chéo.\\
+Một miền giá trị rời rạc có thể \textbf{vô hạn}, ví dụ như tập các số nguyên hoặc tập các chuỗi. Nếu chúng ta không đặt ra một giới hạn (deadline) cho bài toán xếp lịch công việc thì sẽ có một số vô hạn các thời gian bắt đầu cho mỗi biến). Với miền giá trị vô hạn, ta cần sử dụng ràng buộc ngầm như $T_1 + d_1 \leq T_2$ thay vì sử dụng một tập các giá trị rõ ràng. \\
+Bài toán CSPs với miền giá trị liên tục khá phổ biến trong thực tế, và được nghiên cứu rộng rãi trong lĩnh vực nghiên cứu vận hành. Ví dụ, bài toán lập lịch thí nghiệm trên kính viễn vọng không gian Hubble (Hubble Space Telescope) yêu cầu thời gian vô cùng chính xác của các quan sát. Thời gian bắt đầu và thời gian kết thúc của mỗi quan sát là các biến liên tục phải tuân thủ các ràng buộc về thiên văn, độ ưu tiên, năng lượng, ...\\ Lớp bài toán CSPs với miền giá trị liên tục được biết đến rộng rãi nhất là các bài toán thuộc dạng quy hoạch tuyến tính, trong đó các ràng buộc phải là các đẳng thức hoặc bất đẳng thức tuyến tính. Các bài toán CSP với ràng buộc tuyến tính có thể được giải trong thời gian đa thức.\\
+Bên cạnh việc xem xét \textbf{các loại biến} có thể xuất hiện trong bài toán CSPs, thì việc xem xét \textbf{các loại ràng buộc} cũng rất hữu ích. Có bốn loại ràng buộc chính trong bài toán CSPs.\\
+Loại ràng buộc thứ nhất là \textbf{ràng buộc đơn (unary constraint}: đây là kiểu ràng buộc đơn giản nhất và chỉ liên quan đến 1 biến. Ví dụ như ràng buộc $ SA \ne$ green\\ trong bài toán tô màu đồ thị.\\
+Loại ràng buộc thứ hai là \textbf{Ràng buộc nhị phân(binary constraint)}: ràng buộc liên quan đến hai biến.Ví dụ như ràng buộc SA $\ne$ WA trong bài toán tô màu bản đồ.\\
+Loại ràng buộc thứ ba là \textbf{Ràng buộc bậc cao (higher-order constraint)} liên quan đến nhiều hơn 2 biến. Ví dụ ràng buộc bậc 3 $Between (X,Y,Z)$ có thể được định nghĩa như sau: $\left\langle {(X,Y,Z),X < Y < Z  \textbf{ or} X > Y > Z} \right\rangle $\\
+Loại ràng buộc thứ tư được gọi là \textbf{ràng buộc toàn cục(global constraint)}, gọi là ràng buộc toàn cục nhưng các ràng buộc này không nhất thiết phải bao gồm tất cả các biến của bài toán. Một trong những ràng buộc toàn cục phổ biến nhất là ràng buộc \textit{Alldiff} mô tả rằng tất cả các biến nằm trong ràng buộc phải có giá trị riêng biệt. Trong bài toán Soduku (hình \ref{soduku}) tất cả các biến trên 1 hàng, 1 cột hoặc trong hộp kích thước $3 \times 3$ phải thỏa mãn ràng buộc \textit{Alldiff}\\
+\begin{center}
+	\begin{figure}[H]
+		\begin{center}
+	\includegraphics[scale=1]{images/chapter06/sodoku.PNG}
+		\end{center}
+		\caption{(a) Bài toán Soduku và (b) lời giải của bài toán}
+		\label{soduku}
+	\end{figure}
+\end{center}
+Một ví dụ khác là bài toán mật mã số học (hình \ref{matma}). Trong bài toán mật mã số học, các số tự nhiên từ 0-9 được thay thế bởi các chữ cái hoặc ký hiệu. Nhiệm vụ trong bài toán mật mã là thay thế mỗi chữ số bằng một bảng chữ cái để có được kết quả chính xác về mặt số học.Với trường hợp hình \ref{matma}, có thể biểu diễn như sau:
+\begin{itemize}
+\item Các biến: \\
++) Các biến chính: $F,T,U,W,R,O$\\
++) Các biến phụ: $X_1, X_2, X_3$ là các nhớ của các phép +
+\item Miền giá trị: $\left\{0,1,2,3,4,5,6,7,8,9 \right\}$
+\item Các ràng buộc:\\
++) \textit{Alldiff(F,T,U,W,R,O)}
++) $O + O = R + 10*X_1$\\
++) $X_1 + W + W = U + 10*X_2$\\
++) $X_2 + T + T = O + 10*X_3$\\
++) $X_3 = F$\\
++) $T \ne 0$\\
++ $F \ne 0$
+\end{itemize}
+\begin{center}
+	\begin{figure}[H]
+		\begin{center}
+	\includegraphics[scale=1]{images/chapter06/matma.PNG}
+	\caption{Bài toán mật mã số học}
+		\label{matma}
+		\end{center}
+	\end{figure}
+\end{center}
+Có hai lí do tại sao ràng buộc toàn cuộc ví dụ như \textit{Alldiff} lại được ưa thích hơn 1 tập các ràng buộc nhị phân. Thứ nhất, việc viết mô tả bài toán sử dụng \textit{Alldiff} sẽ dễ dàng hơn và ít mắc lỗi hơn. Thứ hai là có thể xây dựng được các giải thuật suy diễn cho ràng buộc toàn cục hiệu quả hơn việc thực hiện với các ràng buộc nhị phân nguyên thủy. Chúng ta sẽ bàn luận các giải thuật suy diễn này ở \ref{625}
+Các ràng buộc mà chúng ta mô tả ở trên đều là các ràng buộc tuyệt đối (absolute constraints), việc xét sự vi phạm của các ràng buộc này sẽ đưa ra lời giải chấp nhận được của bài toán. Rất nhiều bài toán CSPs trong thực tế chứa các ràng buộc ưu tiên (preference constraints), cho biết lời giải nào được ưu tiên. Ví dụ, trong bài toán xếp lịch giảng dạy của trường đại học, một trong những ràng buộc tuyệt đối có thể kể đến là ràng buộc không có giảng viên nào dạy 2 lớp học tại cùng một thời điểm, đồng thời chúng ta có thể cho phép ràng buộc ưu tiên như giảng viên R thích dạy vào buổi sáng trong khi giảng viên N thích dạy vào buổi chiều. Phương án xếp lịch mà trong đó giảng viên R dạy vào 2 p.m buổi chiều vẫn có thể là một phương án chấp nhận được, nhưng chưa phải là phương án tối ưu.\\
+Ràng buộc ưu tiên có thể được mã hóa thành chi phí trên mỗi phép gán từng biến độc lập. Ví dụ, việc xếp một ca dạy học vào buổi chiều cho giảng viên R sẽ tốn 2 điểm trên giá trị hàm mục tiêu của bài toán, trong khi việc xếp một ca dạy vào buổi chiều chỉ tốn 1 điểm. Với cách xây dựng này, CSPs với ràng buộc ưu tiên có thể được giải bằng các phương pháp tìm kiếm tối ưu, toàn cục hoặc cục bộ. Chúng ta gọi các bài toán này là các bài toán tối ưu có ràng buộc (constrained optimization problem).\\
+\section{Tìm kiếm quay lui cho bài toán CSP}
+Tìm kiếm quay lui dựa trên giải thuật Depth First Search: Tại mỗi thời điểm chọn ra 1 biến để xử lý, khi đó cố gắng tìm 1 giá trị để gán cho biến đó mà không vi phạm ràng buộc nào, nếu không tìm được giá trị nào thì quay lui. Tìm kiếm quay lui là 1 chiến lược khá đơn giản, tuy nhiên nếu không áp dụng các kinh nghiệm hay heuristics để xử lý thì giải thuật quay lui hoạt động kém hiệu quả giống như các chiến lược tìm kiếm mù khác.\\
+Mã giả của giải thuật quay lui cho bài toán CSP được mô tả ở hình \ref{quaylui_magia}, trong đó hàm \textbf{select-unassigned-variable} là hàm chọn biến chưa được gán giá trị, hàm \textbf{order-domain-values} là hàm chọn giá trị cho mỗi biến được xét, hàm \textbf{Inference} là hàm suy diễn
+  \begin{center}
+	\begin{figure}[H]
+		\begin{center}
+	\includegraphics[scale=0.5]{images/chapter06/quaylui_magia.png}
+	\caption{Mã giả của giải thuật quay lui cho bài toán CSP}
+	\label{quaylui_magia}
+		\end{center}
+	\end{figure}
+\end{center}  
+Hiệu quả của phương pháp tìm kiếm quay lui trong CSP có thể được cải thiện bằng
+\begin{itemize}
+    \item Thứ tự xét các biến: Áp dụng ý tưởng Minimum remaining values, Degree heuristics sẽ đươc trình bày tại \ref{thutu}
+    \item Thứ tự xét các giá trị đối với mỗi biến: Áp dụng Least constraining values được trình bày ở \ref{thutu}
+    \item Phát hiện sớm các vi phạm ràng buộc sẽ xảy ra: Áp dụng kiểm tra tiến (forward checking) được trình bày ở \ref{thutu}
+\end{itemize}
+\subsection{Thứ tự xét biến và thứ tự xét giá trị}\label{thutu}
+Chiến lược đơn giản nhất cho hàm SELECT-UNASSIGNED-VARIABLE trong giải thuật quay lui là chọn biến theo thứ tự $\left\{X_1, X_2, ...\right\}$ hoặc chọn biến một cách ngẫu nhiên, tuy nhiên cả hai cách trên đều không tối ưu. \\
+Xuất phát từ ý tưởng "nếu cần quay lui thì quay lui càng sớm càng tốt", ta có thuật toán chọn biến \textbf{minimum-remaining-values} (MRV) hay còn gọi là "most constrained variable" hay "fail-first heuristic: chọn biến có tập giá trị nhỏ nhất. Cái tên "fail-first" xuất phát từ việc thuật toán chọn ra biến mà gây ra sự thất bại sớm nhất, từ đó loại bỏ nhánh cây tìm kiếm đó. Giải thuật MRV thường mang lại hiệu quả tốt hơn việc chọn biến một cách ngẫu nhiên hay chọn biến theo thứ tự\\
+Tuy nhiên câu hỏi đặt ra là: Khi có ít nhất 2 biến có như nhau số lượng giá trị hợp lệ ít nhất thì chọn biến nào?\\
+Ví dụ như trong bài toán tô màu đồ thị, có thể thấy MRV lại không thể giúp được gì trong việc chọn miền để tô màu đầu tiên, bởi vì tất cả các miền đều có 3 giá trị màu hợp lệ. Trong trường hợp này, chúng ta cần đến giải thuật \textbf{degree heuristic}  hay còn gọi là  "most constraining variable"  - chọn biến nào có bậc cao nhất tức là ràng buộc các biến khác (biến chưa được gán giá trị) nhiều nhất. Tư tưởng của giải thuật là: biến càng tham gia vào càng nhiều ràng buộc thì càng dễ vi phạm ràng buộc dẫn tới quay lui càng sớm. Trong hình \ref{bando} có thể thấy $SA$ là biến có bậc cao nhất - bậc 5, trong khi các biến khác có bậc 2 hoặc bậc 0, theo giải thuật degree heuristic ta sẽ ưu tiên chọn biến $SA$ trước.\\
+Một khi biến đã được chọn, giải thuật cần chọn giá trị cho biến đó. Và giải thuật mang lại hiệu quả ở đây là \textbf{least-constraining values} (LCV) - chọn giá trị ràng buộc các biến khác (biến chưa được gán giá trị) ít nhất, hay nói cách khác là chọn giá trị mà khiến cho biến kế tiếp có nhiều lựa chọn hơn. Ví dụ, trong hình \ref{bando} ta đã gán $WA=red$, $NT=green$ và biến tiếp theo được chọn là $Q$. Nếu chọn giá trị $blue$ gán cho $Q$ thì hàng xóm của $Q$ là $SA$ sẽ không còn giá trị nào để lựa chọn, còn nếu chọn giá trị $red$ gán cho $Q$ thì biến $SA$ có thể chọn 1 giá trị là $blue$, ở đây giải thuật LCV sẽ chọn giá trị $red$ để gán cho $Q$
+\subsection{Kiểm tra tiến - Forward checking}
+Mục đích của kiểm tra tiến là tránh các thất bại bằng cách kiểm tra trước các ràng buộc. Kiểm tra tiến đảm bảo sự phù hợp (consistency) giữa biến đang được xét gán giá trị và các biến khác có liên quan trực tiếp với nó\\
+ Ý tưởng thực hiện kiểm tra tiến như sau: 
+ \begin{itemize}
+	        \item Ở mỗi bước gán giá trị cho 1 biến, theo dõi các giá trị hợp lệ của các biến khác (biến chưa được gán giá trị)
+	        \item 
+Loại bỏ hướng tìm kiếm hiện tại khi có bất kỳ 1 biến (chưa được gán giá trị) nào đó không còn giá trị hợp lệ
+	    \end{itemize}
+\begin{center}
+	\begin{figure}[H]
+		\begin{center}
+	\includegraphics[scale=0.9]{images/chapter06/FC.PNG}
+	\caption{Ví dụ về kiểm tra tiến}
+	\label{FC}
+		\end{center}
+	\end{figure}
+\end{center} 
+Ví dụ như hình \ref{FC}, sau khi gán $WA=red$, ta kiểm tra miền giá trị của các biến chưa được gán, sau khi gán $Q=green$ ta cũng kiểm tra tương tự, rồi ta tiếp tục gán $V=blue$ và kiểm tra thì thấy $SA$ miền giá trị là rỗng. Kiểm tra tiến đã phát hiện phép gán không đầy đủ $\left\{WA=red, Q=green, V=blue\right\} $ là không phù hợp và vì thế giải thuật quay lui ngay lập tức.\\
+Trong rất nhiều bài toán, việc tìm kiếm sẽ hiệu quả hơn nếu ta kết hợp giải thuật MRV và giải thuật kiểm tra tiến. Ví dụ như ở hình \ref{FC}, sau khi gán $WA=red$, ta kiểm tra thấy có 2 biến $NT$ và $SA$ có tập giá trị nhỏ nhất, vì thế theo giải thuật MRV ta sẽ tiếp tục chọn 1 trong 2 biến này, và cứ tiếp tục như vậy. \\
+Như vậy giải bài toán CSP với sự kết hợp giữa heuristics và kiếm tra tiến thì hiệu hiệu quả hơn việc áp dụng chỉ 1 trong 2 cách tiếp cận. Kiểm tra tiến giúp lan truyền ràng buộc từ các biến đã được gán giá trị đến các biến chưa được gán giá trị. Tuy nhiên phương pháp kiểm tra tiến không thể phát hiện trước được tất cả các thất bại.
+\section{Lan truyền ràng buộc - Contraint Propagation}
+Lan truyền ràng buộc là sử dụng các ràng buộc để giảm số lượng giá trị hợp lệ của 1 biến, từ đó có thể giảm giá trị hợp lệ của một biến khác, .... lan truyền ràng buộc có thể sử dụng kết hợp với tìm kiếm, hoặc có thể được thực hiện như một bước tiền xử lí trước khi bắt đầu tìm kiếm. Trong một số trường hợp, bước tiền xử lí này có thể giải quyết cả bài toán mà không cần yêu cầu thêm việc tìm kiếm.\\
+Lan truyền các ràng buộc đảm bảo tính phù hợp cục bộ (local consistency) của ràng buộc. Các loại phù hợp cục bộ sẽ lần lượt được bàn luận ở dưới
+\subsection{Node consistency: Nút phù hợp về ràng buộc} 
+ Một biến (1 nút trên đồ thị) được gọi là nút phù hợp (node consistency) nếu tất cả giá trị trong miền giá trị của biến đó đều thỏa mãn ràng  buộc đơn (unary constraints) 
+Ví dụ: $SA \ne \text{red}$,
+        $D_{SA} = \left\{\text{red, green, blue} \right\}$
+        $\rightarrow$ SA là nút không phù hợp về ràng buộc\\
+        Loại bỏ giá trị $red$  $\rightarrow D_{SA} = \left\{\text{ green, blue} \right\}$, khi đó SA trở thành nút phù hợp về ràng buộc\\
+        Ta nói nói rằng một đồ thị là phù hợp về nút khi mọi nút trên đồ thị là nút phù hợp về ràng buộc.\\
+        Rất dễ ràng để loại bỏ các ràng buộc đơn trong 1 bài toán CSP bằng cách giảm miền giá trị của các biến liên quan đến ràng buộc đơn tại bước đầu tiên của công việc giải bài toán.Hơn nữa, việc chuyển đổi các ràng buộc đơn thành các ràng buộc nhị phân là hoàn toàn có thể, chính vì vậy, một số công cụ giải bài toán CSP chỉ làm việc với ràng buộc nhị phân, yêu cầu người dùng phải loại bỏ trước các rnagf buộc đơn.
+\subsection{Arc consistency: Cạnh phù hợp về ràng buộc}
+Trong đồ thị ràng buộc, 1 cạnh ($X \rightarrow Y$) được gọi là phù hợp về ràng buộc khi và chỉ khi đối với mỗi giá trị $x$ của biến $X$ đều tồn tại một giá trị $y$ của biến $Y$ sao cho ràng buộc giữa 2 biến $X$ và $Y$ được thỏa mãn. Định nghĩa về phù hợp cạnh không có tính đối xứng,($X \rightarrow Y$) là phù hợp không có nghĩa ($Y \rightarrow X$) là phù hợp
+ Ví dụ: ($SA \rightarrow NSW$) là cạnh phù hợp nhưng ($NSW \rightarrow SA$) không là cạnh phù hợp như hình \ref{canhphuhop}
+ \begin{center}
+	\begin{figure}[H]
+		\begin{center}
+	\includegraphics[scale=0.8]{images/chapter06/arc_consistency.PNG}
+	\caption{Ví dụ về cạnh phù hợp về ràng buộc}
+	\label{canhphuhop}
+		\end{center}
+	\end{figure}
+\end{center}  
+Để cạnh ($X \rightarrow Y$) là phù hợp ràng buộc, thì cần loại bỏ bất kỳ giá trị $x$ của biến $X$ mà không có giá trị $y$ nào của biến $Y$ làm cho ràng buộc giữa 2 biến $X$ và $Y$ thỏa mãn. Ví dụ ở hình \ref{phuhopcanh}: Để cạnh ($NSW \rightarrow SA$) là phù hợp ràng buộc thì cần loại bỏ giá trị (blue) khỏi danh sách các giá trị hợp lệ của biến $NSW$
+\begin{center}
+	\begin{figure}[H]
+		\begin{center}
+	\includegraphics[scale=0.8]{images/chapter06/arc.PNG}
+	\caption{Ví dụ về cách ép một cạnh trở thành cạnh phù hợp}
+	\label{phuhopcanh}
+		\end{center}
+	\end{figure}
+\end{center}  
+Thuật toán phổ biến nhất để ép phù hợp cạnh là thuật toán AC-3. Giải thuật AC3 được viết như hình \ref{AC3}
+\begin{center}
+	\begin{figure}[H]
+		\begin{center}
+	\includegraphics[scale=1]{images/chapter06/AC-3.PNG}
+	\caption{Mã giả giải thuật AC-3}
+	\label{AC3}
+		\end{center}
+	\end{figure}
+\end{center} 
+Chi tiết thuật toán: Khởi tạo 1 queue với các cung của bài toán CSP, thực hiện vòng lặp khi queue vẫn còn giá trị, ép phù hợp 1 cung $(X_i - X_j)$ nếu cung đó có bị xóa đi 1 value thì sẽ kiểm tra các lân cận của $Xi$ và thêm $(X_k, X_i)$ vào queue. Hàm xóa value của biến: với mỗi value $x$ thuộc miền giá trị của biến $X_i$ nếu ko tồn tại value $y$ thuộc miền giá trị của biến $X-j$ mà thỏa mãn ràng buộc giữa 2 biến thì xóa $x$ ra khỏi miền giá trị của $X-i$
+Độ phức tạp:
+Ví dụ như hình \ref{viduAC3}:\\
+  Sau khi loại bỏ giá trị (blue) của biến $NSW$ thì ($NSW \rightarrow SA$) là phù hợp ràng buộc.\\
+  Tiếp tục, ta cần kiểm tra lại các cạnh liên quan đến biến $NSW$, bao gồm   ($V \rightarrow NSW$) và ($Q \rightarrow NSW$). Vì $Q$ đã được gán giá trị nên chỉ xét cạnh  ($V \rightarrow NSW$) (cho vào queue).\\
+  Để cạnh  ($V \rightarrow NSW$) là phù hợp ràng buộc, ta loại bỏ giá trị (red) của biến $V$.\\
+  Tiếp tục, kiểm tra các cạnh liên quan đến biến $V$, lúc này chỉ cần xét cạnh ($SA \rightarrow V$). Nhận thấy ($SA \rightarrow V$) là cạnh phù hợp $\rightarrow$ queue rỗng  $\rightarrow$ thuật toán dừng
+  \begin{center}
+	\begin{figure}[H]
+		\begin{center}
+	\includegraphics[scale=1]{images/chapter06/AC-3_ex.PNG}
+	\caption{Ví dụ minh họa giải thuật AC-3}
+	\label{viduAC3}
+		\end{center}
+	\end{figure}
+\end{center}
+Phương pháp phù hợp cạnh (Arc consistency) phát hiện được các thất bại sớm hơn so với phương pháp kiểm tra tiến (Forward checking). Kiểm tra phù hợp cạnh có thể được sử dụng trước hoặc sau mỗi phép gán giá trị của một biến.\\
+Từ đây, ta có phương pháp cải tiến giải thuật quay lui ở hình \ref{quay;ui_revision}: áp dụng giải thuật AC-3 ở bước tiền xử lí, hoặc áp dụng AC-3 tại hàm suy diễn
+\begin{center}
+	\begin{figure}[H]
+		\begin{center}
+	\includegraphics[scale=0.8]{images/chapter06/quaylui_revision.PNG}
+	\caption{Cải tiến giải thuật quay lui với AC-3}
+	\label{quaylui_revision}
+		\end{center}
+	\end{figure}
+\end{center}
+
+\subsection{Path consistency: Đường đi phù hợp về ràng buộc}
+\begin{center}
+	\begin{figure}[H]
+		\begin{center}
+	\includegraphics[scale=1]{images/chapter06/path.PNG}
+		\end{center}
+	\end{figure}
+\end{center}
+Ở hình trên các cạnh của bài toán CSP đều phù hợp về ràng buộc, tuy nhiên bài toán này lại không có lời giải, bởi vì chỉ có 2 màu trong mỗi miền giá trị của 3 biến. Để giải quyết bài này thì cần đến giải thuật phù hợp đường đi (Path consistency)
+Mục tiêu của giải thuật phù hợp đường đi là để giảm miền giá trị của các biến sau khi đã thực hiện phù hợp cạnh.\\
+ Một tập 2 biến $\left\{X_i, X_j \right\}$được gọi là phù hợp đường đi đối với biến thứ ba$X_m$ nếu với mọi phép gán thỏa mãn ràng buộc trên $\left\{X_i, X_j \right\}$, có một phép gán cho $X_m$ thỏa mãn các ràng buộc trên $\left\{X_i, X_m \right\}$ và $\left\{X_m, X_j \right\}$.
+\subsection{K-consistency - Phù hợp bậc $K$}
+Một cấu trúc mạnh hơn của lan truyền có thể được định nghĩa bằng sử dụng khái niệm $K$-consistent -phù hợp bậc $K$\\
+\textbf{a. Phù hợp bậc $K$}\\
+Một bài toán CSP được gọi là $K$-consistency (phù hợp bậc $K$)  nếu với bất kì tập $k-1$ biến và một phép gán thỏa mãn ràng buộc của các biến này, thì một giá trị phù hợp luôn được gán cho bất kì biến thứ $k$ nào.\\
+Lưu ý: phù hợp bậc 1 chính là phù hợp nút, phù hợp bậc 2 là phù hợp cạnh, phù hợp bậc 3 là phù hợp đường đi.\\
+Độ phức tạp của bài toán CSP phù hợp bậc $K$ là $O(n^2d^3)$\\
+\textbf{b. Phù hợp bậc $K$ mạnh }\\
+ Một bài toán CSP được gọi là phù hơp bậc $k$ mạnh (strongly $k$-consistent) nếu nó là phù hợp bậc $k$, và cũng là phù hợp bậc $k -1$, ..., phù hợp bậc 1 (phù hợp nút) \\
+Độ phức tạp của bài toán CSP phù hợp bậc $K$ mạnh: $O(n^2d)$\\
+Bài toán thỏa mãn ràng buộc là một bài toán NP-đầy đủ và bất kỳ một giải thuật để thiết lập phù hợp ràng buộc bậc $n$ nào đều có độ phức tạp thời gian và không gian cấp mũ $n$ 
+
+\subsection{Ràng buộc toàn cục}\label{625}
+ Ràng buộc toàn cục là ràng buộc liên quan đến một số biến (không nhất thiết là toàn bộ biến).\\
+Ví dụ ta có ràng buộc \textit{Alldiff} là một loại ràng buộc toàn cục mô tả tất cả các biến phải có giá trị riêng biệt. Giải thuật đơn giản để phát hiện tính không phù hợp của ràng buộc \textit{Alldiff} như sau: Đầu tiên loại bỏ bất kỳ biến nào liên quan đến ràng buộc mà có miền giá trị đơn (miền giá trị chỉ có duy nhất một giá trị), đồng thời xóa giá trị đó khỏi miền giá trị của các biến khác. Lặp lại quá trình khi vẫn có biến có miền giá trị đơn. Trong quá trình thực hiện giải thuật nếu xuất hiện bất kỳ một miền giá trị rỗng nào hoặc số biến chưa gán lớn hơn số giá trị còn lại thì ràng buộc là không phù hợp \\
+\section{Tìm kiếm quay lui thông minh}
+\subsection{Backjumping - Nhảy lui}
+ Ý tưởng của thuật toán: Quay lui lại biến có thể giải quyết vấn đề\\
+Ở đây ta đưa ra định nghĩa Conflict set - Tập xung đột: Tập xung đột của một biến là tập các phép gán mà gây xung đột với một vài giá trị trong biến đó. Ví dụ
+Trong bài toán tô màu bản đồ thị tập xung đột của $SA$ là $\left\{Q = red, NSW = green, V = blue\right\}$\\
+Phương pháp: Backjumping quay lui tới phép gán gần nhất trong tập xung đột của biến đó 
+Ta có nhận xét: Mỗi nhánh tìm kiếm bị loại bỏ bởi backjumping cũng bị loại bỏ bởi forward checking (kiểm tra tiến). Vì vậy, đã dùng backjumping thì không cần dùng forward checking và ngược lại.\\
+\subsection{Conflict-directed backjumping}
+Phương pháp: $X_j$ là biến hiện tại đang xét, $conf(X_j)$ là tập xung đột của biến $X_j$. Với mỗi giá trị của $X_j$ mà thất bại, nhảy lui tới biến đã xét gần nhất $X_i$ trong tập $conf(X_j)$ và tính toán lại tập xung đột của biến $X_i$ như sau: 
+    $$ conf (X_i) \leftarrow conf (X_i) \cup conf (X_j) - \left\{X_i\right\}$$
+    Ví dụ:\\
+    +) SA thất bại, $conf(SA) = \left\{ WA, NT, Q\right\}$ , nhảy lui về biến $Q$, khi đó $conf(Q) = \left\{ WA, NT, Q\right\} \cup \left\{ NT, NSW\right\}  - \left\{Q\right\} =  \left\{ WA, NT, NSW\right\} $\\
+    +) $Q$ thất bại, nhảy lui về $NT$ (biến xét gần nhất trong tất cả các biến của  $conf(Q)$),  khi đó $conf(NT) = \left\{ WA, NT, NSW\right\} \cup \left\{ WA\right\}  - \left\{NT\right\} =  \left\{ WA, NSW\right\} $\\
+    +) $NT$ thất bại, nhảy lui tới $NSW$, ...\\
+\section{Phương pháp học tập ràng buộc - Constraint learning }
+Ý tưởng: Tìm ra các tập con từ tập xung đột mà gây ra sự thất bại và lưu lại các tập này để không bao giờ lặp lại các lỗi này nữa. Các tập này được gọi là no-good. No-goods có thể được sử dụng hiệu quả bởi phương pháp kiểm tra tiến hoặc nhảy lui\\
+Constraint learning là một trong những kĩ thuật quan trọng được sử dụng bởi các giải thuật giải bài toán CSP để đạt được sự hiệu quả trên những bài toán phức tạp\\
+\section{ Tìm kiếm cục bộ cho bài toán CSPs}
+\subsection{Tìm kiếm cục bộ cho bài toán CSP}
+Thuật toán tìm kiếm cục bộ được xem là rất hiệu quả trong việc giải các bài toán CSP. Trong tìm kiếm cục bộ, mỗi trạng thái (của không gian tìm kiếm) ứng với một phép gán đầy đủ giá trị cho tất cả các biến. Không gian tìm kiếm bao gồm cả các trạng thái trong đó các ràng buộc bị vi phạm. Dịch chuyển trạng thái bằng việc gán giá trị mới cho các biến. Trạng thái đích chính là trạng thái thỏa mãn tất cả các ràng buộc\\
+Quá trình tìm kiếm được thực hiện như sau: Thực hiện lựa chọn biến để gán giá trị mới bằng cách chọn ngẫu nhiên một biến mà giá trị của nó vi phạm các ràng buộc. Đối với một biến, lựa chọn giá trị mới dựa theo chiến lược \textbf{min-conflits} - chọn giá trị mà nó vi phạm ít nhất các ràng buộc\\
+Giải thuật của chiến lực min-conflict như hình \ref{minconflict}
+\begin{center}
+	\begin{figure}[H]
+		\begin{center}
+	\includegraphics[scale=1]{images/chapter06/min-conflicts.PNG}
+	\caption{Chiến lược min-conflict}
+	\label{minconflict}
+		\end{center}
+	\end{figure}
+\end{center}
+\subsection{Tìm kiếm cục bộ Hill climbing cho bài toán CSP}
+Giải thuật Hill climbing được viết như hình \ref{hill}
+\begin{center}
+	\begin{figure}[H]
+		\begin{center}
+	\includegraphics[scale=0.7]{images/chapter06/hill_climbing.PNG}
+	\caption{Giải thuật Hill climbing}
+	\label{hill}
+		\end{center}
+	\end{figure}
+\end{center}
+Để giải bài toán CSP ta áp dụng phương pháp tìm kiếm cục bộ Hill climbing, với hàm ước lượng $h(n)$ = tổng số các ràng buộc bị vi phạm. Trạng thái tiếp theo được xét là trạng thái ứng với hàm $h(n)$ tốt hơn (ít ràng buộc bị vi phạm hơn.\\
+\textbf{Ví dụ bài toán 4 quân hậu}
+    \begin{center}
+	\begin{figure}[H]
+		\begin{center}
+	\includegraphics[scale=1]{images/chapter06/4queens_localsearch.PNG}
+	\caption{Ví dụ áp dụng hill climbing cho bài toán 4 quân hậu}
+	\label{queens_hill}
+		\end{center}
+	\end{figure}
+\end{center}
+\begin{itemize}
+    \item Các trạng thái: ứng với vị trí của 4 quân hậu nằm ở 4 cột
+    \begin{itemize}
+        \item Chỉ có duy nhất một quân hậu ở mỗi cột
+        \item Không gian trạng thái bao gồm tất cả 4*4*4*4 = 256 trạng thái
+    \end{itemize}
+    \item Các hành động: Di chuyển vị trí quân hậu trong cột của nó
+    \item Trạng thái đích: Không có quân hậu nào ăn nhau
+    \item Hàm ước lượng: $h(n)$ = tổng số các cặp hậu ăn nhau
+\end{itemize}
+\section{Cấu trúc của bài toán CSP - Problem structure}
+Trong phần này chúng ta sẽ tìm hiểu cách giải bài toán CSP bằng cách sử dụng cấu trúc của bài toán.\\
+Trước hết ta xét bài toán CSP với cấu trúc đồ thị ràng buộc dạng cây. Một đồ thị ràng buộc của bài toán CSP với cấu trúc cây được biểu diễn như hình \ref{tree}\\
+\begin{center}
+	\begin{figure}[H]
+		\begin{center}
+	\includegraphics[scale=0.8]{images/chapter06/problem structure tree.PNG}
+	\caption{(a) Đồ thị ràng buộc của bài toán CSP có cấu trúc cây. (b) Thứ tự tuyến tính các biến (topological sort)}
+	\label{tree}
+		\end{center}
+	\end{figure}
+\end{center}
+Giải thuật giải bài toán CSP có cấu trúc đồ thị ràng buộc dạng cây được trình bày ở hình \ref{tree-csp-solver}
+\begin{center}
+	\begin{figure}[H]
+		\begin{center}
+	\includegraphics[scale=1]{images/chapter06/tree-csp-solver.PNG}
+	\caption{Giải thuật giải bài toán CSP có cấu trúc đồ thị ràng buộc dạng cây}
+	\label{tree-csp-solver}
+		\end{center}
+	\end{figure}
+\end{center}
+Có thể thấy \textbf{Độ phức tạp} của giải thuật giải bài toán CSP có cấu trúc đồ thị cây là $O(nd^2)$ nhỏ hơn nhiều so với độ phức tạp của các giải thuật giải bài toán CSP không có cấu trúc đồ thị cây. Chính vì vậy một phương pháp hiệu quả để giải bài toán CSP là chuyển bài toán CSP tổng quát thành bài toán có cấu trúc đồ thị dạng cây. Hai cách chuyển sẽ được trình bày dưới đây\\
+\subsection{Cutset conditioning}
+ Ý tưởng của phương pháp cutset conditioning: Gán giá trị cho một vài biến để các biến còn lại tạo thành một đồ thị dạng cây  
+ \begin{center}
+	\begin{figure}[H]
+		\begin{center}
+	\includegraphics[scale=1]{images/chapter06/cutset conditioning.PNG}
+	\caption{ (a) Đồ thị ràng buộc gốc của bài toán. (b) Sau khi loại bỏ biến SA, đồ thị trở thành một rừng với 2 cây}
+		\end{center}
+	\end{figure}
+\end{center}
+\subsection{Tree decomposition - Phân rã cây}
+Sự phân rã cây là sự chuyển đồ thị của bài toán về đồ thị dạng cây với mỗi nút là một tập các biến. Khi thực hiện phân rã cây cần phải thỏa mãn các yêu cầu sau:
+    \begin{itemize}
+        \item Mỗi biến của bài toán gốc xuất hiện tại ít nhất một  nút của cây
+        \item Nếu 2 biến kết nối với nhau bởi 1 ràng buộc trong bài toán gốc thì chúng phải xuất hiện cùng nhau (cùng với ràng buộc) trong ít nhất một nút của cây
+        \item Nếu 1 biến xuất hiện ở 2 nút của 1 cây thì nó phải xuất hiện ở mỗi nút dọc theo đường đi nối giữa những nút này
+    \end{itemize}
+Ví dụ về phương pháp phân rã cây đối với đồ thị ràng buộc của bài toán tô màu bản đồ được thể hiện ở hình \ref{decompose_map}
+ \begin{center}
+	\begin{figure}[H]
+		\begin{center}
+	\includegraphics[scale=1]{images/chapter06/tree decompostion.PNG}
+	\caption{Ví dụ về phương pháp phân rã cây với bài toán tô màu bản đồ}
+	\label{decompose_map}
+		\end{center}
+	\end{figure}
+\end{center}
+\section{Kết luận}
+Như vậy chương đã trình bày các khái niệm cơ bản về bài toán thỏa mãn ràng buộc (CSP) cũng như một số phương pháp để giải dạng bài toán này như phương pháp quay lui, quay lui thông minh, lan truyền ràng buộc, tìm kiếm cục bộ hay phương pháp đưa bài toán CSP dạng tổng quát về bài toán CSP có cấu trúc đồ thị dạng cây.

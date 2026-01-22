@@ -1,0 +1,330 @@
+\chapter{Định lượng không chắc chắn}
+\section{Hành động không chắc chắn}
+\tab Các tác tử (\textit{agent}) trong thực tế cần được xử lý dưới điều kiện \textbf{không chắc chắn} (\textit{uncertainly}), bởi những chế trong quan sát hoặc việc không xác định. Tác tử có thể không bao giờ biết được chác chắn rằng liệu nó đang ở trạng thái nào hoặc không biết được nó sẽ kết thúc sao chuỗi hành động nào.
+
+\tab Chúng ta đã thấy cách giải quyết vấn đề \textit{(problem - solving)} và các tác nhân logic để xử lý vấn đề không chắc chắn (\textit{logical agents handle uncertainty}) thông qua các trạng thái niềm tin (\textit{belief state}) - là đại diện của tập các trạng thái khả thi (posible state) mà có thể thế giới thực có thể có - và tạo ra một kế hoạch dự phòng để xử lý mọi tình huống có thể xảy ra khi các cảm biến (\textit{sensor}) có thể báo cáo trong suốt quá trình thực hiện. Cách tiếp cận này hoạt động với các bài toán đơn giản, nhưng nó có nhược điểm:
+\begin{itemize}
+	\item Tác tử (agent) phải quan tâm đến mọi lời giải thích \textit{every possible explanation} cho các quan sát từ cảm biến (sensor) của nó, mà không phải quan sát nào cũng có thể xảy ra. Điều này khiến phần lớn  các trạng thái niềm tin (belief state) là các trạng thái không xảy ra.
+	\item Một kế hoạc dự phòng chính xác để xử lý mọi khả năng sẽ có thể rất lớn và phải quan tâm đến cả các trường hợp không xảy ra.
+	\item Đôi khi không có một kế hoạch nào có thể đảm được tác từ đạt đến được mục tiêu - dù tác từ có hành động như thê nào. Nó phải có một cách nào đố để so sánh giá trị của những kế hoạch không đạt được đích này.
+\end{itemize} 
+Ví dụ, giả sử rằng một chiếc taxi tự động có mục tiêu là đưa hành khách đến sân bay đúng giờ. Taxi tạo một kế hoạch $A_{90}$: rời khỏi nhà 90 phút trước khi máy bay khởi hành và lái xe với một vận tốc hợp lý. Dù sân bay chỉ cách đó 5 km, một tác tử logic cũng không thể kết luật chắc chắn rằng "Kế hoặc $A_{90}$ sẽ đươc hành khách đến đúng giờ". Thay vào đó, tác tử sẽ đưa ra kết luậ yếu hơn: "Kế hoạch $A_{90}$ sẽ đưa khách hàng đến kịp giờ, miễn là xe không bị hòng, không bị tai nạn, đường không bị hỏng, không có thiên thạch nào va vào xe, ...". Không có điều kiện nào trong này có thể suy luận chắc chắn, vì vậy tác tử không thể kết luận rằng kế hoặc này thành công. \\
+\tab Tuy nhiên, ở một khía cạnh nào đó, $SA_{90}$ là một điều thực tế mà cần phải làm. Điều đó có nghĩa là, trong tất cả các kế hoạch có thể thực hiện, $A_{90}$ được kỳ vọng làm tối đa hiệu suất của tác tử (trong điều kiện tác tử chỉ có hiểu biết tương đối về môi trường). Thước đô hiệu suất bao gồm đến đúng giờ, không phải chờ đợi lâu ở sân bay và tránh đi quá tốc độ dọc đường. Kiến thưc của tác tử không thể đảm bảo bất kỳ kết quả nào đối với kế hoạch $A_{90}$, nhưng nó có thể cung cấp một số mức tin tưởng rằng chúng ta sẽ đạt được. Các kế hoạch khác, chẳng hạn như $A_{180}$, có thể làm tăng niềm tin sẽ đưa khách hàng đến sân bay đúng giờ, nhưng lại tăng khoảng thời gian chờ đợi. Do đó, kế hoạch hợp lý (\textit{rational decision}) sẽ phụ thuộc vào tâm quan trọng của các mục tiêu và và khả năng đạt được cũng như mức độ đạt được của các mục tiêu đó. 
+\subsection{Tóm tắt về sự không chắc chắn}
+Xem xét một ví dụ về sự suy luận không chắc chắn: chẩn đoán nha khoa của một bệnh nhân bị đau răng. Một chẩn đoán, dù là chản đoán y tế, hay sửa chữa ô tổ, hay bất cứ điều gì sẽ đều chứa đựng sự không chắc chắn. Hãy xem xét một quy tắc đơn giản như sau:
+\begin{center}
+	Đau răng $\Rightarrow$ Sâu răng.
+\end{center}
+Quy tắc này không đúng với mọi bệnh nhân, họ có thể bị đau do có bệnh về nướu răng, áp xe, hoặc một số vấn đề khác:
+\begin{center}
+	Đau răng $\Rightarrow$ Sâu răng $\vee$ Viêm nướn $\vee$ Áp xe $\ldots$
+\end{center}
+Để làm quy tắc này thành sự thật, chúng ta phải thêm vào gần như vô hạn về các vấn đề có thể xảy ra. Chúng ta thử chuyển các quy tắc này về luật nhân quả:
+\begin{center}
+	Sâu răng $\Rightarrow$ Đau răng.
+\end{center}
+Nhưng luật này cũng không đúng, không phải tất cả các trường hợp sâu răng thì sẽ gây đau răng. Cách duy nhất để sửa luật là làm cho nó trở nên toàn diện về mặt logic: tăng các điều kiện ở về trái bởi tất cả các điều kiện sẽ làm đau răng. Cố gắng sử dụng logic để đối ứng với một lĩnh vực như y khoa là không hợp lý, bởi 3 lý do chính sau:
+\begin{itemize}
+	\item \textbf{Lười biếng}: Quá nhiều việc khi liệt kê đầy đủ các tiền để hoặc hậu quả cần thiết để đảm bảo mọt quy tắc không có ngoại lệ, đồng thời sẽ là quá phức tạp để sử dụng quy tắc đó.
+	\item \textbf{Sự thiếu hiểu biết về mặt lý thuyết}: mọi tri thức đã có cũng không thể giải thích hoàn chỉnh cho lĩnh vực này
+	\item \textbf{Sự thiếu hiểu biết về thực tế}: ngay cả khi biết mọi lý thuyết, chúng ta cũng không thể chắc chắn với một bệnh nhân cụ thể, bởi vì không phải tất cả các xét nghiệm cần thiết cho quy tắc đã được thực hiện hoặc có thể thực hiện.
+\end{itemize}
+Mối liên hệ giữa đau răng và sáu răng không phải một hệ quả logic chặt chẽ theo cả 2 hướng. Đây là đặc điểm điển hình của lĩnh vực y tế nói chung, cũng như ở hầu hết các lĩnh lực khác: luật, kinh doanh, thiết kế, sửa chữa ô tô, làm vườn, hẹn hò, 
+$\ldots$. Tri thức của tác tử chỉ có thể cung cấp tốt nhất với các mức tin tưởng \textit{degree ò belief} nhất định trong các ngữ cảnh liên quan. Công cụ chính để đối phó với các mức độ niềm tin khác nhau, chính là lý thuyết xác suất \textit{probalility theory}. Theo đó, thế giới được hợp thành từ các sự kiện có thể xảy ra hoặc không thể xảy ra. Tác tử logic thì tin rằng mỗi sự kiện đều sẽ đúng, sai hoặc không có ý kiến. Trong khi đó, tác tử xác suất thì sử dụng mức tin tưởng để đánh giá một sự kiện. Mức tin tưởng là một giá trị từ 0 (chắc chắn sai) đến 1 (chắc chắn đúng).\\
+\tab Lý thuyết xác suất cung cấp một cách tóm tắt về sự không chắc chắn rằng nó bắt nguồn từ sự lười biếng và thiết hiểu biết của chúng ta. Chúng ta có thể không biết chắc chắn rằng điều gì xảy ra với một bệnh nhân cụ thể, nhưng chúng ta tin rằng có 80$\%$ cơ hội, hay xác suất là $0.8$ là bênh nhân bị đang răng có sâu răng. Nghĩa là, chúng ta kỳ vọng rằng, trong tất cả các tình huống không phân biệt được ở hiện tại theo hiểu biết của chúng ta, số bênh nhân có sâu răng là khoảng $80\%$. Niềm tin này có thể được lấy từ dữ liệu thống kê - $80\%$ bênh nhân đau rặng được phát hiện cho đến nay thì đều bị sâu răng - hoặc từ một số kiên thức nha khoa tổng quát, hoặc từ một sự kết hợp các nguồn bằng chứng khác.\\
+\tab Một điểm khó hiểu là tại thời điểm chuẩn đoán của chúng ta, không có gì là không chắc chắn chắn trong thế giới thực: bệnh nhân bị sâu răng hoặc không. Vì vậy, nó có nghĩa là gì khi nói có $0.8$ xác suất bị sâu răng, và tại sao nó không phải là 0 hoặc 1. Câu trả lời là các mệnh đề về xác suất đó được đưa ra với trạng thái tri thức, và không liên quan đến thế giới thực. Chúng ta nói rằng: "Xác suất bệnh thân bị sâu răng vì bệnh nhân đéo bị đau răng là $0.8$". Nếu sau đó chúng ta biết được bệnh nhân có tiền sử bị bệnh nướn răng, chúng ta có thể có một kết luận khác: "Xác suất bệnh nhân bị sâu răng, vì bệnh nhân bị đau răng và có tiền sử bị nướu răng là $0.4$". Nếu chúng ta thu thập thêm bằng chứng chống lại việc sâu răng, chúng ta có thể kết luận được rằng "Xác suất bệnh nhân bị sâu răng, vì đau răng với tất cả những gì đã biết bây giờ, gần như bằng 0". Lưu ý rằng, các kết luận này không mâu thuẫn với nhau, mỗi kết luận là một khẳng định riêng biệt với từng trạng thái hiểu biết khác nhau. 
+\subsection{Quyết định không chắc chắn và quyết định hợp lý}
+Hãy xem xét đến kế hoạch $A_{90}$ để đến sân bay. Giả sử rằng nó giúp chúng ta có $97\%$ cơ hội để bắt kịp chuyến bay. Điều này có phải là một sự lựa chọn hợp lý? Không nhất thiết: có thể có các kế hoạch khác, chẳng hạn như $A_{180}$ với xác suất cao hơn, nếu ưu tiên là không bị lỡ chuyến bay, sau đó mới quan tâm đến rủi ro phải chờ đợi lâu ở sân bay. Còn với $A_{1440}$, kế hoạch rời nhà trước 24 giờ? Trong hầy hết các trường hợp, đây không phải là một lựa chọn tốt, bởi vì mặc dù kế hoạch này gần như đảm bảo chắc chắn sẽ đến đúng giờ, nhưng sự chờ đợi ở sân bay lại không được chấp nhận (có thể hành khách không muốn ăn uống tại sân bay).\\
+\tab Để thực hiện việc lựa chọn, tác tử phải có sự \textit{ưu tiên} (\textit{prefrences}) giữa các kết cục có thể có của các kế hoạch. Mỗi kết cục là trạng thái hoàn toàn riêng biệt, bao gồm các thành phần như: tác từ có đến kịp giờ và thời gian chờ đợi ở sân bay. Chúng ta sử dụng \textit{lý thuyết tiện ích} (\textit{utility theory}) để thể hiện mức ưu tiên và định lượng các thành tố. (Thuật ngữ \textit{lý thuyết tiện ích} ở đây được sử dụng với nghĩa "chất lượng của hành việc có nghĩa", không phải mang nghĩa các dịch vụ tiện ích như: điện, nước.) Lý thuyết tiện ích nói rằng mọi trạng thái (hoặc chuỗi trạng thái) đều có mức độ ưu tiên về tính hữu dụng, hoặc tiện ích, đối với tác tử và tác tử sẽ thích các trạng thái có mức tiện ích cao hơn.\\
+\tab Tiện tích của một trạng thái liên quan đến tác tử. Ví dụ, tiện ích của trạng thái quân Cờ Trắng ăn quan Cờ Đen có mức tiện tích cao hơn cho người chơi cờ Trăng, nhưng lại thấp hơn cho người chơi cờ Đen. Nhưng chúng ta cũng không thể dùng kết quả thắng (1), hòa ($\frac{1}{2}$) hoặc thua (0) của ván cờ áp đặt cho mức ưu tiên về kết cục ván cờ đối với người chơi. (Có thể một người chơi bình thường khi cầm hòa nhà vô địch thế giới sẽ rất vui mừng, nhưng nhà vô địch thì không). Sẽ không có sự giải thích cho khẩu vị hoặc sở thích: bạn có thể nghĩ rằng một tác tử thích kẹo cao su hơn là socola là kỳ quặc, nhưng bạn cũng không thể nói rằng tác tử này lựa chọn không hợp lý. Một hàm tiện ích có thể giải thích cho mọi tập hợp của mức ưu tiên, như sự kỳ hoặc hoặc điển hình, cao quý hoặc thấp kém.\\
+\tab Các ưu tiên, được thể hiện bằng tiện ích, được kết hợp với xác suất của lý thuyết quyết định hợp lý được gọi là \textbf{lý thuyết ra quyết định} (\textbf{decision theory}).
+\begin{center}
+	\textit{Lý thuyết quyết định = Lý thuyết xác suất + Lý thuyết tiện ích}.
+\end{center}     
+Ý tưởng nền tảng của lý thuyết quyết định là: hành động là hợp lý khi và chỉ khi tác tử chọn hành động mang lại tiện ích cao nhất, được tính trung bình trên tất cả các kết quả có thể có của hành động. Đây được gọi là nguyên tắc về \textit{kỳ vọng tối đa} (\textbf{maximum expectd utility MEU}). Ở đây, "kỳ vọng" có nghĩa là "trung bình" hoặc "trung bình thống kê" của các giá trị tiện ích với trọng số là xác suất của các kết cục.\\
+\begin{algorithm}[H]
+\DontPrintSemicolon
+%\setstretch{1.1}
+\textbf{Biến}: các trạng thái niềm tin, xác xuất niềm tin vào trạng thái hiện tại của thế giới thực, các hành động của tác tử
+\vspace{0.3cm}
+\textbf{Cập nhật} các trạng thái niềm tin dựa trên hành động và tri thức về thế giới\\
+\textbf{Tính} các xác suất của kết cục với từng hành động, mô tả hành động đã cho và trạng thái niềm tin hiện tại của tác tử\\
+\textbf{Lựa chọn} hành động có kỳ vọng tiện ích lớn nhất với thông tin về xác suất đã biết và giá trị tiện ích của các kết cục\\
+\textbf{Kết quả} hành động
+\caption{DT-Agent function return an action}
+\end{algorithm}
+Lý thuyết quyết định không chỉ đại diện cho các trạng thái khả thi trong thực tế mà còn bao gồm xác suất của chúng. Đưa ra trạng thái niềm tin và một số kiến thức về tác động của hành động, tác tử có thể đưa ra dự đoán xác suất về kết cục của các hành động và lựa chọn hành động có kỳ vọng giá trị tiện ích là lớn nhất.
+\section{Các thuật ngữ xác suất cơ bản}
+\subsection{Xác suất đề cập gì}
+Tập tất cả các kết cục trong thế giới được gọi là \textbf{không gian mẫu} (\textbf{sample space}). Các kết cục là loại trừ lẫn nhau và toàn diện - nghĩa là, không có 2 kết cục giao nhau và mỗi kết cục là một trường hợp riêng. Ví dụ, nếu chúng ta reo đồng thời 2 con xúc xác, có 36 kết cục có thể xảy ra: $(1,1), (1,2), \ldots , (6,6)$. Ký hiệu $\Omega$ là không gian mẫu và $\omega$ là các phần tử của không gian mẫu.\\
+\tab Một mô hình xác suất xác định đầy đủ kết hợp với một độ đo xác suát $P(\omega)$ cho từng kết cục $\omega$. Tiên đề cơ bản của lý thuyết xác suất nói rằng mọi kết cục có thể có đều có xác suất từ 0 đến 1 và tổng xác suất của các kết cục có thể xảy ra là 1:
+\begin{align}
+	0 \le P(\omega) \le 1, \forall \omega \text{ và } \sum_{\omega \in \Omega} P(\omega) = 1. \label{eq:1}
+\end{align}
+Ví dụ, nếu ta giải thuyết mỗi lần gieo 2 con xúc xắc là giống hệt nhau và không bị ảnh hưởng nhau thì mỗi kết cục $(1,1), (1,2), \ldots, (6,6)$ đều có xác suất xảy ra là $\frac{1}{36}$. Nếu một con xác suất là năng hơn, thì sẽ có kết cục có khả năng cao hơn, kết cục có khả năng thấp hơn, nhưng tổng xác suất của các kết cục luông bằng 1.\\
+\tab Một tập hợp các kết cục khác nhau được gọi là một \textbf{sự kiện} (\textbf{event}). Trong ngôn ngữ logic, tập các kết cục được gọi là \textbf{mệnh đề} (\textbf{propostion}) (Do đó, "sự kiện" và "mệnh đề") .Xác suất của một sự kiện là tổng các xác suất của các kết cục nó chứa:
+\begin{align}
+	\text{Với mọi mệnh đề } \phi, P(\phi) = \sum_{\omega \in \phi} P(\omega).\label{eq:2}
+\end{align}  
+Ví dụ, khi ta công bằng reo 2 con xúc xắc, ta có $P(tổng = 11) = P((5,6)) + P((6,5)) = \frac{1}{36} + \frac{1}{36} = \frac{1}{18}$.\\
+\tab Xác suất $P(tổng = 11)$ được gọi là xác suất không có điều kiện (\textbf{unconditional}) hoặc xác suất không có điều kiện cho trước (\textbf{prior probalities}), chúng đề cập đến mức tin tưởng vào một mệnh đề trong trường hợp không có bất kỳ thông tin nào khác. Tuy nhiên, trong hâu hết các tình huống, chúng ta có quan tâm đến các kết cục (sự kiện) xảy ra khi biết trước điều kiện nào đó. Theo ngôn ngữ toán học, xác suất có điều kiện được biểu diễn qua các xác suất không điều kiện như sau: cho 2 mệnh đề $a$ và $b$, ta có
+\begin{align}
+	P(a|b) = \frac{P(a\land b)}{P(b)} \label{eq:3}
+\end{align}
+với $P(b) > 0$. Quan sát mệnh đề b trong công thức, ta thấy rằng, công thức sẽ loại bỏ tất cả các kết cục mà ở đó $b$ là sai. Trong tập hợp đó, các kết cục mà $a$ đúng thì phải thỏa mãn $a\land b$ và tạo thành phân số $\frac{P(a\land b)}{P(b)}$.\\
+\tab Một các viết khác của công thức xác suất có điều kiện được gọi là \textbf{công thức nhân xác suất} \textbf{product rule}:
+\begin{align}
+	P(a\land b) = P(a| b). P(b). \label{eq:4}
+\end{align}
+\subsection{Ngôn ngữ mệnh đề trong các khẳng định xác suất}
+Các biến trong lý thuyết xác suất được gọi là \textbf{biến ngẫu nhiên} (\textbf{random variable}), và được viết với ký tự in hoa. Các biến ngẫu nhiên là một hàm số ánh xạ từ không gian trạng thái $\Omega$ đếm $\mathbb{R}$. Các giá trị mà các biến ngẫu nhiên có thể nhận luôn được viêt bằng các ký tự thường (không in hoa). Ví dụ, để biểu diễn mệnh đề "Xác suất bệnh nhân bị sâu răng vì cô ấy là một thiếu nên và không bị đang răng là $0.1$":
+\[
+P(\text{sâu răng} |\neg \text{đau răng} \land \text{thiếu niên})
+\]
+hoặc có thể thay đấu $\land$ băng dấu ",": $P(\text{sâu răng} |\neg \text{đau răng}, \text{thiếu niên})$.\\
+Đôi khi chúng ta muốn liệt kê hết tất cả các giá trị có thể có của một biến ngẫu nhien. Chúng ta có thể viết:
+\begin{center}
+	$P(\text{Thời tiết} = \text{nắng}) = 0.6$,\\
+	$P(\text{Thời tiết} = \text{mưa}) = 0.1$,\\
+	$P(\text{Thời tiết} = \text{mây}) = 0.29$,\\
+	$P(\text{Thời tiết} = \text{tuyết}) = 0.01$,\\
+\end{center}
+hoặc dưới dạng viết tắt: 
+\[
+\textbf{P}(\text{Thời tiết}) = (0.6,0.1,0.29,0.01),
+\]
+trong đó, \textbf{P} in đậm để phân biệt với $P$ và chỉ rằng nó là một véc tơ, và được biểu diễn theo thứ tự các giá trị mà chúng ta đã quy ước trước (nắng, mưa, mây, tuyết). Chúng ta noi rằng \textbf{P} tuyên bố một định nghĩa về phân bố xác suất cho biến ngẫu nhiên \textit{Thời tiết}- nghĩa là nó gắn từng giá trị xác suất cho các kết cục khác nhau của biến ngẫu nhiên. Ký hiệu \textbf{P} cũng được sủ dụng cho xác suất có điều kiện: $\textbf{P}(X |Y)$ cho giá trị của $P(X= x_i| Y= y_j)$ với mỗi cặp $(i,j)$ khả thi.\\
+\tab Với các biến liên tục, không thể viết toàn bộ phân phối dưới dạng véc tơ, vì có vô số giá trị. Thay vào đó, chúng ta có thể định nghĩa xác suất mà một biến ngẫu nhiên nhận giá trị $x$ dưới dạng tham số hóa của $x$, thường được gọi là \textbf{hàm mật độ xác suất} (\textbf{probality density function}). Ví dụ:
+\begin{center}
+	$P( \text{Nhiệt độ} = x) = \text{Uniform}(x, 18, 26)$
+\end{center}
+thể hiện niềm tin rằng nhiệt độ buổi chiều có phân bố đều giữa 16 và 26 độ C.\\
+\tab Các hàm mật độ xác suất có ý nghĩa trong phân phồi rời rạc. Nói rawngfm mật độ xác suất là đồng đều từ 18 đến 26 độ C có nghĩa là 100\% khả năng nhiệt độ sẽ rơi vào vùng nhiệt độ 8-C đó và 50\% khả năng nó sẽ rơi vào vùng nhiệt độ 4-C, $\ldots$ Chúng ta viết mật độ xác suất cho một biến ngẫu nhiên liên tục $X$ tại giá trị $x$ là $P(X = x))$ hoặc chỉ là $P(x)$ và được định nghĩa từ công thức:
+\begin{align*}
+	P(X) = \lim_{dx \rightarrow 0 } P(x\le X \le x + dx)\ dx.
+\end{align*}
+Đối với biến ngẫu nhiên Nhiệt độ chúng ta có:
+\begin{align*}
+	P(\text{Nhiệt độ} = x) = \text{Uniform} (x, 18, 26) = \begin{cases}
+	\frac{1}{8}, & \text{nếu } 18 \le x \le 26\\
+	0 & \text{ngược lại}
+	\end{cases}
+\end{align*}
+\subsection{Các tiên đề xác suất và tính hợp lý của chúng}
+	Cho $\mathbb{A}$ là $\sigma$-đại số của $\Omega$
+\begin{itemize}
+	\item Với mọi $A \in \mathbb{A}$ có: $P(A) \in [0,1] $
+	\item $P(\Omega) = 1$
+	\item nếu $A_i \in \mathbb{A}, i = 1,2 \ldots$ và $A_i \cap A_j = \emptyset$ thì $P(A_1 \cup A_2 \cup \ldots ) = \sum P(A_i)$
+\end{itemize}
+Hệ quả
+\begin{itemize}
+	\item $P(\neg A) = 1- P(A)$
+	\item $P(A\cup B) = P(A) + P(B) - P(A\cap B) \label{eq:5}$ 
+	\item $P(A \cap B) = P(A).P(B|A) = P(B).P(A|B)$
+\end{itemize}
+\section{Suy luận sử dụng phân phối đồng thời}
+	Ví du, 3 biến ngẫu nhiên dạng Boolean, Sâu răng (Cavity), Đau răng (Toothache), Đau do dụng cụ nha khoa vướng vào răng (Catch) và có bảng phân phối như sau:
+\begin{center}
+	\begin{figure}[htp]
+		\begin{center}
+			\includegraphics[scale=0.8]{images/chapter12/bang_phan_phoi}
+		\end{center}
+		\caption{Bảng phân phối xác suất đồng thời}
+		\label{img:BangPhanPhoi}
+	\end{figure}
+\end{center}
+Áp dụng các tiên đề về xác suất, ta có thể tính được xác suất của các mệnh đề:
+\begin{itemize}
+	\item 
+	\item $P(cavity \vee toothache) = 0.0108 + 0.012 + 0.072 +0.008 +0.016 + 0.064 = 0.28$
+	\item $P(cavity | toothache) = \frac{P(cavity \land toothcahe)}{P(toothcahe)} = \frac{0.108 + 0.012}{0.108 + 0.012 +0.016 + 0.064} = 0.6$
+	\item $P(\neg cavity | toothache) = \frac{P( \neg cavity \land toothcahe)}{P(toothcahe)} = \frac{0.016 + 0.064}{0.108 + 0.012 +0.016 + 0.064} = 0.4$
+\end{itemize}
+\tab Một nhiệm vụ phổ biến là trích xuất phân phối của một biến từ một số tập con của các biến hoặc một biến duy nhất. Ví dụ, nếu ta muốn tính xác suất xảy ra cuẩ biến \textit{cavity}:
+\[
+P(cavity) = 0.108 + 0.012 + 0.072 + 0.008 = 0.2
+\]
+Quá trình này được gọi là \textit{định biên}, hay là \textit{tổng kết} - bời vì chúng ta tổng hợp các xác suất từ các khả năng có thể của các biến khác.\\
+\tab \textbf{Định biên}: Cho 2 biến ngẫu nhiên $Y$ và $Z$, ta có:
+\begin{align}
+	\textbf{P}(Y) = \sum_{z}\textbf{P}(Y, Z = z) = \sum_{z} \textbf{P}(Y|z)P(z) \label{eq:7}
+\end{align}
+Ví dụ của quá trình định biên với biến Cavity: 
+\begin{align*}
+\textbf{P}(Cavity) & = \textbf{P}(Caivty, toothache,catch) + \textbf{P}(Cavity, toothache, \neg catch)\\
+&+ \textbf{P}(Cavity, \neg toothache, catch) + P(Cavity, \neg toothach, \neg catch)\\
+\textbf{P}(cavity, \neg cavity)& =  (0.108, 0.016) + (0.012, 0.064) + (0.072, 0.144) + (0.008, 0.576)\\
+& = (0.2, 0.8)
+\end{align*}
+\tab Trong hầu hết các trường hợp, ta quan tâm đến việc tính toán xác suất có điều kiện của một số biến từ việc đã có bằng chứng về một số biến khác. Ta xét một ví dụ về xác suất có điều kiện về việc đau răng, khi biết sâu răng:
+	\begin{itemize}
+	\item $P(cavity | toothache) = \frac{P(cavity \land toothcahe)}{P(toothcahe)} = \frac{0.108 + 0.012}{0.108 + 0.012 +0.016 + 0.064} = 0.6$
+	\item $P(\neg cavity | toothache) = \frac{P( \neg cavity \land toothcahe)}{P(toothcahe)} = \frac{0.016 + 0.064}{0.108 + 0.012 +0.016 + 0.064} = 0.4$
+\end{itemize}
+$\textbf{P}(Cavity | toothache) = (0.6 , 0.4)$ đều có chung mẫu là $\frac{1}{P(toothache)}$, suy ra, tổn tại số $\alpha$ thỏa mãn:
+\begin{align*}
+\textbf{P}(Cavity|toothache) &= \alpha \textbf{P}(Cavity, toothache)\\
+&= \alpha [\textbf{P}(Cavity, toothache, catch) + \textbf{P}(Cavity, toothach, \neg catch)]\\
+& = \alpha [(0.108, 0.016) + (0.012, 0.064)] = \alpha (0.12, 0.08) = (0.6, 0.4)
+\end{align*}
+Từ ví dụ trên, ta thấy rằng việc tính toán $P(tootache)$ là không cần thiết và ta có thế bằng việc tìm số $\alpha$. Để ý rằng, tỷ lệ $\frac{0.12}{0.08} = \frac{0.6}{0.4}$, nên việc thiết lập $\alpha$ làm hệ số chuẩn hóa sao cho tổng của các tỷ lệ là bằng 1. Quá trình này được gọi là \textbf{chuẩn hóa}. Chuẩn hóa là một cách hữu hiệu trong việc giảm bớt tính toán và khiến việc tính toán trở nên dễ dàng hơn (trong trường hợp tính $P(toothach)$ khó khăn).\\
+\tab Từ ví dụ trên, chúng ta có thể thiết lập một quy trình suy luận chung. Chúng ta bắt đầu với trường hợp suy luận về một biến duy nhất $X$ (ví dụ là biến $Cavity$). Gọi $E$ lầ danh sách các biến quan sát được (ví dụ là biến $Toothache$) và $e$ là danh sách các giá trị quan sát được cho chúng. Gọi $Y$ là các biến chưa quan sát được (ví dụ là biến $Catch$). Xác suất của $\textbf{P}(X|e)$ là
+\begin{align}
+	\textbf{P}(X|e) = \alpha \textbf{P}(X, e) = \alpha \sum_{y}\textbf{P}(X,e,y), \label{eq:9}
+\end{align}
+trong đó, $y$ là các giá trị có thể có của biến $Y$. Lưu ý rằng, các biến $X$, $E$, $Y$ tạo thành một tập hợp dầy đủ cho toàn bộ miền giá trị, vì vậy $\textbf{P}(X,e,y)$ chỉ đơn giản là một tập con các xác suất từ toàn bộ phân phối của chúng.
+\section{Độc lập}
+Chúng ta mở rộng phân phối xác suất đồng thời ở ví dụ bảng \eqref{img:BangPhanPhoi} bằng cách thêm 1 biến thứ tư là Weather. Phân phối xác suất đầy đủ sẽ trở thành \textbf{P}(\textit{Toothache, Catch, Cavity, Weather}), với số lượng các kết cục là $ư \times 2 \times 2 \times 2 \times 4 = 32$. Vậy có mối quan hệ nào giữa phiên bản này và phiên bản chỉ có ba biến ban đầu hay không? Giá trị của $P(toothache, catch, cavity, cloud)$ có liên quan gì đến giá trị $P(toothache, catch, cavity)$ hay không? Chúng ta có thể sử dụng quy tắc nhân xác suất: 
+\begin{align*}
+	&P(toothache, catch, cavity, weather)\\
+	 &=P(cloud \ | \ toothache, catch, cavity) P (toothache, catch, cavity). 
+\end{align*}
+Tuy nhiên, trừ trường hợp có yếu tố tâm linh tác động vào thì khá là khó tưởng tượng khi một vấn đề răng miệng của một người lại là nguyên nhân để ảnh hưởng đến thời tiết. Và đối với nha khoa trong nhà, ít nhất, có vẻ như an toàn để nói rằng thời tiết không bị ảnh hưởng bởi biến nha khoa. Do đó, khẳng định sau đây có vẻ hợp lý:
+\begin{align}
+	P(cloud \ | \ toothache, catch, cavity) = P(cloud).
+	\label{eq:10}
+\end{align}
+Từ đó, ta có thể suy ra được rằng
+\[
+P(toothache, catch, cavity, weather) = P(cloud)P(toothache, catch, cavity).
+\]
+Một phương trình tương tự như vậy sẽ tồn tại cho mọi kết cục của \textbf{P}(\textit{Toothache, Catch, Cavity, Weather}). Và trong thực tế, chúng ta có thể viết:
+\[
+\textbf{P}(Toothache, Catch, Cavity, Weather) = \textbf{P}(Toothache, Catch, Cavity)\textbf{P}(Weather).
+\]
+Do đó, bảng phân phối gồm 32 phần tử cho 4 biến có thể xây dựng bằng 1 bảng 8 phần tử và một bảng gồm 4 phần tử. Sự phân rã này được minh họa trong sở đồ \eqref{img:doclap} (a). 
+\begin{center}
+	\begin{figure}[htp]
+		\begin{center}
+			\includegraphics[scale=1]{images/chapter12/doc_lap}
+		\end{center}
+		\caption{Hai ví dụ về phân rã một phân phối đồng thời lớn thành các phân phối nhỏ hơn, sử dụng tính độc lập tuyệt đối. (a) Các vấn đề về thời tiết và răng miệng là độc lập. (b) Việc các đồng xu lật là độc lập.}
+		\label{img:doclap}
+	\end{figure}
+\end{center}
+Thuộc tính trong công thức \eqref{eq:10} được gọi là \textbf{độc lập}. Đặc điểm của thời tiết không phụ thuộc vào các vấn đề nha khoa. Sự độc lập giữa mệnh đề a và b có thể được viết dưới đạng:
+\begin{align}
+	P(a \ | \ b ) = P(a) \text{ hoặc } P(b \ | \ a) = P(b) \text{ hoặc } P(a \wedge b) = P(a P(b)) \label{eq:11}
+\end{align}
+Sự độc lập của các biến $X$ và $Y$ có thể được viết dưới dạng sau:
+\[
+\textbf{P}(X\ | \ Y) = \textbf{P} (X) \text{ hoặc } \textbf{P}(Y \ | \ X) = \textbf{P} (Y) \text{ hoặc } \textbf{P} (X, Y) = \textbf{P} (X) \textbf{P} (Y).
+\]
+Các khẳng định về tính độc lập thường được dựa trên kiến thức về các miền tri thức. Như ví dụ về đau răng và thời tiết, chúng ta có có thểm giảm đáng kể lượng thông tin cân thiết để tính toán được phân phối đồng thời. Nếu một tập hợp các biến cố của các sự kiện ngẫu nhiên có thể được chia thành các tập con độc với nhau, sau đó phân phối đồng thời có thể được tính từ các phân phối riêng trên các tập con độc lập đó. Ví dụ, phân phối xác suất đầy đủ về kết quả tung $n$ đồng xu có \textbf{P}$(C_1, C_2, \ldots, C_n)$ có $2^n$ các kết cục xảy ra, nhưng nó có thể biểu diễn được dưới dạng tích của $n$ phân phối đơn biến \textbf{P}$(C_i)$. Trong một khía cạnh thực tế hơn, sự độc lập của nha khoa và thời tiết là một hiện tượng tốt, vì nếu không, viêc thực hiện nha khoa rất có thể sẽ yêu cầu một kiến thức chuyên sâu về khí tượng và ngược lại.\\
+\tab Các khẳng định về tính độc lập có thể giúp giảm quy mô của biểu diễn miền xác định và độ phức tạp của bài toán suy luận. Tuy nhiên, thật không may, việc tách được toàn bộ tập các biến theo tính độc lập là điều rất hiếm trong thực tế. Bất cứ khi nào có kết nối, tuy là gián tiếp giữa hai biến, tính độc lập sẽ không còn giữ được. Hơn thế nữa, ngay cả những tập con độc lập cũng có thể khá lớn, ví dụ: y khoa có thể có hàng chục loại bệnh và có hàng trăm các triệu chứng khác nhau, và tất cả chúng đều có mối liên hệ với nhau. Để xử lý các vấn đề như này, chúng ta cần những phương pháp tinh tế hơn, không chỉ là khái niệm đơn gian về sự độc lập.
+\section{Quy tắc Bayes và tính ứng dụng}
+Chúng ta đã có công thức \eqref{eq:4}, nó có thể được viết dưới dạng:
+\[
+P(a \land b) = P(a\ | \ b)P(b) \text{ và } P(a\land b) = P(b \ | a)P(a).
+\]
+Biến đổi tương đương, ta có:
+\begin{align*}
+	P(b|a) \frac{P(a|b)P(b)}{P(a)}. \label{eq:12}
+\end{align*}
+Phương trình này được gọi là \textit{quy tắc Bayes} hay \textit{định lý Bayes}. Quy tắc Bayess đơn giản này là phương trình cơ sở cho hệ sự suy luận xác suất của các thống AI hiên đại.\\
+\tab Trường hợp tổng quát hơn của quy tắc Bayes cho các biến đa giá trị được viết như sau:
+\[
+\textbf{P}(Y|X) = \frac{\textbf{P}(X|Y)\textbf{P}(Y)}{\textbf{P}(X)}.
+\]
+Mở rộng của quy tắc Bayes trong trường hợp xác suất có điều kiện, khi chúng ta đã có bằng chứng về một số biến khác nào đó:
+\begin{align}
+	P(Y|X,e) = \frac{P(Y|e).P(X|Y,e)}{P(X|e)}. \label{eq:13}
+\end{align}
+\subsection{Áp dụng quy tắc Bayes: Trường hợp đơn giản}
+Nhìn bề ngoài, quy tắc Bayes có vẻ không hữu ích cho lắm. Nó cho phép chúng ta tính toán giá trị $P(b|a)$ theo ba số hạng: $P(a|b)$, $P(b)$ và $P(a)$. Dó có vẻ là hai bước ngược nhau, nhưng quy tắc Bayes rất hữu ích trong thực tế vì có nhiều trường hợp chúng ta ước lượng tốt xác suất cho ba thông số này và cần tính toán cho thông số thứ tư.\\
+\tab Thông thường, chúng ta coi đó là bằng chứng về tác động của một nguyên nhân không xác định và chúng ta muốn xác định nguyên nhân đó. Trong trường hợp đó, quy tắc Bayes sẽ trở thành 
+\[
+P(\text{nguyên nhân | triệu chứng})= \frac{P(\text{triệu chứng | nguyên nhân}). P(\text{nguyên nhân})}{P(\text{triệu chứng})}.
+\]  
+Xác suất có điều kiện $P(\text{triệu chứng \ | \ nguyên nhân })$ định lượng mối quan hệ nguyên nhân - kết quả, trong khi $P(\text{nguyên nhân \ | \ triệu chứng})$ thể hiện mối quan hệ chẩn đoán. Trong lĩnh vực y khoa, chúng ta thường biết mối qun hệ nguyên nhân - kết quả, bác sĩ biết $P(\text{triệu chứng \ | \ nguyên nhân })$ và muốn chuẩn đoán $P(\text{nguyên nhân \ | \ triệu chứng})$. \\
+\tab Ví dụ, bác sỹ biết: bệnh viêm màng não khiến bệnh nhân bị cứng cổ chiếm $70\%$, tỷ lệ bệnh nhân bị viêm màng não ($m$) là $1/50,000$, xác suất bệnh nhân bất kỳ bị cứng cổ ($s$) là $1\%$. Giả sử bệnh nhân  A có triệu chứng cứng cổ, tính xác suất bệnh nhân A bị viêm màng não?
+\begin{itemize}
+	\item $P(s|m) = 0.7, P(m) = 1/50000, P(s) = 0.01$
+	\item $P(m|s) = \frac{P(s|m)P(m)}{P(s)} = 0.0014$
+\end{itemize}
+tức là, chỉ có $0.14\%$ bệnh nhân bị cứng cổ thì bị viêm màng não, mặc dù ta biết rằng cứng cổ là một triệu chứng của viêm màng não đến $70\%$.\\
+\tab Vậy tại sao không tính $P(m|s)$ từ thống kê thực tế mà lại phải thông qua 3 đại lượng $P(m), P(s), P(s|m)$? Thực tế rằng, kiến thức về chẩn đoán thường mong manh hơn kiến thức về nhân quả. Khi dịch viêm màng não bùng lên, các thống kê về $P(m|s)$ trong quá khư sẽ không đúng với hiện tại. Thay vì đó, $P(m|s)$ tỷ lệ thuận với $P(m)$ - sẽ tăng khi tỷ lệ người bệnh tăng.  
+\subsection{Sử dụng quy tắc Bayes - Kết hợp với bằng chứng}
+Chúng ta đã thấy việc sử dụng quy tắc Bayes hữu ích trong việc truy vấn các xác suất có điều kiện ở ví dụ trên. Đặc biệt, chúng ta đã lặp rằng thông tin thường có sẵn dưới dạng $P(\text{triệu chứng \ | \ nguyên nhân })$. Vậy chuyện gì sẽ xảy ra khi chúng ta có nhiều hơn hai bằng chứng. Ví dụ, một nha sĩ có thể kết luận điều gì nếu cô ấy biết được dụng cụ nha khoa bị bắt vào răng và gây khó chịu cho bệnh nhân. Nếu chúng ta có bảng phân phối xác suất đồng thời như trong bảng \eqref{img:BangPhanPhoi}, chúng ta có thể trả lời câu hỏi như sau:
+\[
+\textbf{P}(Cavity | toothache \land catch) = \alpha (0.108, 0.016) = (0.871, 0.129).
+\]
+Tuy nhiên, chúng ta biết rằng các tiếp cận như vậy là không mở rộng khi số lượng biến lớn hơn hai. Chúng ta có thể sử dụng quy tắc Bayes để định dạng lại vấn đề như sau:
+\begin{align}
+	&\textbf{P}(Cavity| toothache, catch)\notag \\
+	&= \alpha \textbf{P}(toothache \land catch|Cavity) P(Cavity). \label{eq:16} 
+\end{align}
+Để định dạng này hoạt động, chúng ta cần biết các xác suất có điều kiện là $\textbf{P}(toothache \land catch|Cavity)$, tức là xác suất có điều kiện để sự kiện $toothache \land catch$ xảy ra cho từng giá trị của $Cavity$. Điều đó có thể là khả thi với hai biến $Toothache$ và $Catch$, nhưng nếu mở rộng thêm các vấn đề như: vệ sinh răng miệng, chế độ ăn uống, $\ldots$, thì có đến $\Theta(2^n)$ kết hợp của các giá trị quan sát được, mà chúng ta cần biết xác suất có điều kiện. Điều này không tốt hơn là bao khi ta sử dụng bảng phân phối xác suất đồng thời.\\
+\tab Để giải quyết việc này, chúng ta cần tìm hiểu thêm một số thông tin về miền, giúp chúng ta đơn giản hóa các biểu thức. Khái niệm độc lập đã được nêu mới chỉ cung cấp một manh mối, ta vẫn cần tinh chỉnh. Sẽ rất tuyệt nếu $Toothache$ và $Catch$ là độc lập, nhưng chúng không phải: nếu dụng cụ nha khoa bị bắt vào răng thì rất có thể răng đã bị sâu và khoang đó gây đau răng. Các biến này là độc lập, tuy nhiên, sự độc lập này xảy ra khi có biến điều kiện $Cavity$. Mỗi thứ đều có thể do $Cavity$ gây ra, nhưng không phải là có ảnh hưởng đến nhau: đau răng phụ thuộc vào trạng thái của các dây thần kinh trong răng, trong khi độ chính xác của đầu dụng cụ phụ thuộc vào kỹ năng của nha sỹ, mà không liên quan đến đau răng. Về mặt toán học:
+\begin{align}
+	\textbf{P}(tootache \land catch|Cavity) = \textbf{P}(toothache|Cavity)\textbf{P}(catch|Cavity).\label{eq:17}
+\end{align}
+Phương trình này thể hiện tính độc lập có điều kiện của đau răng và bị vướng với điều kiện có sâu răng. Chúng ta có thể đưa vào công thức \eqref{eq:16} để có được xác suất bị sâu răng là:
+\begin{align}
+	&\textbf{P}(Cavity|toothache \land catch) \notag\\
+	& \alpha \textbf{P}(toothache| Cavity)\textbf{P}(catch|Cavity)\textbf{P}(Cavity).\label{eq:18}
+\end{align}
+\tab Định nghĩa về tính độc lập có điều kiện của hai biến $X$ và $Y$, khi biế trước biến $Z$ là:
+\[
+P(X, Y|Z) = P(X|Z)P(Y|Z).
+\]
+Ví dụ, trong lĩnh vực ý khoa, có vẻ hợp lý khi nói rằng tính độc lập có điều kiện của 2 biên $Tootache$ và $Catch$ khi biết $Cavity$:
+\begin{align}
+	\textbf{P}(Tootahche, Catch| Cavity) = \textbf{P}(Tootache|Cavity) \textbf{P}(Catch|Cavity).\label{eq:19}
+\end{align}
+Lưu ý rằng, khảng định này mạnh hơn một chút so với phương trình \eqref{eq:17} - chỉ khẳng định tính độc lập cho một giá trị cụ thể của biến $Tootache$ và $Catch$. Như với sự độc lập tuyệt đối trong phương trình \eqref{eq:11}, ta có dạng tương đương:
+\[
+\textbf{P}(X|Y,Z) = \textbf{P}(X|Z) \text{ và } \textbf{P}(Y|X,Z) = \textbf{P}(Y|Z).
+\]
+Áp dụng phương trình \eqref{eq:19}, khi thực hiện phéo suy diến:
+\begin{align*}
+	&\textbf{P}(Tootache,Cavity, Cavity)\\
+	&=\textbf{P}(Tootache,Cavity|Cavity) \textbf{P}(Cavity)\\
+	&=\textbf{P}(Tootache|Cavity) \textbf{P}(Catch|Cavity) \textbf{P}(Cavity)
+\end{align*}
+ta có thể thẩy rằng nếu sử dụng bảng phân phối xác suất đồng thời, để tính được vế trái $\textbf{P}(Tootahche, Catch, Cavity)$, ta cần biết 7 giá trị (bảng có 8 số, nhưng tổng của chúng bằng 1, nên ta chỉ cần biết 7 giá trị). Trong khi đó, khi đã biết sự độc lập có điều kiện, để tính về phải $\textbf{P}(Tootache|Cavity) \textbf{P}(Catch|Cavity) \textbf{P}(Cavity)$, ta chỉ cần 5 giá trị.\\
+\tab Nói chung, đối với $n$ triệu chứng đều độc lợi có điều kiện với nguyên nhân, thay vì phải biết $\Theta(2^n)$ giá trị, ta chỉ cần biết $\Theta(n)$. Sự phân rã các miền xác suất lớn thành các miền nhỏ hơn thông qua sự độc lập có điều kiện là một bước phát triển quan trọng của lịnh sữ AI những năm gần đây.
+\section{Mô hình Naive Bayes}
+Ví dụ, trong y khoa, mỗi bệnh có rất nhiều triệu chứng, có thể giống nhau, cũng có thể khác nhau, tùy mức độ. Câu hỏi đặt ra: khi biết một tập các triệu chứng (effect) của bệnh nhân, ta sẽ chẩn đoán bệnh nhân đó bị bệnh (cause) gì?\\
+\[
+\textbf{P}(Cause|{effect}_1, \ldots, {effect}_n) = ?
+\]
+Xuất phát từ công thức xác suất đầy đủ, với giả thuyết rằng các triệu chứng là độc lập có điều kiện với nhau, ta có thể biến điểu công thức xác suất đầu đủ thành:
+\begin{align}
+	\textbf{P}(Cause, {Effect}_1, \ldots, {Effect}_n) = \textbf{P}(Cause)\prod_{i = 1}^{n}\textbf{P}({Effect}_i|Cause).\label{eq:20}
+\end{align}  
+Phân phối xác suất như vậy được gọi là mô hình Naive Bayes.  Naive ('ngây thờ') vì nó thường được sử dụng (như một giả định để đơn giản hóa) trong trường hợp các biến hiệu ứng "effect" hoàn toàn là độc lập có điều kiện với nhau khi biết biến nguyên nhân "cause". Trong thực tế, các giả định về độc lập này thường không thể xảy ra, tuy nhiên mô hình Naive Bayes vẫn hoạt đọng tốt.\\
+\tab Để sử dụng mô hình Naive Bayes, chúng ta có thể áo dụng công thức \eqref{eq:20} để thu được xác suất của một nguyên nhân khi đã biết một loạt các triệu chứng. Gọi triệu chứng quan sát được là $E = e$, còn các biến triệu chứng không quan sát được là $Y$. Khi đó, phương pháp để suy luận theo công thức \eqref{eq:9}] như sau:
+\[
+\textbf{P}(Cause|e) = \alpha \textbf{P}\sum_{y}(Cause,e,y).
+\] 
+Từ phương trình \eqref{eq:20}, ta thu được 
+\begin{align}
+	\textbf{P}(Cause|e) &= \alpha \sum_{y} \textbf{P} (Cause) \textbf{P} (y|Cause)\big( \prod_{j}\textbf{P}(e_j|Cause) \big)\notag\\
+	&= \alpha \textbf{P}(Cause) \big(\prod_{j}\textbf{P}(e_j | Cause) \big) \sum_{y} \textbf{P} (y |Cause)\notag\\
+	&= \alpha \textbf{P}(Cause) \prod_{j} \textbf{P} (e_j | Cause). \label{eq:21}
+\end{align}
+Phương trình \eqref{eq:21} có thể diễn giải: đối với mỗi nguyên nhân có thể xảy ra, nhân xác suất của nguyên nhân với tích các xác suất có điều kiện của các tác động đã quan sát được - được đưa ra bởi nguyên nhân; sau đó, chuẩn hóa kết quả này. Thời gian chạy của phép tính này là tuyến tính với số lượng các triệu chứng quan sát được và không phụ thuộc vào số lượng các triệu chứng không quan sát được (có thể là rất lớn trong thực tế).
+\subsection{Phân loại văn bản với mô hình Naive Bayes}
+Hãy xem xét cách sử dụng mô hình Navie Bayes cho nhiệm vụ phân loại văn bản: đưa ra một văn bản và quyết định xem tập các lớp hoặc danh mục nào đó mà văn bản đó thuộc. Ở đây, danh mục của văn bản chính là nguyên nhân $Cause$ còn các biến triệu chứng chính là sự hiện diện hoặc vắng mặt của một số từ khóa đặc biệt thứ $i$ - $HasWord_i$ nào đó. Hãy xem xét hai câu ví dụ dưới đây, chúng được lấy từ các bài báo:
+\begin{enumerate}
+	\item Chứng khoán tăng điểm vào thứ hai, với các chỉ số chính tăng 1\% khi sự lạc quan vẫn tồn tại về thu nhập của quý đầu tiên.
+	\item Mưa lớn tiếp tục kéo dài ở nhiều bờ biển phía đông vào thứ hai, các cảnh báo ngập lụt đã được phát ra từ thành phố NewYork và một số địa điểm khác.
+\end{enumerate}
+Nhiệm vụ là phân loại mỗi câu này vào một hàng mục - $Category$ - thể hiện chính nội dung của câu nói: tin tức, thể thao, kinh doanh, thời tiết hoặc giải trí. Mô hình Naive Bayes bao gồm xác suất $\textbf{P}(Category)$ và các xác suất có điều kiện $\textbf{P}(HasWord_i|Category)$. Đối với mỗi hạng mục $c$, $P(Category = c)$ được tính là phầm trăm số tài liệu đã có thuộc lớp $c$. Ví dụ, nếu 9\% bài viết là thời tiết thì chúng ta đặt $P(Category = weather) = 0.09$. Tương tự, $\textbf{P}(HasWord_i| Category)$ được tính phần trăm số lài liệu thuộc mỗi loại có chứa từ thứ $i$. Ví dụ, có 37\% bài báo về kinh doanh chứa từ thứ 6 - cổ phiếu, vì vậy $P(HashWord_6 = true | Category = bussiness) = 0.37$. \\
+\tab Để phân loại các tài liệu mới, chúng ta kiểm tra những từ khóa nào xuất hiện trong tài liệu này và sau đó áp dụng công thức \eqref{eq:21} để có được phân phối xác suất trên các danh mục. Hạng mục nào có xác suất cao nhất sẽ được chỉ định làm nhãn cho câu đó. Lưu ý rằng, với nhiệm vụ này, mọi biến triệu chứng đều quan sát được, vì chúng ta luôn biết được một từ bất kỳ có xuất hiện trong tài liệu hay không.\\
+\tab Mô hình Naive Bayes gải định rằng các từ xuất hiện là độc lập với nhau trong tài liệu, với tần suất được xác định trong từng hạng mục. Giả định về tính độc lập này rõ ràng là không đúng với thực tế. Ví dụ, cụm từ 'cầu thủ', và 'huấn luyện viên' sẽ thường xuyên đi kèm với nhau trong các văn bản về thể thao, dẫn đến biến triệu chứng về hai từ này là không độc lập với nhau. Tuy nhiên, ngay cả với những lỗi như vậy, mô hình Naive Bayes vẫn hoạt động khá tốt trong thực tế.
+\section*{Tổng kết}
+Chương 12 đã đề cập việc sử dụng lý thuyết xác suất làm nền tảng cho những lý luận về sự không chắc chắn và giới thiệu việc sử dụng nó:
+\begin{itemize}
+	\item Sự không chắc chắn nảy sinh do cả sự lười biếng và thiếu hiểu biết. Nó là điều không thể tránh khỏi trong trường hợp phức tạp, môi trường không xác định hoặc chỉ có thể quan sát một phần.
+	\item Xác suất cho thấy tác tử không thể đưa ra một quyết định chắc chắn đối với một khảng định đúng. Xác suât tóm tắt niềm tin của tác tử với các bằng chứng.
+	\item Lý thuyết quyết định kết hợp giữa niềm tin và mong muốn của tác tử, xác định hành động tốt nhất là một hành động thu được tối đa lợi ích mong muốn.
+	\item Các mệnh đề xác suất cơ bản bảo gồm: xác suất trước hoặc không có điều kiện, xác suất sau hoặc xác suất có điều kiện với các mệnh đề đơn giản và phức tạp.
+	\item Các tiên đề xác suất hạn chế sự phi logic trong một số trường hợp.
+	\item Phân phối xác suất đầy đủ xác định xác suất cho mỗi giá trị của các biến ngẫu nhiên. Nó thường quá lớn để tạo ra hoặc sử dụng trong biểu mẫu cụ thể.
+	\item Tính độc lập tuyệt đối giữa các tập hợp con của các biến ngẫu nhiên cho phép tính các phân phối đồng thời của chúng từ các tập có phân phối nhỏ hơn, giảm đáng kể độ phức tạp của phép tính.
+	\item Quy tắc Bayes cho phép tím các xác suất chưa biết từ các xấc suất có điều kiện đã biết, thường là biết hướng nguyên nhân - kết quả.
+	\item Tính độc lập có điều kiện của các mối quan hệ nhân quả khiến cho miền giá trị của các phân phối đồng thời được phân rã qua các phân phối nhỏ hơn có điều kiện. Mô hình Naive Bayes giả định tính độc lập có điều kiện của tất cả các biến triệu chứng, đưa ra một biến nguyên nhân duy nhất, kích thước của bài toán phát triển tuyến tính với số lượng các biến triệu chứng.
+\end{itemize}

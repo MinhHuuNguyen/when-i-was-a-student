@@ -1,0 +1,550 @@
+\chapter{Học sâu}
+Học sâu là một phần của Học máy dựa trên một tập hợp các thuật toán để cố gắng mô hình dữ liệu trừu tượng hóa ở mức cao bằng cách sử dụng nhiều lớp xử lý với cấu trúc phức tạp, hoặc bằng cách khác bao gồm nhiều biến đổi phi tuyến.
+Từ "sâu" đề cập đến việc các mạch thường được tổ chức thành nhiều lớp, có nghĩa là các con đường tính toán từ đầu vào đến đầu ra có nhiều bước. Học sâu hiện là cách tiếp cận được sử dụng rộng rãi nhất cho các ứng dụng như nhận dạng đối tượng trực quan, dịch máy, nhận dạng giọng nói, tổng hợp giọng nói và tổng hợp hình ảnh; nó cũng đóng một vai trò quan trọng trong các ứng dụng học tăng cường.
+Học sâu có nguồn gốc từ công trìn cố gắng mô hình hóa mạng lưới nơ-ron trong não (McCulloch và Pitts, 1943) bằng các mạch tính toán. Vì lý do này, các mạng được đào tạo bằng phương pháp học sâu thường được gọi là mạng thần kinh, mặc dù bề ngoài có vẻ giống với các tế bào và cấu trúc thần kinh thực. Mặc dù lý do thực sự cho sự thành công của học sâu vẫn chưa được làm sáng tỏ đầy đủ, nhưng nó có những lợi thế rõ ràng so với một số phương pháp khác — đặc biệt là đối với dữ liệu chiều cao như hình ảnh.
+
+Ý tưởng cơ bản của học sâu là đào tạo các mạch sao cho đường dẫn tính toán dài, cho phép tất cả các biến đầu vào tương tác theo những cách phức tạp (Hình 14.1 (c)). Các mô hình mạch này đủ sức biểu đạt để nắm bắt sự phức tạp của dữ liệu trong thế giới thực đối với nhiều loại vấn đề học tập quan trọng.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/chapter21/fig21.0.jpg}
+    \caption{(a) Một mô hình nông, chẳng hạn như hồi quy tuyến tính, có các đường tính toán ngắn giữa đầu vào và đầu ra. (b) Mạng danh sách quyết định có một số đường tính toán dài cho một số giá trị đầu vào có thể có, nhưng hầu hết đều ngắn. (c) Mạng học sâu có các đường tính toán dài hơn, cho phép mỗi biến tương tác với tất cả các biến khác..}
+    \label{fig:21.0}
+\end{figure}
+
+\section{Mạng chuyển tiếp đơn giản}
+Một mạng chuyển tiếp chỉ có các kết nối theo một hướng, nghĩa là, nó tạo thành một đồ thị xoay chiều có hướng với các nút đầu vào và đầu ra được chỉ định. Mỗi nút tính toán một chức năng của các đầu vào của nó và chuyển kết quả cho những người kế nhiệm của nó trong mạng. Thông tin chảy qua mạng từ các nút đầu vào đến các nút đầu ra, và không có vòng lặp
+Các mạch Boolean, thực hiện các chức năng Boolea là một ví dụ về mạng truyền thẳng. Trong mạch Boolean, các đầu vào được giới hạn ở 0 và 1, và mỗi nút thực hiện một hàm Boolean đơn giản cho các đầu vào của nó, tạo ra giá trị 0 hoặc 1. Trong mạng nơron, các giá trị đầu vào thường liên tục và các nút nhận đầu vào liên tục và tạo ra đầu ra liên tục. Một số đầu vào cho các nút là các tham số của mạng; mạng học bằng cách điều chỉnh các giá trị của các tham số này để mạng nói chung phù hợp với dữ liệu huấn luyện. 
+\subsection{Hàm kích hoạt}
+Mỗi nút trong mạng được gọi là một đơn vị, mỗi đơn vị tính toán tổng trọng số của các đầu vào từ các nút tiền nhiệm và sau đó áp dụng một hàm phi tuyến để tạo ra đầu ra của nó. Gọi $a_j$ là đầu ra của đơn vị j và gọi $w_{i,j}$ là trọng số gắn với liên kết từ đơn vị i đến đơn vị :
+\begin{align*}
+a_j = g_j(\sum_{i}w_{i,j}a_i)\equiv g_j(in_j)
+\end{align*}
+Trong đó, $g_j$ là một hàm kích hoạt phi tuyến của đơn vị j, $in_j$ là tổng trọng số của các đầu vào cho đơn vị j.
+
+Như trong Phần 19.6.3 (trang 679), chúng tôi quy định rằng mỗi đơn vị có thêm đầu vào từ đơn vị giả 0 được cố định thành +1 và trọng số $w_{0,j}$ cho đầu vào đó. Điều này cho phép tổng đầu vào có trọng số $in_j$ đến đơn vị j là khác 0 ngay cả khi các đầu ra của lớp trước đó đều bằng không. Với quy ước này, chúng ta có thể viết phương trình trước ở dạng vectơ như sau:
+
+\begin{equation}
+\label{eq:21.1}
+\begin{split}
+a_j = g_j(w^ \intercal x) ,
+\end{split}
+\end{equation}
+trong đó $w$ là vectơ trọng số đơn vị $j$ (bao gồm $w_{0,j})$ và x là vectơ đầu vào đơn vị $j$ (bao gồm cả +1).
+
+Hàm kích hoạt là phi tuyến rất quan trọng bởi vì nếu không, bất kỳ thành phần nào của các đơn vị sẽ vẫn đại diện cho một hàm tuyến tính. Tính phi tuyến là thứ cho phép các mạng đơn vị đủ lớn biểu diễn các chức năng tùy ý. Định lý xấp xỉ phổ quát phát biểu rằng một mạng chỉ với hai lớp đơn vị tính toán, lớp phi tuyến thứ nhất và lớp tuyến tính thứ hai, có thể xấp xỉ bất kỳ hàm liên tục nào với mức độ chính xác tùy ý. Bằng chứng hoạt động bằng cách chỉ ra rằng một mạng lớn theo cấp số nhân có thể biểu diễn theo cấp số nhân nhiều “phần lồi” có độ cao khác nhau tại các vị trí khác nhau trong không gian đầu vào, do đó ước tính hàm mong muốn. Nói cách khác, các mạng đủ lớn có thể triển khai một bảng tra cứu cho các hàm liên tục, cũng giống như các cây quyết định đủ lớn triển khai một bảng tra cứu cho các hàm Boolean.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/chapter21/fig21.11.jpg}
+    \caption{Các hàm kích hoạt thường được sử dụng trong học sâu: (a) Hàm Sigmoid; (b) Hàm ReLU và Hàm softplus; (c) Hàm tanh.}
+    \label{fig:21.11}
+\end{figure}
+
+Có nhiều hàm kích hoạt khác nhau được sử dụng. Các hàm phổ biến nhất được thể hiện trong Hình 14.2 :
+\begin{center}
+\begin{itemize}
+    \item Hàm Sigmoid:
+        \begin{align*}
+          \sigma(x) = 1/(1+e^{-x})
+        \end{align*}
+    \item Hàm ReLU:
+        \begin{align*}
+          ReLU(x) = max(0,x)
+        \end{align*}   
+    \item Hàm softplus, một phiên bản của ReLu:
+        \begin{align*}
+          softplus(x) = log(1+e^x)
+        \end{align*}
+    \item Hàm Tanh:
+        \begin{align*}
+          tanh(x) = \frac{e^{2x}-1}{e^{2x}+1}
+        \end{align*}
+\end{itemize}
+\end{center}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/chapter21/fig21.12.jpg}
+    \caption{(a) Mạng nơ-ron có hai đầu vào, một lớp ẩn gồm hai đơn vị và một lớp đầu ra. (b) Mạng trong (a) được thể hiện rõ thành đồ thị tính toán đầy đủ của nó.}
+    \label{fig:21.12}
+\end{figure}
+
+Việc ghép nhiều đơn vị lại với nhau thành một mạng sẽ tạo ra một hàm phức hợp là một thành phần của các biểu thức đại số được biểu diễn bằng các đơn vị riêng lẻ. Ví dụ, mạng được hiển thị trong Hình 14.3 (a) đại diện cho một hàm $h_w(x)$, được tham số hóa bởi trọng số w, ánh xạ vectơ đầu vào hai phần tử x với giá trị đầu ra vô hướng ŷ. Cấu trúc bên trong của hàm phản ánh cấu trúc của mạng. Ví dụ, chúng ta có thể viết một biểu thức cho đầu ra ŷ như sau: 
+\begin{equation}
+\label{eq:21.2}
+\begin{split}
+    \hat{y} &=g_5(in_5)=g_5(w_{0,5}+w_{3,5}a_3+w_{4,5}a_4\\
+&= g_5(w_{0,5}+w_{3,5}g_3(in_3)+w_{4,5}g_4(in_4)\\
+&= g_5(w_{0,5}+w_{3,5}g_3(w_{0,3}+w{1,3}x_1+w_{2,3}x_2)+w_{4,5}g_4(w_{0,4}+w_{1,4}x_1+w_{2,4}x_2)).
+\end{split}
+\end{equation}
+Do đó, chúng ta có đầu ra $\hat{y}$ được biểu thị dưới dạng hàm $h_w(x)$ của các đầu vào và trọng số.
+
+Một cách tổng quát hơn để nghĩ về mạng đó là biểu đồ tính toán hoặc biểu đồ luồng dữ liệu, về cơ bản là một mạch trong đó mỗi nút đại diện cho một phép tính cơ bản. Hình 21.3 (b) cho thấy đồ thị tính toán tương ứng với mạng trong Hình 21.3 (a); biểu đồ làm cho mỗi phần tử của tính toán tổng thể rõ ràng. Nó cũng phân biệt giữa đầu vào (màu xanh lam) và trọng số (màu hoa cà nhạt): trọng số có thể được điều chỉnh để làm cho đầu ra $\hat{y}$ được gần hơn với giá trị thực y trong dữ liệu huấn luyện.
+Mỗi trọng số giống như một núm điều chỉnh âm lượng xác định mức độ mà nút tiếp theo trong đồ thị nghe được từ nút tiền nhiệm.
+
+Cũng giống như Công thức (14.1) mô tả hoạt động của một đơn vị ở dạng vectơ, chúng ta có thể làm điều gì đó tương tự cho toàn bộ mạng. Nói chung chúng ta sẽ sử dụng $W$ để biểu thị một ma trận trọng số; đối với mạng này, $W^{(1)}$ biểu thị trọng số trong lớp đầu tiên ($w_{1,3}, w_{1,4},$ v.v.) và $W^{(2)}$ biểu thị trọng số trong lớp thứ hai ($w_{3,5}$, v.v.). Cuối cùng, đặt $g^{(1)}$ và $g^{(2)}$ biểu thị các hàm kích hoạt trong lớp đầu tiên và lớp thứ hai. Sau đó, toàn bộ mạng có thể được viết như sau:
+\begin{equation}
+\label{eq:21.3}
+\begin{split}
+h_w(x) = g^{(2)}(W^{(2)}g^{(1)}(W^{(1)}x))
+\end{split}
+\end{equation}
+Giống như Công thức (14.2), biểu thức này tương ứng với một đồ thị tính toán, mặc dù đơn giản hơn nhiều so với đồ thị trong Hình 14.3 (b): ở đây, đồ thị chỉ đơn giản là một chuỗi với các ma trận trọng số được đưa vào mỗi lớp.
+
+Đồ thị tính toán trong Hình 14.3 (b) tương đối nhỏ và nông, nhưng ý tưởng tương tự áp dụng cho tất cả các hình thức học sâu: chúng tôi xây dựng đồ thị tính toán và điều chỉnh trọng số của chúng để phù hợp với dữ liệu. Đồ thị trong hình 14.3 (b) cũng được kết nối đầy đủ, có nghĩa là mọi nút trong mỗi lớp được kết nối với mọi nút trong lớp tiếp theo. Theo một nghĩa nào đó, đây là mặc định, nhưng chúng ta sẽ thấy trong Phần 14.3 rằng việc lựa chọn kết nối của mạng cũng rất quan trọng để đạt được hiệu quả học tập.
+\subsection{Gradient và học từ dữ liệu}
+
+Trong Phần 19.6, chúng tôi đã giới thiệu một cách tiếp cận đối với việc học có giám sát dựa trên gradient descent: tính toán gradient của hàm giảm đối với trọng số và điều chỉnh trọng số dọc theo hướng gradient để giảm tổn thất. Chúng tôi có thể áp dụng chính xác cách tiếp cận tương tự để tìm hiểu trọng số trong đồ thị tính toán. Đối với các trọng số dẫn đến các đơn vị trong lớp đầu ra — các trọng số tạo ra đầu ra của mạng, tính toán gradient về cơ bản giống với quy trình trong Phần 19.6. Đối với các trọng số dẫn đến các đơn vị trong các lớp ẩn, không được kết nối trực tiếp với đầu ra, quá trình này chỉ phức tạp hơn một chút.
+
+Hiện tại, chúng ta sẽ sử dụng hàm tổn thất bình phương, $L_2$, và chúng ta sẽ tính toán gradient cho mạng trong Hình 14.3 đối với một mẫu huấn luyện đơn giản (x, y). (Đối với nhiều mẫu, gradient chỉ là tổng của các gradient cho các mẫu riêng lẻ.) Mạng đưa ra dự đoán $\hat{y} = h_w(x)$ và giá trị y thực tế, vì vậy chúng ta có:
+\begin{align*}
+    Loss(h_w)=L_2(y,h_w(X))=\|y-h_w(X)\|^2=(y-\hat{y})^2.
+\end{align*}
+Để tính toán gradient của tổn thất liên quan đến trọng số, chúng ta cần các công cụ giải tích giống như chúng ta đã sử dụng trong Chương 19 — quy tắc chuỗi, $\partial g(f(x))/\partial x=g'(f(x))\partial f(x)/ \partial $. Chúng ta sẽ bắt đầu với trường hợp đơn giản: một trọng số chẳng hạn như $w_{3,5}$ được kết nối với đơn vị đầu ra.
+\begin{equation}
+\label{eq:21.4}
+\begin{split}
+    \frac{\partial}{\partial w_{3,5}} Loss(h_w) &= \frac{\partial}{\partial w_{3,5}} (y-\hat{y})^2 = -2(y-\hat{y}) \frac{\partial \hat{y}}{\partial w_{3,5}} \\
+    &= -2(y-\hat{y})\frac{\partial}{\partial w_{3,5}}g_5(in_5)= -2(y-\hat{y})g'_5(in_5)\frac{\partial}{\partial w_{3,5}}in_5\\
+    &= -2(y-\hat{y})g'_5(in_5)\frac{\partial}{\partial w_{3,5}}(w_{0,5}+w_{3,5}a_3+w_{4,5}a_4)\\
+    &= -2(y-\hat{y})g'_5(in_5)a_3.
+\end{split}
+\end{equation}
+Đơn giản hóa ở dòng cuối cùng như thế vì $w_{0,5}$ và $w_{4,5}a_4$ không phụ thuộc vào $w{3,5}$, cũng như hệ số của $w_{3,5}$, $a_3$.
+
+Trường hợp khó hơn một chút liên quan đến trọng số chẳng hạn như $w_{1,3}$ không được kết nối trực tiếp với đơn vị đầu ra. Ở đây, chúng ta phải áp dụng quy tắc chuỗi một lần nữa. Một số bước đầu tiên giống hệt nhau, vì vậy chúng tôi bỏ qua chúng:
+\begin{equation}
+\label{eq:21.5}
+\begin{split}
+    \frac{\partial}{\partial w_{1,3}} Loss(h_w) &= -2(y-\hat{y})g'_5(in_5)\frac{\partial}{\partial w_{1,3}}(w_{0,5}+w_{3,5}a_3+w_{4,5}a_4)\\
+    &= -2(y-\hat{y})g'_5(in_5)w_{3,5}\frac{\partial}{\partial w_{1,3}}a_3\\
+    &= -2(y-\hat{y})g'_5(in_5)w_{3,5}\frac{\partial}{\partial w_{1,3}}g_3(in_3)\\
+    &= -2(y-\hat{y})g'_5(in_5)w_{3,5}g'_3(in_3)\frac{\partial}{\partial w_{1,3}}in_3\\
+    &= -2(y-\hat{y})g'_5(in_5)w_{3,5}g'_3(in_3)\frac{\partial}{\partial w_{1,3}}(w_{0,3}+w_{1,3}x_1+w_{2,3}x_2)\\
+    &= -2(y-\hat{y})g'_5(in_5)w_{3,5}g'_3(in_3)x_1.
+\end{split}
+\end{equation}
+Vì vậy, chúng tôi có các biểu thức khá đơn giản cho gradient của sự mất mát đối với các trọng số $w_{3,5}$ và $w_{1,3}$.
+
+Nếu chúng ta định nghĩa $\triangle_5 = 2(\hat{y}-y)g'_5(in_5)$ là một loại "sai số nhận biết được" tại điểm đơn vị 5 nhận được đầu vào của nó, thì gradient đối với $w_{3,5}$ chỉ là $\triangle_5a_3$. Điều này hoàn toàn hợp lý: nếu $\triangle_5$ dương, nghĩa là $\hat{y}$ quá lớn (nhớ lại rằng $g'$ luôn luôn không âm); nếu $a_3$ cũng là số dương, thì việc tăng $w_{3,5}$ sẽ chỉ làm cho mọi thứ tồi tệ hơn, trong khi nếu $a_3$ là số âm, thì việc tăng $w_{3,5}$ sẽ làm giảm sai số . Mức độ của $a_3$ cũng rất quan trọng: nếu $a_3$ nhỏ trong mẫu đào tạo này, thì $w_3,5$ không đóng vai trò chính trong việc tạo ra sai số và không cần phải thay đổi nhiều.
+
+Nếu chúng ta cũng định nghĩa $\triangle_3 =\triangle_5w_{3,5}g'_3(in_3)$, thì gradient của $w_{1,3}$ trở thành $\triangle_3x_1$. Do đó, sai số  ở đầu vào cho đơn vị 3 là sai số  ở đầu vào cho đơn vị 5, nhân với thông tin dọc theo kết nối từ 5 trở lại 3. Thuật ngữ lan truyền ngược được hình thành để biểu diễn cho cách mà sai số ở đầu ra được chuyển trở lại thông qua mạng.
+
+Một đặc điểm quan trọng khác của các biểu thức gradient này là chúng có nhân tố đạo hàm cục bộ $g'_j(in_j)$. Như đã lưu ý trước đó, các đạo hàm này luôn không âm, nhưng chúng có thể rất gần bằng 0 (trong trường hợp hàm sigmoid, softplus và tanh) hoặc chính xác bằng 0 (trong trường hợp ReLU. Nếu đạo hàm $g'_j$ nhỏ hoặc bằng không, điều đó có nghĩa là việc thay đổi trọng số dẫn đến đơn vị j sẽ có ảnh hưởng không đáng kể đến đầu ra của nó. Do đó, các mạng sâu với nhiều lớp có thể bị giảm độ dốc - các tín hiệu lỗi hoàn toàn bị dập tắt khi chúng được truyền trở lại qua mạng. Phần 14.3.3 cung cấp một giải pháp cho vấn đề này.
+
+Chúng tôi đã chỉ ra rằng gradient trong mạng mẫu nhỏ của chúng tôi là các biểu thức đơn giản có thể được tính toán bằng cách chuyển thông tin trở lại mạng từ các đơn vị đầu ra. Điều đó chỉ ra rằng đặc tính này nắm giữ một cách tổng quát hơn. Trên thực tế, như chúng tôi trình bày trong Phần 14.4.1, các phép tính gradient cho bất kỳ đồ thị tính toán chuyển tiếp nào đều có cấu trúc giống như đồ thị tính toán bên dưới. Đặc tính này hoàn toàn tuân theo các quy tắc vi phân.
+
+Chúng tôi đã chỉ ra các vấn đề của một phép tính gradient, nhưng đừng lo: không cần phải thực hiện lại các phép tính đạo hàm trong Công thức (14.4) và (14.5) cho mỗi cấu trúc mạng mới! Tất cả các gradient như vậy có thể được tính bằng phương pháp vi phân tự động, áp dụng các quy tắc của phép tính một cách có hệ thống để tính toán gradient cho bất kỳ chương trình số nào. Trên thực tế, phương pháp lan truyền ngược trong học sâu chỉ đơn giản là một ứng dụng của 
+phép vi phân ngược, áp dụng quy tắc chuỗi “từ ngoài vào trong” và đạt được lợi thế hiệu quả của lập trình động khi mạng được đề cập có nhiều đầu vào và đầu ra tương đối ít.
+
+Tất cả các gói dành cho học sâu đều cung cấp tính năng vi phân tự động, để người dùng có thể thử nghiệm tự do với các cấu trúc mạng khác nhau, chức năng kích hoạt, chức năng mất và các dạng thành phần mà không cần phải thực hiện nhiều phép tính để tạo ra một thuật toán học tập mới cho mỗi thử nghiệm. Điều này đã khuyến khích một cách tiếp cận được gọi là học từ đầu đến cuối, trong đó một hệ thống tính toán phức tạp cho một nhiệm vụ như dịch máy có thể được tạo ra từ một số hệ thống con có thể đào tạo; toàn bộ hệ thống sau đó được đào tạo theo kiểu end-to-end từ các cặp đầu vào/đầu ra. Với cách tiếp cận này, người thiết kế chỉ cần có một ý tưởng mơ hồ về cách cấu trúc hệ thống tổng thể; không cần biết trước chính xác những gì mỗi hệ thống con phải làm hoặc cách ghi nhãn các đầu vào và đầu ra của nó.
+\section{Đồ thị tính toán cho Học sâu}
+Ở phần này, các ý tưởng cơ bản của học sâu đó là: biểu diễn các giả thuyết dưới dạng đồ thị tính toán với các trọng số có thể điều chỉnh được và tính toán độ dốc của hàm mất mát đối với các trọng số đó để phù hợp với dữ liệu đào tạo. Bây giờ chúng ta xem xét cách kết hợp các đồ thị tính toán với nhau. Chúng ta bắt đầu với lớp đầu vào, là nơi mẫu đào tạo $x$ được mã hóa dưới dạng các giá trị của các nút đầu vào. Sau đó, chúng tôi xem xét lớp đầu ra, nơi các kết quả đầu ra $\hat{y}$ được so sánh với các giá trị thực y để thu được tín hiệu học tập để điều chỉnh trọng số. Cuối cùng, chúng ta xem xét các lớp ẩn của mạng.
+\subsection{Mã hóa đầu vào}
+Các nút đầu vào và đầu ra của đồ thị tính toán là các nút kết nối trực tiếp với dữ liệu đầu vào x và dữ liệu đầu ra y. Việc mã hóa dữ liệu đầu vào thường đơn giản, ít nhất là đối với trường hợp dữ liệu được phân tích trong đó mỗi ví dụ huấn luyện chứa các giá trị cho n thuộc tính đầu vào. Nếu các thuộc tính là Boolean, chúng ta có n nút đầu vào; thường false được ánh xạ tới đầu vào là 0 và true được ánh xạ tới 1, mặc dù đôi khi -1 và +1 được sử dụng. Các thuộc tính số, cho dù là số nguyên hay có giá trị thực, thường được sử dụng nguyên trạng, mặc dù chúng có thể được chia tỷ lệ để phù hợp với một phạm vi cố định; nếu các cường độ của các ví dụ khác nhau khác nhau rất nhiều, các giá trị có thể được ánh xạ vào thang loga.
+
+Hình ảnh không hoàn toàn phù hợp với loại factored data; mặc dù hình ảnh RGB có kích thước X × Y pixel có thể được coi là thuộc tính có giá trị số nguyên $3XY$ (thường với các giá trị trong phạm vi {0,..., 255}), điều này sẽ bỏ qua thực tế là bộ ba RGB thuộc về cùng một pixel trong hình ảnh và thực tế là độ liền kề pixel thực sự quan trọng. Tất nhiên, chúng ta có thể ánh xạ các pixel lân cận vào các nút đầu vào liền kề trong mạng, nhưng ý nghĩa của kề sẽ hoàn toàn mất đi nếu các lớp bên trong của mạng được kết nối đầy đủ. Trong thực tế, các mạng được sử dụng với dữ liệu hình ảnh có cấu trúc bên trong giống như mảng nhằm phản ánh ngữ nghĩa của tính kề nhau. chi tiết sẽ được trình bày rõ hơn trong Phần 14.3.
+\subsection{Lớp đầu ra và hàm mất mát}
+Kết quả lý tưởng nhất mà chúng ta đều mong muốn đó là $\hat{y}$ sẽ khớp chính xác với giá trị y mong muốn và tổn thất sẽ bằng 0, và chúng ta đã hoàn tất. Trong thực tế, điều này hiếm khi xảy ra - đặc biệt là trước khi chúng ta bắt đầu quá trình điều chỉnh trọng số! Do đó, chúng ta cần suy nghĩ về giá trị đầu ra không chính xác có nghĩa là gì và cách đo lường tổn thất. Trong việc suy ra các gradient trong Công thức (14.4) và (14.5), chúng ta bắt đầu với hàm giảm lỗi bình phương. Điều này giúp tính toán trở nên đơn giản, nhưng nó không phải là khả năng duy nhất. Trên thực tế, đối với hầu hết các ứng dụng học sâu, thông thường hơn là diễn giải các giá trị đầu ra$\hat{y}$ là xác suất và sử dụng khả năng log âm làm hàm mất mát - chính xác như chúng ta đã làm với việc học khả năng tối đa trong Chương trước.
+
+Maximum likelihood learning tìm giá trị của w để tối đa hóa xác suất của dữ liệu quan sát. Và bởi vì hàm log là hàm đơn điệu, điều này có nghĩa là với việc tối đa hóa logarit của likelihood của dữ liệu, tương đương với việc giảm thiểu một hàm mất mát được định nghĩa là negative log likelihood. Nói cách khác, chúng ta đang tìm kiếm $w^*$ để giảm thiểu tổng xác suất âm của N mẫu:
+
+\begin{equation}
+\label{eq:21.6}
+\begin{split}
+    w^*=\underset{w}{\mathrm{argmin}} - \sum_{j=1}^{N}logP_w(y_j|x_j)
+\end{split}
+\end{equation}
+
+Trong tài liệu học sâu, người ta thường nói đến việc giảm thiểu sự cross-entropy loss. Cross-entropy (Entropy chéo), được viết là $H(P, Q)$, là một loại thước đo về sự không giống nhau giữa hai phân phối $P$ và $Q$. Định nghĩa:
+\begin{equation}
+\label{eq:21.7}
+\begin{split}
+    H(P,Q)=E_{z\sim P(z)}[logQ(z)]=\int P(z)logQ(z)dz
+\end{split}
+\end{equation}
+
+Trong đó, $P$ là phân phối thực qua các mẫu huấn luyện, $P^{*}(x, y)$ và $Q$ là giả thuyết dự đoán $P_w(y|x)$. Việc giảm thiểu cross-entropy $H(P^{*}(x,y)$, $P_w(y|x)$ bằng cách điều chỉnh w làm cho giả thuyết càng gần càng tốt với phân phối thực. Trong thực tế, chúng ta không thể giảm thiểu cross-entropy này vì chúng ta không có quyền truy cập vào phân phối dữ liệu thực $P^{*}(x, y)$; nhưng chúng ta có quyền truy cập vào các mẫu từ $P^{*}(x,y)$, vì vậy tổng trên dữ liệu thực tế trong Phương trình (14.6) xấp xỉ với kỳ vọng trong Phương trình (14.7).
+
+Để giảm thiểu negative log likelihood (hoặc cross-entropy), chúng ta cần có khả năng diễn giải đầu ra của mạng dưới dạng xác suất. Ví dụ: nếu mạng có một đơn vị đầu ra có chức năng kích hoạt sigmoid và đang học phân loại Boolean, chúng ta có thể diễn giải trực tiếp giá trị đầu ra dưới dạng xác suất mà ví dụ đó thuộc về lớp dương. (Thật vậy, đây chính xác là cách sử dụng hồi quy logistic; xem trang 684.) Do đó, đối với các bài toán phân loại Boolean, chúng ta thường sử dụng lớp đầu ra sigmoid.
+
+Các vấn đề phân loại đa lớp rất phổ biến trong học máy. Ví dụ, các bộ phân loại được sử dụng để nhận dạng đối tượng thường cần phải nhận ra hàng nghìn loại đối tượng riêng biệt. Các mô hình ngôn ngữ tự nhiên cố gắng dự đoán từ tiếp theo trong một câu có thể phải chọn trong số hàng chục nghìn từ có thể. Đối với loại dự đoán này, chúng ta cần mạng xuất ra một phân phối phân loại — nghĩa là, nếu có d câu trả lời khả dĩ, chúng ta cần d nút đầu ra biểu thị xác suất tổng thành 1.
+Để đạt được điều này, chúng tôi sử dụng một lớp softmax, lớp này xuất ra một vectơ có giá trị d với giá trị đầu vào $in=\langle in_1,...,in_d \rangle$ . Phần tử thứ k của vectơ đầu ra đó được cho bởi 
+\begin{align*}
+    Softmax(in)_k=\frac {e^{in_k}}{\sum_{k'=1}^{d} e^{in_k'}}
+\end{align*}
+Theo cách xây dựng, hàm softmax xuất ra một vectơ gồm các số không âm có tổng bằng 1. Như thường lệ, đầu vào trong k cho mỗi nút đầu ra sẽ là một tổ hợp tuyến tính có trọng số của các đầu ra của lớp trước.
+
+Có thể có nhiều lớp đầu ra khác. Ví dụ, một lớp mật độ hỗn hợp đại diện cho các kết quả đầu ra bằng cách sử dụng hỗn hợp các phân bố Gaussian. Các lớp như vậy dự đoán tần số tương đối của từng thành phần hỗn hợp, giá trị trung bình của từng thành phần và phương sai của từng thành phần. Miễn là các giá trị đầu ra này được giải thích một cách thích hợp bởi hàm mất mát khi xác định xác suất cho giá trị đầu ra thực sự y, thì sau khi huấn luyện, mạng sẽ phù hợp với mô hình hỗn hợp Gauss trong không gian của các đặc trưng được xác định bởi các lớp trước đó.
+
+\subsection{Lớp ẩn}
+Trong quá trình huấn luyện, một mạng nơ-ron được hiển thị nhiều giá trị đầu vào x và nhiều giá trị đầu ra y tương ứng. Trong khi xử lý một vectơ đầu vào x, mạng nơ-ron thực hiện một số phép tính trung gian trước khi tạo ra đầu ra y. Chúng ta có thể coi các giá trị được tính ở mỗi lớp của mạng như một đại diện khác nhau cho đầu vào x. Mỗi lớp biến đổi biểu diễn được tạo ra bởi lớp trước đó để tạo ra một biểu diễn mới. Thành phần của tất cả các phép biến đổi này sẽ thành công - nếu mọi việc suôn sẻ - trong việc chuyển đổi đầu vào thành đầu ra mong muốn. Thật vậy, một giả thuyết cho lý do tại sao học sâu hoạt động tốt là sự chuyển đổi phức tạp từ đầu đến cuối ánh xạ từ đầu vào đến đầu ra — ví dụ, từ hình ảnh đầu vào đến danh mục đầu ra “con hươu cao cổ” —được phân tách bởi nhiều lớp thành thành phần của nhiều phép biến đổi tương đối đơn giản, mỗi phép biến đổi đều khá dễ học bằng quy trình cập nhật cục bộ.
+Trong quá trình hình thành tất cả các phép biến đổi bên trong này, các mạng sâu thường phát hiện ra các biểu diễn trung gian có ý nghĩa của dữ liệu. Ví dụ, một mạng học cách nhận dạng các đối tượng phức tạp trong hình ảnh có thể tạo thành các lớp bên trong phát hiện các đơn vị con hữu ích: cạnh, góc, hình elip, mắt, khuôn mặt — mèo. Hoặc có thể không — các mạng sâu có thể tạo thành các lớp bên trong mà ý nghĩa của chúng không rõ ràng đối với con người, mặc dù kết quả đầu ra vẫn đúng.
+Các lớp ẩn của mạng nơ-ron thường ít đa dạng hơn các lớp đầu ra. Trong 25 năm nghiên cứu đầu tiên với mạng đa lớp (khoảng 1985–2010), các nút bên trong hầu như chỉ sử dụng các chức năng kích hoạt sigmoid và tanh. Từ khoảng năm 2010 trở đi, ReLU và softplus trở nên phổ biến hơn, một phần vì chúng được cho là tránh được vấn đề chuyển màu biến mất được đề cập trong Phần 21.1.2. Thử nghiệm với các mạng ngày càng sâu cho thấy rằng, trong nhiều trường hợp, việc học tập tốt hơn đạt được với các mạng sâu và tương đối hẹp hơn là các mạng nông, rộng, với tổng số trọng số cố định. Ví dụ điển hình về điều này được thể hiện trong Hình 14.7.
+Tất nhiên, có nhiều cấu trúc khác cần xem xét cho đồ thị tính toán, bên cạnh việc chỉ với chiều rộng và chiều sâu. Tại thời điểm viết bài, có rất ít hiểu biết về lý do tại sao một số cấu trúc dường như hoạt động tốt hơn những cấu trúc khác cho một số vấn đề cụ thể. Với kinh nghiệm, các học viên có được một số trực giác về cách thiết kế mạng và cách khắc phục chúng khi chúng không hoạt động, cũng như các đầu bếp có được trực giác về cách thiết kế công thức nấu ăn và cách khắc phục khi chúng có mùi vị khó chịu. Vì lý do này, các công cụ hỗ trợ việc khám phá và đánh giá nhanh chóng các cấu trúc khác nhau là điều cần thiết để thành công trong các bài toán trong thế giới thực.
+
+\section{Mạng tích chập}
+
+Mạng nơ-ron tích chập (CNN) là mạng chứa các kết nối cục bộ không gian, ít nhất là trong các lớp đầu tiên và có các mẫu trọng số được sao chép qua các đơn vị trong mỗi lớp. Một mẫu trọng số được sao chép trên nhiều vùng cục bộ được gọi là nhân và quá trình áp dụng nhân vào các pixel của hình ảnh (hoặc cho các đơn vị được tổ chức theo không gian trong một lớp tiếp theo) được gọi là tích chập.
+
+Nhân và chập dễ minh họa nhất trong một chiều chứ không phải hai hoặc nhiều hơn, vì vậy chúng ta sẽ giả sử một vectơ đầu vào x có kích thước n, tương ứng với n pixel trong hình ảnh một chiều và một nhân vectơ k có kích thước l. (Để đơn giản, chúng ta sẽ giả định rằng l là một số lẻ.) Tất cả các ý tưởng đều chuyển sang các trường hợp có chiều cao hơn.
+
+Ký hiệu phép toán tích chập là * và được định nghĩa như sau:
+\begin{equation}
+\label{eq:21.8}
+\begin{split}
+    z_i=\sum_{j=1}^{l} k_jx_{j+i-(l+1)2}
+\end{split}
+\end{equation}
+Nói cách khác, với mỗi vị trí đầu ra $i$, chúng ta lấy tích số chấm giữa hạt nhân $k$ và một đoạn $x$ có tâm là $x_i$ với chiều rộng $l$.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/chapter21/fig21.4.jpg}
+    \caption{Ví dụ về phép toán tích chập một chiều với hạt nhân có kích thước l = 3 và sải bước s = 2.}
+    \label{fig:21.0}
+\end{figure}
+
+Quá trình này được minh họa trong Hình 21.4 cho một vectơ hạt nhân $[+1,-1,+1]$, phát hiện điểm tối hơn trong ảnh 1D. (Phiên bản 2D có thể phát hiện ra một đường tối hơn.) Lưu ý rằng trong ví dụ này, các pixel mà các nhân được căn giữa trên đó cách nhau một khoảng là 2 pixel; chúng ta nói rằng hạt nhân được áp dụng với sải bước s=2. Chú ý rằng lớp đầu ra có ít pixel hơn: vì sải bước, số lượng pixel giảm từ n xuống khoảng $n/s$. (Trong hai chiều, số lượng pixel sẽ là khoảng $n/s_xs_y$, trong đó $s_x$ và $s_y$ là các bước theo hướng x và y trong hình) Chúng tôi nói "gần đúng" vì những gì xảy ra ở rìa hình ảnh: trong Hình 14.4, tích chập dừng lại ở các cạnh của hình ảnh, nhưng người ta cũng có thể 
+thêm vào đầu vào bằng các pixel phụ (hoặc số 0 hoặc bản sao của các pixel bên ngoài) để  hạt nhân có thể được áp dụng chính xác $\lfloor n/s \rfloor$ lần. Đối với các hạt nhân nhỏ, chúng ta thường sử dụng $s=1$, vì vậy đầu ra có cùng kích thước như hình ảnh (xem Hình 14.5).
+
+Phép tính áp dụng hạt nhân trên một hình ảnh có thể được thực hiện theo cách rõ ràng bởi một chương trình với các vòng lặp lồng nhau phù hợp; nhưng nó cũng có thể được xây dựng dưới dạng một phép toán ma trận đơn, giống như ứng dụng của ma trận trọng số trong Công thức (14.1). Ví dụ, tích chập được minh họa trong Hình 14.4 có thể được xem như là phép nhân ma trận sau: 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/chapter21/tich2matrix.jpg}
+\end{figure}
+
+Trong ma trận trọng số này, hạt nhân xuất hiện trong mỗi hàng, dịch chuyển theo sải bước so với hàng trước đó, Người ta không nhất thiết phải xây dựng ma trận trọng số một cách rõ ràng — xét cho cùng thì nó hầu hết là số 0 — nhưng thực tế là tích chập là một phép tính ma trận tuyến tính đóng vai trò như một lời nhắc nhở rằng quá trình giảm độ dốc có thể được áp dụng dễ dàng và hiệu quả cho CNN, giống như nó có thể cho các mạng nơ-ron đơn giản
+
+Như đã đề cập trước đó, sẽ có d hạt nhân, không chỉ một; vì vậy, với một sải chân là 1, sẽ lớn hơn d lần. Điều này có nghĩa là mảng đầu vào hai chiều trở thành mảng ba chiều gồm các đơn vị ẩn, trong đó kích thước thứ ba có kích thước d. Điều quan trọng là phải tổ chức lớp ẩn theo cách này, sao cho tất cả các kết quả đầu ra của hạt nhân từ một vị trí hình ảnh cụ thể vẫn được liên kết với vị trí đó. Tuy nhiên, không giống như các kích thước không gian của hình ảnh, “kích thước hạt nhân” bổ sung này không có bất kỳ thuộc tính kề nào, vì vậy không có ý nghĩa gì khi chạy các 
+tích chập.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/chapter21/fig21.5.jpg}
+    \caption{Hai lớp đầu tiên của CNN cho hình ảnh 1D với kích thước hạt nhân l = 3 và s = 1. Lớp đệm được thêm vào ở hai đầu bên trái và bên phải để giữ cho các lớp ẩn có cùng kích thước với đầu vào. Được hiển thị bằng màu đỏ là trường tiếp nhận của một đơn vị trong lớp ẩn thứ hai.
+Nói chung, đơn vị càng sâu, trường tiếp nhận càng lớn.}
+    \label{fig:21.0}
+\end{figure}
+CNN ban đầu được lấy cảm hứng từ các mô hình của vỏ não thị giác được đề xuất trong khoa học thần kinh. Trong các mô hình đó, trường tiếp nhận của một tế bào thần kinh là một phần của đầu vào cảm giác có thể ảnh hưởng đến sự kích hoạt của tế bào thần kinh đó. Trong CNN, trường tiếp nhận của một đơn vị trong lớp ẩn đầu tiên nhỏ - chỉ bằng kích thước của hạt nhân, tức là l pixel. Ở các lớp sâu hơn của mạng, nó có thể lớn hơn nhiều. Hình 14.5 minh họa điều này cho một đơn vị trong lớp ẩn thứ hai, có trường tiếp nhận chứa năm pixel. Khi bước đi là 1, như trong hình, một nút trong lớp ẩn thứ m sẽ có trường tiếp nhận có kích thước (l - 1) m + 1; vì vậy tăng trưởng là tuyến tính theo m. (Trong hình ảnh 2D, mỗi chiều của trường tiếp nhận phát triển tuyến tính với m, do đó diện tích tăng lên theo bậc hai.) Khi khoảng cách lớn hơn 1, mỗi pixel trong lớp m đại diện cho s pixel trong lớp m - 1; do đó, trường tiếp nhận phát triển theo O (ls m) - nghĩa là theo cấp số nhân với độ sâu.
+Hiệu ứng tương tự cũng xảy ra với các lớp gộp, chúng ta sẽ thảo luận tiếp theo.
+
+\subsection{Gộp và lấy mẫu xuống}
+Lớp gộp trong mạng nơ-ron tổng hợp một tập hợp các đơn vị liền kề từ lớp trước với một giá trị duy nhất. Tính năng gộp hoạt động giống như một lớp tích chập, với kích thước hạt nhân l và s sải bước, nhưng phép tính được áp dụng là cố định chứ không phải học. Pooling layer thường được dùng giữa các convolutional layer, để giảm kích thước dữ liệu nhưng vẫn giữ được các thuộc tính quan trọng. Kích thước dữ liệu giảm giúp giảm việc tính toán trong model.
+Thông thường, không có chức năng kích hoạt nào được liên kết với lớp gộp. Có hai hình thức gộp chung:
+\begin{itemize}
+    \item Gộp trung bình
+    \item Gộp lấy cực đại
+\end{itemize}
+
+Nếu mục tiêu là phân loại hình ảnh thành một trong c loại, thì lớp cuối cùng của mạng sẽ là một softmax với c đơn vị đầu ra. Các lớp đầu tiên của CNN có kích thước bằng hình ảnh, vì vậy ở đâu đó phải có sự giảm kích thước lớp đáng kể. Các lớp tích chập và các lớp gộp lại có sải chân lớn hơn 1 đều có tác dụng giảm kích thước lớp. Cũng có thể giảm kích thước lớp chỉ bằng cách có một lớp được kết nối đầy đủ với ít đơn vị hơn lớp trước đó. CNN thường có một hoặc hai lớp như vậy trước lớp softmax cuối cùng.
+\subsection{Tensor operations trong CNNs}
+Chúng ta đã thấy trong Phương trình (14.1) và (14.3) rằng việc sử dụng ký hiệu vectơ và ma trận có thể hữu ích trong việc giữ cho các dẫn xuất toán học đơn giản và trang nhã cũng như cung cấp các mô tả ngắn gọn về đồ thị tính toán. Vectơ và ma trận là các trường hợp đặc biệt một chiều và hai chiều của tenxơ, mà (trong thuật ngữ học sâu) chỉ đơn giản là mảng đa chiều Tensor của bất kỳ chiều nào.
+
+Đối với CNN, tensors là một cách để theo dõi "hình dạng" của dữ liệu khi nó tiến triển qua các lớp của mạng. Điều này rất quan trọng vì toàn bộ khái niệm tích chập phụ thuộc vào ý tưởng về tính kề nhau: các phần tử dữ liệu liền kề được giả định là có liên quan về mặt ngữ nghĩa, vì vậy sẽ có ý nghĩa khi áp dụng các toán tử cho các vùng cục bộ của dữ liệu. Hơn nữa, với các nguyên thủy ngôn ngữ phù hợp để xây dựng các tensor và áp dụng các toán tử, bản thân các lớp có thể được mô tả một cách chính xác như các bản đồ từ đầu vào tensor đến đầu ra tensor.
+
+Lý do cuối cùng để mô tả CNN theo tensor chính là hiệu quả tính toán: được ra được sự mô tả mạng như một chuỗi các hoạt động tensor, một gói phần mềm học sâu có thể tạo mã đã biên dịch được tối ưu hóa cao cho nền tảng tính toán cơ bản. Khối lượng công việc học sâu thường được chạy trên GPU (đơn vị xử lý đồ họa) hoặc TPU (đơn vị xử lý tensor), tạo ra mức độ song song cao. Ví dụ: một trong các pod TPU thế hệ thứ ba của Google có thông lượng tương đương với khoảng mười triệu máy tính xách tay. Việc tận dụng những khả năng này là điều cần thiết nếu một người đang đào tạo một CNN lớn trên một cơ sở dữ liệu lớn về hình ảnh. Do đó, thông thường không phải xử lý một hình ảnh cùng một lúc mà nhiều hình ảnh song song; như chúng ta sẽ thấy trong Phần 14.4, điều này cũng phù hợp với cách mà thuật toán giảm độ dốc ngẫu nhiên tính toán độ dốc liên quan đến một nhóm nhỏ các mẫu đào tạo.
+
+\subsection{Mạng phần dư - ResNet}
+ResNet là một cách tiếp cận phổ biến và thành công để xây dựng các mạng rất sâu để tránh vấn đề gradient biến mất. 
+
+Các mô hình sâu điển hình sử dụng các lớp để học cách biểu diễn mới ở lớp i bằng cách đặt lại hoàn toàn biểu diễn ở lớp i-1. Sử dụng ký hiệu ma trận-vectơ đã giới thiệu ở Phương trình (14.3), với $z^{(i)}$ là giá trị của các đơn vị trong lớp i, ta có:
+\begin{align*}
+    z^{(i)}=f(z^{(i-1)}=g^{(i)}(W^{(i)}z^{(i-1)}.
+\end{align*}
+
+Bởi vì mỗi lớp thay thế hoàn toàn phần biểu diễn từ lớp trước, tất cả các lớp phải học cách làm điều gì đó hữu ích. Mỗi lớp ít nhất phải bảo toàn thông tin liên quan đến tác vụ có trong lớp trước đó. Nếu chúng ta đặt $W^{(i)}=0$ cho bất kỳ lớp i nào, toàn bộ mạng sẽ ngừng hoạt động. Nếu chúng ta cũng đặt $W^{(i-1)}=0$, mạng thậm chí sẽ không thể học: lớp $i$ sẽ không học vì nó sẽ không quan sát thấy sự thay đổi nào trong đầu vào của nó từ lớp $i-1$ và lớp $i-1$ thì không học bởi vì gradient lan truyền ngược từ lớp $i$ sẽ luôn bằng 0. Tất nhiên, đây là những ví dụ cực đoan, nhưng chúng minh họa sự cần thiết của các lớp đóng vai trò như đường dẫn cho các tín hiệu đi qua mạng.
+
+Ý tưởng chính của ResNet là một lớp nên xáo trộn biểu diễn từ lớp trước hơn là thay thế nó hoàn toàn. Nếu sự nhiễu loạn đã học là nhỏ, lớp tiếp theo gần như là bản sao của lớp trước. Điều này đạt được bằng phương trình sau cho lớp $i$ đối với lớp $i-1$ :
+\begin{equation}
+\label{eq:21.10}
+\begin{split}
+    z^{(i)}=g_r^{(i)}(z^{(i-1)}+f(z^{(i-1)}),
+\end{split}
+\end{equation}
+trong đó $g_r$ biểu thị các chức năng kích hoạt cho lớp còn lại. Ở đây chúng ta nghĩ về $f$ là phần dư còn lại, làm xáo trộn hành động mặc định của việc chuyển lớp i-1 đến lớp i. Hàm được sử dụng để tính phần dư thường là một mạng nơ-ron với một lớp phi tuyến kết hợp với một lớp tuyến tính:
+\begin{align*}
+    f(Z)=Vg(Wz),
+\end{align*}
+trong đó W và V là các ma trận trọng số đã học với các trọng số $b$ được thêm vào.
+
+ResNet giúp tìm hiểu các mạng sâu hơn một cách đáng tin cậy. Hãy xem xét điều gì sẽ xảy ra nếu chúng ta đặt $V=0$ cho một lớp cụ thể để vô hiệu hóa lớp đó. Sau đó, phần dư $f$ biến mất và Công thức (14.10) đơn giản hóa thành: 
+\begin{align*}
+    z^{(i)}=g_r(z^{(i-1)}).
+\end{align*}
+Bây giờ, giả sử rằng $g_r$ bao gồm các hàm kích hoạt ReLU và $z^{(i-1)}$ cũng áp dụng một hàm ReLU đối với các đầu vào của nó: $z^{(i-1)}=ReLU(in^{(i-1)})$. Trong trường hợp đó, ta có:
+\begin{align*}
+    z^{(i)}=g_r(z^{(i-1)})=ReLU(ReLU(i^{(i-1)}))=ReLU(i^{(i-1)})=z^{(i-1)},
+\end{align*}
+Trong ResNet với kích hoạt ReLU, một lớp có trọng số bằng không chỉ đơn giản là chuyển các đầu vào của nó mà không thay đổi. Phần còn lại của mạng hoạt động như thể lớp chưa bao giờ tồn tại. Trong khi các mạng truyền thống phải học cách truyền thông tin và bị thất bại thảm hại trong việc truyền thông tin vì các lựa chọn sai về các tham số, thì ResNet truyền thông tin theo mặc định. 
+
+ResNet thường được sử dụng với các lớp phức hợp trong các ứng dụng thị giác, nhưng trên thực tế, chúng là một công cụ có mục đích chung làm cho mạng sâu trở nên mạnh mẽ hơn và cho phép các nhà nghiên cứu thử nghiệm tự do hơn với các thiết kế mạng phức tạp và không đồng nhất.
+\section{Thuật toán học}
+Đào tạo mạng nơ-ron bao gồm việc sửa đổi các tham số của mạng để giảm thiểu hàm mất mát trên tập huấn luyện. Về nguyên tắc, bất kỳ loại thuật toán tối ưu hóa nào cũng có thể được dùng. Trên thực tế, các mạng nơ-ron hiện đại hầu như luôn được đào tạo với một số biến thể của stochastic gradient descent (SGD). Mục đích là để giảm thiểu tổn thất $L(w)$, trong đó $w$ đại diện cho tất cả các tham số của mạng. Mỗi bước cập nhật trong quá trình giảm dần độ dốc được biểu diễn như sau:
+
+$w \leftarrow w - \alpha \nabla_wL(w)$
+trong đó $\alpha$ là tỷ lệ học tập. Đối với giảm độ dốc tiêu chuẩn, tổn thất $L$ được xác định tương ứng cho toàn bộ tập huấn luyện. Đối với SGD, nó được định nghĩa cho một nhóm nhỏ gồm m mẫu được chọn ngẫu nhiên ở mỗi bước.
+
+Một số cân nhắc quan trọng đặc biệt về các phương pháp tối ưu hóa liên quan đến việc đào tạo mạng nơ-ron:
+\begin{itemize}
+    \item Đối với hầu hết các mạng giải quyết các vấn đề trong thế giới thực, cả kích thước của $w$ và kích thước của tập huấn luyện đều rất lớn. Những cân nhắc này ủng hộ mạnh mẽ việc sử dụng SGD với kích thước minibatch tương đối nhỏ: sự ngẫu nhiên giúp thuật toán thoát khỏi cực tiểu cục bộ nhỏ trong không gian trọng số  nhiều chiề; và kích thước minibatch nhỏ đảm bảo rằng chi phí tính toán của mỗi bước cập nhật trọng số là một hằng số nhỏ, độc lập với kích thước tập huấn luyện.
+    \item Vì đóng góp gradient của mỗi ví dụ đào tạo trong SGD minibatch có thể được tính toán độc lập, kích thước minibatch thường được chọn để tận dụng tối đa tính song song phần cứng trong GPU hoặc TPU.
+    \item Để cải thiện sự hội tụ, thường là một ý kiến hay khi sử dụng tỷ lệ học tập (learning rate) giảm dần theo thời gian. Một lựa chọn phù hợp thường là một vấn đề thử và sai.
+    \item Gần mức tối thiểu cục bộ hoặc toàn cục của hàm mất mát đối với toàn bộ tập huấn luyện, các gradient được ước tính từ các minibatch nhỏ thường sẽ có phương sai cao và có thể hoàn toàn sai hướng , gây khó khăn cho việc hội tụ. Một giải pháp là tăng kích thước minibatch khi quá trình đào tạo diễn ra; một cách khác là kết hợp ý tưởng về động lượng, giữ mức trung bình hoạt động của độ dốc của các minibatch trong quá khứ để bù đắp cho kích thước minibatch nhỏ.
+    \item Cần phải cẩn thận để giảm thiểu các bất ổn số có thể phát sinh do lỗi tràn, tràn dòng và làm tròn số. Chúng đặc biệt có vấn đề với việc sử dụng hàm mũ trong các hàm kích hoạt softmax, sigmoid và tanh, và với các phép tính lặp lại trong các mạng rất sâu và mạng hồi quy (Phần 14.6) dẫn đến biến mất và bùng nổ các kích hoạt và độ dốc.
+\end{itemize}
+
+Nhìn chung, quá trình học để tìm trọng số của mạng thường là quá trình thể hiện lợi nhuận giảm dần. Chúng ta chạy cho đến khi không còn thực tế để giảm lỗi kiểm tra bằng cách chạy lâu hơn. Thông thường, điều này không có nghĩa là chúng ta đã đạt đến mức tối thiểu toàn cục hoặc thậm chí cục bộ của hàm tổn thất. Thay vào đó, điều đó có nghĩa là chúng ta sẽ phải thực hiện một số lượng lớn các bước rất nhỏ một cách không thực tế để tiếp tục giảm chi phí hoặc các bước bổ sung sẽ chỉ gây ra overfitting (học quá mức) hoặc ước tính về độ dốc quá không chính xác để đạt được tiến bộ hơn nữa.
+
+\subsection{Tính toán gradient trong đồ thị tính toán}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/chapter21/fig21.6.jpg}
+    \caption{Minh họa về sự lan truyền ngược của gradient trong một đồ thị tính toán tùy ý. Việc tính toán chuyển tiếp cho đầu ra của mạng tiến hành từ trái sang phải, trong khi sự lan truyền ngược của các gradient tiến hành từ phải sang trái.}
+    \label{fig:21.0}
+\end{figure}
+Hình 14.6 cho thấy một nút trong một đồ thị tính toán. Trong quá trình chuyển tiếp, nút tính một số hàm $h$ tùy ý từ các đầu vào của nó, đến từ các nút $f$ và $g$. Đổi lại, $h$ cung cấp giá trị của nó cho các nút $j$ và $k$. Quy trình lan truyền ngược chuyển các thông tin trở lại dọc theo mỗi liên kết trong mạng. Tại mỗi nút, các thông tin đến được thu thập và các thông tin mới được tính toán để chuyển trở lại lớp tiếp theo. Như hình minh họa, các thông tin đều là đạo hàm riêng của tổn thất $L$. Ví dụ, thông 
+tin lùi $\partial L/\partial h_j$ là đạo hàm riêng của $L$ đối với đầu vào đầu tiên, là thông tin chuyển tiếp từ $h$ đến $j$ . Bây giờ, $h$ ảnh hưởng đến $L$ thông qua cả $j$ và $k$, vì vậy ta có: 
+\begin{equation}
+\label{eq:21.11}
+\begin{split}
+    \partial L/\partial h=\partial L/\partial h_j+\partial L/\partial h_k
+\end{split}
+\end{equation}
+Với phương trình này, nút $h$ có thể tính đạo hàm của $L$ đối với $h$ bằng cách tính tổng các thông tin đến từ $j$ và $k$. Bây giờ, để tính toán các thông tin gửi đi $\partial L/\partial f_h$ và $\partial L/\partial g_h$ , ta sử dụng các phương trình sau:
+\begin{equation}
+\label{eq:21.12}
+\begin{split}
+    \frac{\partial L}{\partial f_h} = \frac {\partial L}{\partial h} \frac{\partial h}{\partial f_h} & \text{  và  } \frac{\partial L}{\partial g_h} = \frac {\partial L}{\partial h} \frac{\partial h}{\partial g_h}
+\end{split}
+\end{equation}
+
+Quá trình lan truyền ngược bắt đầu với các nút đầu ra, trong đó mỗi thông tin ban đầu $\partial L/\partial \hat{y}_j$ được tính trực tiếp từ biểu thức cho $L$ theo giá trị dự đoán $\hat{y}$ và giá trị thực $y$ từ dữ liệu huấn luyện. Tại mỗi nút bên trong, các thông tin nhận từ backward được tính tổng theo Phương trình (14.11) và các thông tin đi được tạo ra từ Phương trình (14.12). Quá trình kết thúc tại mỗi nút trong biểu đồ tính toán biểu thị trọng số $w$ (ví dụ: hình bầu dục màu hoa cà nhạt trong Hình 14.3 (b)). Tại thời điểm đó, tổng các thông tin đến $w$ là $\partial L/\partial w$ - chính xác là gradient mà chúng ta cần cập nhật $w$. 
+
+Chia sẻ trọng số, như được sử dụng trong mạng tích chập (Mục 14.3) và mạng hồi quy (Mục 14.6), được xử lý đơn giản bằng cách coi mỗi trọng số được chia sẻ là một nút duy nhất có nhiều cung đi ra trong biểu đồ tính toán. Trong quá trình lan truyền ngược, điều này dẫn đến nhiều thông tin gradient đến. Theo Công thức (14.11), điều này có nghĩa là gradient cho trọng số dùng chung là tổng các đóng góp của gradient từ mỗi nơi nó được sử dụng trong mạng.
+
+Từ mô tả này rõ ràng về quá trình lan truyền ngược thì chi phí tính toán của nó là tuyến tính theo số lượng nút trong đồ thị tính toán, giống như chi phí của tính toán chuyển tiếp.
+Một nhược điểm của lan truyền ngược là nó yêu cầu lưu trữ hầu hết các giá trị trung gian đã được tính toán trong quá trình truyền chuyển tiếp để tính toán gradients trong quá trình truyền ngược. Điều này có nghĩa là tổng chi phí bộ nhớ để đào tạo mạng tỷ lệ thuận với số đơn vị trong toàn bộ mạng. Do đó, ngay cả khi bản thân mạng chỉ được biểu diễn ngầm bằng mã lan truyền với nhiều vòng lặp, thay vì rõ ràng bằng cấu trúc dữ liệu, tất cả các kết quả trung gian của mã truyền đó phải được lưu trữ một cách rõ ràng.
+\subsection{Chuẩn hóa hàng loạt}
+Chuẩn hóa hàng loạt (Batch normalization) là một kỹ thuật thường được sử dụng để cải thiện tốc độ hội tụ của SGD bằng cách thay đổi tỷ lệ các giá trị được tạo ra ở các lớp bên trong của mạng từ các mẫu trong mỗi minibatch. Ở một mức độ nào đó, chuẩn hóa hàng loạt dường như có các tác động tương tự như các tác động của Resnet.
+Hãy xem xét một nút $z$ ở đâu đó trong mạng: các giá trị của $z$ cho $m$ mẫu trong một minibatch là $z_1,...z_m$. Chuẩn hóa hàng loạt thay thế mỗi $z_i$ bằng một $\hat{z}_i$ mới :
+\begin{align*}
+    \hat{z}_i=\gamma \frac{z_i-\mu}{\sqrt{\epsilon + \sigma^{2}}} +\beta,
+\end{align*}
+trong đó $\mu$ là giá trị trung bình của $z$ trên minibatch, $\sigma$ là độ lệch chuẩn của $z_1,...,z_m$ ,$\epsilon$ là một hằng số nhỏ được thêm vào để ngăn phép chia cho 0, và $\gamma$ và $\beta$ là các tham số đã học.
+Chuẩn hóa hàng loạt chuẩn hóa giá trị trung bình và phương sai của các giá trị, được xác định bởi các giá trị của $\beta$ và $\gamma$. Điều này làm cho việc đào tạo một mạng sâu trở nên đơn giản hơn nhiều. Nếu không có chuẩn hóa hàng loạt, thông tin có thể bị mất nếu trọng số của lớp quá nhỏ và độ lệch chuẩn tại lớp đó giảm xuống gần bằng không. Chuẩn hóa hàng loạt ngăn điều này xảy ra.
+Nó cũng làm giảm nhu cầu khởi tạo cẩn thận tất cả các trọng số trong mạng để đảm bảo rằng các nút trong mỗi lớp nằm trong vùng hoạt động phù hợp để cho phép thông tin được truyền đi.
+Với chuẩn hóa hàng loạt, thường bao gồm $\beta$ và $\gamma$, có thể cụ thể cho từng nút hoặc cụ thể theo lớp, trong số các tham số của mạng, để chúng được đưa vào quá trình học. Sau khi huấn luyện, $\beta$ và $\gamma$ được cố định ở các giá trị đã học.
+\section{Tổng quát hóa}
+Trong học máy, mục tiêu là tổng quát hóa thành dữ liệu mới chưa từng được thấy trước đây, được đo lường bằng hiệu suất trên tập thử nghiệm. Trong phần này, chúng ta tập trung vào ba cách tiếp cận để cải thiện hiệu suất tổng quát hóa: chọn kiến trúc mạng phù hợp, xử phạt các trọng số lớn và xáo trộn ngẫu nhiên các giá trị đi qua mạng trong quá trình huấn luyện.
+\subsection{Chọn kiến trúc mạng}
+Rất nhiều nỗ lực trong nghiên cứu học sâu đã đi vào việc tìm kiếm các kiến trúc mạng có khả năng tổng quát hóa tốt. Thật vậy, đối với mỗi loại dữ liệu cụ thể — hình ảnh, lời nói, văn bản, video, v.v. — rất nhiều tiến bộ về hiệu suất đến từ việc khám phá các loại kiến trúc mạng khác nhau và thay đổi số lượng lớp, khả năng kết nối của chúng và các loại nút trong mỗi lớp.
+
+Một số kiến trúc mạng nơ-ron được thiết kế rõ ràng để tổng quát hóa tốt trên các loại dữ liệu cụ thể: mạng tích chập ý tưởng rằng cùng một trình trích xuất tính năng hữu ích ở tất cả các vị trí trên lưới không gian và mạng hồi quy mã tưởng rằng cùng một quy tắc cập nhật hữu ích tại tất cả các điểm trong một luồng dữ liệu tuần tự. Trong phạm vi mà các giả định này là hợp lệ, chúng ta mong đợi các kiến trúc tích chập để tổng quát hóa tốt trên hình ảnh và mạng hồi quy để tổng quát hóa tốt trên tín hiệu văn bản và âm thanh.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/chapter21/fig21.7.jpg}
+    \caption{Lỗi do thiết lập thử nghiệm dưới dạng hàm của chiều rộng của lớp (được đo bằng tổng số trọng số) đối với mạng tích chập ba lớp và mười một lớp.}
+    \label{fig:21.7}
+\end{figure}
+
+Một trong những phát hiện thực nghiệm quan trọng nhất trong lĩnh vực học sâu là khi so sánh hai mạng có số lượng trọng số tương tự nhau, mạng sâu hơn thường ch hiệu suất tổng quát hóa tốt hơn. Hình 14.7 cho thấy hiệu ứng này đối với ít nhất một ứng dụng thực tế — nhận dạng số nhà. Kết quả cho thấy rằng đối với bất kỳ số lượng tham số, mạng mười một lớp cho sai số thử nghiệm thấp hơn nhiều so với mạng ba lớp.
+
+Mặc dù các mô hình học sâu khái quát tốt trong nhiều trường hợp, nhưng chúng cũng có thể tạo ra các lỗi không trực quan. Chúng có xu hướng tạo ra các ánh xạ đầu vào - đầu ra không liên tục, do đó một thay đổi nhỏ đối với đầu vào có thể gây ra sự thay đổi lớn trong đầu ra. Ví dụ: có thể chỉ cần thay đổi một vài pixel trong hình ảnh một chú chó và khiến mạng phân loại chú chó đó là đà điểu hoặc xe buýt trường học — mặc dù hình ảnh bị thay đổi vẫn trông giống hệt một chú chó. Một hình ảnh bị thay đổi thuộc loại này được gọi là một mẫu đối nghịch.
+
+\subsection{Tìm kiếm kiến trúc mạng thần kinh}
+Chưa có bộ nguyên tắc rõ ràng để giúp chọn kiến trúc mạng tốt nhất cho một vấn đề cụ thể. Thành công trong việc triển khai một giải pháp học sâu đòi hỏi kinh nghiệm và khả năng phán đoán tốt.
+
+Có một số kỹ thuật đã được trình bày ở các phần trước như sau. Các thuật toán tiến hóa đã trở nên phổ biến vì có thể thực hiện cả việc tái tổ hợp (nối các phần của hai mạng lại với nhau) và đột biến (thêm hoặc bớt một lớp hoặc thay đổi một giá trị tham số). Thuật toán leo đồi cũng có thể được sử dụng với các hoạt động đột biến tương tự. Một số nhà nghiên cứu đã định hình vấn đề là học tăng cường, và một số là tối ưu hóa Bayes. Một khả năng khác là coi các khả năng kiến trúc như một không gian có thể phân biệt liên tục và sử dụng gradient descent để tìm ra giải pháp tối ưu cục bộ.
+
+Đối với tất cả các kỹ thuật tìm kiếm này, một thách thức lớn là ước tính giá trị của một mạng ứng viên. Cách đơn giản để đánh giá một kiến trúc là đào tạo nó trên một tập hợp thử nghiệm cho nhiều lần và sau đó đánh giá độ chính xác của nó trên một tập dữ liệu dùng để xác thực. Nhưng với các mạng lớn có thể mất nhiều GPU-days.
+
+Do đó, đã có nhiều nỗ lực để đẩy nhanh quá trình ước lượng này bằng cách loại bỏ hoặc ít nhất là giảm quá trình đào tạo tốn kém. Chúng ta có thể đào tạo trên một tập dữ liệu nhỏ hơn. Chúng ta có thể đào tạo cho một số lượng nhỏ các lô và dự đoán mạng sẽ cải thiện như thế nào với nhiều lô hơn. Ta có thể sử dụng phiên bản rút gọn của kiến trúc mạng mà chúng ta hy vọng vẫn giữ được các thuộc tính của phiên bản đầy đủ. Chúng 
+tacó thể đào tạo một mạng lớn và sau đó tìm kiếm các đồ thị con của mạng hoạt động tốt hơn; tìm kiếm này có thể nhanh chóng vì các đồ thị con chia sẻ các tham số và không phải đào tạo lại.
+
+Một cách tiếp cận khác là tìm hiểu một hàm đánh giá heuristic (như đã được thực hiện cho tìm kiếm A*). Đó là, bắt đầu bằng cách chọn một vài trăm kiến trúc mạng và đào tạo và đánh giá chúng.
+Điều đó cung cấp cho chúng ta tập dữ liệu của các cặp (mạng, điểm số). Sau đó, học cách ánh xạ từ các đặc điểm của mạng đến điểm số dự đoán. Từ thời điểm đó, chúng ta có thể tạo ra một số lượng lớn các mạng ứng viên và nhanh chóng ước tính giá trị của chúng. Sau khi tìm kiếm trong không gian mạng, (các) mạng tốt nhất có thể được đánh giá đầy đủ với một quy trình đào tạo hoàn chỉnh. 
+\subsection{Giảm trọng số}
+Giảm trọng số bao gồm việc thêm một hình phạt $\lambda\sum_{i,j}W_{i,j}^2$ vào hàm mất mát được sử dụng để huấn luyện mạng nơ-ron, trong đó $\lambda$ là một siêu tham số kiểm soát độ mạnh của hình phạt và tổng thường được lấy trên tất cả các trọng số trong mạng. Sử dụng $\lambda=0$ tương đương với việc không sử dụng phân rã trọng số, trong khi sử dụng các giá trị lớn hơn của $\lambda$  khuyến khích trọng số trở nên nhỏ hơn. Người ta thường sử dụng phân rã trọng số với $\lambda$  gần $10^{-4}$.
+
+Việc chọn một kiến trúc mạng cụ thể có thể được coi là một ràng buộc tuyệt đối đối với không gian giả thuyết: một hàm hoặc là có thể biểu diễn trong kiến trúc đó hoặc không. Các thuật ngữ phạt cho hàm mất mát chẳng hạn như giảm trọng số đưa ra một hạn chế nhẹ nhàng hơn: các hàm được biểu thị với trọng số lớn nằm trong tập các hàm, nhưng tập huấn luyện phải cung cấp nhiều bằng chứng ủng hộ các hàm này hơn là bắt buộc phải chọn một hàm có trọng số nhỏ.
+Không đơn giản để giải thích ảnh hưởng của sự giảm trọng số trong một mạng nơron. Trong các mạng có chức năng kích hoạt sigmoid, giả thuyết rằng sự giảm trọng số giúp giữ các kích hoạt gần phần tuyến tính của sigmoid, tránh vùng hoạt động phẳng dẫn đến biến mất gradient. Với các hàm kích hoạt ReLU, giảm trọng số dường như có lợi, nhưng giải thích hợp lý đối với sigmoid không còn được áp dụng vì đầu ra của ReLU là tuyến tính hoặc bằng không. Hơn nữa, với các kết nối dư, giảm trọng số khuyến khích mạng có sự khác biệt nhỏ giữa các lớp liên tiếp hơn là các giá trị trọng số tuyệt đối nhỏ. Bất chấp những khác biệt này trong việc giảm trọng số qua nhiều kiến trúc, giảm trọng số vẫn rất hữu ích.
+
+Một lời giải thích cho tác dụng có lợi của việc giảm trọng số là nó thực hiện một hình thức học tối đa (MAP). Đặt $X$ và $y$ đại diện cho các đầu vào và đầu ra trên toàn bộ tập huấn luyện, giả thuyết posteriori tối đa một giả thuyết posteriori $h_MAP$ thỏa mãn:
+
+\begin{align*}
+    h_{MAP}&=\underset{w}{\mathrm{argmax}}P(y|X,W)P(W)\\
+&=\underset{w}{\mathrm{argmax}}[-logP(y|X,W)-logP(W)]
+\end{align*}
+\subsection{Dropout - Bỏ học}
+Một cách khác mà chúng ta có thể can thiệp để giảm lỗi trên tập thử nghiệm của mạng — với cái giá là làm cho việc phù hợp với tập huấn luyện hơn — là sử dụng tính năng bỏ học. Ở mỗi bước đào tạo, bỏ học áp dụng một bước học truyền ngược cho phiên bản mới của mạng được tạo bằng cách hủy kích hoạt một tập hợp con được chọn ngẫu nhiên của các đơn vị. Đây là một phép gần đúng và chi phí rất thấp để đào tạo một nhóm lớn các mạng khác nhau.
+Cụ thể hơn, chúng ta hãy giả sử chúng ta đang sử dụng stochastic gradient descent với kích thước minibatch là $m$. Đối với mỗi minibatch, thuật toán bỏ học áp dụng quy trình sau cho mọi nút trong mạng: với xác suất $p$, đầu ra đơn vị được nhân với hệ số $1/p$; nếu không, đầu ra của đơn vị được cố định bằng 0. Bỏ học thường được áp dụng cho các đơn vị trong các lớp ẩn với $p=0,5$; đối với các đơn vị đầu vào, giá trị $p=0,8$ hóa ra là hiệu quả nhất. Quá trình này tạo ra một mạng lưới mỏng với số lượng đơn vị bằng khoảng một nửa so với ban đầu, trong đó sự lan truyền ngược được áp dụng với các ví dụ huấn luyện nhỏ của m. Quá trình lặp lại theo cách thông thường cho đến khi quá trình huấn luyện hoàn tất. Tại thời điểm thử nghiệm, mô hình được chạy không có trường hợp bỏ học.
+Chúng ta có thể nghĩ về việc bỏ học từ một số khía cạnh:
+
+\begin{itemize}
+    \item Bằng cách tạo ra tiếng ồn tại thời điểm đào tạo, mô hình buộc phải trở nên mạnh mẽ với tiếng ồn.
+    \item Như đã nói ở trên, bỏ học gần đúng với việc tạo ra một nhóm lớn các mạng lưới mỏng. Tuyên bố này có thể được xác minh về mặt phân tích đối với các mô hình tuyến tính và dường như giữ nguyên thực nghiệm đối với các mô hình học sâu.
+    \item Các đơn vị ẩn được huấn luyện khi bỏ học không chỉ phải học để trở thành các đơn vị ẩn hữu ích; chúng cũng phải học cách tương thích với nhiều tập hợp các đơn vị ẩn khác có thể có hoặc có thể không có trong mô hình đầy đủ. Điều này tương tự như các quá trình chọn lọc hướng dẫn sự tiến hóa của gen: mỗi gen không chỉ phải hoạt động hiệu quả trong chức năng riêng của nó mà còn phải hoạt động tốt với các gen khác, mà danh tính của chúng trong các sinh vật tương lai có thể thay đổi đáng kể.
+    \item Việc bỏ học được áp dụng cho các lớp sau trong một mạng sâu buộc phải đưa ra quyết định cuối cùng một cách rõ ràng bằng cách chú ý đến tất cả các đặc điểm trừu tượng của ví dụ thay vì chỉ tập trung vào một và bỏ qua những đặc điểm khác. Ví dụ: một bộ phân loại hình ảnh động vật có thể đạt được hiệu suất cao trong quá trình huấn luyện chỉ bằng cách nhìn vào mũi của con vật, nhưng có lẽ sẽ thất bại trong trường hợp thử nghiệm mà mũi bị che khuất hoặc bị hỏng. Với việc bỏ học, sẽ có những trường hợp đào tạo mà “đơn vị mũi” bên trong bị loại bỏ, khiến quá trình học phải tìm ra các đặc điểm nhận dạng bổ sung. Lưu ý rằng việc cố gắng đạt được cùng một mức độ mạnh mẽ bằng cách thêm nhiễu vào dữ liệu đầu vào sẽ rất khó khăn: không có cách nào dễ dàng để biết trước rằng mạng sẽ tập trung vào các mũi và không có cách nào dễ dàng để xóa các mũi tự động khỏi mỗi hình ảnh.
+\end{itemize}
+
+Nhìn chung, việc bỏ học buộc mô hình phải học nhiều giải thích mạnh mẽ cho mỗi đầu vào. Điều này làm cho mô hình tổng quát hóa tốt, nhưng cũng gây khó khăn hơn cho việc phù hợp với tập huấn luyện — thông thường cần sử dụng mô hình lớn hơn và huấn luyện nó cho nhiều lần lặp hơn.
+\section{Mạng hồi quy}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/chapter21/fig21.8.jpg}
+    \caption{(a) Biểu đồ của một RNN cơ bản trong đó lớp ẩn $z$ có các kết nối lặp lại; biểu tượng $triangle$ cho biết thời gian trễ. (b) Cùng một mạng chưa được cuộn qua ba bước thời gian để tạo một mạng chuyển tiếp. Lưu ý rằng trọng số được chia sẻ trong tất cả các bước thời gian.}
+    \label{fig:21.8}
+\end{figure}
+Trong các mạng nơ-ron truyền thống tất cả các đầu vào và cả đầu ra là độc lập với nhau. Tức là chúng không liên kết thành chuỗi với nhau. Nhưng các mô hình này không phù hợp trong rất nhiều bài toán. Ví dụ, nếu muốn đoán từ tiếp theo có thể xuất hiện trong một câu thì ta cũng cần biết các từ trước đó xuất hiện lần lượt thế nào, RNN được gọi là hồi quy (Recurrent) bởi lẽ chúng thực hiện cùng một tác vụ cho tất cả các phần tử của một chuỗi với đầu ra phụ thuộc vào cả các phép tính trước đó. Nói cách khác, RNN có khả năng nhớ các thông tin được tính toán trước đó. Trên lý thuyết, RNN có thể sử dụng được thông tin của một văn bản rất dài, tuy nhiên thực tế thì nó chỉ có thể nhớ được một vài bước trước đó (ta cùng bàn cụ thể vấn đề này sau).
+\subsection{Đào tạo RNN cơ bản}
+Mô hình cơ bản mà chúng ta sẽ xem xét có một lớp đầu vào $x$, một lớp ẩn $z$ với các kết nối lặp lại và một lớp đầu ra $y$, như trong Hình 14.8 (a). Giả định rằng cả x và y đều được quan sát thấy trong dữ liệu huấn luyện ở mỗi bước thời gian. Các phương trình xác định mô hình đề cập đến giá trị của các biến được lập chỉ mục theo bước thời gian $t$:
+\begin{equation}
+\label{eq:21.14}
+\begin{split}
+    &z_t=f_w(z_{t-1},x_t)=g_z(W_{z,z}z_{t-1}+W_{x,z}x_t)\equiv g_z(int_{z,t})\\
+    &\hat{y}_t=g_y(W_{z,y}z_t)\equiv g_y(in_{y,t})
+\end{split}https://www.overleaf.com/project/612452abce91bf03bffda8ca
+\end{equation}
+trong đó $g_z$ và $g_y$ lần lượt là các hàm kích hoạt cho lớp ẩn và lớp đầu ra. Như thường lệ, chúng tôi giả sử một đầu vào giả bổ sung được cố định +1 cho mỗi đơn vị cũng như trọng số thiên vị kết nối với các đầu vào đó.
+
+Cho một chuỗi các vectơ đầu vào $x_1,...,x_T$ và đầu ra $y_1,...y_T$, chúng ta có thể biến mô hình này thành một mạng chuyển tiếp bằng cách "giải nén" nó cho các bước $T$, như trong Hình 14.8 (b). Lưu ý rằng các ma trận trọng số $W_{x,y}$, $W_{z,z}$ và $W_{z,y}$ được chia sẻ trên tất cả các bước thời gian. Chúng ta dễ dàng nhận thấy rằng chúng ta có thể tính toán gradients để luyện các trọng số theo cách thông thường; sự khác biệt duy nhất là việc chia sẻ trọng số giữa các lớp làm cho việc tính toán độ dốc phức tạp hơn một chút.
+
+Để giữ cho các phương trình đơn giản, ta hiển thị phép tính gradient cho một RNN chỉ với một đơn vị đầu vào, một đơn vị ẩn và một đơn vị đầu ra. Đối với trường hợp này, chúng ta có $z_t=g_z(w_{z,z}z_{t-1}+w_{x,z}x_t+w_{0, z})$ và $\hat{y}_t=g_y(w_{z,y}z_t+w_{0,y})$. Như trong các Công thức (14.4) và (14.5), chúng ta sẽ giả định tổn thất sai số bình phương $L$, trong trường hợp này, được tính tổng theo các bước thời gian. Các dẫn xuất cho trọng số của lớp đầu vào và lớp đầu ra $w_{x,z}$ và $w_{z,y}$ về cơ bản giống hệt với Công thức (14.4). Đối với trọng số của lớp ẩn $w_{z,z}$, một số bước đầu tiên cũng tuân theo mô hình tương tự như Công thức (14.4):
+\begin{equation}
+\label{eq:21.14}
+\begin{split}
+    \frac{\partial L}{\partial w_{z,z}} &= \frac {\partial}{\partial w_{z,z}}\sum_{t=1}^{T}(y_t-\hat{y}_t)^2=\sum_{t=1}^{T}-2(y_t-\hat{y})\frac{\partial \hat{y}}{\partial w_{z,z}}\\
+    &=\sum_{t=1}^{T}-2(y_t-\hat{y}_t)\frac{\partial}{\partial w_{z,z}}g_y(in_{y,t})= \sum_{t=1}^{T}-2(y_t-\hat{y})g'_y(in_{y,t})\frac{\partial \hat{y}}{\partial w_{z,z}}in_{y,t}\\
+    &=\sum_{t=1}^{T}-2(y_t-\hat{y}_t)g'_y(in_{y,t})\frac{\partial \hat{y}_t}{\partial w_{z,z}}(w_{z,y}z_t+w_{0,y})\\
+    &=\sum_{t=1}^{T}-2(y_t-\hat{y}_t)g'_y(in_{y,t})w_{z,y}\frac{\partial z_t}{\partial w_{z,z}}
+\end{split}
+\end{equation}
+
+
+Bây giờ gradient cho đơn vị ẩn $z_t$ có thể nhận được từ bước thời gian trước đó như sau:
+\begin{equation}
+\label{eq:21.15}
+\begin{split}
+    \frac{\partial z_t}{\partial w_{z,z}} &= \frac {\partial}{\partial w_{z,z}}(in_{z,t})=g'_z(in_{z,t})\frac {\partial}{\partial w_{z,z}}(in_{z,t})=g'_z(in_{z,t})\frac {\partial}{\partial w_{z,z}}(w_{z,z}z_{t-1}+w_{x,z}x_t+w_{0,z})\\
+    &=g'_z(in_{z,t}(z_{t-1}+w_{z,z}\frac {\partial z_{t-1}}{\partial w_{z,z}})
+\end{split}
+\end{equation}
+
+Nhìn vào Công thức (14.14), chúng ta nhận thấy hai điều. Đầu tiên, biểu thức gradient là đệ quy: đóng góp cho gradient từ bước thời gian $t$ được tính bằng cách sử dụng đóng góp từ bước thời gian $t-1$. Nếu chúng ta sắp xếp các tính toán đúng cách, tổng thời gian chạy để tính toán gradient sẽ là tuyến tính về quy mô của mạng. Thuật toán này được gọi là lan truyền ngược theo thời gian và thường được xử lý tự động bởi các hệ thống phần mềm học sâu. Thứ hai, nếu chúng ta lặp lại phép tính đệ quy, chúng ta thấy rằng gradient tại $T$ sẽ bao gồm các số hạng tỷ lệ với $w_{z,z} \prod_{t=1}^{T} g'_z(in_{z,t})$. Đối với sigmoid, tanhs và ReLUS, $g' \leq 1$, vì vậy RNN đơn giản của chúng ta chắc chắn sẽ gặp phải vấn đề gradient biến mất nếu $w_{z,z}<1$.
+Mặt khác, nếu $w_{z,z}>1$, chúng ta có thể gặp vấn đề về gradient bùng nổ. (Đối với trường hợp chung, những kết quả này phụ thuộc vào giá trị riêng đầu tiên của ma trận trọng số $W_{z,z}$.) Phần tiếp theo mô tả một thiết kế RNN phức tạp hơn nhằm giảm thiểu vấn đề này.
+\subsection{Bộ nhớ dài-ngắn hạn RNNs}
+Một số kiến trúc RNN chuyên biệt đã được thiết kế với mục tiêu cho phép thông tin được lưu giữ qua nhiều bước thời gian. Một trong những phổ biến nhất là bộ nhớ ngắn hạn dài hoặc LSTM. Thành phần bộ nhớ dài hạn của LSTM, được gọi là ô nhớ và được ký hiệu là $c$, về cơ bản được sao chép theo từng bước thời gian. (Ngược lại, RNN cơ bản nhân bộ nhớ của nó với một ma trận trọng số tại mỗi bước thời gian, như được hiển thị trong Công thức (14.12).)
+Thông tin mới đi vào bộ nhớ bằng cách thêm các bản cập nhật; theo cách này, các biểu thức gradient không tích lũy nhân theo thời gian. LSTM cũng bao gồm các đơn vị kiểm soát, là các vectơ điều khiển luồng thông tin trong LSTM thông qua phép nhân từng phần tử của vectơ thông tin tương ứng:
+\begin{itemize}
+    \item Cổng quên f xác định xem từng phần tử của ô nhớ được nhớ (sao chép sang bước thời gian tiếp theo) hay bị quên (đặt lại về 0).
+    \item Cổng vào i xác định xem mỗi phần tử của ô nhớ có được cập nhật thêm thông tin mới từ vectơ đầu vào ở bước thời gian hiện tại hay không.
+    \item Cổng ra o xác định xem mỗi phần tử của ô nhớ có được chuyển đến ô nhớ ngắn hạn z hay không, có vai trò tương tự như trạng thái ẩn trong các RNN cơ bản. 
+\end{itemize}
+
+Trong khi từ “cổng” trong thiết kế mạch thường bao hàm một hàm Boolean, các cổng trong LSTM là mềm — ví dụ, các phần tử của vectơ ô nhớ sẽ bị quên một phần nếu các phần tử tương ứng của vectơ cổng quên nhỏ nhưng không bằng 0. Các giá trị cho các đơn vị đo luôn nằm trong khoảng [0, 1] và nhận được dưới dạng đầu ra của một hàm sigmoid được áp dụng cho đầu vào hiện tại và trạng thái ẩn trước đó. Cụ thể, các phương trình cập nhật cho LSTM như sau:
+\begin{align*}
+    &f_t=\sigma(W_{x,f}x_t+W_{z,f}z_{t-1})\\
+    &i_t=\sigma(W_{x,i}x_t+W_{z,i}z_{t-1})\\
+    &o_t=\sigma(W_{x,o}x_t+W_{z,o}z_{t-1})\\
+    &c_t=c_{t-1}\odot f_t+i+t \odot tanh(W_{x,c}x_t+W_{z,c}z_{t-1}\\
+    &z_t=tanh(c_t)\odot o_t,
+\end{align*}
+trong đó các chỉ số trên các ma trận trọng số $W$ khác nhau chỉ ra nguồn gốc và điểm đến của các liên kết tương ứng. Ký hiệu $\odot$ biểu thị phép nhân từng nguyên tố.
+LSTM đã thể hiện hiệu suất xuất sắc trong một loạt các nhiệm vụ bao gồm nhận dạng giọng nói và nhận dạng chữ viết tay.
+\section{Học không giám sát và học chuyển giao}
+Các hệ thống học sâu mà chúng ta đã thảo luận cho đến nay dựa trên học có giám sát, yêu cầu mỗi mẫu đào tạo phải được gắn nhãn với một giá trị cho hàm mục tiêu. Mặc dù các hệ thống như vậy có thể đạt đến mức độ chính xác cao do thử nghiệm đặt ra — chẳng hạn như được thể hiện qua kết quả cuộc thi ImageNet — chúng thường yêu cầu nhiều dữ liệu được gắn nhãn hơn nhiều so với con người cho cùng một nhiệm vụ. Ví dụ, một đứa trẻ chỉ cần xem một bức ảnh về con hươu cao cổ chứ không phải hàng nghìn bức ảnh để có thể nhận ra hươu cao cổ một cách đáng tin cậy trong nhiều cài đặt và chế độ xem khác nhau. Rõ ràng, điều gì đó còn thiếu trong câu chuyện học sâu của chúng ta; thực sự, có thể xảy ra trường hợp cách tiếp cận hiện tại của chúng tôi đối với học sâu có giám sát khiến một số nhiệm vụ hoàn toàn không thể đạt được vì các yêu cầu đối với dữ liệu được gắn nhãn sẽ vượt quá những gì loài người có thể cung cấp. Hơn nữa, ngay cả trong những trường hợp nhiệm vụ khả thi, việc gắn nhãn các tập dữ liệu lớn thường đòi hỏi lao động khan hiếm và đắt đỏ.
+
+Vì những lý do này, có rất nhiều sự quan tâm đến một số mô hình học tập giúp giảm sự phụ thuộc vào dữ liệu được gắn nhãn, các mô hình này bao gồm học không giám sát, học chuyển tiếp và học bán có giám sát. Các thuật toán học không giám sát chỉ học từ các đầu vào không được gắn nhãn x, thường có sẵn nhiều hơn các ví dụ được gắn nhãn. Các thuật toán học tập không giám sát thường tạo ra các mô hình tổng quát, có thể tạo ra văn bản, hình ảnh, âm thanh và video thực tế, thay vì chỉ đơn giản là dự đoán nhãn cho dữ liệu đó. Các thuật toán học chuyển giao yêu cầu một số ví dụ được gắn nhãn nhưng có thể cải thiện hiệu suất của chúng hơn nữa bằng cách nghiên cứu các ví dụ được gắn nhãn cho các nhiệm vụ khác nhau, do đó có thể thu hút nhiều nguồn dữ liệu hiện có hơn. Các thuật toán học bán giám sát yêu cầu một số ví dụ được gắn nhãn nhưng có thể cải thiện hiệu suất của chúng hơn nữa bằng cách cũng nghiên cứu các ví dụ không được gắn nhãn. Phần này bao gồm các cách tiếp cận học sâu để học không giám sát và học chuyển giao; trong khi học bán giám sát cũng là một lĩnh vực nghiên cứu tích cực trong cộng đồng học sâu, các kỹ thuật được phát triển cho đến nay vẫn chưa chứng minh được hiệu quả rộng rãi trong thực tế, vì vậy chúng tôi không đề cập đến chúng.
+\subsection{Học không giám sát}
+Tất cả các thuật toán học có giám sát về cơ bản đều có cùng một mục tiêu: đưa ra một tập huấn luyện đầu vào $x$ và đầu ra tương ứng $y=f(x)$, học một hàm $h$ gần đúng với $f$.
+Mặt khác, các thuật toán học không giám sát, thực hiện một tập huấn luyện gồm các bài kiểm tra không được gắn nhãn $x$. Ở đây chúng tôi mô tả hai điều mà một thuật toán như vậy có thể cố gắng thực hiện. Đầu tiên là tìm hiểu các cách biểu diễn mới - ví dụ, các tính năng mới của hình ảnh giúp xác định các đối tượng trong hình ảnh dễ dàng hơn. Thứ hai là tìm hiểu một mô hình tổng quát - thường ở dạng phân phối xác suất mà từ đó các mẫu mới có thể được tạo ra. (Các thuật toán học lưới Bayes trong Chương 14 thuộc loại này.) Nhiều thuật toán có khả năng vừa học biểu diễn vừa mô hình tổng quát.
+
+Giả sử chúng ta học một mô hình chung $P_W(x,z)$, trong đó $z$ là tập hợp các biến ẩn, không được quan sát, đại diện cho nội dung của dữ liệu $x$ theo một cách nào đó. Mô hình tự do học cách kết hợp $z$ với $x$ theo cách mà nó chọn. Ví dụ: một mô hình được đào tạo về hình ảnh của các chữ số viết tay có thể chọn sử dụng một hướng trong không gian $z$ để biểu thị độ dày của nét bút, hướng khác để biểu thị màu mực, hướng khác để biểu thị màu nền, v.v. Với hình ảnh của các khuôn mặt, thuật toán học có thể chọn một hướng để đại diện cho giới tính và một hướng khác để ghi lại sự hiện diện hay không có kính, như được minh họa trong Hình 14.9.
+
+Mô hình xác suất đã học $P_W(x,z)$ đạt được cả việc học biểu diễn (nó đã xây dựng các vectơ $z$ có ý nghĩa từ các vectơ $x$ thô) và mô hình tổng quát: nếu chúng ta tích hợp $z$ ra khỏi $P_W(x,z)$, chúng ta thu được $P_(x)$.
+\subsubsection{PCA xác suất: Một mô hình phát sinh đơn giản}
+Đã có nhiều đề xuất cho dạng P W (x, z) có thể sử dụng. Một trong những mô hình đơn giản nhất là mô hình phân tích các thành phần chính theo xác suất (probabilistic principal components analysis - PPCA).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/chapter21/fig21.9.jpg}
+    \caption{Một minh chứng về cách một mô hình tổng quát đã học cách sử dụng các hướng khác nhau trong không gian $z$ để biểu diễn các khía cạnh khác nhau của các khuôn mặt. Các hình ảnh ở đây đều được tạo ra từ mô hình đã học và cho thấy điều gì sẽ xảy ra khi chúng ta giải mã các điểm khác nhau trong không gian $z$. Chúng tôi bắt đầu với tọa độ cho khái niệm "người đàn ông đeo kính", trừ đi tọa độ cho "người đàn ông", thêm tọa độ cho "phụ nữ" và lấy tọa độ cho "người phụ nữ đeo kính". Hình ảnh được sao chép với sự cho phép của (Radford và cộng sự, 2015).}
+    \label{fig:21.9}
+\end{figure}
+
+Trong mô hình PPCA, $z$ được chọn từ Gaussian hình cầu có giá trị trung bình 0, sau đó $x$ được tạo ra từ $z$ bằng cách áp dụng ma trận trọng số $W$ và thêm nhiễu Gaussian hình cầu:
+
+    $P(z)=\mathcal{N}(z;0,I)\\
+    P_W(x|z)=\mathcal{N}(x;Wz,\sigma^2I)$
+
+Trọng số $W$ (và tùy chọn là tham số nhiễu $\sigma^2$) có thể được học bằng cách tối đa hóa khả năng của dữ liệu, được đưa ra bởi:
+
+\begin{equation}
+\label{eq:21.16}
+\begin{split}
+    P_w(x)= \int P_W(x,z)dz=\mathcal{N}(x;0;WW^{\top}+\sigma^2I).  
+\end{split}
+\end{equation}
+
+Việc tối đa hóa đối với $W$ có thể được thực hiện bằng phương pháp gradient hoặc bằng thuật toán lặp lại hiệu quả EM (xem Phần 14.3). Khi $W$ đã được học, các mẫu dữ liệu mới có thể được tạo trực tiếp từ $P_W(x)$ bằng cách sử dụng Công thức (14.15). Hơn nữa, các quan sát mới $x$ có xác suất rất thấp theo Công thức (14.15) có thể được gắn cờ là các dị thường tiềm ẩn.
+
+Với PPCA, chúng ta thường giả định rằng số chiều của $z$ nhỏ hơn nhiều so với số chiều của $x$, để mô hình học cách giải thích dữ liệu tốt nhất có thể về một số lượng nhỏ các đối tượng địa lý. Các tính năng này có thể được trích xuất để sử dụng trong các bộ phân loại tiêu chuẩn bằng tính toán $\hat{z}$, kỳ vọng của $P_W(z|x)$.
+
+Việc tạo dữ liệu từ mô hình PCA xác suất rất đơn giản: đầu tiên lấy mẫu $z$ từ Gaussian cố định trước đó, sau đó lấy mẫu $x$ từ Gaussian với $Wz$ trung bình. Như chúng ta sẽ thấy ngay sau đây, nhiều mô hình tổng quát khác tương tự như quy trình này, nhưng sử dụng các ánh xạ phức tạp được xác định bởi các mô hình sâu hơn là các ánh xạ tuyến tính từ không gian $z$ đến không gian $x$.
+\subsubsection{Mã hóa tự động}
+Nhiều thuật toán học sâu không giám sát dựa trên ý tưởng về một bộ mã tự động. Bộ mã tự động là một mô hình chứa hai phần: một bộ mã hóa ánh xạ từ $x$ đến một biểu diễn $\hat{z}$ và một bộ giải mã ánh xạ từ một biểu diễn $\hat{z}$ sang dữ liệu quan sát $x$. Nói chung, bộ mã hóa chỉ là một hàm tham số hóa $f$ và bộ giải mã chỉ là một hàm tham số hóa $g$. Mô hình được huấn luyện sao cho $x \thickapprox g(f(x))$, để quá trình mã hóa được đảo ngược gần như quá trình giải mã. Các hàm $f$ và $g$ có thể là các mô hình tuyến tính đơn giản được tham số hóa bởi một ma trận đơn hoặc chúng có thể được biểu diễn bằng một mạng nơron sâu.
+
+Một bộ mã tự động rất đơn giản là bộ mã tự động tuyến tính, trong đó cả $f$ và $g$ đều tuyến tính với ma trận trọng số dùng chung $W$:
+
+$\hat{z}=f(x)=W$
+
+$x=g(\hat{z})= W^{\top}\hat{z} $
+
+Một cách để đào tạo mô hình này là giảm thiểu sai số bình phương $\sum_{j}||x_j-g(f(x_j))||^2$ sao cho $x \thickapprox g(f(x))$. Ý tưởng là đào tạo $W$ để một chiều thấp $\hat{z}$ sẽ giữ lại nhiều thông tin nhất có thể để tái tạo lại dữ liệu chiều cao $x$. Bộ mã tự động tuyến tính này hóa ra được kết nối chặt chẽ với phân tích thành phần chính cổ điển (PCA). Khi $z$ là $m$ chiều, ma trận $W$ sẽ học cách mở rộng $m$ thành phần chính của dữ liệu — nói cách khác, tập hợp $m$ hướng trực giao trong đó dữ liệu có phương sai cao nhất hoặc tương đương với $m$ riêng của ma trận hiệp phương sai dữ liệu có giá trị riêng lớn nhất — chính xác như trong PCA.
+\subsubsection{Mô hình tự hồi quy sâu}
+Mô hình tự hồi quy (hoặc mô hình AR) là mô hình trong đó mỗi phần tử $x_i$ của vectơ dữ liệu $x$ được dự đoán dựa trên các phần tử khác của vectơ. Một mô hình như vậy không có biến tiềm ẩn. Nếu $x$ có kích thước cố định, mô hình AR có thể được coi là một mạng Bayes hoàn toàn có thể quan sát được và có thể được kết nối đầy đủ. Điều này có nghĩa là việc tính toán khả năng xảy ra của một vectơ dữ liệu nhất định theo một mô hình AR là không đáng kể; điều tương tự áp dụng cho việc dự đoán giá trị của một biến bị thiếu duy nhất cho tất cả các biến còn lại và lấy mẫu vectơ dữ liệu từ mô hình.
+
+Ứng dụng phổ biến nhất của mô hình tự hồi quy là trong phân tích dữ liệu chuỗi thời gian, trong đó mô hình AR bậc $k$ dự đoán $x_t$ cho trước $x_{t-k}$,..., $x_{t-1}$. Mô hình AR là mô hình Markov không ẩn. Theo thuật ngữ trong xử lý tự nhiên NLP, mô hình n-gram của chuỗi chữ cái hoặc từ là mô hình AR có thứ tự $n-1$.
+
+Trong các mô hình AR cổ điển, trong đó các biến có giá trị thực, phân phối có điều kiện $P_(x_t|x_{t-k},...,x_{t-1})$ là mô hình Gaussian tuyến tính với phương sai cố định có giá trị trung bình là kết hợp tuyến tính có trọng số của $x_{t-k}$,..., $x_{t-2}$ - nói cách khác là một mô hình hồi quy tuyến tính chuẩn. Giải pháp có khả năng xảy ra tối đa được đưa ra bởi các phương trình Yule - Walker.
+
+Mô hình tự hồi quy sâu là mô hình trong đó mô hình Gaussian-tuyến tính được thay thế bằng một mạng sâu tùy ý với lớp đầu ra phù hợp tùy thuộc vào việc $x_t$ là rời rạc hay liên tục. Các ứng dụng gần đây của phương pháp tự động phục hồi này bao gồm mô hình DeepMind’s WaveNet để tạo giọng nói (van den Oord và cộng sự, 2016a). WaveNet được đào tạo về các tín hiệu âm thanh thô, được lấy mẫu 16.000 lần mỗi giây và triển khai mô hình AR phi tuyến có thứ tự 4800 với cấu trúc tích chập nhiều lớp. Trong các thử nghiệm, nó được chứng minh là thực tế hơn đáng kể so với các hệ thống tạo giọng nói hiện đại trước đây
+\subsubsection{Mạng đối thủ chung - GAN}
+Mạng đối thủ chung (GAN) thực chất là một cặp mạng kết hợp với nhau để tạo thành một hệ thống chung. Một trong các mạng, trình tạo, ánh xạ các giá trị từ $z$ đến $x$ để tạo ra các mẫu từ phân phối $P_w(x)$. Một lược đồ điển hình lấy mẫu $z$ từ một Gaussian đơn vị có thứ nguyên vừa phải và sau đó chuyển nó qua một mạng sâu $h_w$ để thu được $x$.
+Mạng khác, bộ phân biệt, là một bộ phân loại được huấn luyện để phân loại các đầu vào $x$ là thực (được rút ra từ tập huấn luyện) hoặc giả (được tạo bởi bộ tạo). GAN là một loại mô hình ngầm theo nghĩa là các mẫu có thể được tạo ra nhưng xác suất của chúng không có sẵn; Mặt khác, trong lưới Bayes, xác suất của một mẫu chỉ là tích của các xác suất có điều kiện dọc theo con đường tạo mẫu.
+
+Bộ tạo có liên quan chặt chẽ với bộ giải mã từ khuôn khổ biến thể của bộ mã hóa tự động. Thách thức trong mô hình hóa ngầm là thiết kế một hàm mất mát để có thể đào tạo mô hình bằng cách sử dụng các mẫu từ phân phối, thay vì tối đa hóa khả năng được gán cho các ví dụ đào tạo từ tập dữ liệu.
+
+Cả bộ tạo và bộ phân biệt đều được đào tạo đồng thời, trong đó bộ tạo học cách đánh lừa bộ phân biệt và bộ phân biệt học cách tách chính xác dữ liệu thật khỏi dữ liệu giả. Sự cạnh tranh giữa bộ tạo và bộ phân biệt có thể được mô tả bằng ngôn ngữ của lý thuyết trò chơi. Ý tưởng là ở trạng thái cân bằng của trò chơi, bộ tạo nên tái tạo phân phối huấn luyện một cách hoàn hảo, sao cho bộ phân biệt không thể hoạt động tốt hơn so với đoán ngẫu nhiên. GAN đã hoạt động đặc biệt tốt cho các tác vụ tạo hình ảnh. Ví dụ, GAN có thể tạo ra những hình ảnh chân thực, có độ phân giải cao về những người chưa từng tồn tại (Karras và cộng sự, 2017).
+\subsubsection{Dịch không giám sát}
+Nhiệm vụ dịch, được hiểu theo nghĩa rộng, bao gồm việc chuyển đổi một đầu vào $x$ có cấu trúc phong phú thành đầu ra $y$ cũng có cấu trúc phong phú. Trong ngữ cảnh này, “cấu trúc phong phú” có nghĩa là dữ liệu có nhiều chiều và có sự phụ thuộc thống kê thú vị giữa các chiều khác nhau. Hình ảnh và câu ngôn ngữ tự nhiên có cấu trúc phong phú, nhưng một số đơn lẻ, chẳng hạn như ID lớp, thì không. Chuyển đổi một câu từ tiếng Anh sang tiếng Pháp hoặc chuyển đổi một bức ảnh chụp cảnh đêm thành một bức ảnh tương đương được chụp vào ban ngày đều là những ví dụ về nhiệm vụ dịch thuật.
+
+Phép dịch có giám sát bao gồm việc tập hợp nhiều cặp $(x,y)$ và huấn luyện mô hình để ánh xạ từng $x$ với $y$ tương ứng. Ví dụ, hệ thống dịch máy thường được đào tạo dựa trên các cặp câu đã được dịch bởi những người dịch chuyên nghiệp. Đối với các loại bản dịch khác, dữ liệu đào tạo có giám sát có thể không có sẵn. Ví dụ: hãy xem xét một bức ảnh chụp cảnh đêm có nhiều ô tô và người đi bộ đang di chuyển. Có lẽ không khả thi để tìm thấy tất cả ô tô và người đi bộ và đưa chúng về vị trí ban đầu trong bức ảnh ban đêm để chụp lại bức ảnh tương tự vào ban ngày. Để khắc phục khó khăn này, có thể sử dụng kỹ thuật dịch không giám sát có khả năng huấn luyện nhiều ví dụ về $x$ và nhiều ví dụ riêng biệt về $y$ nhưng không có cặp $(x,y)$ tương ứng.
+
+Các cách tiếp cận này thường dựa trên GAN; ví dụ, người ta có thể huấn luyện một bộ tạo GAN để tạo ra một ví dụ thực tế về $y$ khi được điều kiện hóa trên $x$ và một bộ tạo GAN khác để thực hiện ánh xạ ngược. Khung đào tạo GAN cho phép đào tạo trình tạo để tạo ra bất kỳ mẫu nào trong số nhiều mẫu có thể có mà bộ phân biệt chấp nhận như một ví dụ thực tế của $y$ cho trước $x$, mà không cần bất kỳ cặp $y$ cụ thể nào như truyền thống cần thiết trong học có giám sát.
+
+
+
+
+\section{Ứng dụng}
+Học sâu đã được áp dụng thành công cho nhiều lĩnh vực vấn đề quan trọng trong AI: để sử dụng học sâu trong các hệ thống học tăng cường, xử lý ngôn ngữ tự nhiên, ứng dụng cho thị giác máy tính và cho người máy.
+\subsection{Thị giác}
+Bắt đầu với thị giác máy tính, đó là lĩnh vực ứng dụng được cho là có tác động đến học sâu và ngược lại. Mặc dù các mạng tích chập sâu đã được sử dụng từ những năm 1990 cho các tác vụ như nhận dạng chữ viết tay và mạng nơ-ron đã bắt đầu vượt qua các mô hình xác suất tổng hợp để nhận dạng giọng nói vào khoảng năm 2010, đó là thành công của hệ thống học sâu AlexNet trong cuộc thi ImageNet năm 2012 đã thúc đẩy học sâu vào ánh đèn sân khấu. AlexNet có năm lớp tích chập xen kẽ với các lớp tổng hợp tối đa, tiếp theo là ba lớp được kết nối đầy đủ. Nó đã được sử dụng các hàm kích hoạt ReLU và tận dụng GPU để tăng tốc quá trình đào tạo 60 triệu trọng số. 
+
+Hiện nay, CNNs đã được ứng dụng trong hàng loạt nhiệm vụ của Thị giác máy tính từ ô tô tự lái đến phân loại dưa chuột, phát hiện, xác định vị trí, theo dõi và nhận dạng chim bồ câu, túi giấy và người đi bộ,... trong thời gian thực với độ chính xác gần như hoàn hảo
+\subsection{Xử lý ngôn ngữ tự nhiên}
+Học sâu cũng có tác động rất lớn đến các ứng dụng xử lý ngôn ngữ tự nhiên (NLP) chẳng hạn như dịch máy, nhận dạng giọng nói, phân tích tình cảm, tóm tắt tự động, kiểm tra chính tả,.... Một số lợi thế của học sâu đối với những ứng dụng này bao gồm khả năng học tập từ đầu đến cuối, tự động tạo ra các biểu diễn bên trong cho ý nghĩa của các từ và khả năng hoán đổi cho nhau của các bộ mã hóa và bộ giải mã đã học.
+\subsection{Học tăng cường}
+Trong học tăng cường (RL), tác nhân ra quyết định học từ một chuỗi các tín hiệu khen thưởng cung cấp một số dấu hiệu về chất lượng hành vi của nó. Mục đích là để tối ưu hóa tổng phần thưởng trong tương lai. Điều này có thể được thực hiện theo một số cách: theo thuật ngữ của Chương 17, tác nhân có thể học một hàm giá trị, một hàm Q, một chính sách, v.v. Theo quan điểm của học sâu, tất cả đây là những hàm có thể được biểu diễn bằng đồ thị tính toán. RL sâu đối mặt với những trở ngại đáng kể: thường khó đạt được hiệu suất tốt và hệ thống được đào tạo có thể hoạt động rất khó đoán nếu môi trường chỉ khác một chút so với dữ liệu đào tạo (Irpan, 2018). So với các ứng dụng khác của học sâu, RL sâu hiếm khi được áp dụng trong các môi trường thương mại. Tuy nhiên, đây là một lĩnh vực nghiên cứu rất tích cực.
+\section{Tổng kết}
+Chương này mô tả các phương pháp học các hàm được biểu diễn bằng đồ thị tính toán sâu. Những điểm chính gồm:
+\begin{itemize}
+    \item Mạng nơron đại diện cho các hàm phi tuyến phức tạp với mạng các đơn vị ngưỡng tuyến tính được tham số hóa.
+    \item Thuật toán lan truyền ngược thực hiện giảm độ dốc trong không gian tham số để giảm thiểu hàm mất mát.
+    \item Học sâu hoạt động tốt để nhận dạng đối tượng trực quan, nhận dạng giọng nói, xử lý ngôn ngữ tự nhiên và học tập củng cố trong các môi trường phức tạp.
+    \item Mạng tích chập đặc biệt thích hợp cho việc xử lý hình ảnh và các tác vụ khác khi dữ liệu có cấu trúc liên kết lưới.
+    \item Mạng hồi quy hiệu quả cho các tác vụ xử lý trình tự bao gồm mô hình hóa ngôn ngữ và dịch máy.
+\end{itemize}

@@ -1,0 +1,224 @@
+\chapter{Suy diễn logic vị từ}
+
+Một yêu cầu quan trọng đối với hệ thống thông minh là phải có khả năng sử dụng tri thức về thế giới xung quanh và lập luận (reasoning) với tri thức đó. Sử dụng tri thức và lập luận cho phép hệ thống hoạt động cả trong trường hợp thông tin quan sát về môi trường là không đầy đủ. Hệ thống có thể kết hợp tri thức chung đã có để bổ sung cho thông tin quan sát được khi cần ra quyết định. 
+\section{Sự cần thiết của tri thức và lập luận}
+Một yêu cầu quan trọng đối với hệ thống thông minh là phải có khả năng sử dụng tri
+thức về thế giới xung quanh và lập luận (reasoning) với tri thức đó. Rất khó để đạt được
+những hành vi thông minh và mềm dẻo mà không có tri thức về thế giới xung quanh và khả
+năng suy diễn với tri thức đó. Sử dụng tri thức và lập luận đem lại những lợi ích sau.
+
+
+
+\begin{itemize}
+    \item Hệ thống dựa trên tri thức có tính mềm dẻo cao. Việc kết hợp tri thức và lập luận
+(bao gồm suy diễn và suy luận) cho phép tạo ra tri thức khác, giúp hệ thống đạt
+được những mục tiêu khác nhau, đồng thời có khả năng lập luận về bản thân mục
+tiêu. Chương trước đã đề cập tới kỹ thuật giải quyết vấn đề bằng cách tìm kiếm.
+Những hệ thống tìm kiếm chỉ sử dụng tri thức hạn chế, thể hiện trong việc biểu
+diễn bài toán (như cách sinh ra các chuyển động) và các heuristic. Hệ thống như
+vậy không có khả năng tự thay đổi mục đích cũng như không có khả năng hành
+động một cách mềm dẻo, ngoài những gì chứa trong giải thuật và mô tả bài toán.
+Vì vậy kỹ thuật tìm kiếm là chưa đủ để tạo ra hệ thống thông minh.
+    \item Sử dụng tri thức và lập luận cho phép hệ thống hoạt động cả trong trường hợp
+thông tin quan sát về môi trường là không đầy đủ. Hệ thống có thể kết hợp tri thức
+chung đã có để bổ sung cho thông tin quan sát được khi cần ra quyết định. Ví dụ,
+khi giao tiếp bằng ngôn ngữ tự nhiên, có thể hiểu một câu ngắn gọn nhờ sử dụng
+tri thức đã có về ngữ cảnh giao tiếp và nội dung liên quan tới chủ đề.
+    \item Cơ chế suy diễn là phương pháp cho phép sinh ra các câu mới từ các câu đã có hoặc
+kiểm tra liệu các câu có phải là hệ quả logic của nhau. Ta có thể sử dụng suy diễn để
+sinh ra các tri thức mới từ tri thức đã có trong cơ sở tri thức.
+Logic cung cấp một công cụ hình thức để biểu diễn và suy luận tri thức. Các phần tiếp
+theo sẽ trình bày về hai dạng logic mệnh đề và logic vị từ cũng như cách sử dụng các hệ thống
+logic này trong biểu diễn tri thức và suy diễn.
+    \item Việc sử dụng tri thức thuận lợi cho việc xây dựng hệ thống. Thay vì lập trình lại
+hoàn toàn hệ thống, có thể thay đổi tri thức trang bị cho hệ thống và mô tả mục
+đích cần đạt được, đồng thời giữ nguyên thủ tục lập luận.
+\end{itemize}
+Các hệ thống có sử dụng tri thức được gọi là hệ dựa trên tri thức. Hệ thống loại này gồm
+thành phần cơ bản là cơ sở tri thức (tiếng Anh là Knowledge Base, viết tắt là KB). Cơ sở tri
+thức gồm các câu hay các công thức trên một ngôn ngữ nào đó và chứa các tri thức về thế giới
+của bài toán. Cùng với cơ sở tri thức, hệ thống còn có khả năng lập luận, gồm cả suy diễn
+(inference) và suy luận (deduction), cho phép đưa ra các hành động hoặc câu trả lời hợp lý
+dựa trên tri thức và thông tin quan sát được. Thực chất, suy diễn hay suy luận là cách tạo ra
+các câu mới từ những câu đã có. Như vậy, một hệ dựa trên tri thức bao gồm cơ sở tri thức và
+thủ tục suy diễn.
+\section{Logic}
+Trong chương này, ta sẽ xem xét logic với vai trò là phương tiện để biểu diễn tri thức và
+suy diễn.
+Dạng biểu diễn tri thức cổ điển nhất trong máy tính là logic, với hai dạng phổ biến là
+logic mệnh đề và logic vị từ. Logic là một ngôn ngữ biểu diễn tri thức trong đó các câu nhận
+hai giá trị đúng (True) hoặc sai (False)1 . Cũng như mọi ngôn ngữ biểu diễn tri thức, logic
+được xác định bởi 3 thành phần sau:
+
+\begin{itemize}
+    \item Cú pháp: bao gồm các ký hiệu và các quy tắc liên kết các ký hiệu để tạo thành câu hay
+biểu thức logic. Một ví dụ cú pháp là các ký hiệu và quy tắc xây dựng biểu thức toán
+học trong số học và đại số.
+    \item Ngữ nghĩa của ngôn ngữ cho phép ta xác định ý nghĩa của các câu trong một miền nào
+đó của thế giới hiện thực, xác định các sự kiện hoặc sự vật phản ánh thế giới thực của
+câu mệnh đề. Đối với logic, ngữ nghĩa cho phép xác định câu là đúng hay sai trong
+thế giới của bài toán đang xét.
+    \item Cơ chế suy diễn là phương pháp cho phép sinh ra các câu mới từ các câu đã có hoặc
+kiểm tra liệu các câu có phải là hệ quả logic của nhau. Ta có thể sử dụng suy diễn để
+sinh ra các tri thức mới từ tri thức đã có trong cơ sở tri thức.
+Logic cung cấp một công cụ hình thức để biểu diễn và suy luận tri thức. Các phần tiếp
+theo sẽ trình bày về hai dạng logic mệnh đề và logic vị từ cũng như cách sử dụng các hệ thống
+logic này trong biểu diễn tri thức và suy diễn.
+\end{itemize}
+Logic cung cấp một công cụ hình thức để biểu diễn và suy luận tri thức. Các phần tiếp
+theo sẽ trình bày về hai dạng logic mệnh đề và logic vị từ cũng như cách sử dụng các hệ thống
+logic này trong biểu diễn tri thức và suy diễn.
+\subsection{Biểu diễn tri thức}
+Để có thể sử dụng tri thức, tri thức cần được biểu diễn dưới dạng thuận tiện cho việc mô
+tả và suy diễn. Nhiều ngôn ngữ và mô hình biểu diễn tri thức đã được thiết kế để phục vụ mục
+đích này. Ngôn ngữ biểu diễn tri thức phải là ngôn ngữ hình thức để tránh tình trạng nhập
+nhằng như thường gặp trong ngôn ngữ tự nhiên. Một ngôn ngữ biểu diễn tri thức tốt phải có
+những tính chất sau:
+\begin{itemize}
+    \item Ngôn ngữ phải có khả năng biểu đạt tốt, tức là cho phép biểu diễn mọi tri thức
+và thông tin cần thiết cho bài toán.
+    \item Cần đơn giản và hiệu quả, tức là cho phép biểu diễn ngắn gọn tri thức, đồng thời
+cho phép đi đến kết luận với khối lượng tính toán thấp.
+    \item Gần với ngôn ngữ tự nhiên để thuận lợi cho người sử dụng trong việc mô tả tri
+thức.
+\end{itemize}
+Sau khi đã có ngôn ngữ biểu diễn tri thức, tri thức về thế giới của bài toán được biểu
+diễn dưới dạng tập hợp các câu hay các công thức và tạo thành cơ sở tri thức (ký hiệu KB
+trong các phần sau). Thủ tục suy diễn được sử dụng để tạo ra những câu mới nhằm trả lời cho
+các vấn đề của bài toán. Thay vì trực tiếp hành động trong thế giới thực của bài toán, hệ thống
+có thể suy diễn dựa trên cơ sở tri thức được tạo ra.
+\section{Logic vị từ}
+
+Trong phần trước ta đã xem xét logic mệnh đề và cách sử dụng logic mệnh để biểu diễn tri thức. Bên cạnh ưu điểm là đơn giản, logic mệnh đề có một nhược điểm lớn là khả năng biểu đạt hạn chế, không thể sử dụng để biểu diễn tri thức một cách ngắn gọn cho những bài toán có độ phức tạp lớn. Cụ thể là logic mệnh để thuận lợi cho biểu diễn sự kiện, sự kiện đơn giản được biểu diễn bằng câu nguyên tử, sự kiện phức tạp được biểu diễn bằng cách sử dụng kết nối logic để kết hợp câu nguyên tử. Logic mệnh đề không cho phép biểu diễn một cách ngắn gọn môi trường với nhiều đối tượng. Chẳng hạn để thể hiện nhận xét “tất cả sinh viên trong lớp nào đó chăm học” ta phải sử dụng các câu riêng rẽ để thể hiện từng sinh viên cụ thể trong lớp chăm học. Nói chung, logic mệnh đề không cho phép biểu diễn ngắn gọn các yếu tố về thời gian, không gian, số lượng hoặc các quan hệ có tính phổ quát giữa các đối tượng.
+    Trong phần này ta sẽ xem xét logic vị từ - một hệ thống logic có khả năng biểu diễn
+ngắn gọn và mạnh hơn, đồng thời xem xét chi tiết thủ tục suy diễn với logic vị từ.
+\\
+\subsection{Đặc điểm}
+Đặc điểm quan trọng nhất của logic vị từ là cho phép biểu diễn thế giới xung quanh
+dưới dạng các đối tượng, tính chất đối tượng, và quan hệ giữa các đối tượng đó. Việc sử dụng đối tượng là rất tự nhiên trong thế giới thực và trong ngôn ngữ tự nhiên, với danh từ biểu diễn đối tượng, tính từ biểu diễn tính chất và động từ biểu diễn quan hệ giữa các đối tượng. Có thể kể ra rất nhiều ví dụ về đối tượng, tính chất và quan hệ:
+\begin{itemize}
+    \item Đối tượng: một cái bàn, một cái nhà, một cái cây, một con người, một sinh viên, một con số,...
+    \item Tính chất: Cái bàn có thể có tính chất: có bốn chân, làm bằng gỗ, không có ngăn kéo.
+    \item Sinh viên có thể có tính chất là thông minh, cao, gầy…
+    \item Quan hệ: cha con, anh em, bè bạn (giữa con người); lớn hơn nhỏ hơn, bằng nhau.
+    \item Hàm: Một trường hợp riêng của quan hệ là quan hệ hàm, trong đó với mỗi đầu vào là một hoặc nhiều đối tượng, ta có một giá trị hàm duy nhất, cũng là một đối tượng. 
+\end{itemize}
+Logic vị từ có cú pháp và ngữ nghĩa được xây dựng dựa trên khái niệm đối tượng. Hệ thống logic này đóng vai trò quan trọng trong việc biểu diễn tri thức do có khả năng biểu diễn phong phú và tự nhiên, đồng thời là cơ sở cho nhiều hệ thống logic khác.\\
+\subsection{Các câu tuyển Horn (Horn clause)}
+Các câu tuyển Horn (Horn clause) đóng vai trò quan trọng trong một số phương pháp suy diễn. Các câu này được đặt theo tên của Alfred Horn, người đã chỉ ra vai trò của các câu
+dạng này trong suy diễn logic. \\
+Như đã nói ở trên, literal là câu nguyên tử hoặc phủ định của câu nguyên tử. Clause
+(dịch là câu tuyển hoặc mệnh đề tuyển) là tuyển của các literal. \\
+Câu tuyển Horn (Horn clause) là câu tuyển có tối đa một literal dương\\
+Trên thực tế, khi suy diễn thường sử dụng cách biểu diễn câu Horn sử dụng phép kéo
+theo hơn. Cách biểu diễn này cũng làm cho các câu Horn giống như các quy tắc Nếu … Thì
+… thường được sử dụng trong thực tế.
+Các câu Horn có chứa đúng một literal dương gọi là câu xác định (definite clause). Các
+ví dụ thứ một, hai, ba ở trên đều là các câu xác định. Các câu Horn chỉ chứa literal dương mà
+không chứa literal âm nào như các ví dụ 1 và 2 ở trên được gọi là sự kiện (fact).
+Trong phần dưới đây, ta sẽ xem xét cách suy diễn sử dụng Modus Ponens tổng quát
+trong trường hợp cơ sở tri thức chỉ gồm các câu xác định.
+
+\section{Suy diễn logic vị từ}
+Trong phần về logic mệnh đề, ta đã xem xét một số quy tắc suy diễn. Quy tắc suy diễn
+là những thủ tục suy diễn đúng đắn và đơn giản. Trong phần này sẽ giới thiệu thêm các quy tắc suy diễn dùng cho các lượng tử. Cùng với các quy tắc suy diễn đã biết, các quy tắc suy diễn với lượng tử tạo thành tập quy tắc được sử dụng trong suy diễn với logic vị từ. Phần này cũng giới thiệu phép hợp nhất và cách sử dụng hợp nhất để suy diễn với các biểu thức logic vị từ. Sau đó, ta sẽ xem xét ba phương pháp suy diễn: suy diễn tiến, suy diễn lùi, và suy diễn bằng hợp giải.\\
+\textbf{Quy tắc suy diễn}\\
+Mọi quy tắc suy diễn cho logic mệnh đề cũng đúng với logic vị từ. Ngoài ra, logic vị từ còn có thêm một số quy tắc suy diễn khác, chủ yếu được dùng với câu có chứa lượng tử, cho phép biến đổi những câu này thành câu không có lượng tử.\\
+\subsection{Phép thế (substitution)}
+   Trước khi đi xem xét quy tắc suy diên, ta định nghĩa khái niệm phép thế, cần thiết cho những câu có chứa biến.
+Một phép thế $\theta$ là một danh sách các đôi $ \theta = v_1 / t_1,..$, trong đó mỗi đôi bao gồm biến $v_i$ và hạng thức $ t_i$ được sử dụng để thay thế biến vi.
+có nghĩa là $x$ được thay bằng $y$ và $z$ được thay bằng Mẹ của(An).
+Với câu $\alpha$ và phép thế $\theta$ cho các biến của$\alpha $ , 
+ký hiệu $SUBST(\theta, \alpha )$
+xác định một câu mới được tạo ra bằng cách thực hiện các phép thế được quy định trong $\theta$ vào câu $\alpha$.
+\subsection{Phép loại trừ với mọi (universal elimination)}
+Tức là có thể thay thế biến $ x$ bằng một hằng số $ g$ và bỏ lượng tử $\forall$ để được câu mới không chứa lượng tử và không chứa biến của lượng tử.
+Lưu ý rằng loại trừ với mọi có thể thực hiện nhiều lần để tạo ra nhiều câu khác nhau
+bằng cách thay thế biến x bằng các hằng khác nhau.
+x
+Tức là có thể thay thế biến $x$ của lượng tử $ \exists$ bằng một hằng số nào đó chưa xuất hiện
+trong KB để được câu mới không chứa lượng tử  $\exists$.
+trong đó Nam phải là một hằng chưa từng xuất hiện trong cơ sở tri thức.
+Lý do phải chọn một hằng chưa xuất hiện trong KB là do câu chỉ có nghĩa là trong lớp có người học giỏi và không xác định rõ người đó, do vậy ta không được phép chọn tên của một sinh viên trong lớp mà phải đặt cho người học giói một các tên nào đó, chẳng hạn gọi người đó là “siêu nhân”. Trong logic, một hằng số mới k như vậy được gọi là hằng Skolem và ta có thể đặt tên cho hằng này. Yêu cầu với hằng Skolem là hàm này chưa được phép xuất hiện trong cơ sở tri thức.
+.\\
+\subsection{Nhập đề tồn tại (existential introduction)}
+Quá trình áp dụng các luật suy diễn để chứng minh câu truy vấn có thể coi như quá trình
+tìm kiếm, trong đó ta cần tìm cách áp dụng các luật suy diễn, tìm cách thay giá trị các biến
+trong loại trừ với mọi để dẫn tới câu truy vấn. Hình vẽ trên minh hoạ cho một phần của cây
+tìm kiếm của ví dụ trên.
+Thực chất, trong ví dụ này ta đã sử dụng các quy tắc suy diễn với lượng tử để biến đổi
+các câu vị từ thành các câu trong logic mệnh đề, sau đó áp dụng các quy tắc suy diễn như với
+logic mệnh đề. Tuy nhiên, suy diễn tự động trên logic vị từ khó hơn so với suy diễn trên logic
+mệnh đề do các biến có thể nhận vô số các giá trị khác nhau. Ta cũng không thể sử dụng bảng
+chân lý do kích thước của bảng có thể là vô hạn. Trong các phần dưới đây sẽ trình bầy một số
+thủ tục suy diễn cho phép áp dụng trực tiếp vào các biểu thức logic vị từ.\\
+\subsection{Phép hợp nhất (Unification)}
+Câu trong logic vị từ có thể chứa các biến. Khi thực hiện suy diễn, thường xuất hiện yêu
+cầu thay thế các biến (thực hiện các phép thế) sao cho các câu trở nên giống nhau.\\
+Trong các trường hợp tồn tại nhiều phép thế như vậy, ta sử dụng hợp tử tổng quát nhất
+(MGU: most general unifier) tức là hợp tử sử dụng ít phép thế cho biến nhất.
+Phép hợp nhất có thể thực hiện tự động bằng thuật toán có độ phức tạp tỉ lệ tuyến tính
+với số lượng biến. Chi tiết thuật toán không được trình bầy ở đây, nhưng việc tồn tại thuật
+toán như vậy rất quan trọng khi xây dựng các thủ tục suy diễn có độ phức tạp tính toán thấp.
+\subsection{Modus Ponens tổng quát (GMP)}
+Có thể coi quy tắc Modus Ponens tổng quát là sự kết hợp của modus ponens với các
+phép nhập đề và. Ngoài ra, GMP là phương án mở rộng của modus ponens thông thường, cho
+phép làm việc trực tiếp với các câu trong logic vị từ.
+Thủ tục suy diễn với GMP là đúng đắn nhưng không đầy đủ với logic vị từ nói chung.
+Chi tiết về tính đúng đắn và đầy đủ của suy diễn sử dụng GMP sẽ được trình bầy trong phần
+về suy diễn tiến và suy diễn lùi.
+Suy diễn bằng GMP chỉ đầy đủ trong trường hợp KB chỉ chứa các câu tuyển Horn
+(Horn clause), sẽ được định nghĩa dưới đây.
+\section{Suy diễn tiến và suy diễn lùi}
+Sử dụng quy tắc Modus Ponens tổng quát cho phép xây dựng thuật toán suy diễn tự
+động, cụ thể là phương pháp suy diễn tiến và suy diễn lùi. Suy diễn tiến và lùi có thể áp dụng đối với KB chỉ chứa các câu xác định, tức là các câu Horn với đúng một literal dương.\\
+\subsubsection{Suy diễn tiến (forward chaining)}
+Giả sử ta có KB bao gồm các câu xác định. Thủ tục suy diễn tiến được thực hiện như sau: bắt đầu từ các câu trong KB, áp dụng Modus Ponens để sinh ra các câu mới cho đến khi không thể sinh ra thêm câu nào nữa. Nếu các câu trong KB được biểu diễn dưới dạng quy tắc kéo theo thì việc suy diễn được thực hiện theo chiểu của phép kéo theo, tức là từ các tiền để suy ra kết luận, do vậy suy diễn được gọi là suy diễn tiến.
+Nhận xét: Suy diễn tiến thêm dần các câu vào KB khi có các câu mới xuất hiện. Quá
+trình suy diễn này không hướng tới câu truy vấn hay kết luận cụ thể nào mà chỉ được khởi động khi có thêm câu mới.
+   Nếu KB chỉ chứa các câu Horn xác định thì suy diễn tiến là thủ tục suy diễn đúng đắn, tức là chỉ sinh ra những câu thực sự là hệ quả logic của KB. Tính đúng đắn của suy diễn tiến được suy ra từ tính đúng đắn của Modus Ponens tổng quát.
+  Nếu KB chỉ chứa các câu Horn xác định thì suy diễn tiến là thủ tục suy diễn đầy đủ, tức là có thể sinh ra tất cả các câu là hệ quả logic của KB. Tuy nhiên, do không phải câu logic vị từ nào cũng có thể biến đổi về dạng câu xác định nên suy diễn tiến không phải là thủ tục suy diễn đầy đủ đối với logic vị từ nói chung.\\
+  \subsubsection{Suy diễn lùi (Backward chaining)}
+  Thủ tục suy diễn tiến trình bầy ở trên bắt đầu từ các câu đã có trong KB và sinh ra các câu mới bằng cách sử dụng quy tắc GMP. Một vấn đề với suy diễn tiến là số câu sinh ra có thể rất nhiều, trước khi sinh ra được câu truy vấn mà cần xác định tính đúng sai. Ngược lại với suy diễn tiến, suy diễn lùi bắt đầu từ cầu truy vấn, sau đó tìm các sự kiện và quy tắc trong KB cho phép chứng minh câu truy vấn là đúng. Quá trình suy diễn có thể coi như được tiến hành ngược với chiều của phép kéo theo, tức là từ hệ quả ta tìm cách tìm ra các tiền đề làm cho hệ quả đó đúng. Suy diễn lùi rất phù hợp với việc trả lời câu hỏi hoặc chứng minh một câu cụ thể là đúng hay sai từ các câu có trong KB.
+Tính chất suy diễn lùi: Suy diễn lùi là đúng đắn. Nếu KB chỉ gồm các câu xác định thì suy diễn lùi là thủ tục suy diễn đầy đủ, tức là có thể chứng minh mọi hệ quả logic của KB. Trong trường hợp chung, do không phải tất cả các câu đều có thể đưa về dạng câu Horn nên suy diễn lùi không đầy đủ. Thủ tục suy diễn lùi khá hiệu quả về mặt độ phức tạp tính toán và được sử dụng làm cơ chế suy diễn trong ngôn ngữ Prolog.\\
+\textbf{Tính chất suy diễn lùi}
+Suy diễn lùi là đúng đắn. Nếu KB chỉ gồm các câu xác định thì
+suy diễn lùi là thủ tục suy diễn đầy đủ, tức là có thể chứng minh mọi hệ quả logic của KB.
+Trong trường hợp chung, do không phải tất cả các câu đều có thể đưa về dạng câu Horn nên
+suy diễn lùi không đầy đủ. Thủ tục suy diễn lùi khá hiệu quả về mặt độ phức tạp tính toán và
+được sử dụng làm cơ chế suy diễn trong ngôn ngữ Prolog.\\
+\textbf{So sánh Thuật toán suy diễn tiến và Thuật toán suy diễn lùi}\\
+ Suy diễn tiến là quá trình dựa trên dữ liệu (data –driven)
+       Ví dụ: việc nhận dạng đối tượng, việc đưa ra quyết định.
+ Suy diễn tiến có thể thực hiện nhiều bước suy diễn dư thừa- không liên quan tới ( cần thiết cho) mục tiêu cần chứng minh.\\
+ Suy diễn lùi là quá trình hướng tới mục tiêu (goal-driven), phù hợp cho việc giải quyết vấn đề,
+        Ví dụ: Làm sao để dành được học bổng của 1 chương trình
+\section{Dạng Conjunctive Normal Form (CNF) và câu tuyển}
+Các công thức tương đương có thể xem như các biểu diễn khác nhau của cùng một sự kiện. Để dễ dàng viết các chương trình máy tính thao tác trên các công thức, chúng ta sẽ chuẩn hóa các công thức, đưa chúng về dạng biểu diễn chuẩn.\\
+
+Một dạng chuẩn được gọi là Conjunctive Normal Form (CNF - dạng chuẩn hội), là câu bao gồm hội của phép tuyển của các literal, tức là hội của các câu tuyển.
+KB dưới dạng chuẩn hội có khả năng biểu diễn tốt hơn các câu Horn. Chúng ta có thể
+biến đổi một công thức bất kỳ về công thức ở dạng CNF bằng cách áp dụng một số bước thủ tục nhất định sẽ được trình bày ở phần sau.\\
+\section{Suy diễn sử dụng phép giải và phản chứng (Resolution Refutation)}
+
+   Nếu KB là tập hữu hạn các câu thì các literal có mặt trong các câu của KB cũng là hữu hạn. Do đó số các câu tuyển thành lập được từ các literal đó là hữu hạn. Vì vậy chỉ có một số hữu hạn câu được sinh ra bằng luật giải. Phép giải sẽ dừng lại sau một số hữu hạn bước. Sử dụng phép giải ta có thể chứng minh được một câu có là tập con của một KB đã cho hay không bằng phương pháp chứng minh phản chứng.
+sau đó dùng phép giải để chứng minh từ cơ sở tri thức mới suy ra False. Một trong các lý do kết hợp phép giải và phản chứng là do suy diễn sử dụng phép giải là thủ tục suy diễn không đầy đủ. Ví dụ, dùng phép giải ta không thể chứng minh từ KB rỗng mặc dù đây là công thức vững chắc, tức là đúng trong mọi minh họa, do trong KB không tồn tại câu nào để áp dụng phép giải. Việc sử dụng phản chứng cho phép suy diễn trong những trường hợp như vậy.\\
+\textbf{Về tính đầy đủ của suy diễn sử dụng phép giải}
+Suy diễn sử dụng phép giải là phản chứng – đầy đủ, tức là nếu một tập hợp các câu là
+không thỏa được trong một minh họa nào đó thì thủ tục suy diễn sử dụng phép giải luôn cho
+phép tìm ra mâu thuẫn. Như vậy, phép giải cho phép xác định một câu có là hệ quả logic của
+một tập các câu khác không. Tuy nhiên, phép giải không cho phép sinh ra tất cả các câu là hệ
+quả logic của một tập câu cho trước.
+\section{Hệ thống suy diễn tự động: lập trình logic}
+Trên thực tế, việc biểu diễn tri thức và suy diễn logic được thực hiện bằng cách sử dụng
+một số ngôn ngữ lập trình được thiết kế đặc biệt. Kỹ thuật xây dựng hệ thống suy diễn như
+vậy được gọi là lập trình logic (logic programming). Ngôn ngữ lập trình logic tiêu biểu là
+Prolog. Rất nhiều hệ chuyên gia trong nhiều lĩnh vực khác nhau đã được xây dựng trên ngôn
+ngữ Prolog.
+Chương trình trên Prolog là một tập hợp các câu xác định (definite clause). Tuy nhiên,
+để thuận tiện cho việc viết trên máy tính, các câu này có cú pháp không hoàn toàn giống với
+logic vị từ truyền thống.
+Suy diễn được thực hiện theo kiểu suy diễn lùi và tìm kiếm theo chiều sâu, trong đó các
+câu được xét theo thứ tự xuất hiện của câu trong chương trình. Ngoài ra, Prolog cũng cho
+phép chứng minh bằng cách phủ định câu truy vấn, sau đó dẫn tới kết luận rằng không thể
+chứng minh được câu phủ định này.

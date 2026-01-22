@@ -1,0 +1,1037 @@
+% translate
+%agent = tác nhân
+%utility function = hàm tiện ích
+%rational preferences = các quyền ưu tiên hợp lý
+%preference elicitation = khám phá sự ưu tiên
+%preference = ưu tiên
+%utility = tiện ích
+%certainty equivalent =  độ chắc chắn tương đương
+%risk-neutral = trung lập với rủi ro%.
+%post-decision disappointment =  sự thất vọng sau quết định
+%ambiguity aversion = ác cảm mơ hồ
+%anchoring effect = hiệu ứng neo.
+\chapter{Đưa ra quyết định đơn giản} %making simple decisons    
+Trong chương này, chúng ta sẽ trình bày chi tiết về cách lý thuyết tiện ích kết hợp với lý thuyết xác suất để tạo ra một tác nhân lý thuyết quyết định - một tác nhân có thể đưa ra các quyết định hợp lý dựa trên những gì nó tin và những gì nó muốn.
+Một tác nhân như vậy có thể đưa ra quyết định trong những bối cảnh mà sự không chắc chắn và xung đột giữa các mục tiêu khiến một tác nhân logic không có cách nào để quyết định.
+Tác nhân dựa trên mục tiêu có sự phân biệt nhị phân giữa trạng thái tốt (mục tiêu) và xấu (không phải mục tiêu), trong khi tác nhân lý thuyết quyết định chỉ định một phạm vi giá trị liên tục cho các trạng thái, và do đó có thể dễ dàng chọn một trạng thái tốt hơn ngay cả khi không trạng thái tốt nhất không tồn tại.\newline
+Phần \ref{section_16_1} giới thiệu nguyên tắc cơ bản của lý thuyết quyết định: tối đa hóa mức tiện ích mong muốn.
+Phần \ref{section_16_2} chỉ ra rằng hành vi của một tác nhân hợp lý có thể được mô hình hóa bằng cách tối đa hóa một hàm tiện ích.
+Phần \ref{section_16_3} thảo luận chi tiết hơn về bản chất của các hàm tiện ích, và đặc biệt là mối quan hệ của chúng với các đại lượng riêng lẻ như tiền.
+Phần \ref{section_16_4} trình bày cách xử lý các hàm tiện ích phụ thuộc vào một số đại lượng.
+Trong Phần \ref{section_16_5}, chúng tôi mô tả việc triển khai các hệ thống ra quyết định.
+Đặc biệt, chúng tôi giới thiệu một chủ nghĩa hình thức được gọi là\textbf{ mạng lưới quyết định} (còn được gọi là \textbf{sơ đồ ảnh hưởng}) mở rộng mạng lưới Bayes bằng cách kết hợp các hành động và tiện ích.
+Phần \ref{section_16_6} hướng dẫn cách một tác nhân lý thuyết quyết định có thể tính toán giá trị của việc thu thập thông tin mới để cải thiện các quyết định của mình.
+% đoạn dưới gõ sau
+\section{Kết hợp niềm tin và mong muốn dưới sự không chắc chắn}
+\label{section_16_1}
+Chúng tôi bắt đầu với một tác nhân, giống như tất cả các tác nhân, phải đưa ra quyết định. Nó có sẵn một số hành động $a$.
+
+Có thể có sự không chắc chắn về trạng thái hiện tại, vì vậy chúng tôi sẽ giả định rằng tác nhân chỉ định một xác suất $P(s)$ cho mỗi trạng thái hiện tại có thể có $s$.
+Cũng có thể có sự không chắc chắn về các kết quả hành động;
+mô hình chuyển được cho bởi $P(s'|s,a)$, xác suất để hành động $a$ tại trang thái $s$ chuyển sang $s'$.
+Bởi vì, chúng ta chỉ quan tâm đến kết quả $s'$, chúng ta cũng sẽ sử dụng ký hiệu viết tắt $P(RESULT(a)=s')$, xác suất để đạt được $s'$ bởi hành động $a$ tại trang thái hiện tại, bất kể trạng thái đó là gì. Cả hai có liên quan như sau:
+\begin{center}
+	$P(RESULT(a) = s') =  \sum\limits_{s} {P(s)P(s'|a,s).} $
+\end{center}
+Lý thuyết quyết định, ở dạng đơn giản nhất, đề cập đến việc lựa chọn giữa các hành động dựa trên sự mong muốn của các kết quả \textit{tức thời} của chúng.
+Sở thích của tác nhân được nắm bắt bởi một hàm tiện ích, $U$, chỉ định một số duy nhất để thể hiện mong muốn của một trạng thái.
+\textbf{Tiện ích mong đợi} của một hành động với bằng chứng, $EU (a)$, chỉ là giá trị tiện ích trung bình của các kết quả, được tính theo xác suất mà kết quả đó xảy ra:
+\begin{center}
+    \begin{align}
+        \label{equation-16-1}
+        EU(a) =  \sum\limits_{s} P(RESULT(a) = s')U(s') 
+    \end{align}
+    
+\end{center}
+
+Nguyên tắc về \textbf{tiện ích mong đợi tối đa (MEU)} nói rằng tác nhân hợp lý nên chọn hành động tối đa hóa tiện ích mong đợi của tác nhân:
+\begin{center}
+	%$action =  \argmax f(x) EU(a) $
+	$action = \underset{a} {\mathrm{argmax}} ~EU(a)$
+\end{center}
+Theo một nghĩa nào đó, nguyên tắc MEU có thể được coi là một đơn thuốc cho hành vi thông minh.
+Tất cả những gì một tác nhân thông minh phải làm là tính toán các số lượng khác nhau, tối đa hóa tiện ích cho các hành động của nó và biến mất.
+Nhưng điều này không có nghĩa là vấn đề AI \textit{được giải quyết} theo định nghĩa! 
+
+Nguyên tắc MEU \textit{chính thức hóa} quan điểm chung rằng một tác nhân thông minh nên “làm điều đúng đắn”, nhưng không thực hiện lời khuyên đó.
+Ước tính phân phối xác suất $P(s)$ trạng thái có thể có của thế giới, gấp thành $P(RESULT(a) = s')$, đòi hỏi nhận thức, học hỏi, biểu diễn kiến thức và suy luận.
+Có thể có nhiều hành động cần xem xét và việc tính toán các tiện ích kết quả $U(s')$ tự nó có thể yêu cầu tìm kiếm thêm hoặc lập kế hoạch thêm vì một tác nhân có thể không biết trạng thái tốt như thế nào cho đến khi nó biết nó có thể đi đến đâu từ trạng thái đó.
+Một hệ thống AI hoạt động nhân danh con người có thể không biết hàm tiện ích thực sự của con người, vì vậy có thể có sự không chắc chắn về $U$.
+Tóm lại, lý thuyết quyết định không phải là liều thuốc chữa bách bệnh để giải quyết vấn đề AI — nhưng nó cung cấp sự khởi đầu của một khung toán học cơ bản đủ chung để xác định vấn đề AI.
+%
+\section{Cơ sở của lý thuyết tiện ích}
+\label{section_16_2}
+Về mặt trực quan, nguyên tắc Tiện ích mong đợi tối đa (MEU) có vẻ giống như một cách hợp lý để đưa ra quyết định, nhưng không có nghĩa là nó là cách hợp lý \textit{duy nhất}.
+Rốt cuộc, tại sao việc tối đa hóa tiện ích\textit{ trung bình} lại phải đặc biệt như vậy?
+Điều gì không đúng với một tác nhân thứ tối đa hóa tổng trọng số của các hình khối của các tiện ích có thể có hoặc cố gắng giảm thiểu tổn thất tệ nhất có thể xảy ra?
+Liệu một tác nhân có thể hành động hợp lý chỉ bằng cách thể hiện sở thích giữa các trạng thái mà không cung cấp cho chúng các giá trị số không?
+Cuối cùng, tại sao một hàm tiện ích với các thuộc tính bắt buộc phải tồn tại? Chúng ta sẽ thấy.
+\subsection{Các ràng buộc về các quyền ưu tiên hợp lý}
+Những câu hỏi này có thể được trả lời bằng cách viết ra một số ràng buộc về các ưu tiên mà một tác nhân hợp lý nên có và sau đó chỉ ra rằng nguyên tắc MEU có thể được rút ra từ các ràng buộc.
+Chúng tôi sử dụng ký hiệu sau để mô tả quyền ưu tiên của một tác nhân:
+\begin{center}
+    \begin{itemize}
+        \item[] $A \succ B$ ưu tiên tác nhân $A$ hơn tác nhân $B$
+        \item[] $A \sim B$ tác nhân không khác biệt giữa $A$ và $B$
+        \item[] $A \succsim B$ ưu tiên tác nhân $A$ hơn $B$ hoặc giữa chúng không có sự khác biệt.
+    \end{itemize}
+\end{center}
+%
+Bây giờ câu hỏi rõ ràng là, $A$ và $B$ là những thứ gì? Chúng có thể là các trạng thái của thế giới, nhưng thường xuyên có sự không chắc chắn về những gì thực sự đang được cung cấp.
+Ví dụ, một hành khách của hãng hàng không được cung cấp “món mì ống hay thịt gà” không biết thứ gì ẩn bên dưới lớp giấy thiếc.%\footnote{Chúng tôi xin lỗi những độc giả về ví dụ này, các hãng hàng không địa này phương không còn cung cấp đồ ăn trên các chuyến bay dài} 
+Món mì có thể ngon hoặc đông cứng, thịt gà ngon ngọt hoặc quá chín không thể nhận biết được.
+Chúng ta có thể coi tập hợp các kết quả cho mỗi hành động như một \textit{cuộc xổ số} — hãy coi mỗi hành động như một tấm vé.
+Một cuộc xổ số $L$ với các kết quả có thể xảy ra $S_1, ..., S_n$ xảy ra với các xác suất $p_1, ..., p_n$ được viết
+\begin{center}
+    \begin{itemize}
+        \item[] $L = [p_1,S_1; p_2, S_2; ... p_n, S_n]$
+    \end{itemize}
+\end{center}
+Nói chung, mỗi kết quả $S_i$ của một xổ số có thể là một trạng thái nguyên tử hoặc một xổ số khác.
+Vấn đề cơ bản đối với lý thuyết tiện ích là phải biết ưu tiên như nào giữa các loại xổ số phức tạp có liên quan như thế nào đến sự ưu tiên giữa các trạng thái cơ bản trong các loại xổ số đó.
+Để giải quyết vấn đề này, chúng tôi liệt kê sáu ràng buộc mà chúng tôi yêu cầu bất kỳ mối quan hệ ưu tiên hợp lý nào phải tuân theo:
+\begin{center}
+    \begin{itemize}
+        \item \textbf{Khả năng kiểm tra:} Với bất kỳ hai loại xổ số nào, một tác nhân hợp lý phải ưu tiên một hoặc cách khác đánh giá chúng là ưu tiên như nhau. Đó là, tác nhân không thể tránh khỏi việc quyết định. Từ chối đặt cược cũng giống như từ chối để thời gian trôi qua.\newline
+        Chính xác một trong số $(A \succ B)$, $(B \succ A)$ hoặc $(A \sim B)$ được giữ.
+        \item \textbf{Tính nhạy cảm:} Với ba loại xổ số bất kỳ, nếu một tác nhân ưu tiên $A$ hơn $B$ và ưu tiên $B$ hơn $C$, thì tác nhân phải ưu tiên $A$ hơn $C$.\newline
+        $$(A \succ B) \wedge (B \succ C) \Rightarrow (A \succ C)$$
+        \item \textbf{Tính liên tục:} Nếu một số xổ số $B$ nằm giữa $A$ và $C$ được ưu tiên, thì có một số xác suất $p$ mà tác nhân hợp lý sẽ không quan tâm giữa việc nhận được $B$ chắc chắn và xổ số có kết quả $A$ với xác suất $p$ và $C$ với xác suất $1-p$.\newline
+        $$A \succ B \succ C\Rightarrow \exists p \quad [p, A; 1-p, C]  \sim [p, B; 1-p, C] $$
+        Điều này cũng đúng nếu chúng ta thay thế $\succ$ cho $\sim$ trong tiên đề này.
+        \item \textbf{Tính đơn điệu:} Giả sử hai xổ số có hai kết quả có thể xảy ra giống nhau, $A$ và $B$. Nếu một tác nhân ưu tiên $A$ hơn $B$, thì tác nhân đó phải thích xổ số có xác suất trúng $A$ cao hơn (và ngược lại).\newline
+        $$A \succ B \Rightarrow (p>q  \Leftrightarrow [p, A; 1-p, B] \succ [q, A; 1-q, B])$$
+        \item \textbf{Khả năng phân hủy:} Xổ số tổng hợp có thể được rút gọn thành những loại đơn giản hơn bằng cách sử dụng luật xác suất. Đây được gọi là quy tắc “không vui trong cờ bạc”: như Hình \ref{figure-16-1} cho thấy, nó nén hai xổ số liên tiếp thành một xổ số tương đương duy nhất\footnote{Chúng tôi có thể giải thích cho việc thưởng thức cờ bạc bằng cách mã hóa các sự kiện cờ bạc vào phần mô tả trạng thái; ví dụ: “Có 10 đô la và đánh bạc” có thể được ưu tiên thành “Có 10 đô la và không đánh bạc”.}.
+    \end{itemize}
+\end{center}
+%
+Những ràng buộc này được gọi là tiên đề của lý thuyết tiện ích. Mỗi tiên đề có thể được thúc đẩy bằng cách chỉ ra rằng một tác nhân vi phạm nó sẽ thể hiện hành vi phi lý trí trong một số tình huống.
+Ví dụ: chúng ta có thể thúc đẩy tính nhạy cảm bằng cách làm cho một tác nhân không có sở thích không chuyển đổi cung cấp cho chúng ta tất cả tiền của họ.
+Giả sử rằng  tác nhân có các ưu tiên không chuyển dịch $A \succ B \succ C \succ A$, trong đó $A, B$ và $C$ là những hàng hóa có thể tự do trao đổi.
+Nếu tác nhân hiện có $A$, thì chúng tôi có thể đề nghị giao dịch $ C$ lấy $A$ cộng với một xu.
+Tác nhân thích $C$ hơn, và vì vậy sẽ sẵn sàng thực hiện giao dịch này.
+Sau đó, chúng tôi có thể đề nghị giao dịch $B$ lấy $C$, trích ra một xu khác, và cuối cùng, giao dịch $A$ lấy $B$.
+Điều này đưa chúng tôi trở lại nơi chúng tôi bắt đầu, ngoại trừ việc tác nhân đã cho chúng tôi ba xu (Hình \ref{figure-16-1} (a)).
+Chúng ta có thể tiếp tục quay vòng cho đến khi tác nhân không còn tiền.
+Rõ ràng, tác nhân đã hành động phi lý trong trường hợp này.
+%
+
+\begin{center}
+    \begin{figure}[h]
+        \begin{center}
+        	\includegraphics[width = 120mm]{images/chapter16/figure16_1.png}
+        	\caption{(a) Ưu tiên không có tính chuyển dịch $A \succ B \succ C \succ A$ có thể dẫn đến hành vi không hợp lý: một chu kỳ trao đổi mỗi lần tiêu tốn một xu. (b) Tiên đề về khả năng phân hủy.}
+        	\label{figure-16-1}
+    	\end{center}
+	\end{figure}
+\end{center}
+%
+\subsection{Những ưu tiên hợp lý dẫn đến tiện ích}
+Lưu ý rằng tiên đề của lý thuyết tiện ích thực sự là tiên đề về ưu tiên — chúng không nói gì về một hàm tiện ích.
+Nhưng trên thực tế, từ các tiên đề về tiện ích, chúng ta có thể suy ra các hệ quả sau (để chứng minh, xem von Neumann và Morgenstern, 1944):
+\begin{center}
+    \begin{itemize}
+        \item \textbf{Sự tồn tại của hàm tiện ích:} Nếu sở thích của tác nhân tuân theo tiên đề về tiện ích, thì tồn tại một hàm U sao cho $U(A)> U(B)$ nếu và chỉ khi $A$ được ưu tiên hơn $B$ và $U(A) = U(B)$ nếu và chỉ khi tác nhân thờ ơ giữa $A$ và $B$. Nghĩa là,
+        \begin{center}
+        $U(A) > U(B) \Leftrightarrow A \succ B$ và $U(A) = U(B)$ $\Leftrightarrow A \sim B$
+        \end{center}
+        \item \textbf{Tiện ích mong đợi của xổ số:} Công dụng của xổ số là tổng xác suất của mỗi kết quả nhân với tiện ích của kết quả đó.
+        $$U([p_1,S_1;...;p_n,S_n])=\sum\limits_{i}p_iU_i(S_i)$$
+    \end{itemize}
+\end{center}
+Nói cách khác, một khi xác suất và tiện ích của các trạng thái kết quả có thể được xác định, thì tiện ích của xổ số kép liên quan đến các trạng thái đó hoàn toàn được xác định.
+Bởi vì kết quả của một hành động không xác định là một cuộc xổ số, nên nó theo sau rằng một tác nhân có thể hành động hợp lý - nghĩa là, nhất quán với ưu tiên của mình - chỉ bằng cách chọn một hành động tối đa hóa tiện ích mong đợi theo Công thức \ref{equation-16-1}.
+Các định lý trước thiết lập rằng (giả sử các ràng buộc đối với các ưu tiên hợp lý) một hàm tiện ích \textit{tồn tại} đối với bất kỳ tác nhân hợp lý nào. 
+Các định lý không thiết lập rằng hàm tiện ích là \textit{duy nhất}.
+Trên thực tế, có thể dễ dàng nhận thấy rằng hành vi của tác nhân sẽ không thay đổi nếu chức năng tiện ích $U(S)$ của nó được chuyển đổi theo
+\begin{align}
+    \label{equation-16-2}
+    U'(S) = aU(S) + b
+\end{align}
+với $a$ và $b$ là những hằng số và $a>0$; một phép chuyển đổi affine dương.
+Giống như khi chơi trò chơi, trong một môi trường xác định, tác nhân chỉ cần xếp hạng ưu tiên trên các trạng thái — các con số không quan trọng.
+Đây được gọi là một \textbf{ hàm giá trị} hoặc \textbf{hàm tiện ích thứ tự}.
+
+Điều quan trọng cần nhớ là sự tồn tại của một hàm tiện ích mô tả hành vi ưu tiên của tác nhân không nhất thiết có nghĩa là tác nhân đang tối đa hóa \textit{rõ ràng} chức năng tiện ích đó theo những cân nhắc của riêng mình.
+Hành vi hợp lý có thể được tạo ra theo bất kỳ cách nào.
+Một tác nhân hợp lý có thể được thực hiện với một tra cứu bảng (nếu số lượng trạng thái có thể đủ nhỏ).
+
+Bằng cách quan sát hành vi của tác nhân hợp lý, người quan sát có thể tìm hiểu về hàm tiện ích thể hiện những gì tác nhân thực sự đang cố gắng đạt được (ngay cả khi tác nhân không biết điều đó).
+%
+\section{Các hàm tiện ích}
+\label{section_16_3}
+Các chức năng tiện ích ánh xạ từ xổ số sang số thực. Chúng ta biết chúng phải tuân theo các tiên đề về khả năng trật tự, tính nhạy cảm, tính liên tục, tính thay thế, tính đơn điệu và tính phân rã.
+Đó là tất cả những gì chúng ta có thể nói về các hàm tiện ích?
+Nói một cách chính xác, đó là nó: một tác nhân có thể có bất kỳ ưu đãi nào mà nó thích.
+Ví dụ, một tác nhân có thể muốn có một số đô la chính trong tài khoản ngân hàng của mình; trong trường hợp đó, nếu nó có 16 đô la, nó sẽ cho đi 3 đô la.
+Điều này có thể là bất thường, nhưng chúng ta không thể gọi nó là phi lý.
+Một tác nhân có thể thích (ưu tiên) một chiếc Ford Pinto đời 1973 bị móp hơn là một chiếc Mercedes mới sáng bóng.
+Tác nhân có thể chỉ thích các số nguyên tố đô la khi họ sở hữu chiếc Pinto, nhưng khi sở hữu chiếc Mercedes, họ có thể thích nhiều đô la hơn hoặc ít hơn.
+May mắn thay, sở thích của các tác nhân thực thường có hệ thống hơn và do đó dễ dàng đối phó hơn.
+%
+\subsection{Đánh giá tiện ích và thang đo tiện ích}
+Nếu chúng ta muốn xây dựng một hệ thống lý thuyết quyết định giúp con người đưa ra quyết định hoặc hành động thay cho họ, trước tiên chúng ta phải tìm ra chức năng tiện ích của con người là gì.
+Quá trình này, thường được gọi là khám phá sự ưu tiên, bao gồm việc trình bày các lựa chọn cho con người và sử dụng các ưu tiên quan sát được để xác định hàm tiện ích cơ bản.
+
+Công thức \ref{equation-16-2} nói rằng không có thang đo tuyệt đối cho các tiện ích, nhưng dù sao, sẽ rất hữu ích khi thiết lập một số thang đo mà trên đó các tiện ích có thể được ghi lại và so sánh cho bất kỳ vấn đề cụ thể nào.
+Một thang đo có thể được thiết lập bằng cách cố định các tiện ích của bất kỳ hai kết quả cụ thể nào, cũng giống như chúng ta sửa thang nhiệt độ bằng cách cố định điểm đóng băng và điểm sôi của nước.
+Thông thường, chúng ta cố định một \textit{"phần thưởng tốt nhất có thể có"} tại $U(S) = u_\top$ và một "thảm họa tồi tệ nhất có thể xảy ra" tại $U(S) = u_\bot$. 
+(Cả hai đều hữu hạn) Các tiện ích chuẩn hóa sử dụng thang điểm với$ u_\bot=0$ và $u_\top=1$.
+Với thang điểm như vậy, người hâm mộ đội tuyển Anh có thể gán hiệu số 1 cho đội tuyển Anh vô địch World Cup và hiệu số 0 cho đội tuyển Anh không vượt qua vòng loại.
+
+Với một thang đo tiện ích giữa $u_\top$ và $u_\bot$, chúng ta có thể đánh giá tiện ích của bất kỳ giải $S$ cụ thể nào bằng cách yêu cầu đại lý chọn giữa $S$ và một xổ số tiêu chuẩn $[p,u_\top; (1 - p),u_\bot]$. 
+Xác suất $p$ được điều chỉnh cho đến khi tác nhân không phân biệt giữa $S$ và xổ số tiêu chuẩn.
+Giả sử các tiện ích chuẩn hóa, tiện ích của $S$ được cho bởi $p$. Sau khi điều này được thực hiện cho mỗi giải thưởng, các tiện ích cho tất cả các xổ số liên quan đến các giải thưởng đó sẽ được xác định.
+Ví dụ, giả sử chúng ta muốn biết người hâm mộ đội tuyển Anh của chúng ta đánh giá cao thế nào về kết quả tuyển Anh lọt vào bán kết và sau đó thua.
+Chúng tôi so sánh kết quả đó với một cuộc xổ số tiêu chuẩn với xác suất $p$ giành được chiếc cúp và xác suất $1-p$ của một thất bại ô nhục để vượt qua vòng loại. Nếu có sự bàng quan ở $ p = 0,3$, thì $ 0,3$ là giá trị lọt vào bán kết và sau đó thua.
+
+Trong các vấn đề về y tế, giao thông, môi trường và các vấn đề quyết định khác, cuộc sống của con người đang bị đe dọa.
+(Đúng, có những thứ quan trọng hơn vận may của đội tuyển Anh tại World Cup) 
+Trong những trường hợp như vậy, $u_\bot$ là giá trị được gán cho cái chết ngay lập tức (hoặc trong những trường hợp thực sự tồi tệ nhất, nhiều
+tử vong).
+\textit{Mặc dù không ai cảm thấy thoải mái khi đặt giá trị của cuộc sống con người, nhưng có một thực tế là sự đánh đổi giữa các vấn đề của sự sống và cái chết luôn được thực hiện.}
+Máy bay được đại tu toàn bộ theo định kỳ, thay vì sau mỗi chuyến đi.
+Ô tô được sản xuất theo cách bù đắp chi phí so với tỷ lệ sống sót sau tai nạn.
+Chúng ta chịu đựng mức độ ô nhiễm không khí giết chết bốn triệu người mỗi năm.
+
+Nghịch lý thay, việc từ chối đặt giá trị tiền tệ lên cuộc sống có thể có nghĩa là cuộc sống bị \textit{đánh giá thấp hơn}.
+Ross Shachter mô tả một cơ quan chính phủ đã ủy quyền một nghiên cứu về việc loại bỏ amiăng \footnote{tên gọi chung của loại sợi khoáng silicat} khỏi trường học.
+Ross Shachter mô tả một cơ quan chính phủ đã ủy quyền một nghiên cứu về việc loại bỏ amiăng khỏi trường học.
+Các nhà phân tích quyết định thực hiện nghiên cứu đã giả định một giá trị đô la cụ thể cho cuộc sống của một đứa trẻ ở độ tuổi đi học, và lập luận rằng lựa chọn hợp lý theo giả định đó là loại bỏ amiăng.
+Cơ quan, bị xúc phạm về mặt đạo đức với ý tưởng đặt ra giá trị của cuộc sống, đã từ chối báo cáo này.
+Sau đó, nó quyết định chống lại việc loại bỏ amiăng - ngầm khẳng định giá trị cuộc sống của một đứa trẻ thấp hơn giá trị mà các nhà phân tích đã ấn định.
+Hiện tại, một số cơ quan của chính phủ Hoa Kỳ, bao gồm Cơ quan Bảo vệ Môi trường, Cơ quan Quản lý Thực phẩm và Dược phẩm và Bộ Giao thông Vận tải, sử dụng \textbf{giá trị của tuổi thọ thống kê} để xác định chi phí và lợi ích của các quy định và các giá trị điển hình trong năm 2019 là khoảng 10 triệu đô la.
+
+Một số nỗ lực đã được thực hiện để tìm ra giá trị mà mọi người đặt lên cuộc sống của chính họ.
+Một “đơn vị tiền tệ” phổ biến được sử dụng trong phân tích y tế và an toàn là micromort, một trong một triệu cơ hội tử vong. Nếu bạn hỏi mọi người họ sẽ trả bao nhiêu để tránh rủi ro - ví dụ: để tránh chơi trò roulette của Nga với một khẩu súng lục ổ quay triệu nòng — họ sẽ trả lời với số lượng rất lớn, có thể hàng chục nghìn đô la, nhưng hành vi thực tế của họ phản ánh giá trị tiền tệ thấp hơn nhiều đối với một micromort.
+
+Ví dụ, ở Anh, lái xe ô tô trong 230 dặm sẽ có nguy cơ bị một micromort.
+Trong suốt vòng đời chiếc ô tô của bạn — chẳng hạn 92.000 dặm — tức là 400 micromorts.
+Mọi người dường như sẵn sàng trả thêm khoảng 12.000 USD cho một chiếc xe an toàn hơn, giảm một nửa nguy cơ tử vong.
+Do đó, hành động mua xe của họ cho biết họ có giá trị là 60 đô la cho mỗi micromort.
+Một số nghiên cứu đã xác nhận một con số trong phạm vi này trên nhiều cá nhân và loại rủi ro.
+Tuy nhiên, các cơ quan chính phủ như Bộ Giao thông Vận tải Hoa Kỳ thường đưa ra con số thấp hơn;
+họ sẽ chỉ tốn khoảng \$ 6 để sửa chữa đường cho mỗi người được cứu sống.
+Tất nhiên, những tính toán này chỉ áp dụng cho những rủi ro nhỏ.
+Hầu hết mọi người sẽ không đồng ý tự sát, ngay cả với 60 triệu đô la.
+
+Một thước đo khác là \textbf{QALY}, hoặc năm tuổi thọ được điều chỉnh theo chất lượng.
+Bệnh nhân sẵn sàng chấp nhận tuổi thọ ngắn hơn để tránh bị tàn tật.
+Ví dụ, bệnh nhân thận trung bình không quan tâm đến việc sống hai năm chạy thận và một năm khỏe mạnh bình thường.
+%
+\subsection{Tiện ích của tiền}
+%
+Lý thuyết tiện ích bắt nguồn từ kinh tế học và kinh tế học cung cấp một ứng cử viên rõ ràng cho một thước đo tiện ích: tiền (hoặc cụ thể hơn, tổng tài sản ròng của một đại lý).
+Khả năng trao đổi gần như phổ biến của tiền đối với tất cả các loại hàng hóa và dịch vụ cho thấy rằng tiền đóng một vai trò quan trọng trong các chức năng tiện ích của con người.
+
+Thông thường sẽ xảy ra trường hợp một tác nhân thích nhiều tiền hơn ít tiền, tất cả những thứ khác đều bình đẳng.
+Chúng tôi nói rằng tác nhân thể hiện một \textbf{sự ưu tiên đơn điệ}u cho nhiều tiền hơn.
+Điều này không có nghĩa là tiền hoạt động như một hàm tiện ích, bởi vì nó không nói gì về các ưu tiên giữa các loại xổ số liên quan đến tiền.
+
+Giả sử bạn đã chiến thắng các đối thủ khác trong một chương trình trò chơi truyền hình.
+Máy chủ hiện cung cấp cho bạn một sự lựa chọn: bạn có thể nhận giải thưởng 1.000.000 đô la hoặc bạn có thể đánh bạc khi lật đồng xu.
+Nếu đồng xu có đầu, bạn sẽ không có gì, nhưng nếu nó xuất hiện đầu, bạn nhận được 2.500.000 đô la.
+Nếu bạn giống như hầu hết mọi người, bạn sẽ từ chối canh bạc và bỏ túi hàng triệu USD.
+Bạn có đang cảm thấy phi lý không?
+Giả sử đồng xu là công bằng, \textbf{giá trị tiền tệ dự kiến} (EM) của canh bạc là $\frac{1}{2}$ (0 đô la) + $\frac{1}{2}$ (2.500.000 đô la) = 1.250.000 đô la, cao hơn 1.000.000 đô la ban đầu.
+Nhưng điều đó không nhất thiết có nghĩa là chấp nhận canh bạc là một quyết định tốt hơn.
+Giả sử chúng ta sử dụng $S_n$ để biểu thị trạng thái sở hữu tổng tài sản $\$ n$, và tài sản hiện tại của bạn là $\$ k$.
+Sau đó, các tiện ích mong đợi của hai hành động chấp nhận và từ chối đánh bạc là
+\begin{center}
+    \begin{itemize}
+        \item[] $EU($ \textit{Chấp nhận}$) = \frac{1}{2}U(S_k) + \frac{1}{2}U(S_{k+2,500,000}),$
+        \item[] $EU($ \textit{Từ chối}$) =  U(S_{k+1,000,000}).$
+    \end{itemize}
+\end{center}
+Để xác định việc cần làm, chúng ta cần gán các tiện ích cho các trạng thái kết quả.
+Tiện ích không tỷ lệ thuận với giá trị tiền tệ, bởi vì tiện ích cho một triệu đầu tiên của bạn là rất cao (hoặc họ nói vậy), trong khi tiện ích cho một triệu bổ sung nhỏ hơn.
+Giả sử bạn gán tiện ích là 5 cho trạng thái tài chính hiện tại của mình $(S_k)$, 9 cho trạng thái $S_{k + 2.500.000}$ và một 8 cho trạng thái $S_{k + 1.000.000}$.
+Khi đó, hành động hợp lý sẽ là từ chối, bởi vì mức độ thỏa dụng mong đợi của việc chấp nhận chỉ là 7 (nhỏ hơn 8 khi giảm dần).
+Mặt khác, một tỷ phú rất có thể sẽ có một hàm tiện ích tuyến tính cục bộ trong phạm vi vài triệu nữa, và do đó sẽ chấp nhận đánh bạc.
+
+\begin{center}
+    \begin{figure}[!t]
+        \begin{center}
+        	\includegraphics[width = 140mm]{images/chapter16/figure_16_2.png}
+        	\caption{Tiện ích của tiền. (a) Dữ liệu thực nghiệm cho ông Beard trong một phạm vi giới hạn. (b) Một đường cong điển hình cho phạm vi đầy đủ.}
+        	\label{figure-16-2}
+    	\end{center}
+	\end{figure}
+\end{center}
+Trong một nghiên cứu tiên phong về các hàm tiện ích thực tế, Grayson (1960) nhận thấy rằng tiện ích của tiền gần như tỷ lệ chính xác với logarit của số tiền. (Ý tưởng này là lần đầu tiên được đề xuất bởi Bernoulli (1738))
+Một đường cong tiện ích cụ thể, đối với một ông Râu nhất định, được thể hiện trong Hình 16.2 (a).
+Dữ liệu thu được cho các sở thích của ông Beard phù hợp với một chức năng tiện ích.
+\begin{itemize}
+    \item[] $U(S_{k+n} = -263.31+22.09\log(n+150,000)$
+\end{itemize}
+cho phạm vi giữa $n = -\$150,000$ và $n = \$800,000$.
+
+Chúng ta không nên cho rằng đây là hàm tiện ích cuối cùng cho giá trị tiền tệ, nhưng có khả năng hầu hết mọi người đều có hàm tiện ích lõm xuống cho sự giàu có tích cực.
+Nợ xấu là không tốt, nhưng sở thích giữa các mức nợ khác nhau có thể cho thấy sự đảo ngược của tình trạng liên quan đến sự giàu có tích cực.
+Ví dụ, ai đó đã nợ 10.000.000 đô la cũng có thể chấp nhận đánh bạc trên một đồng xu công bằng với lợi nhuận 10.000.000 đô la cho đầu và thua 20.000.000 đô la cuối.\footnote{Hành vi như vậy có thể được gọi là tuyệt vọng, nhưng nó là hợp lý nếu một người đã ở trong tình trạng tuyệt vọng}
+Điều này tạo ra đường cong hình chữ S được hiển thị trong Hình \ref{equation-16-2}(b).
+
+Nếu chúng ta hạn chế sự chú ý của mình vào phần dương của các đường cong, nơi độ dốc đang giảm, thì đối với bất kỳ xổ số $L$ nào, lợi ích của việc đối mặt với xổ số đó ít hơn tiện ích của việc chuyển giao giá trị tiền tệ mong đợi của xổ số như một điều chắc chắn:
+
+\begin{itemize}
+    \item[] $U(L) < U(S_{EMV(L)})$
+\end{itemize}
+Có nghĩa là, các tác nhân có đường cong hình dạng này không thích rủi ro: họ thích một thứ chắc chắn với phần thưởng ít hơn giá trị tiền tệ mong đợi của một canh bạc.
+Mặt khác, trong khu vực “tuyệt vọng” với sự giàu có âm lớn trong Hình \ref{equation-16-2} (b), hành vi này là \textbf{tìm kiếm rủi ro}.
+Giá trị mà một đại lý sẽ chấp nhận thay cho xổ số được gọi là \textbf{ độ chắc chắn tương đươn}g với xổ số.
+Các nghiên cứu đã chỉ ra rằng hầu hết mọi người sẽ chấp nhận khoảng 400 đô la thay cho một canh bạc mang lại 1000 đô la trong một nửa thời gian và 0 đô la trong nửa thời gian còn lại — nghĩa là, mức chắc chắn tương đương với xổ số là 400 đô la, trong khi EMV là 500 đô la.
+Sự khác biệt giữa EMV của một xổ số và mức tương đương chắc chắn của nó được gọi là phí bảo hiểm.
+Không thích rủi ro là cơ sở cho ngành bảo hiểm, bởi vì nó có nghĩa là phí bảo hiểm là số dương.
+Mọi người thà trả một khoản phí bảo hiểm nhỏ hơn là đánh cược giá ngôi nhà của họ trước khả năng xảy ra hỏa hoạn.
+Theo quan điểm của công ty bảo hiểm, giá của ngôi nhà là rất nhỏ so với tổng dự trữ của công ty.
+Điều này có nghĩa là đường cong tiện ích của công ty bảo hiểm xấp xỉ tuyến tính trên một khu vực nhỏ như vậy và chi phí đánh bạc mà công ty hầu như không phải trả.
+
+Chú ý rằng đối với những thay đổi \textit{nhỏ} của sự giàu có so với sự giàu có hiện tại, hầu như bất kỳ đường cong nào cũng sẽ xấp xỉ tuyến tính.
+Một tác nhân có đường cong tuyến tính được cho là \textbf{trung lập với rủi ro}.
+Do đó, đối với các trò chơi có số tiền nhỏ, chúng ta mong đợi tính trung lập về rủi ro.
+%
+\subsection{Tiện ích mong đợi và sự thất vọng sau quyết định}
+Cách hợp lý để chọn hành động tốt nhất, $a^*$, là tối đa hóa tiện ích mong đợi:
+\begin{align*}
+    a^* = \underset{a} {\mathrm{argmax}} ~EU(a)
+    %$action = \underset{a} {\mathrm{argmax}} ~EU(a)$
+\end{align*}
+Nếu chúng ta đã tính toán tiện ích mong đợi một cách chính xác theo mô hình xác suất của mình và nếu mô hình xác suất phản ánh đúng các quy trình ngẫu nhiên cơ bản tạo ra kết quả, thì trung bình, chúng ta sẽ nhận được tiện ích mà chúng ta mong đợi nếu toàn bộ quá trình được lặp lại nhiều lần.
+
+Tuy nhiên, trên thực tế, mô hình của chúng tôi thường đơn giản hóa tình huống thực tế, hoặc vì chúng tôi không biết đủ (ví dụ: khi đưa ra một quyết định đầu tư phức tạp) hoặc vì việc tính toán tiện ích kỳ vọng thực sự là quá khó (ví dụ: khi thực hiện một động thái trong backgammon, cần phải tính đến tất cả các lần cuộn xúc xắc có thể xảy ra trong tương lai).
+Trong trường hợp đó, chúng tôi đang thực sự làm việc với các \textit{ước tính} $\widehat{EU}(a)$ về tiện ích thực sự mong đợi.
+Có lẽ chúng tôi sẽ giả định rằng các ước tính là không thiên vị — nghĩa là, giá trị kỳ vọng của sai số, $E(\widehat{EU}(a)- EU(a))$, bằng không.
+Trong trường hợp đó, vẫn có vẻ hợp lý khi chọn hành động có tiện ích ước tính cao nhất và trung bình để mong đợi nhận được tiện ích đó khi hành động được thực thi.
+
+Thật không may, kết quả thực thường sẽ tồi tệ hơn đáng kể so với chúng tôi ước tính, mặc dù ước tính là không thiên vị!
+Để biết lý do tại sao, hãy xem xét một bài toán quyết định trong đó có k lựa chọn, mỗi lựa chọn trong số đó có tiện ích ước tính thực sự là 0.
+Giả sử rằng sai số trong mỗi ước lượng tiện ích là độc lập và có phân phối chuẩn đơn vị - nghĩa là Gaussian với giá trị trung bình bằng 0 và độ lệch chuẩn là 1, được thể hiện dưới dạng đường cong in đậm trong Hình \ref{figure-16-3}.
+Bây giờ, khi chúng tôi thực sự bắt đầu tạo ra các ước tính, một số sai số sẽ là tiêu cực (bi quan) và một số sẽ là dương (lạc quan).
+Bởi vì chúng tôi chọn hành động có ước tính tiện ích \textit{cao nhất}, nên chúng tôi ưu tiên những ước tính quá lạc quan và đó là nguồn gốc của sự sai lệch.
+%
+\begin{center}
+    \begin{figure}[!htp]
+        \begin{center}
+        	\includegraphics[width = 120mm]{images/chapter16/figure_16_3.png}
+        	\caption{Lạc quan không hợp lý do chọn phương án tốt nhất trong số $k$ phương án: chúng ta giả sử rằng mỗi phương án đều có mức hữu dụng thực sự bằng 0 nhưng ước lượng mức độ thỏa dụng được phân phối theo chuẩn đơn vị (đường cong màu nâu).
+Các đường cong khác cho thấy phân phối của ước lượng tối đa k cho $k = 3, 10 và 30$}
+        	\label{figure-16-3}
+    	\end{center}
+	\end{figure}
+\end{center}
+%
+Một vấn đề đơn giản là tính toán phân phối của giá trị lớn nhất của k ước lượng và do đó định lượng mức độ thất vọng của chúng ta.
+(Phép tính này là một trường hợp đặc biệt của việc tính toán một \textbf{thống kê thứ tự}, sự phân bố của bất kỳ phần tử được xếp hạng cụ thể nào của một mẫu.)
+Giả sử rằng mỗi ước lượng Xi có một hàm mật độ xác suất $f(x)$ và phân phối tích lũy $F(x)$.
+Bây giờ, đặt $X^*$ là ước lượng lớn nhất, tức làm $max\{X_1, ..., X_k\}$. Khi đó, phân phối tích lũy cho $X^*$ là
+\begin{align*}
+	P(max\{X_1,...,X_k\} \leq x) &= P(X_1 \leq x,...,X_k \leq x)\\
+	&=P(X_1 \leq x)...P(X_k \leq x) = F(x)^k.
+\end{align*}
+%
+Hàm mật độ xác suất là đạo hàm của hàm phân phối tích lũy, vì vậy mật độ đối với $X^*$, giá trị lớn nhất của $k$ ước lượng, là
+\begin{align*}
+    P(x) = \frac{d}{dx}(F(x)^k) = kf(x)(F(x))^{k-1}
+\end{align*}
+Các mật độ này được chỉ ra cho các giá trị khác nhau của k trong Hình \ref{figure-16-3} đối với trường hợp $f(x)$ là pháp tuyến đơn vị.
+Đối với $k = 3$, mật độ của $X^*$ có giá trị trung bình khoảng $0.85$, do đó mức thất vọng trung bình sẽ là khoảng 85\% độ lệch chuẩn trong các ước lượng tiện ích.
+Với nhiều lựa chọn hơn, các ước tính cực kỳ lạc quan có nhiều khả năng xuất hiện hơn: đối với $k= 30$, sự thất vọng sẽ là khoảng gấp đôi độ lệch chuẩn trong các ước tính.
+
+Xu hướng làm cho tiện ích dự kiến ước tính của lựa chọn tốt nhất trở nên quá cao được gọi là \textbf{lời nguyền của trình tối ưu hóa} (Smith và Winkler, 2006).
+Nó làm ảnh hưởng đến cả những nhà phân tích và thống kê quyết định dày dạn kinh nghiệm nhất.
+Các biểu hiện nghiêm trọng bao gồm tin rằng một loại thuốc mới thú vị đã chữa khỏi 80\% bệnh nhân trong một cuộc thử nghiệm sẽ chữa khỏi cho 80\% bệnh nhân (nó được chọn từ $k= $ hàng nghìn loại thuốc ứng viên) hoặc rằng một quỹ tương hỗ được quảng cáo là có lợi nhuận trên mức trung bình sẽ tiếp tục có chúng (nó được chọn để xuất hiện trong quảng cáo trong số $k= $ hàng chục quỹ trong danh mục đầu tư tổng thể của công ty).
+Thậm chí có thể xảy ra trường hợp thứ có vẻ là sự lựa chọn tốt nhất có thể không phải là lựa chọn tốt nhất, nếu phương sai trong ước tính hiệu quả cao: một loại thuốc đã chữa khỏi bệnh cho 9 trong số 10 bệnh nhân và được chọn từ hàng nghìn người đã thử có lẽ còn\textit{ tệ hơn} một loại thuốc đó. đã chữa khỏi 800 trong số 1000.
+
+Lời nguyền của trình tối ưu hóa xuất hiện ở khắp mọi nơi do sự phổ biến của các quy trình lựa chọn tối đa hóa tiện ích, do đó, lấy các ước tính tiện ích theo mệnh giá là một ý tưởng tồi. 
+Chúng ta có thể tránh được lời nguyền bằng cách tiếp cận Bayes sử dụng mô hình xác suất rõ ràng $\textbf{P}(\widehat{EU}|EU)$ về sai số trong ước lượng tiện ích.
+Với mô hình này và trước về những gì chúng tôi có thể mong đợi một cách hợp lý về các tiện ích, chúng tôi coi ước lượng tiện ích là bằng chứng và tính toán phân phối sau cho tiện ích thực sự bằng cách sử dụng quy tắc Bayes.
+%
+\subsection{Phán đoán của con người và sự phi lý}
+Lý thuyết quyết định là một lý thuyết quy phạm: nó mô tả cách một tác nhân hợp lý nên hành động.
+Mặt khác, một lý thuyết mô tả mô tả cách các tác nhân thực tế — ví dụ, con người — thực sự hoạt động như thế nào.
+Việc áp dụng lý thuyết kinh tế sẽ được tăng cường đáng kể nếu hai lý thuyết này trùng hợp, nhưng dường như có một số bằng chứng thực nghiệm ngược lại.
+Các bằng chứng cho thấy rằng con người “có thể đoán trước được là phi lý trí” (Ariely, 2009).
+
+Vấn đề nổi tiếng nhất là nghịch lý Allais (Allais, 1953).
+Mọi người được lựa chọn giữa xổ số A và B và sau đó là C và D, có các giải thưởng sau:
+\begin{center}
+    \begin{multicols}{2}
+        \begin{enumerate}[\quad A:] % (a), (b), (c), ...
+        \item 80\% cơ hội kiếm được \$ 4000
+        \item 100\% cơ hội kiếm được \$ 3000
+        \item 20\% cơ hội kiếm được \$ 4000
+        \item 25\% cơ hội kiếm được \$3000
+        \end{enumerate}
+    \end{multicols}
+\end{center}
+Hầu hết mọi người luôn thích B hơn A (chắc chắn) và C hơn D (lấy EMV cao hơn).
+Phân tích quy phạm không đồng ý! Chúng ta có thể thấy điều này dễ dàng nhất nếu chúng ta sử dụng quyền tự do được ngụ ý bởi công thức \ref{equation-16-2} để đặt U $(\$ 0) = 0.$
+Trong trường hợp đó, $B \succ A$ ngụ ý rằng $U (\$ 3000)> 0,8U (\$ 4000)$, trong khi $C \succ D $ ngụ ý hoàn toàn ngược lại. Nói cách khác, không có chức năng tiện ích nào phù hợp với những lựa chọn này.
+
+Một lời giải thích cho những sở thích rõ ràng là phi lý là hiệu ứng chắc chắn (Kahneman và Tversky, 1979): mọi người bị thu hút mạnh mẽ bởi những lợi ích chắc chắn. Có một số lý do tại sao điều này có thể như vậy.
+
+Đầu tiên, mọi người có thể thích giảm gánh nặng tính toán của họ hơn; bằng cách chọn các kết quả nhất định, họ không phải tính toán với các xác suất.
+Nhưng hiệu quả vẫn tồn tại ngay cả khi các phép tính liên quan rất dễ dàng.
+
+Thứ hai, mọi người có thể không tin tưởng vào tính hợp pháp của các xác suất đã nêu.
+Tôi tin tưởng rằng một lần lật xu là khoảng 50/50 nếu tôi có quyền kiểm soát đồng xu và lần lật, nhưng tôi có thể không tin tưởng vào kết quả nếu việc lật được thực hiện bởi một người có lợi ích nhất định đối với kết quả.\footnote{Ví dụ, nhà toán học / ảo thuật gia Persi Diaconis có thể lật đồng xu theo cách anh ta muốn mỗi lần (Landhuis, 2004).}
+Khi có sự ngờ vực, tốt hơn là bạn nên đi tìm điều chắc chắn.\footnote{Ngay cả điều chắc chắn cũng có thể không chắc chắn. Bất chấp những lời hứa gang thép, chúng tôi vẫn chưa nhận được 27.000.000 đô la đó từ tài khoản ngân hàng Nigeria của một người thân đã qua đời trước đó chưa được biết đến.}
+
+Thứ ba, mọi người có thể tính đến trạng thái cảm xúc cũng như trạng thái tài chính của họ.
+Mọi người biết rằng họ sẽ cảm thấy hối tiếc nếu từ bỏ một phần thưởng nhất địn\textit{h (B}) để có 80\% cơ hội nhận được phần thưởng cao hơn và sau đó bị mất.
+
+Nói cách khác, nếu A được chọn, có 20\% cơ hội không nhận được tiền và cảm thấy mình như một tên ngốc hoàn toàn, điều này còn tệ hơn là không nhận được tiền.
+Vì vậy, có lẽ những người chọn B hơn A và C hơn D không phải là không hợp lý; họ sẵn sàng bỏ 200 đô la EMV để tránh 20\% cơ hội cảm thấy mình như một thằng ngốc.
+
+Một vấn đề liên quan là nghịch lý Ellsberg.
+Ở đây các giải thưởng là cố định, nhưng xác suất không được giới hạn.
+Phần thưởng của bạn sẽ phụ thuộc vào màu sắc của một quả bóng được chọn từ một chiếc bình.
+Bạn được cho biết rằng cái bình chứa 1/3 quả bóng màu đỏ và 2/3 quả bóng màu đen hoặc màu vàng, nhưng bạn không biết có bao nhiêu quả bóng đen và bao nhiêu quả bóng vàng.
+Một lần nữa, bạn được hỏi liệu bạn thích xổ số A hay B hơn; và sau đó C hoặc D:
+\begin{center}
+    \begin{enumerate}[\quad A:] % (a), (b), (c), ...
+        \item \$ 100 cho một quả bóng màu đỏ
+        \item \$ 100 cho một quả bóng màu đen
+        \item \$ 100 cho một quả bóng màu đỏ hoặc màu vàng
+        \item \$ 100 cho một quả bóng màu đen hoặc màu vàng
+    \end{enumerate}
+\end{center}
+Rõ ràng là nếu bạn nghĩ rằng có nhiều quả bóng màu đỏ hơn quả bóng màu đen thì bạn nên thích A hơn B và C hơn D;
+nếu bạn nghĩ rằng có ít màu đỏ hơn màu đen, bạn nên thích điều ngược lại.
+Nhưng hóa ra hầu hết mọi người thích A hơn B và cũng thích D hơn C, mặc dù không có trạng thái nào của thế giới mà điều này là hợp lý.
+Có vẻ như mọi người có ác cảm mơ hồ: A cho bạn 1/3 cơ hội chiến thắng, trong khi B có thể nằm trong khoảng từ 0 đến 2/3.
+Tương tự, D cho bạn 2/3 cơ hội, trong khi C có thể nằm trong khoảng từ 1/3 đến 3/3.
+Hầu hết mọi người bầu chọn xác suất đã biết hơn là các ẩn số chưa biết.
+
+Tuy nhiên, một vấn đề khác là cách diễn đạt chính xác của một vấn đề quyết định có thể có tác động lớn đến lựa chọn của người đại diện; đây được gọi là hiệu ứng tạo khung.
+Các thí nghiệm cho thấy mọi người thích một thủ thuật y tế hiệu ứng Framing được mô tả là có “tỷ lệ sống sót 90\%” cao gấp đôi so với cách được mô tả là có “tỷ lệ tử vong 10\%”, mặc dù hai tuyên bố này có nghĩa hoàn toàn giống nhau.
+Sự khác biệt trong nhận định này đã được tìm thấy trong nhiều thí nghiệm và giống nhau cho dù đối tượng là bệnh nhân trong phòng khám, sinh viên trường kinh doanh có thống kê phức tạp hay bác sĩ có kinh nghiệm.
+
+Mọi người cảm thấy thoải mái hơn khi đưa ra các phán đoán về tiện ích tương đối hơn là những đánh giá tuyệt đối.
+Tôi có thể không biết mình có thể thưởng thức nhiều loại rượu khác nhau do một nhà hàng cung cấp đến mức nào. Nhà hàng tận dụng lợi thế này bằng cách đưa ra một chai trị giá 200 đô la mà sẽ không ai mua, nhưng điều này lại làm sai lệch ước tính của khách hàng về giá trị của tất cả các loại rượu, khiến một chai 55 đô la có vẻ như là một món hời.
+Đây được gọi là \textbf{hiệu ứng neo}.
+
+Nếu những người cung cấp thông tin của con người nhấn mạnh vào các phán đoán ưu tiên trái ngược nhau, thì không có gì mà các đại lý tự động có thể làm để phù hợp với chúng.
+May mắn thay, các phán đoán ưu tiên do con người đưa ra thường mở ra để xem xét lại sau khi được xem xét thêm.
+Các nghịch lý như nghịch lý Allais và Ellsberg giảm đáng kể (nhưng không bị loại bỏ) nếu các lựa chọn được giải thích tốt hơn.
+Khi làm việc tại Trường Kinh doanh Harvard về đánh giá tiện ích của tiền, Keeney và Raiffa (1976, trang 210) đã tìm ra những điều sau:
+%
+\begin{quote}
+\textit{Các đối tượng có xu hướng quá sợ rủi ro trong lĩnh vực nhỏ lẻ và do đó ... các chức năng tiện ích được trang bị thể hiện mức phí bảo hiểm rủi ro lớn không thể chấp nhận được đối với xổ số có mức chênh lệch lớn. ...
+Tuy nhiên, hầu hết các đối tượng có thể hòa giải những mâu thuẫn của họ và cảm thấy rằng họ đã học được một bài học quan trọng về cách họ muốn cư xử.
+Do đó, một số đối tượng hủy bỏ bảo hiểm va chạm ô tô và lấy thêm bảo hiểm có thời hạn cho cuộc sống của họ.}
+\end{quote}
+Các nhà nghiên cứu trong lĩnh vực \textbf{tâm lý học tiến hóa} cũng nghi ngờ bằng chứng cho sự phi lý trí của con người, họ chỉ ra thực tế rằng các cơ chế ra quyết định của bộ não chúng ta không phát triển để giải các bài toán đố với xác suất và giải thưởng được nêu dưới dạng số thập phân.
+Vì lợi ích của tranh luận, chúng ta hãy cho rằng bộ não đã tích hợp sẵn các cơ chế thần kinh để tính toán với các xác suất và tiện ích, hoặc một cái gì đó tương đương về mặt chức năng.
+Nếu vậy, các đầu vào bắt buộc sẽ có được thông qua kinh nghiệm tích lũy về kết quả và phần thưởng hơn là thông qua các trình bày bằng ngôn ngữ về các giá trị số.
+
+Điều hiển nhiên là chúng ta có thể truy cập trực tiếp vào các cơ chế thần kinh có sẵn của não bằng cách trình bày các vấn đề quyết định dưới dạng ngôn ngữ / số.
+Thực tế là các từ ngữ khác nhau của cùng một vấn đề quyết định gợi ra các lựa chọn khác nhau cho thấy rằng bản thân vấn đề quyết định không được giải quyết.
+Được thúc đẩy bởi sự quan sát này, các nhà tâm lý học đã cố gắng trình bày các vấn đề dưới dạng lý luận không chắc chắn và ra quyết định dưới các hình thức “phù hợp về mặt tiến hóa”;
+ví dụ: thay vì nói “tỷ lệ sống sót 90\%”, người thử nghiệm có thể hiển thị 100 hình ảnh động về ca phẫu thuật, trong đó bệnh nhân chết trong 10 người trong số họ và sống sót sau 90.
+Với các vấn đề quyết định được đặt ra theo cách này, hành vi của mọi người dường như gần với tiêu chuẩn hợp lý hơn nhiều.
+%
+\section{Các chức năng tiện ích đa thuộc tính}
+\label{section_16_4}
+Việc ra quyết định trong lĩnh vực chính sách công đòi hỏi sự đóng góp cao cả về tiền bạc và mạng sống.
+Ví dụ, khi quyết định mức phát thải độc hại cho phép từ một nhà máy điện, các nhà hoạch định chính sách phải cân nhắc giữa việc ngăn ngừa tử vong và tàn tật so với lợi ích của nguồn điện và gánh nặng kinh tế của việc giảm thiểu phát thải.
+Chọn một địa điểm cho một sân bay mới đòi hỏi phải xem xét sự gián đoạn do xây dựng; giá đất; khoảng cách với các trung tâm dân cư; tiếng ồn của hoạt động bay; các vấn đề an toàn phát sinh từ điều kiện địa hình và thời tiết của địa phương; và như thế. Những vấn đề như thế này, trong đó kết quả được đặc trưng bởi hai hoặc nhiều thuộc tính, được xử lý bởi lý thuyết\textbf{ tiện ích đa thuộc tính}.
+Về bản chất, đó là lý thuyết so sánh táo với cam.
+
+Đặt các thuộc tính là $X = X_1, ..., X_n$ và đặt $x = \langle x_1, ..., x_n \rangle$ là một vectơ hoàn chỉnh của phép gán, trong đó mỗi $x_i$là một giá trị số hoặc một giá trị rời rạc với thứ tự giả định trên các giá trị.
+Việc phân tích sẽ dễ dàng hơn nếu chúng ta sắp xếp nó sao cho các giá trị cao hơn của một thuộc tính luôn tương ứng với các tiện ích cao hơn: các tiện ích tăng đơn điệu.
+Điều đó có nghĩa là chúng ta không thể sử dụng, chẳng hạn như số người chết, $d$ làm thuộc tính; chúng ta sẽ phải sử dụng $-d$.
+Điều đó cũng có nghĩa là chúng ta không thể sử dụng nhiệt độ phòng, t, làm thuộc tính.
+Nếu hàm tiện ích cho nhiệt độ có đỉnh ở $70^\circ$F và giảm đơn điệu ở hai bên, thì chúng ta có thể chia thuộc tính thành hai phần.
+Chúng ta có thể sử dụng $t - 70$ để đo xem căn phòng có đủ ấm hay không, và $70 - t$ để đo xem nó có đủ mát hay không; cả hai thuộc tính này sẽ là đơn nguyên
+tăng cho đến khi chúng đạt đến giá trị tiện ích tối đa bằng 0;
+đường cong tiện ích bằng phẳng kể từ thời điểm đó, có nghĩa là bạn sẽ không nhận được thêm bất kỳ “đủ ấm” nào trên  $70^\circ$F, hoặc bất kỳ “đủ mát” nào dưới $70^\circ$F nữa.
+
+Các thuộc tính trong vấn đề sân bay có thể là:
+\begin{center}
+    \begin{itemize}
+        \item \textit{Thông lượng}, được đo bằng số chuyến bay mỗi ngày;
+        \item \textit{An toàn}, được đo bằng trừ đi số người chết dự kiến mỗi năm;
+        \item \textit{Sự yên tĩnh}, được đo bằng cách trừ đi số người sống dưới đường bay;
+        \item \textit{Tính tiết kiệm}, được đo bằng chi phí xây dựng âm (chi phí âm: chi phí ròng).
+    \end{itemize}
+\end{center}
+Chúng tôi bắt đầu bằng cách xem xét các trường hợp có thể đưa ra quyết định mà không cần kết hợp các giá trị thuộc tính thành một giá trị tiện ích duy nhất.
+Sau đó, chúng tôi xem xét các trường hợp trong đó các tiện ích của các tổ hợp thuộc tính có thể được chỉ định rất ngắn gọn.
+\subsection{Sự thống trị}
+Giả sử rằng địa điểm sân bay $S_1$ có chi phí thấp hơn, ít tạo ra ô nhiễm tiếng ồn hơn và an toàn hơn địa điểm $S_2$. Một người sẽ không ngần ngại từ chối $S_2$. Khi đó chúng ta nói rằng có \textbf{sự thống trị chặt chẽ} của $S_1$ so với $S_2$.
+Nói chung, nếu một tùy chọn có giá trị thấp hơn trên tất cả các thuộc tính so với một số tùy chọn khác thì không cần phải xem xét thêm.
+Sự thống trị chặt chẽ thường rất hữu ích trong việc thu hẹp phạm vi lựa chọn cho các đối thủ thực sự, mặc dù nó hiếm khi mang lại một sự lựa chọn duy nhất.
+Hình \ref{figure-16-4} (a) cho thấy một sơ đồ cho trường hợp hai thuộc tính.
+
+Điều đó là tốt cho trường hợp xác định, trong đó các giá trị thuộc tính được biết chắc chắn.
+Còn về trường hợp chung, trong đó kết quả không chắc chắn thì sao?
+Một phương pháp tương tự trực tiếp của sự thống trị chặt chẽ có thể được xây dựng, trong đó, bất chấp sự không chắc chắn, tất cả các kết quả cụ thể có thể có đối với $S_1$ chi phối chặt chẽ tất cả các kết quả có thể có đối với $S_2$. (Xem Hình \ref{figure-16-4}(b).)
+Tất nhiên, điều này có thể sẽ xảy ra thậm chí ít thường xuyên hơn so với trường hợp xác định.
+\begin{center}
+    \begin{figure}[!htp]
+        \begin{center}
+        	\includegraphics[width = 120mm]{images/chapter16/figure_16_4.png}
+        	\caption{Sự thống trị nghiêm ngặt. (a) Tính xác định: Phương án A bị chi phối chặt chẽ bởi B nhưng không bị chi phối bởi C hoặc D. (b) Không chắc chắn: Phương án A bị chi phối nghiêm ngặt bởi B nhưng không bị chi phối bởi C.}
+        	\label{figure-16-4}
+    	\end{center}
+	\end{figure}
+\end{center}
+May mắn thay, có một khái quát hữu ích hơn được gọi là thống trị ngẫu nhiên, xảy ra rất thường xuyên trong các bài toán thực tế.
+Sự thống trị ngẫu nhiên dễ hiểu nhất trong
+ngữ cảnh của một thuộc tính.
+Giả sử chúng ta tin rằng chi phí đặt sân bay tại $S_1$ được phân bổ đồng đều giữa 2,8 tỷ đô la và 4,8 tỷ đô la và chi phí tại $S_2$ là
+được phân bổ đồng đều trong khoảng từ 3 tỷ đến 5,2 tỷ đô la. Xác định thuộc tính Frugality là chi phí âm. Hình \ref{figure-16-5} (a) cho thấy sự phân bố mức độ tiết kiệm của các vị trí $S_1$ và $S_2$.
+Sau đó, chỉ với thông tin rằng lựa chọn tiết kiệm hơn là tốt hơn (tất cả những thứ khác đều bình đẳng), chúng ta có thể nói rằng $S_1$ ngẫu nhiên chiếm ưu thế so với $S_2$ (tức là $S_2$ có thể bị loại bỏ).
+Điều quan trọng cần lưu ý là điều này không tuân theo so sánh các chi phí dự kiến.
+Ví dụ: nếu chúng ta biết chi phí của $S_1$ chính xác là 3,8 tỷ đô la, thì chúng ta sẽ không thể tạo ra
+quyết định mà không có thông tin bổ sung về công dụng của tiền.
+(Có vẻ kỳ lạ khi nhiều thông tin hơn về chi phí của $S_1$ có thể khiến tác nhân ít có khả năng quyết định hơn. Nghịch lý được giải quyết bằng cách lưu ý rằng trong trường hợp không có thông tin chi phí chính xác, quyết định dễ dàng hơn
+thực hiện nhưng có nhiều khả năng bị sai.)
+
+Mối quan hệ chính xác giữa các phân phối thuộc tính cần thiết để thiết lập sự thống trị ngẫu nhiên được thấy rõ nhất bằng cách kiểm tra các phân phối tích lũy, thể hiện trong Hình \ref{figure-16-5}(b).
+Nếu phân phối tích lũy cho $S_1$ luôn ở bên phải phân phối tích lũy cho $S_2$, thì nói ngẫu nhiên, $S_1$ rẻ hơn $S_2$.
+Về mặt hình thức, nếu hai hành động $A_1$ và $A_2$ dẫn đến phân phối xác suất $p_1(x)$ và $p_2(x)$ trên thuộc tính $X$, thì $A_1$ ngẫu nhiên chiếm ưu thế $A_2$ trên $X$ nếu
+\begin{center}
+    \begin{itemize}
+        \item[] $\forall x \quad \int_{-\infty}^{x} p_1(x')\,dx'\ \leq  \int_{-\infty}^{x} p_2(x')\, dx'\ $.
+    \end{itemize}
+\end{center}
+Sự liên quan của định nghĩa này với việc lựa chọn các quyết định tối ưu đến từ tính chất sau: \textit{nếu $A_1$ ngẫu nhiên chiếm ưu thế $A_2$, thì đối với bất kỳ hàm tiện ích không giảm đơn điệu nào $U(x)$, tiện ích mong đợi của $A_1$ ít nhất cũng cao bằng tiện ích mong đợi của A2.
+Để xem tại sao điều này đúng, hãy xem xét hai tiện ích mong đợi, $\int p_1(x)U(x)dx$ và  $\int p_2(x)U(x)dx$.}
+Ban đầu, không rõ tại sao tích phân đầu tiên lớn hơn tích phân thứ hai, vì điều kiện chiếm ưu thế ngẫu nhiên có tích phân $p1$ nhỏ hơn tích phân $p_2$.
+\begin{center}
+    \begin{figure}[!htp]
+        \begin{center}
+        	\includegraphics[width = 120mm]{images/chapter16/figure_16_5.png}
+        	\caption{Sự thống trị ngẫu nhiên. (a) $S_1$ ngẫu nhiên chiếm ưu thế so với $S_2$ về tính tiết kiệm (chi phí âm). (b) Phân phối tích lũy cho mức độ tiết kiệm của $S_1$ và $S_2$.}
+        	\label{figure-16-5}
+    	\end{center}
+	\end{figure}
+\end{center}
+Tuy nhiên, thay vì nghĩ về tích phân trên x, hãy nghĩ về tích phân trên y, xác suất tích lũy, như thể hiện trong Hình \ref{figure-16-5} (b).
+Với bất kỳ giá trị nào của y, giá trị tương ứng của x (và do đó của $U(x)$) đối với $S_1$ lớn hơn đối với $S_2$; vì vậy nếu chúng ta tích hợp một số lượng lớn hơn trong toàn bộ phạm vi của $y$, chúng ta nhất định sẽ nhận được kết quả lớn hơn.
+Về mặt hình thức, nó chỉ là sự thay thế $y = P_1(x)$ trong tích phân cho giá trị kỳ vọng của $S_1$ và $y = P_2(x)$ trong tích phân cho $S_2$.
+Với những thay thế này, chúng ta có $dy = \frac{d}{dx} (P_1(x))dx = p_1(x)dx$ đối với $S_1$và $dy = p_2(x)$ dx đối với $S_2$, do đó
+\begin{center}
+    \begin{align*}
+        \int_{-\infty}^{\infty} p_1(x)U(x)dx 
+        =  \int_{0}^{1} U({P_1}^{-1}(y))dy \geq \int_{0}^{1} U({P_2}^{-1}(y))dy  = \int_{-\infty}^{\infty} p_2(x)U(x)dx.
+    \end{align*}
+\end{center}
+Bất đẳng thức này cho phép chúng ta ưu tiên $A_1$ hơn $A_2$ trong một bài toán thuộc tính đơn lẻ.
+Nói chung hơn, nếu một hành động bị chi phối ngẫu nhiên bởi một hành động khác trên tất cả các thuộc tính trong một bài toán đa thuộc tính, thì nó có thể bị loại bỏ.
+
+Điều kiện thống trị ngẫu nhiên có vẻ khá kỹ thuật và có lẽ không dễ đánh giá như vậy nếu không có các tính toán xác suất mở rộng.
+Trên thực tế, nó có thể được quyết định rất dễ dàng trong nhiều trường hợp.
+Ví dụ, bạn muốn ngã đầu xuống nền bê tông từ 3 mm hay 3 mét?
+Giả sử bạn đã chọn 3 mm — lựa chọn tốt! Tại sao nó nhất thiết phải là một quyết định tốt hơn?
+Có rất nhiều sự không chắc chắn về mức độ thiệt hại mà bạn sẽ phải chịu trong cả hai trường hợp;
+nhưng đối với bất kỳ mức độ sát thương nhất định nào, xác suất bạn phải chịu ít nhất mức độ thiệt hại đó cao hơn khi rơi từ 3 mét so với từ 3 mm.
+Nói cách khác, 3 milimet ngẫu nhiên chiếm ưu thế hơn 3 mét trên thuộc tính \textit{An toàn}.
+
+Loại lý luận này được coi là bản chất thứ hai của con người; rõ ràng là chúng tôi thậm chí không nghĩ về nó. Sự thống trị ngẫu nhiên cũng có rất nhiều trong vấn đề sân bay.
+Ví dụ, giả sử rằng chi phí vận chuyển xây dựng phụ thuộc vào khoảng cách đến nhà cung cấp.
+Bản thân chi phí là không chắc chắn, nhưng khoảng cách càng lớn thì chi phí càng lớn.
+Nếu $S_1$ gần hơn $S_2$, thì $S_1$ sẽ chiếm ưu thế hơn $_S2$ về tính tiết kiệm.
+Mặc dù chúng tôi sẽ không trình bày chúng ở đây, nhưng các thuật toán tồn tại để truyền bá loại thông tin định tính này giữa các biến không chắc chắn trong \textbf{mạng lưới xác suất định tính}, cho phép hệ thống đưa ra quyết định hợp lý dựa trên sự thống trị của mạng ngẫu nhiên, mà không sử dụng bất kỳ giá trị số nào.
+\subsection{Cấu trúc ưu tiên và tiện ích đa thuộc tính} % mai làm tiếp
+Giả sử chúng ta có n thuộc tính, mỗi thuộc tính có d giá trị khả dĩ khác nhau.
+Để xác định hàm tiện ích hoàn chỉnh $U(x_1, ..., x_n)$, chúng ta cần các giá trị dn trong trường hợp xấu nhất.
+Lý thuyết tiện ích đa thuộc tính nhằm mục đích xác định cấu trúc bổ sung trong sở thích của con người để chúng tôi không cần chỉ định tất cả các giá trị $d^n$ riêng lẻ.
+Sau khi xác định một số tính thường xuyên trong hành vi ưu tiên, chúng tôi sau đó rút ra \textbf{các định lý biểu diễn} để chỉ ra rằng một tác nhân với một loại cấu trúc ưu tiên nhất định có một chức năng hữu ích
+\begin{align*}
+        U(x_1,...,x_n) = F([f_1(x_1),...,f_n(x_n)]
+\end{align*}
+trong đó $F$ là (chúng tôi hy vọng) là một hàm đơn giản chẳng hạn như phép cộng.
+Lưu ý sự tương tự với việc sử dụng mạng Bayes để phân tích xác suất chung của một số biến ngẫu nhiên.
+
+Ví dụ: giả sử mỗi $x_i$ là số tiền mà đại lý có bằng một loại tiền cụ thể: đô la, euro, mác, lira, v.v.
+Sau đó, các hàm $f_i$ có thể chuyển đổi mỗi số tiền thành một đơn vị tiền tệ chung, và $F$ sau đó sẽ chỉ đơn giản là phép cộng.
+\subsubsection{Các ưu tiên mà không có sự không chắc chắn}
+Chúng ta hãy bắt đầu với trường hợp xác định.
+Chúng tôi lưu ý rằng đối với môi trường xác định, tác nhân có một hàm giá trị, mà chúng tôi viết ở đây là $V(x_1, ..., x_n)$; mục đích là để biểu diễn hàm này một cách ngắn gọn.
+Tính đều đặn cơ bản nảy sinh trong các cấu trúc ưu tiên xác định được gọi là tính độc lập ưu tiên.
+Hai thuộc tính $X_1$ và $X_2$ được ưu tiên phụ thuộc vào thuộc tính thứ ba $X_3$ nếu ưu tiên giữa các kết quả $\langle x_1, ..., x_n \rangle$ và $\langle x_1', ..., x_n' \rangle$ không phụ thuộc vào giá trị cụ thể x3 cho thuộc tính $X_3$.
+
+Quay trở lại ví dụ về sân bay, nơi chúng ta có (trong số các thuộc tính khác) sự \textit{yên tĩnh}, \textit{Tiết kiệm} và An toàn để xem xét, người ta có thể đề xuất rằng Yên lặng và Tiết kiệm được ưu tiên độc lập với An toàn.
+Ví dụ: nếu chúng ta thích một kết quả có 20.000 người cư trú trên đường bay và chi phí xây dựng là 4 tỷ đô la so với kết quả có 70.000 người cư trú trong đường bay và chi phí 3,7 tỷ đô la khi mức độ an toàn là 0,006 trường hợp tử vong trên một tỷ hành khách dặm trong cả hai trường hợp, thì chúng tôi sẽ có cùng một ưu tiên khi mức độ an toàn là 0,012 hoặc 0,003;
+và sự độc lập tương tự sẽ được áp dụng đối với các ưu tiên giữa bất kỳ cặp giá trị nào khác cho \textit{Sự yên tĩnh} và \textit{Tính trung thực}.
+Rõ ràng là \textit{Tiết kiệm} và \textit{An toàn} được ưu tiên độc lập với \textit{Yên tĩnh} và \textit{Yên lặng} và \textit{An toàn} được ưu tiên độc lập với \textit{Tiết kiệm}.
+
+Chúng tôi nói rằng tập hợp các thuộc tính {\textit{Yên tĩnh, Tiết kiệm, An toàn}} thể hiện \textbf{sự độc lập ưu tiên lẫn nhau (MPI)}. Bộ KH \& ĐT nói rằng, trong khi mỗi thuộc tính có thể quan trọng, nó không ảnh hưởng đến cách thức mà một thuộc tính trao đổi các thuộc tính khác với nhau.
+
+Sự độc lập ưu đãi lẫn nhau là một cái tên phức tạp, nhưng nó dẫn đến một dạng đơn giản cho hàm giá trị của tác nhân (Debreu, 1960):
+\textit{Nếu các thuộc tính $X_1, ..., X_n$ độc lập lẫn nhau, thì tùy chọn của tác nhân có thể được biểu diễn bằng một hàm giá trị}
+\begin{align*}
+    V(x_1,...,x_n) = \sum\limits_{i} V_i(x_i),
+\end{align*}
+\textit{trong đó mỗi $V_i$ chỉ đề cập đến thuộc tính $X_i$}.Ví dụ, có thể xảy ra trường hợp quyết định về sân bay có thể được thực hiện bằng cách sử dụng một hàm giá trị
+\begin{center}
+   \textit{ V (yên tĩnh, tiết kiệm, an toàn) = yên tĩnh × $10^4$ + tiết kiệm + an toàn × $10^{12}$}
+\end{center}
+Hàm giá trị kiểu này được gọi là\textbf{ hàm giá trị cộng}. Các hàm bổ sung là một cách cực kỳ tự nhiên để mô tả sở thích của tác nhân và có giá trị trong nhiều tình huống thực tế.
+Đối với $n$ thuộc tính, việc đánh giá một hàm giá trị cộng yêu cầu đánh giá $n$ hàm giá trị một chiều riêng biệt chứ không phải một hàm $n$ chiều;
+thông thường, điều này thể hiện sự giảm số lượng các thử nghiệm tùy chọn cần thiết theo cấp số nhân.
+Ngay cả khi MPI không nắm giữ chặt chẽ, như trường hợp có thể xảy ra ở các giá trị cực đại của các thuộc tính, hàm giá trị cộng thêm vẫn có thể cung cấp một giá trị gần đúng phù hợp với tùy chọn của tác nhân.
+Điều này đặc biệt đúng khi các vi phạm MPI xảy ra trong các phần của phạm vi thuộc tính mà không có khả năng xảy ra trong thực tế.
+
+Để hiểu rõ hơn về MPI, bạn nên xem xét các trường hợp mà nó \textit{không} phù hợp.
+Giả sử bạn đang ở một khu chợ thời trung cổ, cân nhắc việc mua một số con chó săn, một số con gà và một số lồng đan bằng liễu gai cho gà.
+Chó săn rất có giá trị, nhưng nếu bạn không có đủ chuồng cho gà, chó sẽ ăn thịt gà;
+do đó, sự đánh đổi giữa chó và gà phụ thuộc rất nhiều vào số lượng lồng và MPI bị vi phạm.
+Sự tồn tại của các loại tương tác này giữa các thuộc tính khác nhau làm cho việc đánh giá hàm giá trị tổng thể trở nên khó khăn hơn nhiều.
+\subsubsection{Ưu tiên với sự không chắc chắn}
+Khi sự không chắc chắn xuất hiện trong miền, chúng ta cũng cần xem xét cấu trúc sở thích giữa các xổ số và hiểu các đặc tính kết quả của các hàm tiện ích, thay vì chỉ hàm giá trị.
+Toán học của vấn đề này có thể trở nên khá phức tạp, vì vậy chúng tôi chỉ trình bày một trong những kết quả chính để cho biết những gì có thể được thực hiện.
+
+Khái niệm cơ bản về tính \textbf{độc lập về tiện ích} mở rộng tính độc lập về ưu tiên để bao gồm xổ số:
+một tập hợp các thuộc tính \textbf{X} là tiện ích độc lập với một tập hợp các thuộc tính \textbf{Y} nếu các ưu đãi giữa các xổ số trên các thuộc tính trong \textbf{X} độc lập với các giá trị cụ thể của các thuộc tính trong \textbf{Y}.
+Một tập hợp các thuộc tính là \textbf{độc lập về tiện ích lẫn nhau (MUI)} nếu mỗi tập hợp con của nó độc lập về tiện ích với các thuộc tính còn lại.
+Một lần nữa, có vẻ hợp lý khi đề xuất rằng các thuộc tính của sân bay là MUI.
+
+MUI ngụ ý rằng hành vi của tác nhân có thể được mô tả bằng cách sử dụng một\textbf{ hàm tiện ích nhân} (Keeney, 1974).
+Dạng tổng quát của một hàm tiện ích nhân được thấy rõ nhất bằng cách xem xét trường hợp của ba thuộc tính. Để ngắn gọn, chúng tôi sử dụng Ui có nghĩa là $U_i(x_i)$:
+\begin{align*}
+    U &=k_1U_1+k_2U_2+k_3U_3+k_1k_2U_1U_2+k_2k_3U_2U_3+k_3k_1U_3U_1 + k_1k_2k_3U_1U_2U_3
+\end{align*}
+Mặc dù điều này trông không đơn giản lắm, nhưng nó chỉ chứa ba hàm tiện ích thuộc tính đơn và ba hằng số.
+Nói chung, một bài toán n thuộc tính thể hiện MUI có thể được mô hình hóa bằng cách sử dụng $n$ tiện ích thuộc tính đơn và $n$ hằng số.
+Mỗi chức năng tiện ích thuộc tính đơn có thể được phát triển độc lập với các thuộc tính khác và sự kết hợp này sẽ được đảm bảo tạo ra các sở thích tổng thể chính xác.
+Các giả định bổ sung được yêu cầu để có được một chức năng tiện ích phụ gia thuần túy.
+%
+\section{Mạng quyết định}
+\label{section_16_5}
+Trong phần này, chúng ta xem xét một cơ chế chung để đưa ra các quyết định hợp lý.
+Kí hiệu thường được gọi là \textbf{sơ đồ ảnh hưởn}g (Howard và Matheson, 1984), nhưng chúng tôi sẽ sử \textbf{dụng mạng quyết định} thuật ngữ mô tả nhiều hơn.
+Mạng quyết định kết hợp mạng Bayes với các loại nút bổ sung cho các hành động và tiện ích.
+Chúng tôi sử dụng vấn đề chọn một địa điểm sân bay làm ví dụ.
+\subsection{Trình bày một vấn đề quyết định với một mạng lưới quyết định}
+Ở dạng chung nhất, mạng quyết định thể hiện thông tin về trạng thái hiện tại của tác nhân, các hành động có thể xảy ra, trạng thái sẽ là kết quả của hành động của tác nhân và tiện ích của trạng thái đó.
+Hình \ref{figure-16-6} cho thấy một mạng lưới quyết định cho vấn đề chọn sân bay. Nó minh họa ba loại nút được sử dụng:
+\begin{center}
+    \begin{itemize}
+        \item \textbf{Các nút cơ hội} (hình bầu dục) đại diện cho các biến ngẫu nhiên, giống như trong mạng Bayes.
+        Người đại diện có thể không chắc chắn về chi phí xây dựng, mức độ lưu thông hàng không và khả năng xảy ra kiện tụng, và các biến số\textit{ An toàn, Yên tĩnh} và Tổng số \textit{tiết kiệm}, mỗi biến số cũng phụ thuộc vào địa điểm được chọn.
+        Mỗi nút cơ hội đã liên kết với nó một phân phối có điều kiện được lập chỉ mục bởi trạng thái của các nút cha.
+        Trong mạng quyết định, các nút cha có thể bao gồm các nút quyết định cũng như các nút cơ hội.
+        Lưu ý rằng mỗi nút cơ hội ở trạng thái hiện tại có thể là một phần của mạng Bayes lớn để đánh giá chi phí xây dựng, mức lưu lượng hàng không hoặc tiềm năng kiện tụng.
+        \item \textbf{Các nút quyết định} (hình chữ nhật) đại diện cho các điểm mà người ra quyết định có lựa chọn hành động.
+        Trong trường hợp này, hành động chọn sân bay (AirportSite) có thể có giá trị khác nhau cho từng trang web đang được xem xét.
+        Sự lựa chọn ảnh hưởng đến sự an toàn, yên tĩnh và tiết kiệm của giải pháp.
+        Trong chương này, chúng tôi giả định rằng chúng tôi đang xử lý một nút quyết định duy nhất. Chương 17 đề cập đến các trường hợp phải đưa ra nhiều hơn một quyết định.
+        \item \textbf{Các nút tiện ích} (kim cương) đại diện cho chức năng tiện ích của tác nhân.\footnote{Các nút này cũng được gọi là\textbf{ nút giá trị}.}
+        Nút tiện ích có vai trò là cha mẹ tất cả các biến mô tả kết quả ảnh hưởng trực tiếp đến tiện ích.
+        Được liên kết với nút tiện ích là mô tả về tiện ích của tác nhân như một chức năng của các thuộc tính mẹ.
+        Mô tả có thể chỉ là một bảng của hàm hoặc nó có thể là một hàm bổ sung hoặc tuyến tính được tham số hóa của các giá trị thuộc tính.
+        Hiện tại, chúng ta sẽ giả sử rằng hàm là xác định; nghĩa là, với các giá trị của các biến cha của nó, giá trị của nút tiện ích được xác định đầy đủ.
+    \end{itemize}
+\end{center}
+Một biểu mẫu đơn giản hóa cũng được sử dụng trong nhiều trường hợp.
+Ký hiệu vẫn giống hệt nhau, nhưng các nút cơ hội mô tả trạng thái kết quả bị bỏ qua. Thay vào đó, nút tiện ích được kết nối trực tiếp với các nút trạng thái hiện tại và nút quyết định.
+Trong trường hợp này, thay vì đại diện cho một hàm tiện ích trên các trạng thái kết quả, nút tiện ích biểu thị tiện ích mong đợi được liên kết với mỗi hành động, như được định nghĩa trong Công thức \ref{equation-16-1}; nghĩa là, nút được liên kết với một hàm tiện ích hành động (còn được gọi là \textbf{hàm Q} trong học tăng cường).
+Hình \ref{figure-16-7} cho thấy biểu diễn tiện ích hành động của vấn đề chọn sân bay.
+
+Lưu ý rằng, bởi vì các nút cơ hội\textit{ sự yên lặng, sự an toàn và tiết kiệ}m trong Hình\ref{figure-16-6} tham chiếu đến các trạng thái trong tương lai, chúng không bao giờ có thể đặt giá trị của chúng làm biến bằng chứng.
+Do đó, phiên bản đơn giản bỏ qua các nút này có thể được sử dụng bất cứ khi nào có thể sử dụng dạng tổng quát hơn.
+Mặc dù biểu mẫu đơn giản chứa ít nút hơn, nhưng việc bỏ qua mô tả rõ ràng về kết quả của quyết định chọn có nghĩa là nó kém linh hoạt hơn đối với những thay đổi của hoàn cảnh.\newpage
+\begin{figure}[!]
+    \centering
+    \includegraphics[width = 80mm]{images/chapter16/figure_16_6.png}
+    \caption{Một mạng lưới quyết định cho vấn đề chọn sân bay (Airport Site).}
+    \label{figure-16-6}
+    \includegraphics[width = 80mm]{images/chapter16/figure_16_7.png}
+    \caption{Một đại diện đơn giản của vấn đề chọn sân bay. Các nút cơ hội tương ứng với các trạng thái kết quả đã được tính toán.}
+    \label{figure-16-7}
+\end{figure}
+Ví dụ, trong Hình \ref{figure-16-6}, sự thay đổi về mức độ tiếng ồn của máy bay có thể được phản ánh bằng sự thay đổi trong bảng xác suất có điều kiện liên quan đến nút\textit{ Sự yên tĩnh}, trong khi sự thay đổi về trọng lượng dành cho ô nhiễm tiếng ồn trong chức năng tiện ích có thể được phản ánh bằng sự thay đổi trong bảng tiện ích.
+Mặt khác, trong biểu đồ tiện ích hành động, Hình \ref{figure-16-7}, tất cả những thay đổi như vậy phải được phản ánh bằng những thay đổi đối với bảng tiện ích hành động.
+Về cơ bản, công thức tiện ích hành động là một phiên bản đã biên dịch của công thức ban đầu, thu được bằng cách tính tổng các biến trạng thái kết quả.
+\subsection{Đánh giá mạng lưới quyết định}
+Các hành động được chọn bằng cách đánh giá mạng quyết định cho mỗi cài đặt có thể có của nút quyết định.
+Khi nút quyết định được thiết lập, nó sẽ hoạt động giống hệt như một nút cơ hội đã được đặt làm biến bằng chứng.
+Thuật toán để đánh giá mạng quyết định như sau:
+\begin{enumerate}[1.]
+    \item Đặt các biến bằng chứng cho trạng thái hiện tại.
+    \item Đối với mỗi giá trị có thể có của nút quyết định: 
+    \begin{enumerate}[\quad (a)]
+        \item Đặt nút quyết định thành giá trị đó.
+        \item Tính toán xác suất sau cho các nút cha của nút tiện ích, sử dụng thuật toán suy luận xác suất tiêu chuẩn.
+        \item Tính toán tiện ích kết quả cho hành động.
+    \end{enumerate}
+    \item Trả lại hành động với tiện ích cao nhất.
+\end{enumerate}
+Đây là một cách tiếp cận đơn giản có thể sử dụng bất kỳ thuật toán mạng Bayes có sẵn nào và có thể được kết hợp trực tiếp vào thiết kế tác nhân.
+%
+\section{Giá trị của thông tin}
+\label{section_16_6}
+Trong phân tích trước, chúng tôi đã giả định rằng tất cả thông tin liên quan, hoặc ít nhất là tất cả thông tin có sẵn, đều được cung cấp cho đại lý trước khi họ đưa ra quyết định.
+Trong thực tế, điều này hiếm khi xảy ra.
+Một trong những phần quan trọng nhất của quá trình ra quyết định là biết những câu hỏi cần đặt ra.
+Ví dụ, một bác sĩ không thể mong đợi được cung cấp kết quả của tất cả các xét nghiệm và câu hỏi chẩn đoán có thể xảy ra tại thời điểm bệnh nhân lần đầu tiên bước vào phòng tư vấn.
+Các xét nghiệm thường tốn kém và đôi khi nguy hiểm (cả trực tiếp và do sự chậm trễ liên quan).
+Tầm quan trọng của chúng phụ thuộc vào hai yếu tố: liệu kết quả xét nghiệm có dẫn đến một kế hoạch điều trị tốt hơn đáng kể hay không và khả năng của các kết quả xét nghiệm khác nhau.
+
+Phần này mô tả lý thuyết giá trị thông tin, cho phép tác nhân chọn thông tin nào cần thu thập.
+Chúng tôi giả định rằng trước khi chọn một hành động “thực” được đại diện bởi nút quyết định, tác nhân có thể nhận được giá trị của bất kỳ biến cơ hội nào có thể quan sát được trong mô hình.
+Do đó, lý thuyết giá trị thông tin liên quan đến một hình thức đơn giản hóa của việc ra quyết định tuần tự — được đơn giản hóa bởi vì các hành động quan sát chỉ ảnh hưởng đến trạng thái niềm tin của tác nhân, chứ không phải trạng thái vật chất bên ngoài.
+Giá trị của bất kỳ quan sát cụ thể nào phải xuất phát từ khả năng ảnh hưởng đến hành động thực tế cuối cùng của tác nhân; và tiềm năng này có thể được ước tính trực tiếp từ chính mô hình quyết định.
+%
+\subsection{Một ví dụ đơn giản}
+Giả sử một công ty dầu mỏ đang hy vọng mua một trong n khối quyền khoan đại dương không thể phân biệt được. Chúng ta hãy giả định thêm rằng chính xác một trong những khối chứa dầu sẽ tạo ra lợi nhuận ròng là $C$ đô la, trong khi những khối khác là vô giá trị.
+Giá chào bán của mỗi khối là $C/n$ đô la.
+Nếu công ty trung lập với rủi ro, thì họ sẽ không quan tâm giữa việc mua một khối và không mua một khối vì lợi nhuận kỳ vọng bằng 0 trong cả hai trường hợp.
+
+Bây giờ, giả sử rằng một nhà địa chấn học cung cấp cho công ty kết quả của một cuộc khảo sát về khối số 3, điều này cho thấy chắc chắn liệu khối có chứa dầu hay không.
+Công ty nên sẵn sàng trả bao nhiêu cho thông tin? Cách để trả lời câu hỏi này là kiểm tra xem công ty sẽ làm gì nếu có thông tin:
+\begin{itemize}
+    \item Với xác suất $1 / n$, cuộc khảo sát sẽ chỉ ra dầu ở khối 3.
+    Trong trường hợp này, công ty sẽ mua khối 3 với giá $C/n$ đô la và tạo ra lợi nhuận là $C - C/n = (n - 1) C/n$ đô la.
+    \item Với xác suất $(n - 1) / n$, cuộc khảo sát sẽ cho thấy rằng khối không chứa dầu, trong trường hợp đó công ty sẽ mua một khối khác.
+    Bây giờ xác suất tìm thấy dầu ở một trong các khối khác thay đổi từ $1/n$ thành $1 / (n - 1)$, vì vậy công ty tạo ra lợi nhuận kỳ vọng là $C / (n -  1) - C / n = C/n( n - 1)$ đô la.
+\end{itemize}
+Bây giờ chúng tôi có thể tính toán lợi nhuận dự kiến, khi có quyền truy cập vào thông tin khảo sát:
+\begin{align*}
+    \frac{1}{n} \times \frac{(n - 1)C}{n} + \frac{n -1 }{n} \times \frac{C}{n(n - 1)} = C/n
+\end{align*}
+Do đó, thông tin có giá trị $C / n$ đô la đối với công ty, và công ty nên sẵn sàng trả cho nhà địa chấn học một phần đáng kể của số tiền này.
+
+Giá trị của thông tin bắt nguồn từ thực tế là với thông tin, hành động của một người có thể được thay đổi cho phù hợp với tình hình thực tế.
+Người ta có thể phân biệt theo tình huống, trong khi nếu không có thông tin, người ta phải làm những gì tốt nhất ở mức trung bình trong các tình huống có thể xảy ra.
+Nói chung, giá trị của một phần thông tin nhất định được định nghĩa là sự khác biệt về giá trị kỳ vọng giữa các hành động tốt nhất trước và sau khi thu được thông tin.
+\subsection{Một công thức chung cho thông tin hoàn hảo}
+Thật đơn giản để rút ra một công thức toán học chung cho giá trị của thông tin.
+Chúng tôi giả định rằng có thể thu được bằng chứng chính xác về giá trị của biến ngẫu nhiên $E_j$ nào đó (nghĩa là chúng tôi học $E_j = e_j$), vì vậy cụm từ \textit{giá trị của thông tin hoàn hảo (VPI)} được sử dụng.
+
+Trong trạng thái thông tin ban đầu của tác nhân, giá trị của hành động tốt nhất hiện tại $\alpha$ là, từ Công thức \ref{equation-16-1},
+\begin{align*}
+    EU(\alpha) = \underset{a} \max \sum\limits_{s'} P(RESULT(a) = s')U(s'),
+\end{align*}
+và giá trị của hành động tốt nhất mới (sau khi thu được bằng chứng mới $E_j = e_j$) sẽ là
+\begin{align*}
+    EU(\alpha|e_j) = \underset{a} \max \sum\limits_{s'} P(RESULT(a) = s'|e_j)U(s'),
+\end{align*}
+Nhưng $E_j$ là một biến ngẫu nhiên có giá trị hiện chưa được xác định, vì vậy để xác định giá trị của việc khám phá $E_j$, chúng ta phải tính trung bình trên tất cả các giá trị $e_j$ có thể có mà chúng ta có thể khám phá cho $E_j$, sử dụng niềm tin hiện tại của chúng ta về giá trị của nó:
+\begin{align*}
+    VPI(E_j) = \left( \sum\limits_{e_j} P(E_j = e_j)EU(\alpha_{e_j}|E_j = e_j) \right) - EU(\alpha)
+\end{align*}
+Để có được một số trực giác cho công thức này, hãy xem xét trường hợp đơn giản chỉ có hai hành động, $a_1$ và $a_2$, từ đó chọn.
+Các tiện ích dự kiến hiện tại của họ là $U_1$ và $U_2$.
+Thông tin $E_j = e_j$ sẽ mang lại một số tiện ích dự kiến mới $U'_1$ và $U'_2$ cho các hành động, nhưng trước khi chúng ta có được $E_j$, chúng ta sẽ có một số phân phối xác suất trên các giá trị có thể có của $U'_1$ và $U'_2$ (mà chúng ta giả định là độc lập).
+
+Giả sử rằng $a_1$ và $a_2$ đại diện cho hai con đường khác nhau qua một dãy núi vào mùa đông: $a_1$ là một đường cao tốc thẳng đẹp qua một đường hầm, và $a_2$ là một con đường đất quanh co trên đỉnh.
+Chỉ cần cung cấp thông tin này, $a_1$ rõ ràng là thích hợp hơn, bởi vì rất có thể a2 bị tuyết chặn, trong khi không có khả năng là bất cứ điều gì chặn $a_1$.
+Do đó rõ ràng $U_1$ cao hơn $U_2$.
+Có thể nhận được các báo cáo vệ tinh $E_j$ về tình trạng thực tế của mỗi con đường sẽ đưa ra các kỳ vọng mới, $U'_1$ và $U'_2$, cho hai điểm giao cắt.
+Sự phân bố cho những kỳ vọng này được thể hiện trong Hình \ref{figure-16-8} (a).
+Rõ ràng, trong trường hợp này, việc thu được các báo cáo vệ tinh là không đáng, vì không chắc rằng thông tin thu được từ chúng sẽ thay đổi kế hoạch. Không có thay đổi, thông tin không có giá trị.
+
+Bây giờ, giả sử rằng chúng ta đang lựa chọn giữa hai con đường đất ngoằn ngoèo có độ dài hơi khác nhau và chúng ta đang chở một hành khách bị thương nặng. Khi đó, ngay cả khi $U_1$ và $U_2$ khá gần nhau, phân bố của $U'_1$ và $U'_2$ là rất rộng. Có khả năng đáng kể là tuyến đường thứ hai sẽ thông thoáng trong khi tuyến đường thứ nhất bị tắc, và trong trường hợp này, sự khác biệt về tiện ích sẽ rất cao.
+Công thức VPI chỉ ra rằng có thể đáng giá khi nhận được các báo cáo vệ tinh. Tình huống như vậy được thể hiện trong Hình\ref{figure-16-8} (b).
+
+Cuối cùng, giả sử rằng chúng ta đang lựa chọn giữa hai con đường đất vào mùa hè, khi việc tắc nghẽn do tuyết là không thể.
+Trong trường hợp này, các báo cáo vệ tinh có thể cho thấy một tuyến đường đẹp hơn tuyến đường kia do các đồng cỏ núi cao nở hoa, hoặc có thể ẩm ướt hơn do mưa gần đây.
+Do đó, rất có thể chúng tôi sẽ thay đổi kế hoạch của mình nếu chúng tôi có thông tin.
+Tuy nhiên, trong trường hợp này, sự khác biệt về giá trị giữa hai tuyến đường vẫn có thể là rất nhỏ, vì vậy chúng tôi sẽ không bận tâm đến việc lấy các báo cáo.
+Tình huống này được thể hiện trong Hình \ref{figure-16-8} (c).
+\begin{figure}[!htp]
+        \centering
+        \includegraphics[width = 150mm]{images/chapter16/figure_16_8.png}
+        \caption{Ba trường hợp chung cho giá trị của thông tin.
+        Trong (a), $a_1$ gần như chắc chắn sẽ vẫn vượt trội so với $a_2$, vì vậy thông tin không cần thiết.
+        Trong (b), sự lựa chọn không rõ ràng và thông tin là rất quan trọng.
+        Ở (c), sự lựa chọn không rõ ràng, nhưng vì nó tạo ra ít khác biệt, thông tin ít có giá trị hơn. (Lưu ý: Thực tế là $U_2$ có đỉnh cao ở (c) có nghĩa là giá trị kỳ vọng của nó được biết với độ chắc chắn cao hơn $U_1$.)}
+    \label{figure-16-8}
+\end{figure}
+%
+\textit{Tóm lại, thông tin có giá trị ở mức độ có khả năng gây ra thay đổi kế hoạch và ở mức độ mà kế hoạch mới sẽ tốt hơn đáng kể so với kế hoạch cũ.}
+%
+\subsection{Thuộc tính giá trị của thông tin}
+Người ta có thể đặt câu hỏi liệu thông tin có khả năng gây hại hay không: liệu nó có thể thực sự có giá trị kỳ vọng âm không?
+Theo trực giác, người ta nên mong đợi điều này là không thể. Rốt cuộc, trong trường hợp xấu nhất, người ta có thể bỏ qua thông tin và giả vờ rằng người ta chưa bao giờ nhận được nó.
+Điều này được xác nhận bởi định lý sau, áp dụng cho bất kỳ tác nhân lý thuyết quyết định nào sử dụng bất kỳ mạng quyết định nào với các quan sát có thể có $E_j$:
+\begin{itemize}
+    \item[] \textbf{Giá trị mong đợi của thông tin là không âm:}
+    \begin{align*}
+        \forall j \quad VPI(E_j) \geq 0.
+    \end{align*}
+    Định lý tiếp theo trực tiếp từ định nghĩa của VPI. Tất nhiên, nó là một định lý về giá trị kỳ vọng, không phải giá trị thực tế.
+    Thông tin bổ sung có thể dễ dàng dẫn đến một kế hoạch trở nên tồi tệ hơn kế hoạch ban đầu nếu thông tin xảy ra sai lệch.
+    Ví dụ, xét nghiệm y tế cho kết quả dương tính giả có thể dẫn đến phẫu thuật không cần thiết; nhưng điều đó không có nghĩa là không nên thực hiện thử nghiệm.
+    Điều quan trọng cần nhớ là VPI phụ thuộc vào trạng thái thông tin hiện tại.
+    Nó có thể thay đổi khi có thêm thông tin.
+    Đối với bất kỳ phần bằng chứng $E_j$ nhất định nào, giá trị của việc có được nó có thể giảm xuống (ví dụ: nếu một biến khác hạn chế mạnh phần sau của $E_j$) hoặc tăng lên (ví dụ: nếu một biến khác cung cấp manh mối mà $E_j$ xây dựng, cho phép một biến mới và tốt hơn kế hoạch được nghĩ ra).
+    Như vậy, VPI không phải là chất phụ gia. Đó là,
+    \begin{align*}
+        VPI(E_j, E_k) \neq VPI(E_j) + VPI(E_k)
+    \end{align*}
+    VPI, tuy nhiên, không phụ thuộc vào trật tự. Đó là,
+    \begin{align*}
+        VPI(E_j, E_k) = VPI(E_j) + VPI(E_j,E_k) = VPI(E_k) + VPI(E_j|e_k) = VPI(E_k|E_j)
+    \end{align*}
+    trong đó ký hiệu $VPI (\cdotp| E)$ biểu thị VPI được tính toán theo phân phối phía sau nơi E đã được quan sát.
+    Tính độc lập về trật tự phân biệt các hành động cảm nhận với các hành động thông thường và đơn giản hóa vấn đề tính toán giá trị của một chuỗi các hành động cảm nhận.
+Chúng tôi trở lại câu hỏi này trong phần tiếp theo.
+\end{itemize}
+\subsection{Triển khai của một tác nhân thu thập thông tin}
+Một tác nhân hợp lý nên đặt câu hỏi theo thứ tự hợp lý, tránh đặt những câu hỏi không liên quan, nên tính đến tầm quan trọng của từng phần thông tin liên quan đến chi phí của nó và nên ngừng đặt câu hỏi khi thích hợp.
+Tất cả những khả năng này có thể đạt được bằng cách sử dụng giá trị của thông tin làm hướng dẫn.
+
+Hình \ref{figure-16-9} cho thấy thiết kế tổng thể của một tác nhân có thể thu thập thông tin một cách thông minh trước khi hành động.
+Hiện tại, chúng tôi giả định rằng với mỗi biến bằng chứng có thể quan sát được $E_j$, có một chi phí liên quan, $C(E_j)$, phản ánh chi phí thu thập bằng chứng thông qua các thử nghiệm,
+chuyên gia tư vấn, câu hỏi, hoặc bất cứ điều gì. Người đại diện yêu cầu những gì có vẻ là hiệu quả nhất
+quan sát về mức tăng tiện ích trên một đơn vị chi phí. Chúng tôi giả định rằng kết quả của hành động
+\textit{Yêu cầu ($E_j$)} là nhận thức tiếp theo cung cấp giá trị của $E_j$. Nếu không có quan sát là giá trị của nó
+chi phí, tác nhân chọn một hành động "thực".
+
+Thuật toán tác nhân mà chúng tôi đã mô tả triển khai một hình thức thu thập thông tin được gọi là \textbf{thiển cận}.
+Điều này là do nó sử dụng công thức VPI một cách thiển cận, tính toán giá trị của thông tin như thể chỉ có một biến bằng chứng duy nhất sẽ được thu thập.
+Kiểm soát cận thị dựa trên ý tưởng kinh nghiệm tương tự như tìm kiếm tham lam và thường hoạt động tốt trong thực tế.
+(Ví dụ, nó đã được chứng minh là tốt hơn các bác sĩ chuyên môn trong việc lựa chọn các xét nghiệm chẩn đoán.)
+Tuy nhiên, nếu không có một biến bằng chứng nào có thể giúp ích rất nhiều, một tác nhân gây dị ứng có thể vội vàng thực hiện hành động khi tốt hơn là nên yêu cầu hai hoặc nhiều biến trước rồi mới hành động.
+Phần tiếp theo xem xét khả năng thu được nhiều quan sát.
+\begin{figure}[!htp]
+        \centering
+        \includegraphics[width = 150mm]{images/chapter16/figure_16_9.png}
+        \caption{Thiết kế đơn giản của một tác nhân thu thập thông tin thiển cận, không rõ ràng. Tác nhân hoạt động bằng cách chọn nhiều lần quan sát có giá trị thông tin cao nhất, cho đến khi chi phí của quan sát tiếp theo lớn hơn lợi ích mong đợi của nó.}
+    \label{figure-16-9}
+\end{figure}
+\subsection{Thu thập thông tin phi dị học}%Nonmyopic information gathering
+Thực tế là giá trị của một chuỗi các quan sát là bất biến khi hoán vị của chuỗi là điều hấp dẫn nhưng bản thân nó không dẫn đến các thuật toán hiệu quả để thu thập thông tin tối ưu.
+Ngay cả khi chúng ta hạn chế chọn trước một tập hợp con cố định của các quan sát để thu thập, thì vẫn có thể có $2^n$ tập con như vậy từ $n$ quan sát tiềm năng. Trong trường hợp chung, chúng ta phải đối mặt với một vấn đề phức tạp hơn là tìm một phương án có điều kiện tối ưu (như được mô tả trong Phần 11.5.2) chọn một quan sát và sau đó hành động hoặc chọn nhiều quan sát hơn, tùy thuộc vào kết quả.
+Các kế hoạch như vậy tạo thành cây, và số lượng cây như vậy là siêu cấp số nhân theo $n$.
+
+Đối với các quan sát về các biến trong mạng quyết định, hóa ra vấn đề này là khó giải quyết ngay cả khi mạng là một cây đa nhánh.% cây đa nhánh = polytree
+Tuy nhiên, có những trường hợp đặc biệt mà vấn đề có thể được giải quyết một cách hiệu quả. Ở đây chúng tôi trình bày một trường hợp như vậy: vấn đề truy tìm kho báu (hoặc vấn đề trình tự thử nghiệm ít tốn kém nhất, dành cho những vấn đề ít lãng mạn hơn).
+Có $n$ vị trí $1, ..., n$; mỗi vị trí $i$ chứa kho báu với xác suất độc lập $P(i)$;
+và chi phí $C(i)$ để kiểm tra vị trí $i$.
+Điều này tương ứng với một mạng lưới quyết định trong đó tất cả các biến bằng chứng tiềm năng $Treasure_i$ là hoàn toàn độc lập.
+Tác nhân kiểm tra các địa điểm theo một số thứ tự cho đến khi tìm thấy kho báu (treasure); câu hỏi là, thứ tự tối ưu là gì?
+
+Để trả lời câu hỏi này, chúng ta sẽ cần xem xét chi phí dự kiến và xác suất thành công của các chuỗi quan sát khác nhau, giả sử tác nhân dừng lại khi tìm thấy kho báu.
+Gọi $x$ là dãy số như vậy; xy là hợp của dãy $x$ và $y$; $C(x)$ là chi phí kỳ vọng của $x$; $P(x)$ là xác suất để dãy $x$ thành công trong việc tìm kho báu; và $F(x) = 1 - P (x)$ là xác suất mà nó không thành công. Với những định nghĩa này, chúng tôi có
+\begin{align}
+    C(\textbf{xy}) = C(\textbf{x}) + F(\textbf{x})C(\textbf{y})
+    \label{equation-16-3}
+\end{align}
+nghĩa là, dãy $\textbf{xy}$ chắc chắn sẽ phải chịu chi phí của $\textbf{x}$ và, nếu $\textbf{x}$ không thành công, nó cũng sẽ phải chịu chi phí của $\textbf{y}$.
+
+Ý tưởng cơ bản trong bất kỳ bài toán tối ưu hóa trình tự nào là xem xét sự thay đổi của chi phí, được xác định bởi $\Delta = C(\textbf{wxyz}) - C(\textbf{wyxz})$, khi hai dãy con liền kề $\textbf{x}$ và $\textbf{y}$ trong một dãy tổng quát $\textbf{wxyz}$ được lật.
+Khi trình tự tối ưu, tất cả những thay đổi như vậy làm cho trình tự trở nên tồi tệ hơn. 
+Bước đầu tiên là chỉ ra rằng dấu hiệu của hiệu ứng (tăng hoặc giảm chi phí) không phụ thuộc vào ngữ cảnh được cung cấp bởi $\textbf{w}$ và $\textbf{z}$. Chúng ta có
+\begin{align*}
+    \Delta &= [C(\textbf{w})+F(\textbf{w})C(\textbf{xyz})] - [ C(\textbf{w}) + F(\textbf{w})C(yxz)] \quad (\text{theo phương trình (\ref{equation-16-3})})\\
+    &= F(\textbf{w})[C(\textbf{xyz} - C(\textbf{yxz})]\\
+    &= F(\textbf{w})[C(\textbf{xy}) + F(\textbf{xy})C(\textbf{z}) - (C(\textbf{yz})+F(\textbf{yz})C(\textbf{z}))] \quad (\text{theo phương trình (\ref{equation-16-3})})\\
+    &= F(\textbf{w})[C(\textbf{xy} - C(\textbf{yx})] \quad ( \text{do} F(\textbf{xy}) = F(\textbf{yx})).
+\end{align*}
+Vì vậy, chúng tôi đã chỉ ra rằng hướng thay đổi trong chi phí của toàn bộ chuỗi chỉ phụ thuộc vào hướng thay đổi trong chi phí của cặp yếu tố được đảo lộn; bối cảnh của cặp đôi không quan trọng.
+Điều này cung cấp cho chúng tôi một cách để sắp xếp trình tự bằng cách so sánh từng cặp để có được giải pháp tối ưu. Cụ thể, bây giờ chúng tôi có
+\begin{align*}
+    \Delta &= F(\textbf{w})[C(\textbf{x}) + F(\textbf{x})C(\textbf{y})) - (C(\textbf{y})+F(\textbf{y})C(\textbf{x}))] \quad (\text{theo phương trình (\ref{equation-16-3})})\\
+    &= F(\textbf{w})[C(\textbf{x})(1 - F(\textbf{y})) - C(\textbf{y})(1 - F(\textbf{x}))]\\
+    &= F(\textbf{w})[C(\textbf{x})P(\textbf{y}) - C(\textbf{y})P(\textbf{x})].
+\end{align*}
+Điều này phù hợp với bất kỳ chuỗi $\textbf{x}$ và $\textbf{y}$ nào, vì vậy nó đúng khi $\textbf{x}$ và $\textbf{y}$ là các quan sát đơn lẻ của các vị trí $i$ và $j$, tương ứng. Vì vậy, chúng ta biết rằng, để $i$ và $j$ kề nhau trong một dãy tối ưu, chúng ta phải có $C(i)P(j) \leq C(j)P(i)$, hoặc $\frac{P(i)}{C(i)} \geq \frac{P(j)}{C(j)}$.
+Nói cách khác, thứ tự tối ưu xếp hạng các vị trí theo xác suất thành công trên mỗi đơn vị chi phí.
+%
+\subsection{Phân tích độ nhạy và quyết định mạnh mẽ} %Sensitivity analysis and robust decisions
+Thực hành \textbf{phân tích độ nhạy} phổ biến trong các ngành công nghệ: nó có nghĩa là phân tích mức độ thay đổi đầu ra của một quy trình khi các thông số mô hình được tinh chỉnh.
+Phân tích độ nhạy trong các hệ thống lý thuyết xác suất và quyết định là đặc biệt quan trọng bởi vì các xác suất được sử dụng thường được học từ dữ liệu hoặc được ước tính bởi các chuyên gia con người, có nghĩa là bản thân chúng phải chịu sự không chắc chắn đáng kể. Chỉ trong một số trường hợp hiếm hoi, chẳng hạn như viên xúc xắc quay trong trò bắn súng thần công, các xác suất mới được biết đến một cách khách quan.
+
+Đối với quá trình ra quyết định theo hướng tiện ích, bạn có thể coi đầu ra là quyết định thực tế được đưa ra hoặc tiện ích mong đợi của quyết định đó.
+Trước tiên, hãy xem xét điều sau: bởi vì kỳ vọng phụ thuộc vào xác suất từ mô hình, chúng ta có thể tính đạo hàm của tiện ích kỳ vọng của bất kỳ hành động nhất định nào đối với từng giá trị xác suất đó.
+(Ví dụ: nếu tất cả các phân phối xác suất có điều kiện trong mô hình được lập bảng rõ ràng, thì việc tính toán kỳ vọng bao gồm việc tính toán tỷ lệ của hai biểu thức tổng tích; để biết thêm về điều này, hãy xem Chương 20.)
+Do đó, người ta có thể xác định tham số nào trong mô hình có ảnh hưởng lớn nhất đến mức độ thỏa dụng mong đợi của quyết định cuối cùng.
+
+Thay vào đó, nếu chúng ta quan tâm đến quyết định thực tế được đưa ra, hơn là tiện ích của nó theo mô hình, thì chúng ta chỉ cần thay đổi các tham số một cách có hệ thống (có thể sử dụng tìm kiếm nhị phân) để xem liệu quyết định có thay đổi hay không, và nếu có, thì nhiễu loạn nhỏ nhất gây ra sự thay đổi đó.
+Người ta có thể nghĩ rằng quyết định nào được đưa ra không quan trọng, chỉ là tiện ích của nó.
+Điều đó đúng, nhưng trên thực tế, có thể có sự khác biệt rất lớn giữa tiện ích thực sự của một quyết định và tiện ích theo mô hình.
+
+Nếu tất cả các nhiễu hợp lý của các tham số không thay đổi quyết định tối ưu, thì sẽ hợp lý để cho rằng quyết định đó là một quyết định tốt, ngay cả khi ước tính tiện ích cho quyết định đó về cơ bản là không chính xác.
+Mặt khác, nếu quyết định tối ưu thay đổi đáng kể khi các tham số của mô hình thay đổi, thì có nhiều khả năng là mô hình có thể tạo ra một quyết định về cơ bản là không tối ưu trong thực tế.
+Trong trường hợp đó, bạn nên đầu tư thêm nỗ lực để tinh chỉnh mô hình.
+
+Những trực giác này đã được chính thức hóa trong một số lĩnh vực (lý thuyết kiểm soát, phân tích quyết định, quản lý rủi ro) đề xuất khái niệm về một quyết định\textbf{ mạnh mẽ} hoặc \textbf{tối thiểu} — nghĩa là, một quyết định mang lại kết quả tốt nhất trong trường hợp xấu nhất.
+Ở đây, "trường hợp xấu nhất" có nghĩa là tồi tệ nhất đối với tất cả các biến thể hợp lý trong các giá trị tham số của mô hình.
+Đặt $\theta$ đại diện cho tất cả các tham số trong mô hình, quyết định mạnh mẽ được xác định bởi
+\begin{align*}
+    a^* = \underset{a} {\mathrm{argmax}} ~{\underset{\theta} \min EU(a;\theta)}.
+\end{align*}
+Trong nhiều trường hợp, đặc biệt là trong lý thuyết điều khiển, cách tiếp cận mạnh mẽ dẫn đến các thiết kế hoạt động rất đáng tin cậy trong thực tế.
+Trong những trường hợp khác, nó dẫn đến những quyết định quá thận trọng.
+Ví dụ, khi thiết kế một chiếc xe tự lái, phương pháp mạnh mẽ sẽ giả định trường hợp xấu nhất đối với hành vi của các phương tiện khác trên đường — đó là tất cả chúng đều do những kẻ cuồng giết người điều khiển.
+Trong trường hợp đó, giải pháp tối ưu cho chiếc xe là để ở gara.
+
+Lý thuyết quyết định Bayes đưa ra một giải pháp thay thế cho các phương pháp mạnh mẽ: nếu có sự không chắc chắn về các tham số của mô hình, thì hãy mô hình hóa sự không chắc chắn đó bằng cách sử dụng siêu tham số.
+
+Trong khi cách tiếp cận mạnh mẽ có thể nói rằng một số xác suất $\theta_i$ trong mô hình có thể nằm trong khoảng từ 0,3 đến 0,7, với giá trị thực tế được chọn bởi kẻ thù để làm cho mọi thứ trở nên tồi tệ nhất có thể, thì cách tiếp cận Bayes sẽ đặt một phân phối xác suất trước trên $\theta_i$ và sau đó tiến hành như trước.
+Điều này đòi hỏi nhiều nỗ lực lập mô hình hơn - ví dụ, trình mô hình Bayes phải quyết định xem các tham số $\theta_i$ và $\theta_j$ có độc lập hay không — nhưng thường dẫn đến hiệu suất tốt hơn trong thực tế.
+
+Ngoài sự không chắc chắn về tham số, các ứng dụng của lý thuyết quyết định trong thế giới thực cũng bị ảnh hưởng bởi sự không chắc chắn về cấu trúc.
+Ví dụ, giả định về tính độc lập của \textit{giao thông hàng không, kiện tụng} và\textit{ xây dựng} trong hình \ref{figure-16-6} có thể không chính xác và có thể có các biến bổ sung mà mô hình chỉ đơn giản là bỏ qua.
+Hiện tại, chúng tôi chưa hiểu rõ về cách tính đến loại sự không chắc chắn này.
+Một khả năng là giữ một nhóm các mô hình, có lẽ được tạo ra bởi các thuật toán máy học, với hy vọng rằng nhóm đó nắm bắt được các biến thể đáng kể quan trọng.
+%
+\section{Tùy chọn không xác định} %section 16.7
+Trong phần này, chúng ta thảo luận điều gì sẽ xảy ra khi có sự không chắc chắn về hàm tiện ích có giá trị mong đợi được tối ưu hóa.
+Có hai phiên bản của vấn đề này: một trong đó tác nhân (máy móc hoặc con người) không chắc chắn về chức năng tiện ích của chính nó và một phiên bản khác trong đó máy móc được cho là giúp con người nhưng không chắc chắn về những gì con người muốn.
+\subsection{Không chắc chắn về sự ưu tiên riêng của một người
+}
+Hãy tưởng tượng rằng bạn đang ở một cửa hàng kem ở Thái Lan và họ chỉ còn lại hai hương vị: vani và sầu riêng.
+Cả hai đều có giá \$ 2. Bạn biết rằng mình thích vani ở mức độ vừa phải và bạn sẵn sàng trả tới 3 đô la cho một cây kem vani vào một ngày nắng nóng như vậy, do đó, bạn sẽ có lãi ròng là 1 đô la khi chọn vani chỉ phải trả \$ 2.
+Mặt khác, bạn không biết mình có thích sầu riêng hay không, nhưng bạn đã đọc trên Wikipedia rằng sầu riêng tạo ra phản ứng khác nhau từ những người khác nhau: một số nhận thấy rằng “nó vượt trội về hương vị của tất cả các loại trái cây khác trên thế giới” trong khi những người khác ví nó như “nước thải, chất nôn cũ, phân chồn hôi và gạc phẫu thuật đã qua sử dụng.
+% 
+\begin{figure}[!htp]
+        \centering
+        \includegraphics[width = 150mm]{images/chapter16/figure_16_10.png}
+        \caption{(a) Mạng lưới quyết định lựa chọn kem với chức năng tiện ích không chắc chắn.
+(b) Mạng với tiện ích mong đợi của mỗi hành động.
+(c) Chuyển độ không đảm bảo đo từ hàm tiện ích sang một biến ngẫu nhiên mới.}
+    \label{figure-16-10}
+\end{figure}
+Để đưa ra một số con số về vấn đề này, giả sử có 50\% khả năng bạn sẽ thấy nó tuyệt vời (+ 100 đô la) và 50\% khả năng bạn sẽ ghét nó (- 80 đô la nếu mùi vị này kéo dài cả buổi chiều).
+Ở đây, không có gì chắc chắn về việc bạn sẽ giành được giải thưởng nào - dù theo cách nào thì đó cũng là món kem sầu riêng - nhưng có sự không chắc chắn về sở thích của riêng bạn đối với giải thưởng đó.
+
+Chúng ta có thể mở rộng chủ nghĩa chính thức của mạng quyết định để cho phép các tiện ích không chắc chắn, như trong Hình \ref{figure-16-10} (a).
+Tuy nhiên, nếu không có thêm thông tin nào về sở thích sầu riêng của bạn — ví dụ: nếu cửa hàng không cho bạn nếm thử trước — thì vấn đề quyết định giống với vấn đề được trình bày trong Hình\ref{figure-16-10} (b).
+Chúng ta có thể chỉ cần thay thế giá trị không chắc chắn của sầu riêng bằng lợi nhuận ròng dự kiến của nó là (0,5 x 100 đô la) - (0,5 x 80 đô la) - 2 đô la = 8 đô la và quyết định của bạn sẽ không thay đổi.
+
+Nếu niềm tin của bạn về sầu riêng có thể thay đổi - có thể bạn nếm được mùi vị nhỏ hoặc bạn phát hiện ra rằng tất cả những người thân còn sống của mình đều thích sầu riêng - thì sự biến đổi trong Hình \ref{figure-16-10} (b) là không hợp lệ.
+Tuy nhiên, hóa ra chúng ta vẫn có thể tìm thấy một mô hình tương đương trong đó hàm tiện ích là xác định.
+Thay vì nói rằng có sự không chắc chắn về chức năng tiện ích, chúng tôi chuyển sự không chắc chắn đó “vào thế giới”, có thể nói như vậy.
+Nghĩa là, chúng tôi tạo một biến ngẫu nhiên mới \textit{LikesDuria}n với xác suất trước là 0,5 cho đúng và sai, như thể hiện trong Hình \ref{figure-16-10} (c).
+Với biến bổ sung này, hàm tiện ích sẽ trở nên xác định, nhưng chúng tôi vẫn có thể xử lý việc thay đổi niềm tin về sở thích sầu riêng của bạn.
+
+Thực tế là các sở thích chưa biết có thể được mô hình hóa bằng các biến ngẫu nhiên thông thường có nghĩa là chúng ta có thể tiếp tục sử dụng máy móc và định lý được phát triển cho các sở thích đã biết.
+Mặt khác, điều đó không có nghĩa là chúng ta luôn có thể cho rằng các tùy chọn đã được biết trước.
+Sự không chắc chắn vẫn còn đó và vẫn ảnh hưởng đến cách các đại lý nên hành xử.
+\subsection{Tôn trọng với con người}% deference to humans
+Bây giờ chúng ta hãy chuyển sang trường hợp thứ hai được đề cập ở trên: một cỗ máy được cho là giúp đỡ con người nhưng không chắc chắn về những gì con người muốn.
+Việc xử lý toàn bộ trường hợp này phải được chuyển sang Chương 18, nơi chúng tôi thảo luận về các quyết định liên quan đến nhiều hơn một tác nhân.
+Ở đây, chúng tôi đặt ra một câu hỏi đơn giản: một cỗ máy như vậy sẽ tôn trọng quyết định của con người trong những trường hợp nào?
+\begin{figure}[!htp]
+        \centering
+        \includegraphics[width = 120mm]{images/chapter16/figure_16_11.png}
+        \caption{Trò chơi tắt máy. $R$, người máy, có thể chọn hành động ngay bây giờ, với phần thưởng rất không chắc chắn; để tự tắt; hoặc để trì hoãn $H$, để hành động theo quyết định của con người.
+$H$ có thể tắt $R$ hoặc để nó tiếp tục.
+$R$ bây giờ lại có cùng lựa chọn.
+Việc hành động vẫn có một phần thưởng không chắc chắn, nhưng bây giờ $ R$ biết rằng phần thưởng là không có nghĩa.}
+    \label{figure-16-11}
+\end{figure}
+
+Để nghiên cứu câu hỏi này, chúng ta hãy xem xét một tình huống rất đơn giản, như thể hiện trong Hình \ref{figure-16-11}.
+Robbie là một robot phần mềm làm việc cho Harriet, một người bận rộn, với tư cách là trợ lý riêng của cô.
+Harriet cần một phòng khách sạn cho cuộc họp kinh doanh tiếp theo của cô ấy ở Geneva.
+Robbie có thể hành động ngay bây giờ - giả sử anh ấy có thể đặt Harriet vào một khách sạn rất đắt tiền gần địa điểm họp.
+Anh ta khá không chắc Harriet sẽ thích khách sạn và giá cả của nó như thế nào; giả sử anh ta có xác suất đồng nhất cho giá trị ròng của nó đối với Harriet trong khoảng từ - 40 đến + 60, với trung bình là + 10.
+Anh ta cũng có thể “tự tắt” - không cần khoa trương, hoàn toàn đưa mình ra khỏi quy trình đặt phòng khách sạn - mà chúng tôi xác định (không mất đi tính tổng quát) để có giá trị 0 đối với Harriet.
+Nếu đó là hai sự lựa chọn của anh ấy, anh ấy sẽ tiếp tục và đặt khách sạn, chịu rủi ro đáng kể là khiến Harriet không hài lòng.
+(Nếu phạm vi là - 60 đến + 40, với - 10 trung bình, anh ta sẽ tự tắt thay thế.)
+Tuy nhiên, chúng tôi sẽ cho Robbie lựa chọn thứ ba: giải thích kế hoạch của anh ấy, chờ đợi và để Harriet tắt anh ấy.
+Harriet có thể tắt máy cho anh ta hoặc để anh ta tiếp tục và đặt khách sạn.
+Điều này có thể làm tốt điều gì, một người có thể hỏi, cho rằng anh ta có thể tự mình đưa ra cả hai lựa chọn đó?
+
+Vấn đề là sự lựa chọn của Harriet - tắt Robbie hay để cậu ấy tiếp tục - cung cấp cho Robbie thông tin về sở thích của Harriet.
+Hiện tại, chúng tôi sẽ giả định rằng Harriet là người có lý trí, vì vậy nếu Harriet để Robbie tiếp tục, điều đó có nghĩa là giá trị đối với Harriet là tích cực.
+Bây giờ, như thể hiện trong Hình \ref{figure-16-11}, niềm tin của Robbie thay đổi: nó đồng đều giữa 0 và + 60, với mức trung bình là + 30.
+
+Vì vậy, nếu chúng ta đánh giá những lựa chọn ban đầu của Robbie theo quan điểm của anh ấy:
+\begin{enumerate}[\quad 1.]
+    \item Hành động ngay bây giờ và đặt phòng khách sạn có giá trị dự kiến là +10.
+    \item Tự tắt có giá trị là 0.
+    \item Chờ đợi và để Harriet tắt anh ta dẫn đến hai kết quả có thể xảy ra:
+    \begin{enumerate}[\quad \quad (a)]
+        \item Có 40\% cơ hội, dựa trên sự không chắc chắn của Robbie về sở thích của Harriet, rằng cô ấy sẽ ghét kế hoạch đó và sẽ từ chối Robbie, với giá trị là 0.
+        \item Có 60\% khả năng Harriet sẽ thích kế hoạch và cho phép Robbie tiếp tục, với giá trị kỳ vọng +30.
+    \end{enumerate}
+\end{enumerate}
+Do đó, sự chờ đợi có giá trị kỳ vọng $(0,4 \times 0) + (0,6 \times 30) = + 18$, tốt hơn so với kỳ vọng $+10$ của Robbie nếu anh ấy hành động ngay bây giờ.
+
+Kết quả là Robbie có động cơ tích cực để trì hoãn với Harriet - nghĩa là cho phép bản thân được nghỉ việc.
+Sự khuyến khích này trực tiếp đến từ sự không chắc chắn của Robbie về sở thích của Harriet.
+Robbie biết rằng có khả năng (40\% trong ví dụ này) rằng anh ấy có thể sắp làm điều gì đó khiến Harriet không hài lòng, trong trường hợp đó, việc tắt tính năng sẽ tốt hơn là tiếp tục.
+Nếu Robbie đã chắc chắn về sở thích của Harriet, anh ấy sẽ tiếp tục và đưa ra quyết định (hoặc tự tắt); Sẽ hoàn toàn không thu được gì khi tham khảo ý kiến của Harriet, bởi vì, theo niềm tin chắc chắn của Robbie, anh đã có thể dự đoán chính xác những gì cô ấy sẽ quyết định.
+
+Trên thực tế, có thể chứng minh kết quả tương tự trong trường hợp chung: miễn là Robbie không hoàn toàn chắc chắn rằng anh ấy sắp làm những gì mà chính Harriet sẽ làm, thì tốt hơn hết anh nên để cô ấy tắt máy.
+Theo trực giác, quyết định của cô ấy cung cấp cho Robbie thông tin và giá trị thông tin mong đợi luôn không mang tính âm.
+Ngược lại, nếu Robbie chắc chắn về quyết định của Harriet, quyết định của cô ấy không cung cấp thông tin mới và vì vậy Robbie không có động cơ để cho phép cô ấy quyết định.
+
+Về mặt hình thức, đặt $P(u)$ là mật độ xác suất trước của Robbie so với tiện ích của Harriet cho hành động được đề xuất $a$. Khi đó giá trị của việc đi trước với $a$ là
+\begin{align*}
+    EU(a) = \int_{-\infty}^{\infty} P(u)\cdot udu = \int_{-\infty}^{0} P(u)\cdot udu + \int_{0}^{\infty} P(u)\cdot udu.
+\end{align*}
+(Chúng ta sẽ thấy ngay lý do tại sao tích phân lại được chia theo cách này.) Mặt khác, giá trị của hành động $d$, trì hoãn theo Harriet, bao gồm hai phần: nếu $u> 0$ thì Harriet để Robbie tiếp tục, vì vậy giá trị là $u$, nhưng nếu $u <0$ thì Harriet tắt Robbie, vì vậy giá trị là 0:
+\begin{align*}
+    EU(a) = \int_{-\infty}^{0} P(u)\cdot udu + \int_{0}^{\infty} P(u)\cdot udu.
+\end{align*}
+So sánh các biểu thức cho $EU(a)$ và $EU(d)$, chúng ta thấy ngay rằng
+\begin{align*}
+    EU(d) \geq EU(a)
+\end{align*}
+bởi vì biểu thức cho EU (d) có vùng tiện ích âm bị xóa.
+Hai lựa chọn chỉ có giá trị bằng nhau khi vùng âm có xác suất bằng không - tức là khi Robbie đã chắc chắn rằng Harriet thích hành động được đề xuất.
+
+Có một số chi tiết rõ ràng về mô hình đáng để khám phá ngay lập tức.
+Công việc đầu tiên là đặt ra chi phí cho thời gian của Harriet.
+Trong trường hợp đó, Robbie ít có xu hướng làm phiền Harriet hơn nếu rủi ro đi xuống là nhỏ.
+Điều này là vì nó nên được. Và nếu Harriet thực sự khó chịu vì bị cắt ngang, cô ấy cũng không nên quá ngạc nhiên nếu Robbie thỉnh thoảng làm những điều cô ấy không thích.
+
+Sự xây dựng thứ hai là để cho phép một số xác suất do lỗi của con người - nghĩa là, Harriet đôi khi có thể tắt Robbie ngay cả khi hành động được đề xuất của anh ấy là hợp lý, và đôi khi cô ấy có thể để Robbie tiếp tục ngay cả khi hành động được đề xuất của anh ấy là không mong muốn.
+Đơn giản là gấp xác suất lỗi này vào mô hình.
+Như người ta có thể mong đợi, giải pháp cho thấy Robbie ít có xu hướng trì hoãn một Harriet vô lý, người đôi khi hành động chống lại lợi ích tốt nhất của cô ấy.
+Cô ấy càng cư xử ngẫu nhiên, Robbie càng không chắc chắn về sở thích của mình trước khi trì hoãn với cô ấy.
+Một lần nữa, điều này nên xảy ra: ví dụ, nếu Robbie là xe tự lái và Harriet là hành khách hai tuổi nghịch ngợm của anh ta, Robbie không nên cho phép Harriet dừng xe ở giữa đường cao tốc.
+\section*{Tổng kết}
+Chương này chỉ ra cách kết hợp lý thuyết tiện ích với xác suất để cho phép một tác nhân lựa chọn các hành động sẽ tối đa hóa kỳ vọng của nó.
+\begin{itemize}
+    \item Lý thuyết xác suất mô tả những gì một tác nhân nên tin trên cơ sở bằng chứng, mô tả những gì một tác nhân muốn trên cơ sở lý thuyết tiện ích và lý thuyết quyết định đặt hai yếu tố này lại với nhau để mô tả những gì một tác nhân nên làm.
+    \item Chúng ta có thể sử dụng lý thuyết quyết định để xây dựng một hệ thống đưa ra quyết định bằng cách xem xét tất cả các hành động có thể xảy ra và chọn một hành động dẫn đến kết quả mong đợi tốt nhất. Một hệ thống như vậy được gọi là một tác nhân hợp lý.
+    \item Lý thuyết tiện ích cho thấy rằng một tác nhân có sở thích như là các xổ số mà phù hợp với một tập hợp các tiên đề đơn giản có thể được mô tả là xử lý một hàm tiện ích; hơn nữa, tác nhân lựa chọn các hành động như thể tối đa hóa tiện ích mong đợi của nó.
+    \item Lý thuyết tiện ích đa thuộc tính đề cập đến các tiện ích phụ thuộc vào một số thuộc tính riêng biệt của các trạng thái. Thống nhất ngẫu nhiên là một kỹ thuật đặc biệt hữu ích để đưa ra các quyết định rõ ràng, ngay cả khi không có giá trị tiện ích chính xác cho các thuộc tính.
+    \item Mạng lưới quyết định cung cấp một hình thức đơn giản để diễn đạt và giải quyết các vấn đề về quyết định. Chúng là một phần mở rộng tự nhiên của mạng Bayes, chứa các nút quyết định và tiện ích ngoài các nút cơ hội.
+    \item Đôi khi, giải quyết một vấn đề liên quan đến việc tìm kiếm thêm thông tin trước khi đưa ra quyết định. Giá trị của thông tin được định nghĩa là sự cải thiện giá trị về tiện ích so với việc đưa ra quyết định mà không có thông tin; nó đặc biệt hữu ích cho việc hướng dẫn quá trình thu thập thông tin trước khi đưa ra quyết định cuối cùng.
+    \item Trong trường hợp thường xảy ra, không thể xác định chính xác và đầy đủ chức năng tiện ích của con người, máy móc phải hoạt động trong điều kiện không chắc chắn về mục tiêu thực sự.
+\end{itemize}
+Điều này tạo ra sự khác biệt đáng kể khi máy có khả năng thu được nhiều thông tin hơn về sở thích của con người. Chúng tôi đã chỉ ra bằng một lập luận đơn giản rằng sự không chắc chắn về các tùy chọn đảm bảo rằng máy móc sẽ lệch hướng với con người, đến mức cho phép tự tắt.
+\section*{Ghi chú về sự phát triển trong lịch sử về các thư mục}
+Trong truyện luận thế kỷ 17 L’art de Penser, hay Port-Royal Logic (dạng như một sách giáo khoa trong đạo công giáo), tác giả Arnauld (1662) nói rằng:
+
+Để đánh giá người ta phải làm gì để đạt được điều tốt hay tránh điều ác, cần phải xem xét không chỉ điều thiện và điều ác ở bản thân nó, mà còn xem xét xác suất nó xảy ra hoặc không xảy ra; và để xem xét trong biểu đồ (“phương diện hình học”) tỷ lệ mà tất cả những thứ này có với nhau.
+
+Các văn bản hiện đại nói về tiện ích hơn là tốt và xấu, nhưng tuyên bố này lưu ý một cách chính xác rằng người ta nên nhân tiện ích với xác suất (“xem xét trên phương diện hình học”) để tạo ra tiện ích mong đợi và tối đa hóa nó trên tất cả các kết quả (“tất cả những điều này”) để “đánh giá những gì người ta phải làm.” Điều đáng chú ý là Arnauld đã đúng ở mức độ nào, hơn 350 năm trước, và chỉ 8 năm sau khi Pascal và Fermat lần đầu tiên chỉ ra cách sử dụng xác suất một cách chính xác.
+
+Daniel Bernoulli (1738), người đưa ra nghịch lý St.Petersburg hay nghịch lý sổ số (xem ví dụ tại 16.2), là người đầu tiên nhận ra tầm quan trọng của việc đo lường mức độ ưa thích đối với xổ số, viết rằng “giá trị của một mặt hàng không được dựa trên giá của nó, mà dựa trên tiện ích mà nó mang lại”. Nhà triết học theo chủ nghĩa ưu việt Jeremy Bentham (1823) đã đề xuất phép tính khoái lạc để cân nhắc giữa “thú vui” và “nỗi đau”, lập luận rằng tất cả các quyết định (không chỉ là tiền tệ) có thể được rút gọn thành so sánh tiện ích.
+
+Việc Bernoulli đưa ra công dụng là một đại lượng chủ quan, bên trong nhằm để giải thích hành vi của con người thông qua một lý thuyết toán học là một đề xuất hoàn toàn đáng chú ý vào thời đó. Điều đáng chú ý hơn là không giống như số tiền, giá trị tiện ích của các cược và giải thưởng khác nhau không thể quan sát trực tiếp; thay vào đó, các tiện ích sẽ được suy ra từ các sở thích được trưng bày bởi một cá nhân. Sẽ phải mất hai thế kỷ trước khi ý tưởng được hoàn thiện và nó được các nhà thống kê và kinh tế học chấp nhận rộng rãi.
+
+Việc tính toán các tiện ích số từ các sở thích lần đầu tiên được thực hiện bởi Ramsey (1931); các tiên đề về ưu tiên trong văn bản hiện tại có hình thức gần hơn với những tiên đề được phát hiện lại trong Lý thuyết Trò chơi và Hành vi Kinh tế (von Neumann và Morgenstern, 1944). Ramsey đã suy ra các xác suất chủ quan (không chỉ các tiện ích) từ sở thích của một đại lý; sau đó Savage (1954) và Jeffrey (1983) thực hiện nhiều công trình xây dựng gần đây thuộc loại này. Đến năm 2002, Beardon và các cộng sự cho thấy rằng một hàm tiện ích không đủ để đại diện cho các tùy chọn không chuyển dịch và các tình huống bất thường khác.
+
+Trong thời kỳ sau chiến tranh, lý thuyết quyết định đã trở thành một công cụ tiêu chuẩn trong kinh tế, tài chính và khoa học quản lý. Một lĩnh vực phân tích quyết định đã xuất hiện để hỗ trợ việc đưa ra các quyết định chính sách hợp lý hơn trong các lĩnh vực như chiến lược quân sự, chẩn đoán y tế, sức khỏe cộng đồng, thiết kế kỹ thuật và quản lý tài nguyên. Quá trình này liên quan đến một người ra quyết định nêu các ưu tiên giữa các kết quả và một nhà phân tích quyết định, người liệt kê các hành động và kết quả có thể có và gợi ra các ưu tiên từ người ra quyết định để xác định hướng hành động tốt nhất. Von Winterfeldt và Edwards (1986) cung cấp một quan điểm sắc thái về phân tích quyết định và mối quan hệ của nó với cấu trúc sở thích của con người. Smith (1988) đưa ra một cái nhìn tổng quan về phương pháp luận của phân tích quyết định.
+
+Cho đến những năm 1980, các vấn đề quyết định đa biến đã được xử lý bằng cách xây dựng "cây quyết định" của tất cả các cách diễn đạt có thể có của các biến. Sơ đồ ảnh hưởng hoặc mạng quyết định, tận dụng các đặc tính độc lập có điều kiện giống như mạng Bayes, được giới thiệu bởi Howard và Matheson (1984), dựa trên công trình trước đó tại SRI (Miller và cộng sự, 1976). Thuật toán của Howard và Matheson đã xây dựng cây quyết định hoàn chỉnh (lớn theo cấp số nhân) từ mạng quyết định. Shachter (1986) đã phát triển một phương pháp ra quyết định trực tiếp dựa trên mạng lưới quyết định mà không cần tạo cây quyết định trung gian. Thuật toán này cũng là một trong những thuật toán đầu tiên cung cấp suy luận hoàn chỉnh cho nhiều mạng Bayes được kết nối. Nilsson và Lauritzen (2000) liên kết các thuật toán cho mạng quyết định với những phát triển đang diễn ra trong thuật toán phân cụm cho mạng Bayes. Tuyển tập của Oliver và Smith (1990) có một số bài báo ban đầu hữu ích về mạng lưới quyết định, cũng như số đặc biệt năm 1990 của tạp chí Networks. Văn bản của Fenton và Neil (2018) cung cấp hướng dẫn thực hành để giải quyết các vấn đề quyết định trong thế giới thực bằng cách sử dụng mạng quyết định. Các bài báo về mạng lưới quyết định và mô hình hóa tiện ích cũng xuất hiện thường xuyên trên các tạp chí Khoa học Quản lý và Phân tích Quyết định.
+
+Đáng ngạc nhiên là rất ít nhà nghiên cứu AI ban đầu đã áp dụng các công cụ lý thuyết quyết định sau những ứng dụng ban đầu trong việc ra quyết định y tế được mô tả trong Chương 12. Một trong số ít trường hợp ngoại lệ là Jerry Feldman, người đã áp dụng lý thuyết quyết định cho các vấn đề trong tầm nhìn (Feldman và Yakimovsky, 1974) và lập kế hoạch (Feldman và Sproull, 1977). Các hệ thống chuyên gia dựa trên quy tắc của cuối những năm 1970 và đầu những năm 1980 tập trung vào việc trả lời các câu hỏi, thay vì đưa ra quyết định. Những hệ thống đã khuyến nghị các hành động thường làm như vậy bằng cách sử dụng các quy tắc điều kiện-hành động thay vì trình bày rõ ràng các kết quả và sở thích.
+
+Mạng quyết định cung cấp một cách tiếp cận linh hoạt hơn nhiều, ví dụ bằng cách cho phép các tùy chọn thay đổi trong khi vẫn giữ mô hình chuyển đổi không đổi hoặc ngược lại. Chúng cũng cho phép tính toán nguyên tắc về thông tin cần tìm kiếm tiếp theo. Vào cuối những năm 1980, một phần nhờ công trình của Pearl trên lưới Bayes, các hệ thống chuyên gia lý thuyết quyết định đã được chấp nhận rộng rãi (Horvitz và cộng sự, 1988; Cowell và cộng sự, 2002). Trên thực tế, từ năm 1991 trở đi, thiết kế trang bìa của tạp chí Trí tuệ nhân tạo đã mô tả một mạng lưới quyết định, mặc dù một số giấy phép nghệ thuật dường như đã được thực hiện với hướng của các mũi tên.
+
+Những nỗ lực thực tế để đo lường các tiện ích của con người bắt đầu bằng phân tích quyết định sau chiến tranh (xem ở trên). Phương pháp đo tiện ích vi mô được thảo luận bởi Howard (1989). Năm 1992, Thaler Thaler nhận thấy rằng đối với cơ hội để không tử vong là 1/1000, nhiều người trả lời sẽ không trả nhiều hơn 200 đô la để loại bỏ rủi ro, nhưng sẽ không chấp nhận 50.000 đô la để chấp nhận rủi ro.
+
+Việc sử dụng QALYs (quality-adjusted life years) hay được hiểu là số năm sống dựa trên điều chỉnh chất lượng cuộc sống để thực hiện phân tích chi phí, lợi ích của các can thiệp y tế và các chính sách xã hội liên quan ít nhất đã có từ trước đến nay bởi Klarman và các công sự vào năm 1968, mặc dù bản thân thuật ngữ này lần đầu tiên được sử dụng bởi Zeckhauser và Shepard (1976). Giống như tiền, QALYs chỉ tương ứng trực tiếp với các tiện ích dưới các giả định khá mạnh, chẳng hạn như tính trung lập về rủi ro, thường bị vi phạm (Beresniak và cộng sự, 2015); Tuy nhiên, QALY được sử dụng rộng rãi trong thực tế, ví dụ như trong việc hình thành các chính sách Dịch vụ Y tế Quốc gia ở Vương quốc Anh. Xem Russell (1990) để biết một ví dụ điển hình về lập luận cho một sự thay đổi lớn trong chính sách y tế công cộng trên cơ sở gia tăng tiện ích mong đợi được đo bằng QALYs.
+
+Năm 1976, Keeney và Raiffa giới thiệu về lý thuyết tiện ích đa thuộc tính. Chúng mô tả các phương pháp triển khai máy tính ban đầu để gợi ra các tham số cần thiết cho một chức năng tiện ích đa thuộc tính và bao gồm các tài khoản mở rộng về các ứng dụng thực tế của lý thuyết. Đến năm 2018, Abbas đã mô tả lại bao gồm nhiều tiến bộ kể từ năm 1976. Lý thuyết này được đưa vào AI chủ yếu bởi công trình của Wellman vào năm 1985, người cũng đã nghiên cứu việc sử dụng thống trị ngẫu nhiên và các mô hình xác suất định tính (Wellman, 1988, 1990a). Năm 1992, Wellman và Doyle cung cấp một bản phác thảo sơ bộ về cách một tập hợp phức tạp của các mối quan hệ độc lập tiện ích có thể được sử dụng để cung cấp một mô hình có cấu trúc của một hàm tiện ích, giống như cách mà mạng Bayes cung cấp một mô hình có cấu trúc của các phân phối xác suất chung. Bacchus và Grove (1995, 1996) và La Mura và Shoham (1999) đưa ra các kết quả khác dọc theo những nghiên cứu này. Đến năm 2004, Boutilier và cộng sự mô tả CP-net, một mô hình hình thức đồ họa được nghiên cứu đầy đủ cho điều kiện cho câu lệnh ưu tiên ceteribus paribus. “Lời nguyền của trình tối ưu hóa” đã thu hút sự chú ý của các nhà phân tích quyết định một cách mạnh mẽ bởi Smith và Winkler vào năm 2006, người đã chỉ ra rằng lợi ích tài chính cho khách hàng mà các nhà phân tích dự kiến cho quá trình hành động đề xuất của họ hầu như không bao giờ thành hiện thực. Họ theo dõi điều này trực tiếp đến sự thiên vị được đưa ra bằng cách chọn một hành động tối ưu và cho thấy rằng một phân tích Bayes đầy đủ hơn sẽ loại bỏ được vấn đề.
+
+Khái niệm cơ bản tương tự đã được Harrison và March (1984) gọi là sự thất vọng sau quyết định và được ghi nhận trong bối cảnh phân tích các dự án đầu tư vốn của Brown (1974). Lời nguyền của trình tối ưu hóa cũng liên quan chặt chẽ đến lời nguyền của người chiến thắng (Capen và cộng sự, 1971; Thaler, 1992), áp dụng cho việc đặt giá thầu cạnh tranh trong các cuộc đấu giá: bất kỳ ai thắng phiên đấu giá rất có thể đã đánh giá quá cao giá trị của đối tượng được đề cập. Capen và cộng sự đã trích lời của một kỹ sư dầu khí về chủ đề đấu thầu quyền khai thác dầu: “Nếu một người thắng một đường trước hai hoặc ba người khác, anh ta có thể cảm thấy ổn về vận may của mình. Nhưng anh ta sẽ cảm thấy thế nào nếu anh ta thắng 50 người khác? Thật là bệnh."
+
+Nghịch lý Allais, do nhà kinh tế học từng đoạt giải Nobel Maurice Allais (1953), đã được kiểm tra bằng thực nghiệm để chỉ ra rằng mọi người luôn không nhất quán trong các phán đoán của họ (Tversky và Kahneman, 1982; Conlisk, 1989). Nghịch lý Ellsberg về sự chán ghét sự mơ hồ đã được giới thiệu trong cuốn Ph.D. luận án của Daniel Ellsberg (1962). Năm 1995, Fox và Tversky mô tả một nghiên cứu sâu hơn về sự chán ghét mơ hồ. Đến năm 2005, Machina đưa ra một cái nhìn tổng quan về sự lựa chọn trong điều kiện không chắc chắn và nó có thể thay đổi như thế nào so với lý thuyết thỏa dụng mong đợi. Xem văn bản cổ điển của Keeney và Raiffa (1976) và tác phẩm gần đây hơn của Abbas (2018) để có phân tích chuyên sâu về sở thích với sự không chắc chắn.
+
+Năm 2009 là một năm quan trọng đối với những cuốn sách nổi tiếng về tính phi lý của con người, bao gồm Dự đoán Phi lý trí (Ariely, 2009), Sway (Brafman và Brafman, 2009), Nudge (Thaler và Sunstein, 2009), Kluge (Marcus, 2009), Cách chúng ta quyết định (Lehrer, 2009) và On Being Being (Burton, 2009). Chúng bổ sung cho cuốn sách kinh điển Phán đoán dưới sự không chắc chắn (Kahneman và cộng sự, 1982) và bài báo bắt đầu tất cả (Kahneman và Tversky, 1979). Bản thân Kahneman đã cung cấp một tài khoản sâu sắc và dễ đọc về Tư duy: Nhanh và Chậm (Kahneman, 2011).
+
+Mặt khác, lĩnh vực tâm lý học tiến hóa (Buss, 2005) lại phản bác lại tài liệu này, cho rằng con người khá hợp lý trong những bối cảnh thích hợp về mặt tiến hóa. Những người ủng hộ nó chỉ ra rằng tính không hợp lý bị phạt theo định nghĩa trong bối cảnh tiến hóa và cho thấy rằng trong một số trường hợp, nó là một tạo tác của thiết lập thử nghiệm (Cummins và Allen, 1998). Gần đây, mối quan tâm trở lại đối với các mô hình Bayes về nhận thức, đảo ngược nhiều thập kỷ bi quan (Elio, 2002; Chater và Oaksford, 2008; Griffiths và cộng sự, 2008); Tuy nhiên, sự trỗi dậy này không phải là không có những lời gièm pha (Jones và Tình yêu, 2011).
+Lý thuyết về giá trị thông tin được khám phá đầu tiên trong bối cảnh của các thí nghiệm thống kê, nơi mà một gần như tiện ích (giảm entropy) được sử dụng (Lindley, 1956). Nhà lý thuyết kiểm soát Ruslan Stratonovich (1965) đã phát triển lý thuyết tổng quát hơn được trình bày ở đây, trong đó thông tin có giá trị nhờ khả năng ảnh hưởng đến các quyết định. Công việc của Stratonovich không được biết đến ở phương Tây, nơi Ron Howard (1966) đi tiên phong trong ý tưởng tương tự. Bài báo của ông kết thúc với nhận xét “Nếu lý thuyết giá trị thông tin và các cấu trúc lý thuyết quyết định liên quan không chiếm một phần lớn trong việc đào tạo kỹ sư, thì nghề kỹ sư sẽ thấy rằng vai trò truyền thống của nó là quản lý các nguồn tài nguyên khoa học và kinh tế vì lợi ích của con người đã bị loại bỏ sang một nghề khác. " Cho đến nay, cuộc cách mạng ngụ ý trong các phương pháp quản lý đã không xảy ra.
+
+Thuật toán thu thập thông tin hoang đường được mô tả trong chương là phổ biến trong các tài liệu phân tích quyết định; những phác thảo cơ bản của nó có thể được thấy rõ trong bài báo gốc về biểu đồ ảnh hưởng (Howard và Matheson, 1984). Các phương pháp tính toán hiệu quả được nghiên cứu bởi Dittmer và Jensen (1997). Laskey (1995) và Nielsen và Jensen (2003) lần lượt thảo luận về các phương pháp phân tích độ nhạy trong mạng Bayes và mạng quyết định. Văn bản cổ điển Kiểm soát mạnh mẽ và tối ưu (Zhou và cộng sự, 1995) cung cấp phạm vi bao quát và so sánh kỹ lưỡng các phương pháp tiếp cận lý thuyết quyết định và mạnh mẽ đối với các quyết định không chắc chắn. Bài toán truy tìm kho báu đã được nhiều tác giả giải quyết một cách độc lập, ít nhất có từ các bài báo về thử nghiệm tuần tự của Gluss (1959) và Mitten (1960). Phong cách chứng minh trong chương này dựa trên một kết quả cơ bản, do Smith (1956), liên hệ giá trị của một dãy với giá trị của cùng một dãy với hai phần tử liền kề được hoán vị. Những kết quả này cho các bài kiểm tra độc lập đã được mở rộng sang các bài toán tìm kiếm dạng cây và đồ thị tổng quát hơn (trong đó các bài kiểm tra được sắp xếp một phần) bởi Kadane và Simon (1977). Krause và Guestrin (2009) đã thu được kết quả về độ phức tạp của các phép tính không dị ứng đối với giá trị của thông tin. Krause và cộng sự. (2008) đã xác định các trường hợp trong đó tính chất phụ dẫn đến một thuật toán xấp xỉ có thể kiểm soát được, dựa trên công trình nghiên cứu của Nemhauser và các đồng sự vào năm 1978 về các chức năng dưới mô-đun; Krause và Guestrin (2005) xác định các trường hợp mà thuật toán lập trình động chính xác đưa ra giải pháp hiệu quả cho cả bầu cử tập hợp con bằng chứng và tạo kế hoạch có điều kiện.
+
+Harsanyi (1967) đã nghiên cứu vấn đề thông tin không đầy đủ trong lý thuyết trò chơi, nơi người chơi có thể không biết chính xác các chức năng trả thưởng của nhau. Ông đã chỉ ra rằng những trò chơi như vậy giống hệt với những trò chơi có thông tin không hoàn hảo, trong đó người chơi không chắc chắn về trạng thái của thế giới, thông qua thủ thuật thêm các biến trạng thái đề cập đến phần thưởng của người chơi. Cyert và de Groot (1979) đã phát triển một lý thuyết về tiện ích thích ứng trong đó tác nhân có thể không chắc chắn về chức năng tiện ích của chính nó và có thể thu thập thêm thông tin thông qua kinh nghiệm.
+
+Công việc về kích thích sở thích Bayes (Chajewska và cộng sự, 2000; Boutilier, 2002) bắt đầu từ giả định về một xác suất trước đối với chức năng tiện ích của tác nhân. Fern và cộng sự. (2014) đề xuất một mô hình hỗ trợ lý thuyết-quyết định trong đó robot cố gắng xác định và hỗ trợ mục tiêu của con người mà ban đầu nó không chắc chắn. Ví dụ tắt công tắc trong Phần 16.7.2 được điều chỉnh từ Hadfield-Menell và cộng sự. (2017b). Russell (2019) đề xuất một khuôn khổ chung cho AI hữu ích, trong đó trò chơi chuyển mạch là một ví dụ chính.

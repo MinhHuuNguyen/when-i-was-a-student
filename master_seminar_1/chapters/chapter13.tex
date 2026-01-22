@@ -1,0 +1,345 @@
+\chapter{Suy luận xác suất (Probabilistic reasoning)}
+Chương 12 đã giới thiệu các yếu tố cơ bản của lý thuyết xác suất và tầm quan trọng của các mối quan hệ độc lập và độc lập có điều kiện trong việc đơn giản hóa các biểu diễn xác suất. Chương này giới thiệu một cách có hệ thống để biểu diễn các mối quan hệ đó một cách rõ ràng dưới dạng mạng Bayesian, đồng thời định nghĩa các kiến trúc và cách xây dựng các mạng này và chỉ ra cách chúng có thể được sử dụng để nắm bắt những kiến thức không chắc chắn một cách tự nhiên và hiệu quả.
+\section{Giới thiệu chung về mạng Bayesian}
+Ta đã biểu diễn tri thức bằng cách sử dụng logic bậc nhất và logic mệnh đề một cách chắc chắn ở các chương trước, có nghĩa là ta đã chắc chắn về các vị từ. Lấy một ví dụ, ta có thể viết $A\rightarrow B$, có nghĩa là nếu $A$ đúng thì $B$ đúng, nhưng xét trong một tình huống cụ thể mà ta không chắc chắn về việc $A$ có đúng hay không thì chúng ta không diễn đạt được câu này, tình huống này được gọi là không chắc chắn. Để biểu diễn các tri thức không chắc chắn này ta sử dụng suy luận xác suất, một cách biểu diễn tri thức thông qua lý thuyết xác suất và logic.\\
+Ở chương 12, ta thấy rằng phân phối xác suất toàn phần (full joint probability distribution) trả lời cho các câu hỏi về sự không chắc chắn, tuy nhiên số biến cần thiết để tính toán các xác suất thành phần là lớn và cồng kềnh trong nhiều trường hợp. Trong chương này, ta sử dụng tính độc lập và độc lập có điều kiện giữa các biến để giảm số lượng các xác suất cần định nghĩa cho việc xác định phân phối xác suất toàn phần và mạng Bayesian là một phương pháp hiệu quả và tự nhiên trong việc tính toán các phân phối xác suất.
+\subsection{Kiến trúc mạng Bayesian}
+Mạng Bayesian là một cấu trúc dữ liệu đại diện cho sự phụ thuộc giữa các biến được biểu diễn qua đồ thị có hướng:
+	\begin{itemize}
+	\item Mỗi đỉnh tương ứng với một biến ngẫu nhiên (rời rạc hoặc liên tục)
+	\item Nếu có cạnh đi từ $X$ đến $Y$: $X$ là cha (parent) của $Y$. Đồ thị là đồ thị không chứa chu trình có hướng
+	\item Mỗi đỉnh $X_i$ liên kết với bảng xác suất có điều kiện $P(X_i|Parents(X_i))$ để xác định độ ảnh hưởng của các đỉnh cha đến $X_i$.
+	\end{itemize}
+	với $Parents(X_i)$ \textit{là tập các đỉnh cha của} $X_i$.\\
+Xét một ví dụ, bạn có một thiết bị báo trộm mới được lắp đặt tại nhà. Nó khá đáng tin cậy trong việc phát hiện một vụ trộm, nhưng đôi khi có thể xảy ra bởi các trận động đất nhỏ. Bạn có hai người hàng xóm, John và Mary, họ đã hứa sẽ gọi bạn đến nơi làm việc khi họ nghe thấy tiếng chuông báo động. John gần như luôn gọi khi nghe thấy chuông báo đọng, nhưng đôi khi nhầm lẫn giữa tiếng chuông điện thoại với chuông báo động và các cuộc gọi sau đó cũng vậy. Mặt khác, Mary thích âm nhạc khá ồn ào và thường bỏ lỡ báo động. Với bằng chứng về người đã hoặc chưa gọi, ta muốn ước tính xác suất có một vụ trộm.\\
+Hình \ref{fig:13.1} miêu tả một kiến trúc mạng Bayesian của bài toán trên cùng với các bảng xác suất có điều kiện (CPTs) gắn với mỗi trạng thái (nút) của mạng.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\textwidth]{images/chapter13/h1.PNG}
+    \caption{Kiến trúc mạng Bayesian với bảng xác suất có điều kiện (CPTs)}
+    \label{fig:13.1}
+\end{figure}
+
+\subsection{Mạng Bayesian và xác suất có điều kiện}
+Xét mạng Bayesian có $n$ biến $X_1,X_2,...,X_n$. Khi đó, ta có
+    \begin{align*}
+        P(X_1=x_1\wedge ... \wedge X_n=x_n)&=P(x_1,...,x_n)\\
+        &= P(x_n|x_{n-1},...,x_1)P(x_{n-1},...,x_1)\\
+        &= ... \\
+        &= P(x_n|x_{n-1},...,x_1)P(x_{n-1}|x_{n-2},...,x_1)...P(x_2|x_1)P(x_1)\\
+        &= \prod_{i=1}^{n}P(x_i|x_{i-1},...,x_1)
+    \end{align*}
+Lại có: $P(X_i|X_{i-1},...,X_1)=P(X_i|Parents(X_i))$ nếu $Parents(X_i)\subseteq \{ X_{i-1},...,X_1 \}$\\
+Để diều kiện $Parents(X_i)\subseteq \{ X_{i-1},...,X_1 \}$ xảy ra ta cần sắp thứ tự các đỉnh của mạng Bayesian.\\
+Một cách để sắp thứ tự các đỉnh của mạng Bayesian như vậy:
+    \begin{enumerate}
+        \item Đỉnh: Xác định bộ các biến cần thiết trong miền. Sắp thứ tự $\{X_1,...,X_n\}$
+        \item Cạnh: For $i=1$ to $n$:\\
+            - Chọn bộ nhỏ nhất các đỉnh cha của $X_i$ từ $X_1,...,X_{i-1}$ sao cho thỏa mãn điều kiện $P(X_i|X_{i-1},...,X_1)=P(X_i|Parents(X_i))$.\\
+            - Với mỗi đỉnh cha nối 1 cạnh có hướng từ đỉnh cha đến đỉnh $X_i$.\\
+            - CPTs: Viết bảng xác suất có điều kiện $P(X_i|Parents(X_i))$
+    \end{enumerate}
+Qua cách sắp xếp này ta thu được $P(X_i|X_{i-1},...,X_1)=P(X_i|Parents(X_i))$. Xét ví dụ hình \ref{fig:13.1} và giả sử ta muốn tính xác suất chuống báo động kêu nhưng không có trộm hay động đất và cả John và Mary cùng gọi. Bằng cách sử dụng tính chất này, ta chỉ cần tính các xác suất thành phần bằng cách tra bảng phân phối xác suất được gắn với mỗi biến trong hình \ref{fig:13.1} 
+\begin{align*}
+    P(j,m,a,\neg b,\neg e) &= P(j|a)P(m|a)P(a|\neg b\wedge \neg e)P(\neg b)P(\neg e)\\
+    &= 0.90\times 0.70\times 0.01\times 0.999\times 0.998 = 0.00628
+\end{align*}
+\subsection{Quan hệ độc lập có điều kiện trong mạng bayesian}
+Từ ngữ nghĩa của mạng Bayesian như được định nghĩa trong công thức, chúng ta có thể suy ra một số thuộc tính độc lập có điều kiện. Chúng ta đã thấy thuộc tính mà một biến độc lập có điều kiện so với các biến trước đó, cho trước các biến cha của nó. Ta cũng có thể chứng minh tính chất chung hơn rằng:
+Mỗi biến độc lập có điều kiện với các biến không phải là con cháu của nó, cho trước các biến cha của nó.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\textwidth]{images/chapter13/CIMB.PNG}
+    \caption{a. Đỉnh $X$ là độc lập có điều kiện với các đỉnh không phải 'con cháu' của nó ($Z_{ij}$), cho trước các đỉnh cha ($U_i$)\\
+    b. Đỉnh $X$ là độc lập có điều kiện với tất cả các đỉnh trong mạng, cho trước 'Markov blanket' của nó ($U_i,Z_{ij},Y_i$)}
+    \label{fig:13.2}
+\end{figure}
+Ta gọi 'Markov blanket' của đỉnh $X$ là tập các đỉnh cha, con, và cha của con của $X$. Khi đó một tính chất độc lập quan trọng khác được cho bởi thuộc tính không phải con cháu: một biến độc lập có điều kiện với tất cả các nút khác trong mạng, cho trước các biến cha, con và cha của con của nó — nghĩa là, với Markov blanket của nó.\\
+Câu hỏi độc lập có điều kiện mà ta có thể hỏi trong mạng Bayesian là liệu một tập các biến $X$ có độc lập có điều kiện với một tập $Y$ khác, cho trước một tập $Z$ hay không. Điều này có thể được xác định một cách hiệu quả bằng cách kiểm tra mạng Bayesian để xem liệu có tồn tại một $Z d-separates$ $X$ và $Y$. Quá trình hoạt động như sau:
+\begin{enumerate}
+       \item Xét đồ thị con được tạo thành từ $X,Y,Z$ và các đỉnh cha của chúng.
+       \item Thêm vào các cạnh giữa các cặp đỉnh không có cạnh nối nhưng có đỉnh con chung.
+       \item Thay các cạnh có hướng bằng các cạnh vô hướng.
+       \item Nếu $Z$ chặn tất cả các đường giữa $X$ và $Y$, ta gọi là $Z$ $d-separates$ $X$ và $Y$ thì $X$ là độc lập có điều kiện với $Y$ cho trước $Z$. Ngược lại thì điều này không đúng. 
+\end{enumerate}
+Tóm lại, $d-separates$ nghĩa là tách biệt trong các đồ thị con vô hướng cảm sinh từ các biến cha. Áp dụng định nghĩa cho mạng trong hình \ref{fig:13.1}, chúng ta có thể suy ra rằng Trộm và Động đất là độc lập với tập hợp rỗng (tức là chúng hoàn toàn độc lập) có nghĩa là chúng không nhất thiết phải độc lập có điều kiện cho trước Báo động, ngược lại John gọi và Mary gọi là độc lập có điều kiện cho trước Báo động. Cũng từ tính chất này, ta thấy rằng tính chất Markov blanket là một trường hợp của tính chất $d-separates$, vì Markov blanket của một biến $d-separates$ nó khỏi tất cả các biến khác.
+
+\subsection{Mạng Bayesian với biến liên tục}
+Nhiều vấn đề trong thế giới thực liên quan đến các biến số liên tục, chẳng hạn như chiều cao, khối lượng, nhiệt độ và tiền. Theo định nghĩa, các biến liên tục có vô số giá trị có thể có, do đó không thể xác định các xác suất có điều kiện một cách rõ ràng cho mỗi giá trị. Một cách để xử lý các biến liên tục là rời rạc hóa — nghĩa là, chia các giá trị có thể thành một tập hợp các khoảng cố định. Ví dụ, nhiệt độ có thể được chia thành ba loại: $(<0^oC)$, $(0^oC-100^oC)$ và $(> 100^oC)$. Trong việc lựa chọn số lượng khoảng, cần có sự cân bằng giữa độ chính xác và số biến trong bảng CPT, độ chính xác càng cao yêu cầu càng nhiều khoảng dẫn đến số lượng biến có trong bảng CPT lớn đồng thời thời gian chạy lâu hơn.\\
+Một cách tiếp cận khác là xác định một biến liên tục bằng cách sử dụng họ các hàm mật độ xác suất. Ví dụ, phân phối Gaussian (chuẩn) $\mathcal{N}(x;\mu,\sigma^2)$ được chỉ định bởi hai tham số, giá trị trung bình $\mu$ và phương sai $\sigma^2$. Tuy nhiên, một giải pháp khác - đôi khi được gọi là biểu diễn không tham số - là xác định ngầm định phân phối có điều kiện với một tập hợp các trường hợp, mỗi trường hợp chứa các giá trị cụ thể của các biến cha và con. Chúng ta khám phá cách tiếp cận này sâu hơn trong Chương 19.\\
+Một mạng có cả biến rời rạc và liên tục được gọi là mạng Bayesian lai. Để xác định một mạng lai, chúng ta phải xác định hai loại phân phối mới: phân phối có điều kiện cho một biến liên tục có cha rời rạc hoặc liên tục; và phân phối có điều kiện cho một biến rời rạc có cha liên tục.\\
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.65\textwidth]{images/chapter13/h2.PNG}
+    \caption{Mạng Bayesian với biến rời rạc và liên tục}
+    \label{fig:13.3}
+\end{figure}
+Hãy xem xét ví dụ đơn giản trong hình \ref{fig:13.3}, trong đó một khách hàng mua một số trái cây tùy thuộc vào chi phí của nó, điều này lần lượt phụ thuộc vào quy mô vụ thu hoạch và liệu chương trình trợ cấp của chính phủ có đang hoạt động hay không. Chi phí là biến liên tục và có cha liên tục và rời rạc; biến Mua là rời rạc và có cha liên tục.\\
+Đối với biến $\textit{Giá}$ ($c$), chúng ta cần xác định $P(\textit{Giá}|\textit{Thu hoạch},\textit{Trợ cấp})$
+Biến cha của $\textit{Giá}$ bao gồm cả biến rời rạc được xử lý bằng cách liệt kê - nghĩa là bằng cách xác định cả $P(\textit{Giá}|\textit{Thu hoạch},\textit{Trợ cấp})$ và  $P(\textit{Giá}|\textit{Thu hoạch},\neg\textit{Trợ cấp})$. Để xử lý $Thu hoạch$ ($h$), chúng ta xác định cách phân bổ trên $\textit{Giá}$ ($c$) phụ thuộc vào giá trị liên tục của $\textit{Thu hoạch}$. Nói cách khác, ta xác định các tham số Linear – Gaussian của phân phối chi phí dưới dạng một hàm của $h$. Sự lựa chọn phổ biến nhất là phân phối có điều kiện-Gauss tuyến tính, trong đó con có phân phối Gaussian có giá trị trung bình $\mu$ thay đổi tuyến tính với giá trị của giá trị gốc và có độ lệch chuẩn $\sigma$ là cố định. Chúng ta cần hai phân phối tương ứng với các giá trị của $\textit{Trợ cấp}$ ($s$), một dành cho $s$ và một bản dành cho $\neg s$, với các thông số khác nhau: \\
+\begin{align*}
+    P(c|h,s)&=\mathcal{N}(c;a_t h+b_t,\sigma^2_t)=\frac{1}{\sigma_t\sqrt{2\pi}}e^{-\frac{1}{2}\left ( \frac{c-(a_t h +b_t)}{\sigma_t} \right )^2} \\
+    P(c|h,\neg s)&=\mathcal{N}(c;a_f h+b_f,\sigma^2_f)=\frac{1}{\sigma_f\sqrt{2\pi}}e^{-\frac{1}{2}\left ( \frac{c-(a_f h +b_f)}{\sigma_f} \right )^2}\\
+    P(c|h)&=P(c|h,s)+P(c|h,\neg s)
+\end{align*}\\
+Phân phối có điều kiện tuyến tính-Gaussian có một số tính chất đặc biệt. Một mạng chỉ chứa các biến liên tục với phân phối tuyến tính – Gauss có phân phối xác suất chung của tất cả các biến là phân phối Gauss đa biến. Hơn nữa, phân phối sau được đưa ra bất kỳ bằng chứng nào cũng có tính chất này. Khi các biến rời rạc được thêm vào dưới dạng nút cha (không phải là con) của các biến liên tục, mạng xác định phân phối Gauss có điều kiện,  được gán bất kỳ phép gán nào cho Gauss có điều kiện rời rạc biến, phân phối trên các biến liên tục là một phân phối Gaussian đa biến.\\
+Xét biến rời rạc $\textit{Mua}$ ($b$) có đỉnh cha $\textit{Giá}$ là biến liên tục, ta cần xác định $P(b|\textit{Giá}=c)$ \\
+Chọn hàm phân phối xác suất có điều kiện dạng Probit: 
+    \begin{align*}
+        \Phi (x)=\int_{-\infty}^{x}\mathcal{N}(t;0,1)dt
+    \end{align*}
+$\Phi (x)$ tăng khi $x$ tăng $\Rightarrow P(b|\textit{Giá}=c)=1-\Phi ((c-\mu)/\sigma)$  \\
+Nếu chọn hàm dạng logistic $1/(1+e^{-x})$ thì ta thu được
+    \begin{align*}
+        P(b|\textit{Giá}=c)=1-\frac{1}{1+exp\left ( -\frac{4}{\sqrt{2\pi}}.\frac{c-\mu}{\sigma} \right )}
+    \end{align*}
+Điều này được minh họa trong hình \ref{fig:13.4}(b). Hai phân phối trông giống nhau, nhưng logit thực sự có “đuôi” dài hơn nhiều. Probit thường phù hợp hơn với các tình huống thực tế, nhưng hàm logistic đôi khi dễ xử lý hơn về mặt toán học và nó được sử dụng rộng rãi trong học máy.\\
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/chapter13/2norm.PNG}
+    \caption{(a) Phân phối chuẩn (Gaussian) cho ngưỡng Giá, có trung bình là $\mu = 6.0$ với độ lệch chuẩn $\sigma = 1,0$. (b) Mô hình expit và probit cho xác suất mua cho trước giá, với các tham số $\mu = 6.0$ và $\sigma = 1.0$ }
+    \label{fig:13.4}
+\end{figure}\\
+ Cả hai mô hình đều có thể được tổng quát hóa để xử lý nhiều biến cha liên tục bằng cách lấy sự kết hợp tuyến tính của các giá trị cha. Điều này cũng hoạt động đối với các biến cha  rời rạc nếu giá trị của họ là số nguyên; ví dụ: với k Boolean cha, mỗi cha được xem là có giá trị 0 hoặc 1, đầu vào cho phân phối expit hoặc probit sẽ là một tổ hợp tuyến tính có trọng số với k tham số, tạo ra một mô hình khá giống với mô hình noise-OR đã thảo luận trước đó.
+ 
+ \section{Suy luận chính xác trong mạng Bayesian}
+ Nhiệm vụ cơ bản đối với bất kỳ hệ thống suy luận xác suất nào là tính toán phân phối xác suất sau cho một tập hợp các biến truy vấn, với một số sự kiện quan sát — thông thường, một số phép gán giá trị cho một tập hợp các biến bằng chứng. Để đơn giản hóa việc trình bày, chúng ta sẽ chỉ xem xét một biến truy vấn tại một thời điểm; các thuật toán có thể dễ dàng được mở rộng cho các truy vấn có nhiều biến. (Ví dụ, chúng ta có thể giải quyết truy vấn $P (U, V | e)$ bằng tích của $P (V | e)$ và $P (U | V, e)$.). Ta sử dụng ký hiệu từ Chương 12: $X$ biểu thị biến truy vấn; $E$ biểu thị tập các biến bằng chứng $E_1, ..., E_m$, và $e$ là một sự kiện quan sát cụ thể; $Y$ biểu thị các biến ẩn (khôn phải biến truy vấn) $Y_1, ..., Y_l$. Do đó, tập hợp đầy đủ của các biến là $\{X\} \cup E\cup Y$. Một truy vấn điển hình yêu cầu phân phối xác suất sau $P (X | e)$.\\
+ Trong phần này, ta thảo luận về các thuật toán chính xác để tính toán các xác suất cũng như độ phức tạp của bài toán này.
+ \subsection{Suy luận dựa trên liệt kê}
+Chương 12 giải thích rằng bất kỳ xác suất có điều kiện nào cũng có thể được tính bằng cách tính tổng các số hạng từ phân phối chung đầy đủ. Cụ thể hơn, một truy vấn $P (X | e)$ có thể được trả lời bằng cách sử dụng Công thức sau:
+\begin{align*}
+     P(X|e)=\alpha P(X,e)=\alpha \sum_yP(X,e,y)
+\end{align*}
+Bây giờ, một mạng Bayesian cung cấp một đại diện đầy đủ của phân phối chung đầy đủ. Cụ thể hơn, ta thấy rằng các số hạng $P (x, e, y)$ trong phân phối chung có thể được viết dưới dạng tích số của xác suất có điều kiện từ mạng. Do đó, một truy vấn có thể được trả lời bằng cách sử dụng mạng Bayesian bằng cách tính tổng các tích của xác suất có điều kiện từ mạng.\\
+Hãy xem xét truy vấn $P (\textit{Trộm}| \textit{John gọi} = true, \textit{Mary gọi} = true)$. Các biến ẩn cho truy vấn này là Động đất và Báo động. Từ phương trình trên ta thu được, sử dụng các ký tự đầu tiên cho các biến để rút gọn biểu thức, chúng ta có
+\begin{align*}
+    P(B|j,m)=\alpha P(B,j,m)=\alpha \sum_e\sum_a P(B,j,m,e,a)
+\end{align*}
+Kết hợp với tính chất của mạng Bayesian có
+\begin{align*}
+    P(b|j,m)&=\alpha \sum_e\sum_a P(b)P(e)P(a|b,e)P(j|a)P(m|a)\\
+    &=\alpha P(b)\sum_eP(e)\sum_a P(a|b,e)P(j|a)P(m|a)\\
+    &=\alpha \times 0.00059224\\
+    \text{ Tương tự: } &P(\neg b|j,m) = \alpha \times 0.0014919\\
+    \Rightarrow P(B|j,m)&=\alpha \left \langle 0.00059224, 0.0014919 \right \rangle \approx  \left \langle 0.284, 0.716 \right \rangle
+\end{align*}
+Để tính $\alpha$ ta có \textit{$P(B|j,m)=1\Rightarrow \alpha \times P(b|j,m) + \alpha \times P(\neg b|j,m)=1$}.\\
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/chapter13/exact_inf.PNG}
+    \caption{Cấu trúc các phép toán trong hàm $P(b|j,m)$}
+    \label{fig:13.5}
+\end{figure}\\
+Tuy nhiên, nếu ta quan sát kỹ cái cây trong hình \ref{fig:13.5}, bạn sẽ thấy rằng nó chứa các biểu thức con lặp đi lặp lại. Các tích $P (j | a) P (m | a)$ và $P (j | ¬a) P (m | ¬a)$ được tính hai lần, một lần cho mỗi giá trị của $E$. Ý tưởng để suy luận một cách hiệu quả trong mạng Bayesian là tránh tính toán lãng phí như vậy. Phần tiếp theo mô tả một phương pháp chung để thực hiện việc này.
+
+\subsection{Thuật toán loại bỏ biến}
+Thuật toán liệt kê có thể được cải thiện đáng kể bằng cách loại bỏ các phép tính lặp lại kiểu được minh họa trong hình \ref{fig:13.5}. Ý tưởng rất đơn giản: thực hiện phép tính một lần và lưu kết quả để sử dụng sau này. Có một số phiên bản của cách tiếp cận này; ta trình bày thuật toán loại bỏ biến, là thuật toán đơn giản nhất. Loại bỏ biến hoạt động bằng cách đánh giá các biểu thức theo thứ tự từ phải sang trái (nghĩa là từ dưới lên trong hình \ref{fig:13.5}). Các kết quả trung gian được lưu trữ và các phép tính toán trên mỗi biến chỉ được thực hiện cho những phần của biểu thức phụ thuộc vào biến.\\
+Ta minh họa quá trình này cho mạng trộm trong hình \ref{fig:13.1}. Ta đánh giá biểu thức
+    \begin{align*}
+        P(B|j,m)=\alpha \underset{f_1(B)}{\underbrace{P(B)}}\sum_e\underset{f_2(E)}{\underbrace{P(e)}}\sum_a \underset{f_3(A,B,E)}{\underbrace{P(a|B,e)}}\underset{f_4(A)}{\underbrace{P(j|a)}}\underset{f_5(A)}{\underbrace{P(m|a)}}
+    \end{align*}
+    với $f_i,i=1,...,5$ là các 'factor':
+    \begin{align*}
+        f_4(A)=\begin{pmatrix}
+        P(j|a)\\ P(j|\neg a)
+        \end{pmatrix}=\begin{pmatrix}
+        0.90\\ 0.05
+        \end{pmatrix},
+        f_5(A)=\begin{pmatrix}
+        P(m|a)\\ P(m|\neg a)
+        \end{pmatrix}=\begin{pmatrix}
+        0.70\\ 0.01
+        \end{pmatrix},...\\
+        P(B|j,m)=\alpha f_1(B)\times \sum_e f_2(E)\times \sum_a f_3(A,B,E)\times f_4(A)\times f_5(A)
+    \end{align*}
+Ở đây, toán tử $\times$ không phải là phép nhân ma trận thông thường mà thay vào đó là phép toán tích giữa hai factor, sẽ được mô tả ngay sau đây. Quá trình đánh giá tổng hợp các biến (từ phải sang trái) từ các tích factor để tạo ra các factor mới, cuối cùng tạo ra một factor cấu thành giải pháp — nghĩa là, phân phối sau trên biến truy vấn. Các bước thực hiện như sau:\\
+Đầu tiên, ta tính tổng $A$ từ tích của $f_3, f_4$ và $f_5$. Kết quả là một factor $2 \times 2$ mới $f_6 (B, E)$ có các chỉ số chỉ nằm trong phạm vi $B$ và $E$:
+\begin{align*}
+    f_6(B,E) &=\sum_af_3(A,B,E)\times f_4(A)\times f_5(A)\\
+    &= (f_3(a,B,E)\times f_4(a)\times f_5(a))+(f_3(\neg a,B,E)\times f_4(\neg a)\times f_5(\neg a))
+\end{align*}
+Và xác suất cần tính có dạng
+\begin{align*}
+    P(B|j,m) = \alpha f_1(B)\times \sum_ef_2(E)\times f_6(B,E).
+\end{align*}
+Tiếp theo ta tính tổng $E$ từ $f_2$ và $f_6$
+\begin{align*}
+    f_7(B) &= \sum_e f_2(E)\times f_6(B,E)\\
+    &=f_2(e)\times f_6 (B,e) + f_2(\neg e)\times f_6(B,\neg e)
+\end{align*}
+Do đó $P(B|j,m)=\alpha f_1(B)\times f_7(B)$, có thể được đánh giá bằng cách lấy tích factor và chuẩn hóa kết quả.
+
+\textbf{Phép toán giữa hai factor}\\
+Xét 2 'factor' $f$ và $g$ có chung các biến $Y_1,...,Y_k$. Có
+    \begin{align*}
+        f(X_1...X_j,Y_1...Y_k)\times g(Y_1...Y_k,Z_1...Z_l)=h(X_1...X_j,Y_1...Y_k,Z_1...Z_l)
+    \end{align*}
+    $f$ và $g$ có số lượng đầu vào $2^{j+k}$ và $2^{k+l}$,$h$ là $2^{j+k+l}$\\
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{images/chapter13/opefac.PNG}
+    \caption{Tích factor $f(X,Y)\times g(Y,Z)=h(X,Y,Z)$}
+    \label{fig:13.6}
+\end{figure}\\
+Do đó
+\begin{align*}
+        h_2(Y,Z)&=\sum_x h(X,Y,Z) = h(x,Y,Z)+h(\neg x,Y,Z)\\
+        &= \begin{pmatrix}
+        .06 & .24\\ 
+        .42 & .28
+        \end{pmatrix}+\begin{pmatrix}
+        .18 & .72\\ 
+        .06 & .04
+        \end{pmatrix}=\begin{pmatrix}
+        .24 & .96\\ 
+        .48 & .32
+        \end{pmatrix}\\
+        \text{Với } &\sum_xf(X,Y)\times g(Y,Z) = g(Y,Z)\times \sum_x f(X,Y)
+    \end{align*}
+Ta có thuật toán loại bỏ biến sau
+\begin{algorithm}[H]
+    \caption{Thuật toán loại bỏ biến}
+    \begin{algorithmic}[1]
+        \STATE \textbf{Đầu vào:} \\
+        $X$ - biến cần tìm\\
+        $e$ - các giá trị quan sát được của các biến $E$\\
+        $bn$ - mạng Bayesian với các biến $vars$.
+        \STATE \textbf{Đầu ra:} $P(X|e)$.
+        \STATE \textbf{Khởi tạo:} $factor\leftarrow []$.
+        \STATE \textbf{Lặp } For $V$ in Thứ Tự($vars$)
+        \begin{align*}
+            &factors \leftarrow [\textit{Tạo Factor}(V,e)] + factors\\
+            &\textit{Nếu } V \textit{là biến ẩn thì }factors \leftarrow \textit{Tổng}(V, factors)
+        \end{align*}
+        \STATE \textbf{Kết quả } Tính $\alpha$(Nhân factor($factors$))
+    \end{algorithmic}
+    \end{algorithm}
+    
+\section{Suy luận xấp xỉ trên mạng Bayesian}
+Việc suy luận chính xác là khó thực hiện trong các mạng lớn, trong phần này chúng ta sẽ xem xét các phương pháp suy luận xấp xỉ. Phần này mô tả các thuật toán lấy mẫu ngẫu nhiên, còn được gọi là thuật toán Monte Carlo, cung cấp các câu trả lời gần đúng mà độ chính xác của chúng phụ thuộc vào số lượng mẫu được tạo ra. Chúng hoạt động bằng cách tạo ra các sự kiện ngẫu nhiên dựa trên xác suất trong mạng Bayesian và đếm các sự kiện khác nhau được tìm thấy trong các sự kiện ngẫu nhiên đó. Với đủ mẫu, chúng ta có thể tiến gần đến việc khôi phục phân phối xác suất thực một cách tùy ý — miễn là mạng Bayesian không có phân phối có điều kiện xác định.
+\subsection{Phương pháp lấy mẫu trực tiếp}
+Sử dụng thuật toán Monte Carlo - Thuật toán lấy mẫu ngẫu nhiên\\
+    Xét biến $X_i$: Lấy mẫu từ phân phối xác suất $P(X_i|Parents(X_i))$ với $P(x_1,...,x_n)$ là xác suất mà các sự kiện $X_1=x_1,...,X_n=x_n$ xảy ra trong mẫu:
+    \begin{align*}
+        P(x_1...x_n)=\prod_{i=1}^{n}P(x_i|Parents(X_i))
+    \end{align*}
+    Gọi $N_{PS}(x_1,...,x_n)$ là số lần sự kiện $(x_1...x_n)$ xuất hiện trong mẫu (Giả sử $N$ là số lượng mẫu). Ta có:
+    \begin{align*}
+        \lim_{N\rightarrow \infty}\frac{N_{PS}(x_1,...,x_n)}{N}=P(x_1,...,x_n)
+    \end{align*}
+    Với $N$ đủ lớn: $P(x_1,...,x_n)\approx N_{PS}(x_1,...,x_n)/N$.\\
+\textbf{Lấy mẫu 'Rejection'}\\
+Ý tưởng: Sinh các mẫu từ phân phối xác suất $P(X_i|Parents(X_i))$.\\
+    Loại bỏ tất cả những mẫu không phù hợp với các giá trị quan sát được $e$.\\
+    $\hat{P}(X=x|e)$ là số lần xuất hiện sự kiện $X=x$ trong mẫu còn lại/tổng số lượng mẫu còn lại
+    \begin{align*}
+        \hat{P}(X|e)=\alpha N_{PS}(X,e)=\frac{N_{PS}(X,e)}{N_{PS}(e)}\approx P(X|e)
+    \end{align*}\\
+\textbf{Lấy mẫu 'Importance'}\\
+Ý tưởng: Ta muốn lấy mẫu trực tiếp từ phân phối xác suất $P(Z|e)$ với $Z=(Z_1,...,Z_l)$ là các biến khác biến quan sát được. Tuy nhiên viêc này là vô cùng khó vì nếu ta đã biết chính xác phân phối xác suất đó thì có thể tính trực tiếp ra kết quả. Do đó, ta lấy mẫu từ phân phối $Q(z)=\prod_{i=1}^{l}P(z_i|Parents(Z_i))$:
+    \begin{align*}
+        \hat{P}(z|e)=\frac{N_Q(z)}{N}\frac{P(z|e)}{Q(z)}\approx Q(z)\frac{P(z|e)}{Q(z)}=P(z|e)
+    \end{align*}
+    Kết hợp với một hệ số hiệu chỉnh $w(z)=\frac{P(z|e)}{Q(z)}=\alpha \frac{P(z,e)}{Q(z)}$
+    \begin{align*}
+        w(z)&=\frac{P(z|e)}{Q(z)}=\alpha \frac{P(z,e)}{Q(z)}\\
+        &=\alpha \frac{\prod_{i=1}^{l}P(z_i|Parents(Z_i))\prod_{i=1}^{m}P(e_i|Parents(E_i))}{\prod_{i=1}^{l}P(z_i|Parents(Z_i))}\\
+        &=\alpha \prod_{i=1}^{m}P(e_i|Parents(E_i))
+    \end{align*}\\
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{images/chapter13/h3.PNG}
+    \caption{Mạng Bayesian cho bài toán tưới nước}
+    \label{fig:13.7}
+\end{figure}
+
+Ví dụ: Ta muốn tính $P(R|C=true, W=true)$ với thứ tự: $[C,S,R,W]$\\
+    $w = 1$\\
+    \begin{enumerate}
+        \item $C\in E$ và $C=true \Rightarrow w = w\times P(C=true)=0.5$
+        \item $C\notin E$, lấy mẫu từ phân phối xác suất $P(S|C=true)=\left \langle 0.1,0.9  \right \rangle$ ---> giả sử $S=false$
+        \item $R\notin E$, lấy mẫu từ phân phối xác suất $P(R|C=true)=\left \langle 0.8,0.2  \right \rangle$ ---> giả sử $R=true$
+        \item $W\in E$ và $W=true$ $\Rightarrow  w = w\times P(W=true|S=false,R=true)=0.5\times 0.9=0.45$
+    \end{enumerate}
+    $\Rightarrow $ Ta được mẫu $x=[true,false,true,true]$ với hệ số hiệu chỉnh $w=0.45$\\
+Ta có thuật toán 'Likelihood-Weighting' để thực thi việc lấy mẫu này:
+\begin{algorithm}[H]
+    \caption{Thuật toán 'Likelihood-Weighting'}
+    \begin{algorithmic}[1]
+        \STATE \textbf{Đầu vào:} \\
+        $X$ - các biến cần tìm\\
+        $e$ - các giá trị quan sát được của các biến $E$\\
+        $bn$ - mạng Bayesian với các biến $vars$.\\
+        $N$ - số lượng mẫu cần sinh.
+        \STATE \textbf{Đầu ra:} $P(X|e)$.
+        \STATE \textbf{Khởi tạo: }$W=[0,...,0]$ - vector trọng số mỗi biến trong $X$
+        \STATE \textbf{function: Lấy mẫu}(bn,e)
+        $w\leftarrow 1,x\leftarrow $ các giá trị tại các biến (bao gồm cả biến quan sát được $e$)\\
+        for $i = 1$ to $n$:\\
+        \quad Nếu $X_i$ là biến quan sát được với giá trị $x_{ij}$ có trong $e$\\
+        \qquad $w\leftarrow w\times P(X_i=x_{ij}|Parents(X_i))$\\
+        \quad Ngược lại: $x[i]\leftarrow $ Sinh ngẫu nhiên từ phân phối $P(X_i|Parents(X_i))$\\
+        Kết quả: $x, w$
+        \STATE \textbf{Lặp } For $j=1$ to $n$:\\
+            \quad $x, w \leftarrow $Lấy mẫu($bn,e$)\\
+            \quad $W[j]\leftarrow W[j]+w$ nếu $x_j$ là một giá trị của $X$ có trong $x$. 
+        \STATE \textbf{Kết quả } Tính $\alpha(W)$
+    \end{algorithmic}
+\end{algorithm}
+
+\subsection{Lấy mẫu bằng mô phỏng chuỗi Markov}
+Ý tưởng: Bắt đầu với 1 trạng thái $X=x$ tùy ý (cố định các giá trị $E=e$)\\
+    Sinh trạng thái tiếp: Chọn ngẫu nhiên $X_i$ trong $X$ (biến không nằm trong $E$)\\
+    Với biến $X_i$ đã chọn: Sinh ngẫu nhiên giá trị $X_i$ theo phân phối xác suất $P(X_i | mb(X_i))$\\
+    $mb(X_i)$ - 'Markov blanket' của $X_i$:
+    \begin{align*}
+        &P(x_i|mb(X_i))=\alpha P(x_i|Parents(X_i))\prod_{Y_j\in Children(X_i)}P(y_j|Parents(Y_j))\\
+        &P(X|e)=\alpha P(x,e)\approx \alpha \prod_{i=1}^{l}P(x_i|mb(x_i))
+    \end{align*}
+Xét ví dụ hình \ref{fig:13.7}, ta muốn tính $P(R|S=true,W=true)$ với $X=[C,S,R,W]$\\
+    \begin{enumerate}
+        \item Bắt đầu với trạng thái khởi tạo $x=[true,true,false,true]$
+        \item Giả sử chọn ngẫu nhiên $C$, với các giá trị trong Markov blanket của $C$: $S$ và $R$:\\
+        \qquad Lấy mẫu giá trị của $C$ trong $P(C|S=true,R=false)$ ---> giả sử $C=false$\\
+        $\Rightarrow $ trạng thái mới là $[false,true,false,true]$
+        \item Giả sử chọn ngẫu nhiên $R$, và lấy mẫu giá trị của $R$ với điều kiện Markov blanket của nó $C,S,W$: xác suất $P(R|C=false,S=true,W=true)$---> giả sử $R=true$\\
+        $\Rightarrow $ trạng thái mới là $[false,true,true,true]$
+    \end{enumerate}
+    
+Để tính phân phối xác suất $P(X_i|mb(X_i))$, trong ví dụ này ta cần tính $P(C|S=true,R=false)$\\
+    Ta có:
+    \begin{align*}
+        &P(c|s,\neg r)=\alpha P(c)P(s|c)P(\neg r|c)=\alpha 0.5\times 0.1\times 0.2\\
+        &P(\neg c|s,\neg r)=\alpha P(\neg c)P(s|\neg c)P(\neg r|\neg c)=\alpha 0.5\times 0.5\times 0.8
+    \end{align*}
+    $\Rightarrow  \alpha \left \langle 0.001, 0.020 \right \rangle\approx \left \langle 0.048,0.952 \right \rangle$\\
+    Giả sử thuật toán sinh ra $80$ trạng thái, trong đó có $20$ trạng thái có $R=true$ và $60$ trạng thái có $R=false$ $\Rightarrow P(R|S=true,W=true)\approx\alpha \left \langle 20,60 \right \rangle = \left \langle 0.25,0.75 \right \rangle$\\
+Ta có thuật toán lấy mẫu bằng mô phỏng chuỗi Markov
+\begin{algorithm}[H]
+    \caption{Thuật toán lấy mẫu bằng mô phỏng chuỗi Markov}
+    \begin{algorithmic}[1]
+        \STATE \textbf{Đầu vào:} \\
+        $X,e,bn,N$\\
+        \STATE \textbf{Đầu ra:} $P(X|e)$.
+        \STATE \textbf{Khởi tạo:} $C$ - vector đếm các giá trị X có trong mẫu\\
+        $Z$ - biến không phải biến quan sát được ($\neq E$)\\
+        $x$ - trạng thái khởi tạo của chuỗi Markov
+        \STATE \textbf{Lặp } For $k=1$ to $N$:
+        \begin{align*}
+            &\textit{Chọn ngẫu nhiên } Z_i \textit{ từ }Z \textit{ (theo phân phối }\rho (i) \textit{ nào đó)}\\
+            &x[Z_i]\leftarrow \textit{ Lấy mẫu } P(Z_i|mb(Z_i))\\
+            &C[j]\leftarrow C[j]+1 \textit{ nếu } x_j \textit{ là một gái trị của }X \textit{ có trong }x
+        \end{align*}
+        \STATE \textbf{Kết quả } Tính $\alpha$(C)
+    \end{algorithmic}
+    \end{algorithm}
+
+\section{Kết luận}
+Trong một mô hình mạng Bayesian
+\begin{itemize}
+    \item Mạng Bayesian cung cấp một cách ngắn gọn để biểu diễn các mối quan hệ độc lập có điều kiện trong miền.
+    \item Mạng Bayesian xác định một phân phối xác suất chung trên các biến của nó, được tính qua xác suất có điều kiện là các biến cha tại mỗi biến được xét $P(X_i|Parents(X_i))$.
+    \item Suy luận trong mạng Bayesian: Tính toán phân phối xác suất của một tập hợp các biến truy vấn, cho trước một tập các quan sát được. Các thuật toán suy luận chính xác, chẳng hạn như loại bỏ biến, đánh giá tổng các tích của xác suất có điều kiện một cách hiệu quả nhất có thể.
+    \item Các kỹ thuật lấy mẫu ngẫu nhiên như 'Likelihood weighting' và chuỗi Markov Monte Carlo có thể đưa ra các ước lượng hợp lý về xác suất hậu nghiệm trong một mạng và có thể xử lý với các mạng lớn hơn nhiều so với các thuật toán chính xác.
+\end{itemize}

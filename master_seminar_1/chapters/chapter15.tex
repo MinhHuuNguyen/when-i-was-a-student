@@ -1,0 +1,334 @@
+
+\chapter{Chương trình xác suất}
+
+Phổ đại diện — nguyên tử, nhân tố và cấu trúc — đã là một chủ đề lâu dài trong AI. Đối với các mô hình xác định, các thuật toán tìm kiếm chỉ giả sử một biểu diễn nguyên tử; CSP và logic mệnh đề cung cấp các biểu diễn có nhân tố; và các hệ thống lập kế hoạch và logic bậc nhất tận dụng lợi thế của các biểu diễn có cấu trúc. Sức mạnh biểu đạt được tạo ra bởi các biểu diễn có cấu trúc mang lại các mô hình ngắn gọn hơn rất nhiều so với các mô tả nguyên tử hoặc nhân tử tương đương.
+
+Đối với các mô hình xác suất, mạng Bayes như được mô tả trong Chương 13 và 14 là các biểu diễn theo nhân tố: tập hợp các biến ngẫu nhiên là cố định và hữu hạn, và mỗi biến có một cố định phạm vi giá trị có thể. Thực tế này hạn chế khả năng ứng dụng của mạng Bayes, bởi vì biểu diễn mạng Bayes cho một miền phức tạp đơn giản là quá lớn. Điều này làm cho nó không thể xây dựng các biểu diễn như vậy bằng tay và không thể học chúng từ bất kỳ lượng dữ liệu hợp lý nào.
+
+Vấn đề tạo ra một ngôn ngữ chính thức biểu đạt cho thông tin xác suất đã đánh thuế một số bộ óc vĩ đại nhất trong lịch sử, bao gồm cả Gottfried Leibniz (đồng sáng chế của
+giải tích), Jacob Bernoulli (người khám phá ra e, phép tính các biến thể và Quy luật số lớn), Augustus De Morgan, George Boole, Charles Sanders Peirce (một trong những
+nhà logic học của thế kỷ 19), John Maynard Keynes (nhà kinh tế học hàng đầu của thế kỷ 20), và Rudolf Carnap (một trong những nhà triết học phân tích vĩ đại nhất thế kỷ 20).
+
+Vấn đề đã chống lại những nỗ lực này và nhiều nỗ lực khác cho đến những năm 1990.
+Một phần nhờ vào sự phát triển của mạng Bayes, ngày nay đã có những ngôn ngữ chính thức thanh lịch về mặt toán học và thực tế cho phép tạo ra các mô hình xác suất cho các miền rất phức tạp. Các ngôn ngữ này phổ biến theo nghĩa phổ biến của máy Turing: chúng có thể biểu diễn bất kỳ mô hình xác suất tính toán nào, cũng như máy Turing có thể biểu diễn bất kỳ hàm tính toán nào. Ngoài ra, các ngôn ngữ này đi kèm với các thuật toán suy luận có mục đích chung, gần giống với âm thanh và các thuật toán suy luận logic hoàn chỉnh như độ phân giải.
+
+Có hai con đường để đưa sức mạnh biểu đạt vào lý thuyết xác suất. Đầu tiên là thông qua logic: tạo ra một ngôn ngữ xác định các xác suất trên các thế giới khả dĩ bậc nhất, thay vì các thế giới có thể có theo mệnh đề của lưới Bayes. Lộ trình này được đề cập trong Phần 15.1 và 15.2, với Phần 15.3 đề cập đến trường hợp cụ thể của lý luận thời gian. Lộ trình thứ hai là thông qua các ngôn ngữ lập trình truyền thống: chúng tôi giới thiệu các yếu tố ngẫu nhiên - ví dụ như các lựa chọn ngẫu nhiên - vào các ngôn ngữ như vậy và xem các chương trình như xác định phân phối xác suất trên các dấu vết thực thi của chính chúng. Cách tiếp cận này được đề cập trong Phần 15.4.
+\section{Mô hình xác suất quan hệ}
+Nhớ lại từ Chương 12 rằng mô hình xác suất xác định một tập hợ p$\omega$ các thế giới có thể có với xác suất $P (\omega)$ cho mỗi thế giới $\omega$. Đối với mạng Bayes, các thế giới có thể là phép gán giá trị cho các biến; đối với trường hợp Boolean nói riêng, các thế giới có thể giống hệt với các thế giới của logic mệnh đề.
+Vì vậy, đối với mô hình xác suất bậc nhất, có vẻ như chúng ta cần những thế giới có thể có là những thế giới của logic bậc nhất — nghĩa là, một tập hợp các đối tượng có mối quan hệ giữa chúng và một cách diễn giải ánh xạ các ký hiệu hằng số cho các đối tượng, các ký hiệu vị từ cho các quan hệ và các ký hiệu hàm cho các chức năng trên các đối tượng đó. (Xem Phần 8.2.) Mô hình cũng cần xác định xác suất cho mỗi thế giới có thể xảy ra, giống như mạng Bayes xác định xác suất cho mỗi lần gán giá trị cho các biến.\\
+Chúng ta hãy giả sử, trong giây lát, chúng ta đã tìm ra cách thực hiện điều này. Sau đó, như thường lệ (xem trang 389), chúng ta có thể thu được xác suất của bất kỳ câu logic bậc nhất $\phi$(phi) nào dưới dạng tổng trên các thế giới có thể có trong đó nó đúng:
+\begin{align}
+P(\phi) = \sum_{\omega:\phi \text{ is true in } \omega} P(\omega)
+\end{align}
+Các xác suất có điều kiện $P(\phi | e)$ có thể thu được tương tự, nên về nguyên tắc, chúng ta có thể hỏi bất kỳ câu hỏi nào chúng ta muốn về mô hình của mình và nhận được câu trả lời.\\
+Tuy nhiên, có một vấn đề: tập các mô hình bậc nhất là vô hạn. Chúng ta đã thấy điều này một cách rõ ràng, chúng ta sẽ hiển thị lại trong Hình 15.1 (trên cùng). Điều này có nghĩa là (1) việc tổng kết trong Công thức (15.1) có thể không khả thi, và (2) việc xác định một phân phối hoàn chỉnh, nhất quán trên một tập hợp vô hạn thế giới có thể rất khó.
+\begin{figure}[ht!]
+    \centering
+    \includegraphics{images/chapter15/h1.PNG}
+     \caption{(a) Mạng Bayes cho một khách hàng C1 giới thiệu một cuốn sách B1. Honest (C1) là Boolean, trong khi các biến khác có giá trị nguyên từ 1 đến 5. (b) Mạng Bayes với hai khách hàng và hai cuốn sách.}
+    \label{fig:my_label}
+\end{figure}
+Trong phần này, chúng tôi tránh vấn đề này bằng cách xem xét ngữ nghĩa cơ sở dữ liệu được định nghĩa trong Phần 8.2.8 (trang 264). Ngữ nghĩa cơ sở dữ liệu tạo ra giả định về các tên duy nhất— ở đây, chúng tôi áp dụng nó cho các ký hiệu không đổi. Nó cũng giả định rằng miền bị đóng - không có thêm đối tượng nào ngoài những đối tượng được đặt tên. Sau đó, chúng ta có thể đảm bảo một tập hợp hữu hạn các thế giới có thể có bằng cách làm cho tập hợp các đối tượng trong mỗi thế giới chính xác là tập các ký hiệu không đổi được sử dụng; như trong Hình 15.1 (dưới cùng), không có sự không chắc chắn về ánh xạ từ các biểu tượng đến các đối tượng hoặc về các đối tượng tồn tại.\\
+Chúng tôi sẽ gọi các mô hình được định nghĩa theo cách này là mô hình xác suất quan hệ, hoặc RPM.1 Mô hình xác suất quan hệ khác biệt đáng kể nhất giữa ngữ nghĩa của RPM và ngữ nghĩa cơ sở dữ liệu được giới thiệu trong Phần 8.2.8 là RPM không tạo ra giả định thế giới đóng— trong một hệ thống lý luận xác suất, chúng ta không thể chỉ cho rằng mọi sự thật chưa biết đều sai.
+\subsection{Cú pháp và ngữ nghĩa}
+Chúng ta hãy bắt đầu với một ví dụ đơn giản: giả sử rằng một nhà bán lẻ sách trực tuyến muốn cung cấp các đánh giá tổng thể về sản phẩm dựa trên các khuyến nghị nhận được từ khách hàng của họ.
+Việc đánh giá sẽ có hình thức phân bổ trước sau so với chất lượng của cuốn sách, dựa trên các bằng chứng có sẵn. Giải pháp đơn giản nhất là đánh giá dựa trên khuyến nghị trung bình, có thể với một phương sai được xác định bởi số lượng đề xuất, nhưng điều này không tính đến thực tế là một số khách hàng tử tế hơn những người khác và một số ít trung thực hơn những người khác. Khách hàng tử tế có xu hướng đưa ra đề xuất cao ngay cả đối với những cuốn sách khá tầm thường, trong khi những khách hàng không trung thực đưa ra đề xuất rất cao hoặc rất thấp cho những lý do khác ngoài chất lượng, họ có thể được trả tiền để quảng cáo sách của một số nhà xuất bản.\\
+Đối với một khách hàng C1 giới thiệu một cuốn sách B1, mạng lưới Bayes có thể giống như thể hiện trong Hình 15.2 (a). Cũng giống như trong Phần 9.1, các biểu thức có dấu ngoặc đơn như Honest (C1) chỉ là các biểu tượng ưa thích — trong trường hợp này là tên ưa thích cho các biến ngẫu nhiên. Với hai khách hàng và hai cuốn sách, mạng Bayes trông giống như trong Hình 15.2 ( b). Đối với lớn hơn số lượng sách và khách hàng, việc chỉ định một mạng lưới Bayes bằng tay là hoàn toàn không thực tế.
+May mắn thay, mạng có rất nhiều cấu trúc lặp lại. Mỗi biến Recommendation(c, b) có cha mẹ là các biến Honest(c), Kindness(c), and Quality(b). Hơn nữa, các bảng xác suất có điều kiện (CPT) cho tất cả các biến Recommendation (c, b) là giống hệt nhau, cũng như bảng cho tất cả các biến Honest(c), v.v. Tình hình dường như được thiết kế riêng cho một ngôn ngữ bậc nhất. Chúng tôi muốn nói điều gì đó như
+\begin{align*}
+  Recommendation(c,b) \sim RecCPT(Honest(c),Kindness(c),Quality(b))  
+\end{align*}
+có nghĩa là đề xuất của khách hàng về một cuốn sách phụ thuộc chắc chắn vào sự trung thực và lòng tốt của khách hàng và chất lượng của cuốn sách theo một CPT cố định.\\
+Giống như logic bậc nhất, RPM có các ký hiệu hằng số, hàm và vị từ. Chúng tôi cũng sẽ giả định một chữ ký kiểu cho mỗi hàm — nghĩa là, một đặc tả về kiểu của mỗi đối số và giá trị của hàm. Nếu loại của từng đối tượng được biết đến, thì nhiều thế giới giả mạo có thể có sẽ bị loại bỏ bởi cơ chế này; ví dụ: chúng ta không cần lo lắng về sự tử tế của từng cuốn sách, những cuốn sách giới thiệu khách hàng, v.v. Đối với miền giới thiệu sách, các loại là Customer và Book, và các chữ ký loại cho các chức năng và vị từ như sau:
+\begin{align*}
+    & Honest: Customer \rightarrow \{ true,false \}\\
+    & Kindness: Customer \rightarrow \{1,2,3,4,5\}\\
+    & Quality: Book \rightarrow \{1,2,3,4,5\}\\
+    & Recomendation: Customer \times Book \rightarrow \{1,2,3,4,5\}\\
+\end{align*}
+Các ký hiệu không đổi sẽ là bất kỳ khách hàng nào và tên sách xuất hiện trong tập dữ liệu của nhà bán lẻ. Trong ví dụ được đưa ra trong Hình 15.2 (b), đây là C1, C2 và B1, B2.\\
+Với các hằng số và kiểu của chúng, cùng với các hàm và ký hiệu kiểu của chúng, các biến ngẫu nhiên cơ bản của RPM có được bằng cách khởi tạo từng hàm với  ngẫu nhiên
+biến mỗi kết hợp có thể có của các đối tượng. Đối với mô hình giới thiệu sách, các biến ngẫu nhiên cơ bản bao gồm Trung thực (C1), Chất lượng (B2), Khuyến nghị (C1, B2), v.v. Đây chính xác là các biến xuất hiện trong Hình 15.2 (b). Bởi vì mỗi kiểu chỉ có vô số trường hợp (nhờ giả định đóng miền), số lượng các biến ngẫu nhiên cơ bản cũng là hữu hạn.
+Để hoàn thành RPM, chúng ta phải viết các yếu tố phụ thuộc chi phối các biến ngẫu nhiên này. Có một câu lệnh phụ thuộc cho mỗi hàm, trong đó mỗi đối số của
+hàm là một biến logic (tức là một biến có phạm vi trên các đối tượng, như trong logic bậc nhất). Ví dụ, phần phụ thuộc sau nói rằng, đối với mọi khách hàng c, xác suất trước trung thực là 0,99 đúng và 0,01 sai:
+\begin{align*}
+  Honest(c) \sim \langle 0.99, 0.01 \rangle  
+\end{align*}
+Tương tự, chúng tôi có thể nêu các xác suất trước về giá trị lòng tốt của từng khách hàng và chất lượng của từng cuốn sách, mỗi cuốn sách trên thang điểm 1–5:
+\begin{align*}
+    & Kindness(c) \sim \langle 0.1,0.1,0.2, 0.3,0.3 \rangle\\
+    & Quality(b) \sim \langle 0.05,0.2,0.4, 0.2,0.15 \rangle\\
+\end{align*}
+Cuối cùng, chúng ta cần phụ thuộc vào các khuyến nghị: đối với bất kỳ khách hàng c và sách b, điểm số phụ thuộc vào sự trung thực và lòng tốt của khách hàng và chất lượng của sách:
+\begin{align*}
+  Recommendation(c,b) \sim RecCPT(Honest(c),Kindness(c),Quality(b))  
+\end{align*}
+trong đó RecCPT là một bảng xác suất có điều kiện được xác định riêng với $2 \times 5 \times 5 = 50$ hàng, mỗi hàng có 5 mục nhập. Với mục đích minh họa, chúng tôi sẽ giả định rằng lời giới thiệu trung thực về một cuốn sách có phẩm chất q từ một người có lòng tốt k được phân phối đồng đều trong phạm vi $\left [ \left \lfloor \frac{q+k}{2} \right \rfloor, \left \lceil \frac{q+k}{2} \right \rceil \right ]$.\\
+Ngữ nghĩa của RPM có thể thu được bằng cách khởi tạo các phụ thuộc này cho tất cả các hằng số đã biết, tạo ra mạng Bayes (như trong Hình 15.2 (b)) xác định phân phối chung trên các biến ngẫu nhiên của RPM.\\
+Tập hợp các thế giới khả dĩ là tích số Descartes của các phạm vi của tất cả các biến ngẫu nhiên cơ bản, và cũng như với mạng Bayes, xác suất cho mỗi thế giới khả dĩ là tích của các xác suất có điều kiện liên quan từ mô hình. Với C khách hàng và B cuốn sách, có C biến Honest, C biến Kindness, B biến Quality và BC biến Recommendation, dẫn đến thế giới có thể có $2^{C}5^{C + B + BC}$. Với mười triệu cuốn sách
+và một tỷ khách hàng, đó là khoảng $10^{7 \times 10^{15}}$ thế giới. Nhờ sức mạnh biểu đạt của RPM, mô hình xác suất hoàn chỉnh vẫn chỉ có ít hơn 300 tham số — hầu hết chúng trong bảng RecCPT.\\
+Chúng ta có thể tinh chỉnh mô hình bằng cách khẳng định tính độc lập theo ngữ cảnh cụ thể để phản ánh thực tế là khách hàng không trung thực bỏ qua chất lượng khi đưa ra đề xuất; hơn nữa, lòng tốt không đóng vai trò gì trong các quyết định của họ. Do đó, Recomemndation (c, b) độc lập với Kindness(c) và  Quality(b) khi Honest(c) = sai:
+\newpage
+Recommendation(c,b) $\sim$
+   \text{ if  Honest(c) then}
+\begin{center}
+    \hspace{3cm}  HonestRecCPT (Kindness(c), Quality(b))\\
+  \text{ else } $\langle 0.4, 0.1,0.0, 0.1,0.4 \rangle $  
+\end{center}
+Loại phụ thuộc này có thể trông giống như một câu lệnh if – then – else thông thường trong ngôn ngữ lập trình, nhưng có một điểm khác biệt chính: công cụ suy luận không nhất thiết phải biết giá trị của thử nghiệm 
+có điều kiện vì Honest(c) là một biến ngẫu nhiên.\\
+Chúng tôi có thể xây dựng mô hình này theo nhiều cách để làm cho nó thực tế hơn. Ví dụ: giả sử rằng một khách hàng trung thực là fan hâm mộ của tác giả cuốn sách luôn cho cuốn sách đó điểm 5, bất kể chất lượng như thế nào:\\
+Recommendation(c,b) $\sim$
+   \text{ if  Honest(c) then}
+\begin{center}
+    \hspace{2cm}
+       \text{if Fan(c,Author(b)) then Exactly(5)}\\
+       \hspace{3cm}else HonestRecCPT (Kindness(c), Quality(b))\\
+  \text{ else } $\langle 0.4, 0.1,0.0, 0.1,0.4 \rangle $ 
+\end{center}
+Một lần nữa, kiểm tra có điều kiện $Fan(c, Author (b))$ là không xác định, nhưng nếu khách hàng chỉ dành 5s cho sách của một tác giả cụ thể và không phải là loại đặc biệt nào khác, thì xác suất sau rằng khách hàng là một fan hâm mộ của tác giả đó sẽ cao. Hơn nữa, việc phân phối sau sẽ có xu hướng làm giảm 5 điểm của khách hàng trong việc đánh giá chất lượng sách của tác giả đó.
+
+Trong ví dụ này, chúng tôi đã ngầm định rằng giá trị của $Author(b)$ được biết đến với mọi b, nhưng điều này có thể không đúng trong trường hợp này. Làm sao hệ thống có thể lập luận về việc C1 có phải là fan hâm mộ của $Author(B2)$ hay không khi $Author(B2)$ không được biết đến? Câu trả lời là hệ thống có thể phải suy luận về tất cả các tác giả có thể có. Giả sử (để mọi thứ đơn giản) chỉ có hai tác giả, A1 và A2. Khi đó $Author(B2)$ là một biến ngẫu nhiên có hai giá trị có thể có, A1 và
+A2, và nó là nút cha của $Recommendation(C1, B2)$. Các biến $Fan(C1, A1)$ và $Fan(C1, A2)$ cũng là biến cha. Phân phối có điều kiện cho \break $Recommendation(C1, B2)$) sau đó về cơ bản là
+bộ ghép kênh trong đó cha $Author(B2)$ hoạt động như một bộ chọn để chọn $Fan(C1, A1)$ và $Fan(C1, A2)$ thực sự có ảnh hưởng đến đề xuất.\\
+Một mảnh tương đương
+Lưới Bayes được thể hiện trong Hình 15.3. Sự không chắc chắn trong giá trị của $Author(B2)$, ảnh hưởng đến cấu trúc phụ thuộc của mạng, là một trường hợp của sự không chắc chắn quan hệ
+Trong trường hợp bạn đang tự hỏi làm thế nào hệ thống có thể tìm ra tác giả của B2 là ai: hãy xem xét khả năng ba khách hàng khác là người hâm mộ của A1 (và không có điểm chung nào khác được yêu thích) và cả ba đều cho B2 là 5, đồng đều mặc dù hầu hết các khách hàng khác thấy nó khá ảm đạm. Trong trường hợp đó, rất có thể A1 là tác giả của B2. Sự xuất hiện của lập luận phức tạp như thế này từ một mô hình RPM chỉ vài dòng là một ví dụ hấp dẫn về cách các ảnh hưởng xác suất lan truyền qua mạng kết nối giữa các đối tượng trong mô hình. Khi nhiều phụ thuộc hơn và nhiều đối tượng được thêm vào, bức tranh được chuyển tải bởi sự phân bố phía sau thường trở nên rõ ràng và rõ ràng hơn.
+\subsection{Đánh giá cấp độ kỹ năng của người chơi}
+Nhiều trò chơi cạnh tranh có một thước đo bằng số về cấp độ kỹ năng của người chơi, đôi khi được gọi là xếp hạng. Có lẽ nổi tiếng nhất là xếp hạng Elo dành cho người chơi cờ vua, xếp hạng một người chơi cờ vua điển hình vào khoảng 800 và nhà vô địch thế giới thường ở mức trên 2800. Mặc dù xếp hạng Elo có cơ sở thống kê, nhưng chúng có một số yếu tố đặc biệt. Chúng tôi có thể phát triển sơ đồ xếp hạng của Bayes như sau: mỗi người chơi tôi có một cấp kỹ năng cơ bản là Skill (i); trong mỗi trò chơi g, hiệu suất thực tế của tôi là Hiệu suất (i, g), có thể thay đổi so với cấp kỹ năng cơ bản, và người chiến thắng trong g là người chơi có thành tích trong g tốt hơn. Dưới dạng RPM, mô hình trông như thế này
+\begin{center}
+\includegraphics[]{images/chapter15/h2.PNG}   
+\end{center}
+trong đó $\beta^{2}$ là phương sai của hiệu suất thực tế của một người chơi trong bất kỳ trò chơi cụ thể nào so với cấp độ kỹ năng cơ bản của người chơi. Với một tập hợp người chơi và trò chơi, cũng như kết quả cho một số trò chơi, công cụ suy luận RPM có thể tính toán phân phối sau dựa trên kỹ năng của mỗi người chơi và kết quả có thể xảy ra của bất kỳ trò chơi bổ sung nào có thể được chơi.\\
+Đối với trò chơi đồng đội, chúng tôi sẽ giả định, như một phép gần đúng đầu tiên, rằng hiệu suất tổng thể của đội t trong trò chơi g là tổng thành tích của từng người chơi trên $t$:
+\begin{align*}
+TeamPerformance(t,g)  = \sum_{i \in t}   Performance(i,g).
+\end{align*}
+Mặc dù màn trình diễn của từng cá nhân không hiển thị trong công cụ xếp hạng, nhưng cấp độ kỹ năng của người chơi vẫn có thể được ước tính từ kết quả của một số trò chơi, miễn là thành phần đội khác nhau giữa các trò chơi. Công cụ xếp hạng TrueSkillTM của Microsoft sử dụng mô hình này, cùng với thuật toán suy luận gần đúng hiệu quả, để phục vụ hàng trăm triệu người dùng mỗi ngày.\\
+Mô hình này có thể được xây dựng theo nhiều cách. Ví dụ: chúng tôi có thể giả định rằng những người chơi yếu hơn có phương sai cao hơn về hiệu suất của họ; chúng tôi có thể bao gồm vai trò của người chơi trong đội; và chúng tôi có thể xem xét các loại hiệu suất và kỹ năng cụ thể- ví dụ: phòng thủ và tấn công để cải thiện thành phần nhóm và độ chính xác của dự đoán.
+\subsection{Suy luận trong mô hình xác suất quan hệ}
+Cách tiếp cận đơn giản nhất để suy luận trong RPM chỉ đơn giản là xây dựng mạng Bayes tương đương, với các ký hiệu hằng số đã biết thuộc về mỗi loại. Với sách B và khách hàng C, mô hình cơ bản được đưa ra trước đây có thể được xây dựng bằng các vòng lặp đơn giản:
+\begin{center}
+    \includegraphics[scale=1.05]{images/chapter15/h3.PNG}
+\end{center}
+Hạn chế rõ ràng là kết quả lưới Bayes có thể rất lớn. Hơn nữa, nếu có nhiều đối tượng ứng viên cho một quan hệ hoặc hàm không xác định — ví dụ: tác giả không xác định của B2 — thì một số biến trong mạng có thể có nhiều cha mẹ.\\
+May mắn thay, thường có thể tránh tạo ra toàn bộ lưới Bayes ngầm. Như chúng ta
+đã thấy trong phần thảo luận về thuật toán loại bỏ biến, mọi biến không phải là cha mẹ của một biến truy vấn hoặc biến bằng chứng không liên quan đến truy vấn. Hơn nữa, nếu truy vấn có điều kiện độc lập với một số biến được đưa ra bằng chứng, thì biến đó cũng không liên quan. Vì vậy, bằng cách xâu chuỗi mô hình bắt đầu từ truy vấn và bằng chứng,
+chúng ta chỉ có thể xác định tập hợp các biến có liên quan đến truy vấn. Đây là những cái duy nhất
+cần phải được khởi tạo để tạo ra một mảnh nhỏ tiềm ẩn của mạng Bayes tiềm ẩn.
+Suy luận trong đoạn này đưa ra câu trả lời giống như suy luận trong toàn bộ mạng Bayes ngầm định.
+Một con đường khác để cải thiện hiệu quả của suy luận đến từ sự hiện diện của cấu trúc con lặp lại trong lưới Bayes chưa được cuộn. Điều này có nghĩa là nhiều yếu tố được xây dựng
+trong quá trình loại bỏ biến (và các loại bảng tương tự được xây dựng bằng thuật toán phân cụm) sẽ giống hệt nhau; các sơ đồ bộ nhớ đệm hiệu quả đã mang lại tốc độ tăng gấp ba lần cho các mạng lớn.\\
+Thứ ba, các thuật toán suy luận MCMC có một số thuộc tính thú vị khi áp dụng cho
+RPM với độ không đảm bảo đo quan hệ. MCMC hoạt động bằng cách lấy mẫu các thế giới hoàn chỉnh có thể có,
+vì vậy ở mỗi trạng thái cấu trúc quan hệ hoàn toàn được biết trước. Trong ví dụ được đưa ra trước đó,
+mỗi trạng thái MCMC sẽ chỉ định giá trị của $Author(B2)$ và các tác giả tiềm năng khác
+không còn là cha mẹ của các nút đề xuất cho B2. Đối với MCMC, thì quan hệ
+nguyên nhân không chắc chắn không làm tăng độ phức tạp của mạng; thay vào đó, quy trình MCMC bao gồm
+quá trình chuyển đổi làm thay đổi cấu trúc quan hệ, và do đó là cấu trúc phụ thuộc, của
+mạng chưa được đăng ký.
+Cuối cùng, trong một số trường hợp, có thể tránh tiếp đất hoàn toàn cho mô hình. Các trình phát triển định lý phân giải và các hệ thống lập trình logic tránh tạo mệnh đề bằng cách khởi tạo các biến logic chỉ khi cần thiết để thực hiện suy luận; nghĩa là, họ nâng
+quá trình suy luận ở trên mức của các câu mệnh đề cơ bản và làm cho mỗi câu được nâng lên bước thực hiện công việc của nhiều bước mặt đất.
+Ý tưởng tương tự có thể được áp dụng trong suy luận xác suất. Ví dụ, trong biến
+thuật toán loại trừ, một hệ số nâng lên có thể đại diện cho toàn bộ tập hợp các yếu tố cơ bản chỉ định xác suất đối với các biến ngẫu nhiên trong RPM, trong đó các biến ngẫu nhiên đó chỉ khác nhau về các ký hiệu hằng số được sử dụng để xây dựng chúng. 
+\section{Mô hình xác suất vũ trụ mở}
+Chúng tôi đã lập luận trước đó rằng ngữ nghĩa cơ sở dữ liệu thích hợp cho các tình huống mà chúng tôi biết chính xác là tập hợp các đối tượng có liên quan tồn tại và có thể xác định chúng một cách rõ ràng. (Đặc biệt, tất cả các quan sát về một đối tượng được kết hợp chính xác với biểu tượng hằng số
+Đặt tên cho nó.) Tuy nhiên, trong nhiều cài đặt trong thế giới thực, những giả định này đơn giản là không thể thực hiện được.\\
+Ví dụ: một nhà bán lẻ sách có thể sử dụng ISBN (Số Sách Tiêu chuẩn Quốc tế) làm
+ký hiệu không đổi để đặt tên cho từng cuốn sách, ngay cả khi một cuốn sách “hợp lý” nhất định (ví dụ: “Cuốn theo chiều gió”) có thể có một số ISBN tương ứng với bìa cứng, bìa mềm, bản in lớn, phát hành lại, v.v. Sẽ rất hợp lý nếu tổng hợp các đề xuất trên nhiều ISBN,
+nhưng nhà bán lẻ có thể không biết chắc những ISBN nào thực sự là cùng một cuốn sách. Tệ hơn nữa, mỗi khách hàng được xác định bằng một ID đăng nhập, nhưng một khách hàng không trung thực có thể có hàng nghìn ID! Trong lĩnh vực bảo mật máy tính, nhiều
+ID được gọi là sybils và việc sử dụng chúng để làm nhiễu hệ thống danh tiếng được gọi là tấn công sybil.
+Do đó, ngay cả một ứng dụng đơn giản trong miền trực tuyến, được xác định tương đối rõ ràng cũng liên quan đến cả sự không chắc chắn về ngoại cảnh (những cuốn sách thực và khách hàng nằm bên dưới dữ liệu quan sát là gì) và sự không chắc chắn về danh tính (những thuật ngữ logic nào thực sự đề cập đến cùng một đối tượng).\\
+Hiện tượng tồn tại và sự không chắc chắn về danh tính còn vượt xa những người bán sách trực tuyến. Trên thực tế, chúng có sức lan tỏa:
+\begin{itemize}
+    \item Hệ thống thị giác không biết thứ gì đang tồn tại, nếu có, ở góc tiếp theo và có thể không biết liệu vật thể nó nhìn thấy bây giờ có giống vật thể nó nhìn thấy vài phút trước hay không.
+    \item Hệ thống hiểu văn bản không biết trước các thực thể sẽ được giới thiệu trong văn bản và phải suy luận về việc liệu các cụm từ như “Mary”, “Dr. Smith”, “cô ấy”,“ bác sĩ tim mạch của anh ấy”,“mẹ anh ấy ”, v.v. đề cập đến cùng một đối tượng.
+    \item Một nhà phân tích tình báo săn lùng gián điệp không bao giờ biết thực sự có bao nhiêu điệp viên và chỉ có thể đoán xem có nhiều bút danh, số điện thoại và cảnh tượng khác nhau hay không cho cùng một cá nhân.
+\end{itemize}
+Thật vậy, một phần chính trong nhận thức của con người dường như yêu cầu học những vật thể nào tồn tại và có thể kết nối các quan sát — mà hầu như không bao giờ đi kèm với ID duy nhất được gắn — với các vật thể giả định trên thế giới.\\
+Do đó, chúng ta cần có khả năng xác định mô hình xác suất vũ trụ mở (OUPM) dựa trên ngữ nghĩa tiêu chuẩn của logic bậc nhất, như được minh họa ở trên cùng của Hình 15.1. Một ngôn ngữ cho OUPM cung cấp một cách dễ dàng viết các mô hình như vậy trong khi vẫn đảm bảo phân phối xác suất nhất quán, duy nhất trong không gian vô hạn của các thế giới có thể có.
+\subsection{Cú pháp và ngữ nghĩa}
+Ý tưởng cơ bản là hiểu cách các mạng Bayes và RPM thông thường quản lý để xác định mô hình xác suất duy nhất và chuyển thông tin chi tiết đó sang cài đặt bậc nhất. Về bản chất, mạng Bayes tạo ra từng thế giới có thể có, từng sự kiện, theo thứ tự cấu trúc liên kết được xác định bởi cấu trúc mạng, trong đó mỗi sự kiện là một phép gán giá trị cho một biến. RPM mở rộng điều này cho toàn bộ tập hợp các sự kiện, được xác định bởi các khởi tạo có thể có của các biến logic trong một vị từ hoặc hàm nhất định. Các OUPM đi xa hơn bằng cách cho phép các bước tổng quát thêm các đối tượng vào thế giới có thể đang được xây dựng, trong đó số lượng và loại đối tượng có thể phụ thuộc vào các đối tượng đã có trong thế giới đó cũng như các thuộc tính và quan hệ của chúng.\\
+Có nghĩa là, sự kiện được tạo ra không phải là việc gán giá trị cho một biến, mà là sự tồn tại của các đối tượng. Một cách để thực hiện điều này trong OUPM là cung cấp các câu lệnh số chỉ định các phân phối có điều kiện trên số lượng các đối tượng thuộc nhiều loại khác nhau. Ví dụ: trong miền tuyên dương sách, chúng tôi có thể muốn phân biệt giữa khách hàng (người thật) và ID đăng nhập của họ. (Nó thực sự là ID đăng nhập đưa ra đề xuất, không phải khách hàng!) Giả sử (để mọi thứ đơn giản) số lượng khách hàng là đồng nhất từ 1 đến 3 và số lượng sách đồng nhất từ 2 đến 4:
+\begin{align}
+    \# Customer \sim UniformInt(1,3) \nonumber\\
+    \# Book \sim UniformInt(2,4).
+\end{align}
+Chúng tôi mong đợi những khách hàng trung thực chỉ có một ID, trong khi những khách hàng không trung thực có thể có từ 2 đến 5 ID:
+\begin{align}
+    \#LoginID(Owner=c) \sim if \ Honest(c) \ then \ Exactly(1) \nonumber\\
+    else \ UniformInt(2,5).
+\end{align}
+Câu lệnh số này chỉ định phân phối số lượng ID đăng nhập mà khách hàng c là chủ sở hữu. Hàm Owner được gọi là hàm gốc vì nó cho biết mỗi đối tượng được tạo bởi câu lệnh số này đến từ đâu. Ví dụ trong đoạn trước sử dụng phân phối đồng đều trên các số nguyên từ 2 đến 5 để chỉ định số lần đăng nhập cho một khách hàng không trung thực. Phân phối cụ thể này có giới hạn, nhưng nói chung có thể không có giới hạn tiên nghiệm về số lượng đối tượng. Phân phối được sử dụng phổ biến nhất trên các số nguyên không âm là phân bố Poisson. Poisson có một tham số $\lambda$ là đối số, phân phối Poisson và một biến $X$ được lấy mẫu từ $Poisson(\lambda)$ có phân phối sau:
+$$P(X=k) = \lambda^{k}e^{-\lambda}/k!$$
+Phương sai của Poisson cũng là $\lambda$, do đó độ lệch chuẩn là $\sqrt{\lambda}$. Điều này có nghĩa là đối với các giá trị lớn của $\lambda$, phân bố hẹp so với giá trị trung bình — ví dụ: nếu số lượng kiến trong tổ được lập mô hình bởi Poisson với giá trị trung bình là một triệu, độ lệch chuẩn chỉ là một nghìn, hoặc 0,1\%. Đối với các số lớn, việc sử dụng phân phối $\log$-chuẩn rời rạc thường có ý nghĩa hơn, điều này thích hợp khi nhật ký của số lượng đối tượng phân phối được phân phối chuẩn. Một dạng đặc biệt trực quan, mà chúng tôi gọi là phân phối theo thứ tự độ lớn, sử dụng các bản ghi cho cơ số 10: do đó, phân phối $OM(3,1)$ có trung bình của phân phối $10 ^ 3$ và độ lệch chuẩn của một bậc độ lớn, tức là, phần lớn của khối lượng xác suất rơi vào khoảng $10 ^ 2$ và $10 ^ 4$.\\
+Ngữ nghĩa chính thức của OUPM bắt đầu với định nghĩa về các đối tượng chứa các thế giới có thể có. Theo ngữ nghĩa tiêu chuẩn của logic bậc nhất đã nhập, các đối tượng chỉ là các mã thông báo được đánh số với các kiểu. Trong OUPM, mỗi đối tượng là một lịch sử thế hệ; ví dụ: một đối tượng có thể là “ID đăng nhập thứ tư của khách hàng thứ bảy”. Đối với các loại không có hàm gốc — ví dụ:
+các loại Customer và Book trong Công thức (15.2) —các đối tượng không có nút cha, ví dụ: $\langle Customer,, 2\rangle$ đề cập đến khách hàng thứ hai được tạo từ câu lệnh số đó. Đối với các câu lệnh số có các hàm khởi tạo, ví dụ: đối tượng $\langle LoginID, \langle Owner, \langle Customer,, 2\rangle \rangle, 3\rangle$ là thông tin đăng nhập thứ ba thuộc về khách hàng thứ hai.\\
+Các biến số của một OUPM chỉ định có bao nhiêu đối tượng thuộc mỗi loại với mỗi nguồn gốc có thể có trong mỗi thế giới có thể có; do đó $\# LoginID \langle Owner, \langle Customer ,, 2\rangle \rangle (\omega) = 4$ có nghĩa là rằng trong thế giới $\omega$, khách hàng 2 sở hữu 4 ID đăng nhập. Như trong các mô hình xác suất quan hệ, các biến ngẫu nhiên cơ bản xác định giá trị của các vị từ và hàm cho tất cả các bộ giá trị của đối tượng. Do đó, $Honest_{ \langle Customer,, 2 \rangle} (\omega) = true$ có nghĩa là trong thế giới $\omega$, khách hàng 2 là trung thực. Một thế giới có thể được xác định bởi các giá trị của tất cả các biến số và các biến ngẫu nhiên cơ bản. Một
+thế giới có thể được tạo ra từ mô hình bằng cách lấy mẫu theo thứ tự tôpô; Hình 15.4 cho thấy một ví dụ. Xác suất của một thế giới được xây dựng như vậy là tích của các xác suất
+cho tất cả các giá trị được lấy mẫu; trong trường hợp này là $1,2672 \times 10^{-11}$. Bây giờ, nó trở nên rõ ràng tại sao mỗi đối tượng chứa nguồn gốc của nó: thuộc tính này đảm bảo rằng mọi thế giới đều có thể được xây dựng bởi chính xác một trình tự thế hệ. Nếu không đúng như vậy, khả năng một thế giới sẽ là một tổng tổ hợp khó sử dụng trên tất cả các trình tự thế hệ có thể tạo ra nó.\\
+Các mô hình vũ trụ mở có thể có vô số biến ngẫu nhiên, vì vậy lý thuyết đầy đủ liên quan đến các cân nhắc lý thuyết đo lường tầm thường. Ví dụ: câu lệnh số với Poisson hoặc phân bố theo thứ tự độ lớn cho phép số lượng đối tượng không giới hạn, dẫn đến số lượng biến ngẫu nhiên không giới hạn cho các thuộc tính và quan hệ của các đối tượng đó. Hơn nữa, OUPM có thể có phụ thuộc đệ quy và kiểu vô hạn (số nguyên, chuỗi, v.v.). Cuối cùng, sự hình thành tốt không ngăn cản sự phụ thuộc theo chu kỳ và chuỗi tổ tiên rút lui vô hạn; nói chung các điều kiện này là không thể quyết định, nhưng các điều kiện đủ cú pháp nhất định có thể được kiểm tra một cách dễ dàng.
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[scale=1.15]{images/chapter15/h4.PNG}
+    \caption{Một thế giới cụ thể cho giới thiệu sách OUPM. Các biến số và biến ngẫu nhiên cơ bản được hiển thị theo thứ tự topo, cùng với các giá trị đã chọn của chúng và xác suất cho các giá trị đó.}
+\end{figure}
+\subsection{Suy luận trong mô hình xác suất vũ trụ mở}
+Do kích thước tiềm ẩn rất lớn và đôi khi không giới hạn của mạng Bayes ngầm tương ứng với một OUPM điển hình, việc mở cuộn đầy đủ và thực hiện suy luận chính xác là khá
+không thực tế. Thay vào đó, chúng ta phải xem xét các thuật toán suy luận gần đúng như MCMC (xem Phần 13.4.2).
+
+Nói một cách đại khái, một thuật toán MCMC cho một OUPM đang khám phá không gian của các thế giới có thể được xác định bởi các tập hợp các đối tượng và quan hệ giữa chúng, như được minh họa trong Hình 15.1 (trên cùng).
+
+Việc di chuyển giữa các trạng thái liền kề trong không gian này không chỉ có thể thay đổi các quan hệ và chức năng mà còn có thể thêm hoặc bớt các đối tượng và thay đổi cách diễn giải của các ký hiệu hằng số. Mặc dù
+mỗi thế giới có thể có có thể rất lớn, các phép tính xác suất cần thiết cho mỗi bước — cho dù trong lấy mẫu Gibbs hay Metropolis – Hastings — hoàn toàn là cục bộ và trong hầu hết các trường hợp
+mất thời gian không đổi. Điều này là do tỷ lệ xác suất giữa các thế giới lân cận phụ thuộc vào một đồ thị con có kích thước không đổi xung quanh các biến có giá trị bị thay đổi. Hơn nữa, một truy vấn logic có thể được đánh giá tăng dần trong mỗi thế giới được truy cập, thường là theo thời gian không đổi cho mỗi thế giới, thay vì được tính toán lại từ đầu.
+
+Cần phải xem xét đặc biệt một số thực tế rằng một OUPM điển hình có thể có các thế giới có kích thước vô hạn. Ví dụ, hãy xem xét mô hình theo dõi đa mục tiêu trong Hình 15.9: hàm $X(a, t)$, biểu thị trạng thái của máy bay a tại thời điểm t, tương ứng với một chuỗi vô hạn các biến cho số lượng máy bay không giới hạn ở mỗi bước. Đối với điều này
+lý do, MCMC cho các mẫu OUPM không chỉ định hoàn toàn các thế giới có thể có mà là các thế giới một phần, mỗi thế giới tương ứng với một tập hợp các thế giới hoàn chỉnh riêng biệt. Một phần thế giới là một điều tối thiểu
+sự khởi tạo tự hỗ trợ6 của một tập hợp con các biến có liên quan — nghĩa là tổ tiên của các biến bằng chứng và truy vấn. Ví dụ, các biến X (a, t) cho các giá trị của t lớn hơn
+thời gian quan sát cuối cùng (hoặc thời gian truy vấn, tùy theo thời gian nào lớn hơn) là không liên quan, vì vậy thuật toán có thể coi chỉ là một tiền tố hữu hạn của dãy vô hạn.
+\subsection{Ví dụ}
+“Trường hợp sử dụng” tiêu chuẩn cho OUPM có ba yếu tố: mô hình, bằng chứng (các sự kiện đã biết trong một kịch bản nhất định) và truy vấn, có thể là bất kỳ biểu thức nào, có thể với các biến logic miễn phí. Câu trả lời là xác suất khớp sau cho mỗi tập hợp có thể thay thế cho các biến tự do, được đưa ra bằng chứng, theo mô hình. Mọi mô hình đều bao gồm khai báo kiểu, chữ ký kiểu cho các vị từ và hàm, một hoặc nhiều câu lệnh số cho mỗi kiểu và một câu lệnh phụ thuộc cho mỗi vị từ và hàm. Như trong RPM, các câu lệnh phụ thuộc sử dụng cú pháp if-then-else để xử lý các phụ thuộc theo ngữ cảnh cụ thể.\\
+\textbf{Trích xuất thông tin văn bản}\\
+Kết hợp trích dẫn hàng triệu bài báo nghiên cứu học thuật và báo cáo kỹ thuật sẽ được tìm thấy trực tuyến dưới dạng tệp pdf. Những bài báo như vậy thường chứa một phần gần cuối được gọi là “Tài liệu tham khảo” hoặc “Thư mục”, trong đó trích dẫn — chuỗi ký tự — được cung cấp để thông báo cho người đọc về công việc liên quan. Các chuỗi này có thể được định vị và "cóp nhặt" từ các tệp pdf với mục đích tạo ra một biểu diễn giống như cơ sở dữ liệu liên quan đến các bài báo và nhà nghiên cứu theo quyền tác giả và
+liên kết trích dẫn. Các hệ thống như CiteSeer và Google Scholar thể hiện như vậy cho người dùng của họ; đằng sau hậu trường, các thuật toán hoạt động để tìm giấy tờ, xử lý các chuỗi trích dẫn,
+và xác định các giấy tờ thực tế mà các chuỗi trích dẫn tham chiếu đến. Đây là một nhiệm vụ khó khăn vì các chuỗi này không chứa mã định danh đối tượng và bao gồm các lỗi cú pháp, chính tả, dấu chấm câu,
+và nội dung. Để minh họa điều này, đây là hai ví dụ tương đối lành tính:
+\begin{enumerate}
+\item [1][Lashkari et al 94] Collaborative Interface Agents, Yezdi Lashkari, Max Metral, and
+Pattie Maes, Proceedings of the Twelfth National Conference on Articial Intelligence,
+MIT Press, Cambridge, MA, 1994.
+\item [2] Metral M. Lashkari, Y. and P. Maes. Collaborative interface agents. In Conference of
+the American Association for Artificial Intelligence, Seattle, WA, August 1994.
+\end{enumerate}
+Câu hỏi quan trọng là một trong những đặc điểm nhận dạng: những trích dẫn này thuộc cùng một bài báo hay các bài báo khác nhau? Khi được hỏi câu hỏi này, ngay cả các chuyên gia cũng không đồng ý hoặc không sẵn sàng quyết định, cho thấy rằng
+lý luận về sự không chắc chắn sẽ là một phần quan trọng để giải quyết vấn đề này. Đặc biệt
+các phương pháp tiếp cận — chẳng hạn như các phương pháp dựa trên chỉ số tương tự về văn bản — thường thất bại thảm hại. Ví dụ, vào năm 2002, CiteSeer đã báo cáo hơn 120 cuốn sách khác nhau được viết bởi Russell và Norvig.
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[scale=1.25]{images/chapter15/h5.PNG}
+    \caption{Một OUPM để trích xuất thông tin trích dẫn. Để đơn giản, mô hình giả định một tác giả trên mỗi bài báo và bỏ qua chi tiết của các mô hình lỗi và ngữ pháp}
+\end{figure}
+Để giải quyết vấn đề bằng cách sử dụng phương pháp xác suất, chúng ta cần một mô hình tổng quát cho miền. Đó là, chúng tôi hỏi làm thế nào những chuỗi trích dẫn này xuất hiện trên thế giới. Các
+quá trình bắt đầu với các nhà nghiên cứu, những người có tên tuổi. (Chúng tôi không cần phải lo lắng về cách các nhà nghiên cứu ra đời; chúng tôi chỉ cần bày tỏ sự không chắc chắn của chúng tôi về số lượng
+có.) Những nhà nghiên cứu này viết một số bài báo, có tiêu đề; mọi người trích dẫn bài báo, kết hợp tên tác giả và tên bài báo (có lỗi) vào văn bản trích dẫn
+theo một số ngữ pháp. Các yếu tố cơ bản của mô hình này được thể hiện trong Hình 15.5, bao gồm trường hợp các bài báo chỉ có một tác giả.
+
+Chỉ đưa ra các chuỗi trích dẫn làm bằng chứng, suy luận xác suất trên mô hình này để chọn ra lời giải thích có khả năng nhất cho dữ liệu tạo ra tỷ lệ lỗi thấp hơn CiteSeer’s từ 2 đến 3 lần (Pasula et al., 2003). Quá trình suy luận cũng thể hiện một dạng phân định tập thể, dựa trên kiến thức: càng nhiều trích dẫn cho một bài báo nhất định, thì mỗi trích dẫn trong số chúng được phân tích cú pháp càng chính xác, bởi vì các đoạn phân tích phải thống nhất với nhau về các dữ kiện về bài báo.\\
+\textbf{Giám sát hiệp ước hạt nhân}\\
+Việc xác minh Hiệp ước Cấm Thử nghiệm Hạt nhân Toàn diện đòi hỏi phải tìm thấy tất cả các sự kiện địa chấn trên Trái đất trên một cường độ tối thiểu. CTBTO của LHQ duy trì một mạng lưới các cảm biến,
+Hệ thống Giám sát Quốc tế (IMS); phần mềm xử lý tự động của nó, dựa trên 100 năm nghiên cứu địa chấn học, có tỷ lệ phát hiện lỗi khoảng 30\%. Hệ thống NET-VISA (Arora và cộng sự, 2013), dựa trên OUPM, làm giảm đáng kể các lỗi phát hiện.
+
+Mô hình NET-VISA (Hình 15.6) thể hiện trực tiếp địa vật lý liên quan. Nó mô tả sự phân bố về số lượng sự kiện trong một khoảng thời gian nhất định (hầu hết trong số đó xảy ra tự nhiên) cũng như theo thời gian, độ lớn, độ sâu và vị trí của chúng. Vị trí của các sự kiện tự nhiên được phân bố theo không gian trước đó đã được huấn luyện (giống như các phần khác
+của mô hình) từ dữ liệu lịch sử; Các sự kiện do con người tạo ra, theo các quy tắc của hiệp ước, được cho là xảy ra đồng nhất trên bề mặt Trái đất. Tại mọi trạm s, mỗi pha (loại sóng địa chấn) p từ một sự kiện e tạo ra 0 hoặc 1 phát hiện (tín hiệu trên ngưỡng); xác suất phát hiện phụ thuộc vào độ lớn và độ sâu của sự kiện và khoảng cách của nó với trạm.
+Phát hiện "cảnh báo giả" cũng xảy ra theo một tham số tốc độ cụ thể của đài. Thời gian đến đo được, biên độ và các thuộc tính khác của một phát hiện d từ một sự kiện thực phụ thuộc
+về các thuộc tính của sự kiện bắt nguồn và khoảng cách của nó từ trạm.
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[]{images/chapter15/h6.PNG}
+    \caption{Một phiên bản đơn giản của mô hình NET-VISA (xem văn bản).}
+\end{figure}
+Sau khi được đào tạo, mô hình chạy liên tục. Bằng chứng bao gồm các phát hiện (90\% trong số đó là cảnh báo sai) được trích xuất từ dữ liệu dạng sóng IMS thô và truy vấn thường yêu cầu lịch sử sự kiện có khả năng xảy ra nhất hoặc bản tin, được cung cấp dữ liệu. Kết quả cho đến nay rất đáng khích lệ; ví dụ, vào năm 2009, bản tin tự động SEL3 của LHQ đã bỏ sót 27,4\% trong số 27294 sự kiện trong phạm vi cường độ 3–4 trong khi NET-VISA bỏ lỡ 11,1\%. Hơn nữa, so sánh với các mạng khu vực dày đặc cho thấy NET-VISA tìm thấy nhiều sự kiện thực hơn tới 50\% so với các bản tin cuối cùng do các chuyên gia phân tích địa chấn của Liên Hợp Quốc cung cấp. NET-VISA cũng có xu hướng kết hợp nhiều phát hiện hơn với một sự kiện nhất định, dẫn đến ước tính vị trí chính xác hơn (xem Hình 15.7). Kể từ ngày 1 tháng 1 năm 2018, NET-VISA đã được triển khai như một phần của lộ trình giám sát CTBTO.
+
+Mặc dù có sự khác biệt bề ngoài, hai ví dụ này giống nhau về cấu trúc: có những vật thể không xác định (giấy tờ, động đất) tạo ra các khái niệm theo một số quá trình vật lý (trích dẫn, lan truyền địa chấn). Các khái niệm không rõ ràng về nguồn gốc của chúng, nhưng khi nhiều khái niệm được giả thuyết có nguồn gốc từ cùng một đối tượng không xác định, thì các thuộc tính của đối tượng đó có thể được suy ra chính xác hơn.
+
+Cấu trúc và các mẫu lập luận tương tự áp dụng cho các lĩnh vực như chống trùng lặp cơ sở dữ liệu và hiểu ngôn ngữ tự nhiên. Trong một số trường hợp, việc suy ra sự tồn tại của một đối tượng bao gồm
+nhóm các khái niệm lại với nhau — một quá trình tương tự như nhiệm vụ phân cụm trong học máy.
+Trong các trường hợp khác, một vật thể có thể không tạo ra bất kỳ khái niệm nào và vẫn có thể suy ra sự tồn tại của nó — ví dụ như đã xảy ra, khi các quan sát về Sao Thiên Vương dẫn đến việc phát hiện ra Sao Hải Vương. Các
+sự tồn tại của đối tượng không được quan sát theo sau ảnh hưởng của nó đối với hành vi và tính chất của đối tượng được quan sát.
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[scale=1.1]{images/chapter15/h7.PNG}
+    \caption{(a) Trên cùng: Ví dụ về dạng sóng địa chấn được ghi lại tại Alice Springs, Australia. Bottom: dạng sóng sau khi xử lý để phát hiện thời gian đến của sóng địa chấn. Đường màu xanh lam
+là những lượt đến được phát hiện tự động; đường màu đỏ là những người đến thực sự. (b) Ước tính vị trí cho vụ thử hạt nhân của CHDCND Triều Tiên ngày 12 tháng 2 năm 2013: Bản tin Sự kiện muộn CTBTO của LHQ (màu xanh lục
+hình tam giác ở trên cùng bên trái); NET-VISA (hình vuông màu xanh ở giữa). Lối vào cơ sở thử nghiệm dưới lòng đất (nhỏ “x”) cách NET-VISA ước tính 0,75 km. Các đường viền thể hiện sự phân bố vị trí phía sau của NET-VISA. Được sự cho phép của Ủy ban trù bị CTBTO.}
+\end{figure}
+\section{Theo dõi một thế giới phức tạp}
+ Chương 14 xem xét vấn đề theo dõi tình trạng thế giới, nhưng chỉ đề cập đến trường hợp biểu diễn nguyên tử (HMM) và biểu diễn nhân tử (DBN và bộ lọc Kalman). Điều này có ý nghĩa đối với những thế giới có một đối tượng duy nhất — có thể là một bệnh nhân duy nhất trong phòng chăm sóc đặc biệt hoặc một con chim duy nhất bay qua rừng. Trong phần này, chúng ta xem điều gì sẽ xảy ra khi hai hoặc nhiều đối tượng tạo ra các quan sát. Điều làm cho trường hợp này khác với ước lượng trạng thái cũ đơn thuần là hiện nay có khả năng không chắc chắn về đối tượng nào tạo ra quan sát nào. Đây là vấn đề không chắc chắn về danh tính của Phần 15.2 (trang 507), bây giờ được xem xét trong bối cảnh tạm thời. Trong tài liệu lý thuyết điều khiển, đây là vấn đề liên kết dữ liệu - tức là vấn đề liên kết dữ liệu quan sát với các đối tượng
+đã tạo ra chúng. Mặc dù chúng ta có thể coi đây là một ví dụ khác về mô hình xác suất vũ trụ mở, nhưng nó đủ quan trọng trong thực tế để xứng đáng với phần riêng của nó.
+\begin{figure}[ht!]
+    \centering
+     \includegraphics[]{images/chapter15/h8.PNG}
+     \caption{Các quan sát về vị trí đối tượng trong không gian 2D qua năm bước thời gian. Mỗi đốm sáng quan sát được gắn nhãn với bước thời gian nhưng không xác định được đối tượng tạo ra nó.
+(b – c) Các giả thuyết có thể có về các đường dẫn đối tượng cơ bản. (d) Một giả thuyết cho trường hợp có thể xảy ra cảnh báo sai, phát hiện lỗi và bắt đầu / kết thúc theo dõi
+}
+ \end{figure}
+ \subsection{Theo dõi đa mục tiêu}
+Vấn đề liên kết dữ liệu được nghiên cứu ban đầu trong bối cảnh radar theo dõi nhiều mục tiêu, nơi các xung phản xạ được phát hiện tại các khoảng thời gian cố định bởi một radar quay
+ăng ten. Tại mỗi bước thời gian, nhiều vết phồng rộp có thể xuất hiện trên màn hình, nhưng không quan sát trực tiếp được vết phồng nào tại thời điểm t tương ứng với vết phồng nào tại thời điểm t - 1. Hình 15.8 (a) hiển thị một ví dụ đơn giản với hai ô mỗi bước thời gian trong năm bước. Mỗi blip được gắn nhãn với bước thời gian của nó nhưng thiếu bất kỳ thông tin nhận dạng nào.\\
+Chúng ta hãy giả sử rằng, hiện tại, chúng ta biết có chính xác hai chiếc máy bay A1 và A2, đang tạo ra những chiếc máy bay. Theo thuật ngữ của OUPM, A1 và A2 là các đối tượng được đảm bảo, có nghĩa là chúng được đảm bảo tồn tại và khác biệt; hơn nữa, trong trường hợp này, không có các đối tượng khác. (Nói cách khác, liên quan đến máy bay, kịch bản này khớp với ngữ nghĩa cơ sở dữ liệu được giả định trong RPM.) Đặt vị trí thực của chúng là X (A1, t) và X (A2, t), trong đó t là số nguyên không âm. lập chỉ mục thời gian cập nhật cảm biến. Chúng tôi giả sử lần quan sát đầu tiên đến lúc t = 1 và tại thời điểm 0, phân phối trước cho mọi vị trí của máy bay là InitX (). Chỉ để mọi thứ đơn giản, chúng tôi cũng sẽ giả định rằng mỗi máy bay di chuyển độc lập theo một mô hình chuyển tiếp đã biết — ví dụ: mô hình tuyến tính – Gaussian như được sử dụng trong bộ lọc Kalman (Phần 14.4).
+
+Phần cuối cùng là mô hình cảm biến: một lần nữa, chúng ta giả sử một mô hình tuyến tính – Gauss trong đó một máy bay ở vị trí x tạo ra một vệt sáng b mà vị trí vết tròn quan sát được Z (b) là một hàm tuyến tính của x có thêm tiếng ồn Gauss. Mỗi máy bay tạo ra chính xác một đốm sáng tại mỗi bước thời gian, vì vậy blip giống như nguồn gốc của nó là một chiếc máy bay và một bước thời gian. Vì vậy, bây giờ bỏ qua phần trước, mô hình sẽ giống như sau:
+\begin{center}
+    \includegraphics[scale=1.15]{images/chapter15/h9.png}
+\end{center}
+trong đó $F$ và $\sum x$ là các ma trận mô tả mô hình chuyển tiếp tuyến tính và hiệp phương sai nhiễu chuyển tiếp, và $H$ và $\sum z$ là các ma trận tương ứng cho mô hình cảm biến.
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[scale=1.15]{images/chapter15/h10.PNG}
+\caption{Một OUPM để theo dõi radar của nhiều mục tiêu với cảnh báo giả, lỗi phát hiện và sự ra vào của máy bay. Tốc độ máy bay mới đi vào hiện trường là $\lambda_a$, trong khi xác suất trên mỗi bước thời gian mà máy bay rời khỏi hiện trường là $\alpha_e$. Các bọng báo động giả (tức là các bọng không do máy bay tạo ra) xuất hiện đồng nhất trong không gian với tốc độ $\lambda_f$ trên mỗi bước thời gian. Xác suất máy bay bị phát hiện (tức là tạo ra đốm sáng) phụ thuộc vào vị trí hiện tại của nó.}
+\end{figure}
+Sự khác biệt chính giữa mô hình này và bộ lọc Kalman tiêu chuẩn là có hai đối tượng tạo ra các chỉ số cảm biến (bọng nước). Điều này có nghĩa là có sự không chắc chắn tại bất kỳ bước thời gian nhất định nào về đối tượng tạo ra chỉ số cảm biến nào. Mỗi thế giới có thể có trong mô hình này bao gồm một mối liên kết — được xác định bởi các giá trị của tất cả các biến Nguồn (b) cho tất cả các bước thời gian — giữa máy bay và bánh răng cưa. Hai giả thuyết kết hợp có thể được thể hiện trong Hình 15.8 (b – c). Nói chung, với $n$ đối tượng và T bước thời gian, có $(n!)^{T}$ cách gán
+tàu bay lên máy bay — một số lượng lớn khủng khiếp.
+Kịch bản được mô tả cho đến nay liên quan đến $n$ đối tượng đã biết tạo ra $n$ quan sát ở mỗi bước thời gian. Các ứng dụng thực của liên kết dữ liệu thường phức tạp hơn nhiều.
+Thông thường, các quan sát được báo cáo bao gồm các báo động giả (còn được gọi là lộn xộn), mà không phải do các đối tượng thực gây ra. Lỗi phát hiện có thể xảy ra, có nghĩa là không có quan sát nào được báo cáo đối với một đối tượng thực. Cuối cùng, các đối tượng mới đến và các đối tượng cũ biến mất. Những hiện tượng này, tạo ra nhiều thế giới có thể phải lo lắng hơn, được minh họa trong Hình 15.8 (d). Các
+OUPM tương ứng được cho trong Hình 15.9.
+Vì tầm quan trọng thực tế của nó đối với các ứng dụng dân sự và quân sự, hàng chục nghìn bài báo đã được viết về vấn đề theo dõi đa mục tiêu và liên kết dữ liệu. Nhiều người trong số họ chỉ đơn giản là cố gắng giải ra các chi tiết toán học phức tạp của các phép tính xác suất cho mô hình trong Hình 15.9 hoặc cho các phiên bản đơn giản hơn của nó. Theo một nghĩa nào đó, điều này là không cần thiết khi mô hình được thể hiện bằng một ngôn ngữ lập trình xác suất, bởi vì công cụ suy luận có mục đích chung thực hiện tất cả các phép toán một cách chính xác cho bất kỳ mô hình nào — kể cả mô hình này. Hơn nữa, các chi tiết của kịch bản (bay đội hình, các đối tượng hướng đến các điểm đến không xác định, các đối tượng cất cánh hoặc hạ cánh, v.v.) có thể được xử lý bằng các thay đổi nhỏ đối với mô hình mà không cần dùng đến các dẫn xuất toán học mới và
+lập trình phức tạp.
+Từ quan điểm thực tế, thách thức với loại mô hình này là sự phức tạp của suy luận. Đối với tất cả các mô hình xác suất, suy luận có nghĩa là tổng hợp các biến khác
+hơn là truy vấn và bằng chứng. Để lọc trong HMM và DBN, chúng tôi có thể tính tổng các biến trạng thái từ 1 đến $t-1$ bằng một thủ thuật lập trình động đơn giản; cho bộ lọc Kalman,
+chúng tôi cũng đã tận dụng các thuộc tính đặc biệt của Gaussian. Đối với liên kết dữ liệu, chúng tôi kém may mắn hơn. Không có thuật toán chính xác hiệu quả (đã biết), vì lý do tương tự là không có
+đối với bộ lọc Kalman chuyển đổi (trang 484): phân bố lọc, mô tả sự phân bổ chung trên số lượng và vị trí của máy bay ở mỗi bước thời gian, kết thúc là một hỗn hợp của nhiều phân phối theo cấp số nhân, mỗi phân phối cho mỗi cách chọn một chuỗi quan sát để gán cho từng máy bay.
+
+Để đáp ứng sự phức tạp của suy luận chính xác, một số phương pháp gần đúng đã được sử dụng. Cách tiếp cận đơn giản nhất là chọn một nhiệm vụ "tốt nhất" duy nhất ở mỗi bước thời gian, cho biết vị trí dự đoán của các đối tượng tại thời điểm hiện tại. Nhiệm vụ này liên kết các quan sát với các đối tượng và cho phép cập nhật theo dõi của từng đối tượng và dự đoán được thực hiện cho bước thời gian tiếp theo. Để chọn nhiệm vụ "tốt nhất", người ta thường sử dụng cái gọi là bộ lọc láng giềng gần nhất, bộ lọc này lặp đi lặp lại việc chọn cặp gần nhất của vị trí và quan sát được dự đoán và thêm cặp đó vào bài tập.  Bộ lọc láng giềng gần nhất hoạt động tốt khi các đối tượng được phân tách rõ ràng trong không gian trạng thái và dự đoán không chắc chắn và lỗi quan sát là nhỏ — nói cách khác, khi không có khả năng nhầm lẫn.
+
+Khi có nhiều sự không chắc chắn về việc phân công chính xác, một cách tiếp cận tốt hơn là chọn nhiệm vụ tối đa hóa xác suất chung của các quan sát hiện tại cho các vị trí dự đoán. Điều này có thể được thực hiện một cách hiệu quả bằng cách sử dụng thuật toán Hungary (Kuhn, 1955), mặc dù có n! nhiệm vụ để lựa chọn khi mỗi bước thời gian mới đến.
+
+Bất kỳ phương pháp nào cam kết một nhiệm vụ tốt nhất duy nhất tại mỗi bước đều thất bại thảm hại trong những điều kiện khó khăn hơn. Đặc biệt, nếu thuật toán đưa ra một nhiệm vụ không chính xác, thì dự đoán ở bước thời gian tiếp theo có thể sai đáng kể, dẫn đến nhiều bài tập sai hơn, v.v. Các phương pháp lấy mẫu có thể hiệu quả hơn nhiều. Thuật toán lọc hạt  để liên kết dữ liệu hoạt động bằng cách duy trì một bộ sưu tập lớn các nhiệm vụ hiện tại có thể có. Một thuật toán MCMC khám phá không gian của phép gán
+lịch sử — ví dụ, Hình 15.8 (b – c) có thể là các trạng thái trong không gian trạng thái MCMC — và có thể thay đổi ý định về các quyết định chuyển nhượng trước đó.
+
+Một cách rõ ràng để tăng tốc độ suy luận dựa trên lấy mẫu cho theo dõi đa mục tiêu là sử dụng thủ thuật Rao-Blackwellization từ Chương 14 (trang 496): đưa ra một giả thuyết liên kết cụ thể cho tất cả các đối tượng, việc tính toán lọc cho từng đối tượng thường có thể được thực hiện chính xác và hiệu quả, thay vì lấy mẫu nhiều chuỗi trạng thái có thể có cho các đối tượng.
+Ví dụ, với mô hình trong Hình 15.9, tính toán lọc chỉ có nghĩa là chạy một bộ lọc Kalman cho chuỗi các quan sát được gán cho một đối tượng giả định nhất định.
+
+Hơn nữa, khi thay đổi từ giả thuyết kết hợp này sang giả thuyết kết hợp khác, các tính toán chỉ được thực hiện lại đối với các đối tượng có các quan sát liên quan đã thay đổi.
+Các phương pháp liên kết dữ liệu MCMC có thể xử lý hàng trăm đối tượng trong thời gian thực trong khi đưa ra một giá trị gần đúng cho các phân phối sau thực sự.
+\subsection{Giám sát giao thông}
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[]{images/chapter15/h11.PNG}
+    \caption{Hình ảnh từ (a) camera giám sát ngược dòng và (b) hạ nguồn cách nhau khoảng hai dặm trên Xa lộ 99 ở Sacramento, California. Xe đã được xác định ở cả hai máy ảnh.}
+\end{figure}
+Hình 15.10 cho thấy hai hình ảnh từ các camera được phân tách rộng rãi trên xa lộ California. Trong ứng dụng này, chúng tôi quan tâm đến hai mục tiêu: ước tính thời gian cần thiết, trong điều kiện giao thông hiện tại, để đi từ địa điểm này đến địa điểm khác trong hệ thống đường cao tốc; và đo lường nhu cầu — nghĩa là có bao nhiêu phương tiện di chuyển giữa hai điểm bất kỳ trong hệ thống cụ thể
+thời gian trong ngày và vào các ngày cụ thể trong tuần. Cả hai mục tiêu đều yêu cầu giải quyết vấn đề liên kết dữ liệu trên một khu vực rộng với nhiều camera và hàng chục nghìn phương tiện trên giờ.
+
+Với chức năng giám sát bằng hình ảnh, các cảnh báo giả do bóng chuyển động, xe cộ khớp nối, phản xạ trong vũng nước, v.v ...; lỗi phát hiện do tắc nghẽn, sương mù, bóng tối và
+thiếu sự tương phản trực quan; và các phương tiện liên tục ra vào hệ thống xa lộ tại những điểm có thể không được giám sát. Hơn nữa, sự xuất hiện của bất kỳ phương tiện nhất định nào có thể
+thay đổi đáng kể giữa các máy ảnh tùy thuộc vào điều kiện ánh sáng và tư thế xe trong ảnh, và mô hình chuyển tiếp thay đổi khi tắc đường đến và đi. Cuối cùng, trong dày đặc
+giao thông với các camera được phân tách rộng rãi, sai số dự đoán trong mô hình chuyển tiếp cho một chiếc ô tô đang lái xe từ vị trí có camera này sang vị trí tiếp theo lớn hơn nhiều so với khoảng cách thông thường giữa xe cộ. Bất chấp những vấn đề này, các thuật toán liên kết dữ liệu hiện đại đã thành công trong việc ước tính các tham số lưu lượng trong cài đặt thế giới thực.
+
+Liên kết dữ liệu là nền tảng cần thiết để theo dõi một thế giới phức tạp, bởi vì nếu không có nó thì không có cách nào để kết hợp nhiều quan sát của bất kỳ đối tượng nhất định nào. Khi các đối tượng trong thế giới tương tác với nhau trong các hoạt động phức tạp, việc hiểu thế giới đòi hỏi phải kết hợp liên kết dữ liệu với các mô hình xác suất quan hệ và vũ trụ mở
+của Mục 15.2. Đây hiện là một lĩnh vực nghiên cứu đang hoạt động.
+\newpage
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[]{images/chapter15/h12.PNG}
+    \caption{Chương trình tạo mô hình xác suất vũ trụ mở để nhận dạng ký tự quang học. Chương trình tổng hợp tạo ra các hình ảnh bị suy giảm có chứa các chuỗi chữ cái bằng cách tạo ra từng chuỗi, hiển thị nó thành hình ảnh 2D và kết hợp thêm nhiễu phụ gia ở mỗi pixel.}
+\end{figure}
+\section*{Tổng kết}
+Chương này đã khám phá các biểu diễn biểu đạt cho các mô hình xác suất dựa trên cả hai
+logic và các chương trình.
+\begin{itemize}
+    \item Mô hình xác suất quan hệ (RPM) xác định các mô hình xác suất trên các thế giới bắt nguồn
+từ ngữ nghĩa cơ sở dữ liệu cho các ngôn ngữ bậc nhất; chúng thích hợp khi tất cả
+các đối tượng và danh tính của chúng được biết một cách chắc chắn.
+\item Cho một RPM, các đối tượng trong mỗi thế giới có thể tương ứng với các ký hiệu không đổi trong
+RPM và các biến ngẫu nhiên cơ bản đều là những phần khởi tạo có thể có của vị từ
+ký hiệu với các đối tượng thay thế mỗi đối số. Do đó, tập hợp các thế giới có thể có là hữu hạn.
+\item RPM cung cấp các mô hình rất ngắn gọn cho các thế giới có số lượng lớn các đối tượng và có thể
+xử lý sự không chắc chắn quan hệ.
+\item Mô hình xác suất vũ trụ mở (OUPM) xây dựng dựa trên ngữ nghĩa đầy đủ của bậc nhất
+logic, cho phép các loại không chắc chắn mới như sự không chắc chắn về nhận dạng và tồn tại.
+\item Chương trình sinh là biểu diễn của các mô hình xác suất — bao gồm cả OUPM—
+dưới dạng các chương trình thực thi bằng ngôn ngữ lập trình xác suất hoặc PPL. Chương trình ative gener đại diện cho một phân phối trên các dấu vết thực thi của chương trình. PPL thường cung cấp sức mạnh biểu đạt phổ quát cho các mô hình xác suất.
+
+\end{itemize}

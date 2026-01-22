@@ -1,0 +1,329 @@
+\chapter{Tìm kiếm trong các trò chơi có tính đối kháng}
+Chúng ta hiện đang bước vào kỷ nguyên trong đó Trí tuệ nhân tạo (Artificial Intelligence) có những tác động to lớn và sâu sắc đến đời sống hàng ngày. Thí dụ, Thị giác máy tính (Computer Vision) và Trí tuệ nhân tạo lập kế hoạch tạo ra các trò chơi điện tử giờ đây trở thành một ngành công nghiệp giải trí lớn hơn Hollywood.\\
+
+Trí tuệ nhân tạo (AI) là một lĩnh vực lớn, và đây là một cuốn sách lớn nhưng lại không có một định nghĩa chính xác. Tuy nhiên, nó vẫn cần có một định nghĩa và Nils J. Nilsson đã đưa ra một định nghĩa hữu ích: "Trí tuệ nhân tạo là hoạt động làm cho máy móc thông minh, và trí thông minh là chất lượng cho phép một thực thể hoạt động một cách phù hợp và với tầm nhìn trước trong môi trường của nó.
+Hay một cách đơn giản: TTNT là trí thông minh của máy do con người tạo ra và mong muốn nó có khả năng thông minh như con người. \\
+
+Một lĩnh vực con của AI dành cho việc tìm kiếm các chuỗi hành động đạt được mục tiêu,  đó là tìm kiếm chiến lược trong các trò chơi.
+
+\section{Lý thuyết trò chơi}
+\subsection{Tổng quan về Lý thuyết trò chơi và ứng dụng trong thực tế}
+Hàng ngày, con người cần phải đưa ra quyết định cho các vấn đề khác nhau dựa trên những thông tin có sẵn. Điều này tương tự như phải lựa chọn chiến lược phù hợp trong các trò chơi dựa trên bộ tham số đã có. Lý thuyết trò chơi có thể được coi là một mô hình thu nhỏ của hành vi con người trong các tình huống được đặt ra.\\
+
+Lý thuyết trò chơi được ứng dụng rất nhiều lĩnh vực, ngành nghề như: kinh tế học, khoa học, sinh học, triết học hay cả khoa học máy tính.
+\begin{itemize}
+\item Ứng dụng trong Kinh tế:  Lý thuyết trò chơi có lợi cho việc mô hình hóa các hành vi cạnh tranh giữa các tác nhân kinh tế. Các doanh nghiệp thường có một số lựa chọn chiến lược ảnh hưởng đến khả năng hiện thực hóa lợi ích kinh tế của họ.
+\item Ứng dụng trong Khoa học - Chính trị: Các ứng dụng của lý thuyết trò chơi vào khoa học chính trị tập trung vào các lĩnh vực chồng chéo của công lý, kinh tế chính trị, lựa chọn công cộng, chiến tranh thương lượng, lý thuyết chính trị tích cực và lý thuyết lựa chọn xã hội. Trong mỗi lĩnh vực này, các nhà nghiên cứu đã phát triển các mô hình lý thuyết trò chơi trong đó người chơi thường là khu vực bầu cử, quốc gia, nhóm lợi ích đặc biệt và chính trị gia.
+\item Ứng dụng trong sinh học: Các nhà sinh học đã sử dụng các trò chơi gà để phân tích chiến đấu và hành vi lãnh thổ.
+\item Ứng dụng trong xã hội học: Áp dụng lý thuyêt trong các trò chơi tổng bằng không. Khi đó quyền lợi của người chơi xung đột trực tiếp với nhau. Ví dụ, trong bóng đá, một đội thắng và đội kia thua. Nếu thắng bằng +1 và thua bằng -1, tổng bằng không.
+\item Ứng dụng trong tâm lý học: người chơi luôn cố gắng tối ưu hóa lợi ích của bản thân mình.
+\item ....
+\end{itemize}
+\subsection{Trò chơi hai đối thủ có tổng bằng không}
+Chương trình chơi cờ đầu tiên được viết vào năm 1950 đã là một minh chứng cho khả năng máy tính có thể làm được những việc đòi hỏi trí thông minh của con người. Từ đó người ta nghiên cứu các chiến lược chơi cho máy tình với các trò chơi có đối thủ.\\
+
+Các trò chơi thường được nghiên cứu nhất trong AI (chẳng hạn như cờ vua và cờ vây) được các nhà lý thuyết trò chơi gọi là những trò chơi đã xác định, gồm hai đối thủ, chơi theo lượt, có thông tin hoàn hảo và là trò chơi có tổng bằng không. “Thông tin hoàn hảo ”có đây đồng nghĩa với“ có thể quan sát được đầy đủ ”, tức là ta có thể quan sát được tất cả các chiến lược dẫn đến các kết cục có thể có của trò chơi, và“ tổng bằng không ”có nghĩa là kết quả tốt đối với một người chơi thì tương ứng là tệ đối với người kia, ở đây không có kết quả "đôi bên cùng có lợi". \\
+
+Trong các trò chơi, thuật ngữ di chuyển có ý nghĩa như "hành động" và vị trí có nghĩa là "trạng thái". Giả sử gọi hai đối thủ lần lượt là MAX và MIN. Người chơi MAX di chuyển trước, sau đó người chơi lần lượt di chuyển cho đến khi trò chơi kết thúc. Khi kết thúc, điểm được trao cho người chơi chiến thắng và hình phạt được trao cho người thua cuộc. Một trò chơi có thể được định nghĩa chính thức với các yếu tố sau:
+\begin{itemize}
+\item $S_0$: Trạng thái ban đầu, chỉ định cách trò chơi được thiết lập khi bắt đầu.  
+\item TO-MOVE ($s$): Người chơi có lượt di chuyển ở trạng thái $s$.  
+\item ACTIONS ($s$): Tập hợp các nước đi hợp lệ từ trạng thái $s$.  
+\item RESULT ($s, a$): Mô hình chuyển tiếp, xác định trạng thái của hành động $a$ từ trạng thái $s$.
+\item IS-TERMINAL ($s$): Kiểm tra trạng thái cuối, trả về kết quả True khi trò chơi kết thúc và False nếu trò chơi chưa kết thúc. Các trạng thái mà tại đó trò chơi kết thúc thì được gọi là trạng thái cuối.  
+\item UTILITY ($s, p$): Hàm tiện ích (còn được gọi là hàm mục tiêu hoặc hàm trả thưởng), xác định giá trị số cuối cùng cho người chơi $p$ khi trò chơi kết thúc ở trạng thái cuối $s$. Trong cờ vua, kết quả là thắng, thua hoặc hòa, với các giá trị tiện ích tương ứng là 1, 0 hoặc $\frac{1}{2}$. Một số trò chơi có nhiều loại kết quả có thể xảy ra hơn — ví dụ, kết quả trong ván Backgammon nằm trong khoảng từ 0 đến 192.
+\end{itemize}
+
+Trạng thái ban đầu $S_0$, hàm ACTIONS và hàm RESULT xác định đồ thị không gian trạng thái — một đồ thị trong đó các đỉnh là trạng thái, các cạnh là các hành động và có thể có nhiều đường đi đến một trạng thái. Những đồ thị như vậy trong các trò chơi được gọi là một Cây trò chơi. Cây trò chơi là một cây tìm kiếm tuân theo mọi chuỗi di chuyển đến trạng thái cuối. Cây trò chơi có thể có độ sâu là vô hạn nếu không gian trạng thái không bị giới hạn hoặc nếu các quy tắc của trò chơi cho phép các vị trí lặp lại vô hạn. \\
+
+Hình \ref{fig:game-tree} cho thấy một phần của Cây trò chơi trong trò Tic-tac-toe. Từ trạng thái ban đầu, MAX có thể có chín bước di chuyển. Chơi lần lượt, trong đó MAX chữ X và MIN chữ O cho đến khi đạt trạng thái cuối cùng sao cho một người chơi có ba ô vuông liên tiếp hoặc tất cả các ô vuông được lấp đầy. Giá trị trên mỗi nút lá cho biết giá trị hàm trạng thái cuối theo MAX; giá trị cao là tốt cho MAX và không tốt cho MIN. \\
+
+Đối với tic-tac-toe, Cây trò chơi tương đối nhỏ 9! = 362.880 nút cuối (chỉ có 5.478 trạng thái riêng biệt). Nhưng đối với cờ vua có hơn 1040 nút, vì vậy Cây trò chơi tốt nhất được coi là một cấu trúc lý thuyết mà chúng ta không thể nhận ra trong thế giới vật chất. 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=1]{images/chapter01/tictactoe.png}
+    \caption{Một phần của Cây trò chơi trong trò Tic-tac-toe.}
+    \label{fig:game-tree}
+\end{figure}
+
+
+
+\section{Các quyết định tối ưu trong các trò chơi}
+\subsection{Thuật toán Minimax Search}
+\subsubsection{Trò chơi hai đối thủ}
+MAX muốn tìm một chuỗi hành động để dẫn đến chiến thắng, nhưng MIN thì ngược lại với MAX. Điều này có nghĩa là chiến lược của MAX phải là một kế hoạch có điều kiện — một chiến lược dự phòng để phản ứng đối với từng động thái có thể có của MIN. Trong các trò chơi có kết quả nhị phân (thắng hoặc thua), định nghĩa về chiến lược chiến thắng cho trò chơi giống hệt với định nghĩa về giải pháp cho một bài toán lập kế hoạch không xác định: trong cả hai trường hợp, kết quả mong muốn phải được đảm bảo bất kể “đối thủ” làm gì. \\
+
+Thực hiện trò chơi là người chơi tìm kiếm nước đi tốt nhất trong số rất nhiều nước đi hợp lệ, tại mỗi lượt chơi của mình, sao cho sau một dãy nước đi đã thực hiện người chơi phải thắng cuộc. Một thuật toán để giải quyết bài toán tìm nước đi tối ưu trong các trò chơi hai đối thủ phải kể đến là Thuật toán Minimax Search. \\
+
+Hãy xem xét trò chơi tầm thường trong Hình \ref{fig:minimax-search}. Các bước di chuyển có thể có đối với MAX tại nút gốc được gắn nhãn $a_1$, $a_2$ và $a_3$. Các hành động đáp trả có thể có đối với $a_1$ cho MIN là $b_1$, $b_2$, $b_3$, v.v. 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=1]{images/chapter01/minimax.png}
+    \caption{Cây trò chơi hai đối thủ.}
+    \label{fig:minimax-search}
+\end{figure}
+
+Với một Cây trò chơi, chiến lược tối ưu có thể được xác định bằng cách tính ra giá trị tối thiểu của mỗi trạng thái trong cây, gọi là MINIMAX ($s$). Giá trị MINIMAX là giá trị của hàm tiện ích (đối với MAX) khi ở trạng thái đó, giả sử rằng cả hai người chơi đều chơi tối ưu từ đó đến cuối trò chơi. Ở trạng thái khởi tạo, MAX sẽ chuyển sang trạng thái đem lại giá trị tiện ích lớn nhất cho bản thân và MIN thì ngược lại, sẽ lựa chọn trạng thái có giá trị tiện ích nhỏ nhất (đây là giá trị tiện ích nhỏ nhất cho MAX từ đó nó trở thành giá trị tiện ích lớn nhất cho MIN). Vì vậy, ta có định nghĩa hàm tính MINIMAX($s$):\\
+MINIMAX($s$) =
+$$\left\{\begin{matrix}
+&\text{UTILITY(s,MAX)} \quad\quad \quad \quad\quad\quad \quad \quad\quad \quad\quad \quad \text{if IS-TERMINAL(s)}\\
+&\max_{a \in \text{Actions(s)}} \text{MINIMAX(RESULT(s, a))}\quad\quad \text{if TO-MOVE(s)}= \text{MAX} \\
+&\min_{a \in \text{Actions(s)}}  \text{MINIMAX(RESULT(s, a))} \quad\quad \text{if TO-MOVE(s)}= \text{MIN}
+\end{matrix}\right.
+$$
+
+Hãy áp dụng hàm tính MINIMAX($s$) này cho Cây trò chơi trong Hình \ref{fig:minimax-search}. Các nút lá thể hiện các giá trị tiện tích UTILITY của trò chơi. Nút MIN đầu tiên, có nhãn B, có ba hành động kế tiếp cho các giá trị tương ứng là 3, 12 và 8, vì vậy giá trị MINIMAX$(B)= 3$. Tương tự, hai nút MIN khác có giá trị MINIMAX$= 2$. Nút gốc là một nút MAX có các hành động cho các giá trị MINIMAX $= 3; 2$ và $2$; vì vậy nút này có giá trị MINIMAX$= 3$. Từ đó, ta có thể xác định được chiến lược MINIMAX tại nút gốc: hành động $a_1$ là lựa chọn tối ưu cho MAX vì nó dẫn đến trạng thái có giá trị MINIMAX cao nhất. \\
+
+Hàm tính MINIMAX giả định MAX và MIN đều chơi tối ưu. Cụ thể chi tiết thuật toán Minimax Search như Hình \ref{fig:minimax-search-algo}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=1]{images/chapter01/minimax-search-algo.png}
+    \caption{Thuật toán Minimax Search.}
+    \label{fig:minimax-search-algo}
+\end{figure}
+
+Thuật toán Minimax Search là thuật toán tìm kiếm theo chiều sâu. Về lý thuyết, thuật toán cho phép tìm nước đi tối ưu cho MAX. Tuy nhiên trong thực tế, ta không có đủ thời gian để tính toán nước đi tối ưu này. Bởi vì thuật toán tính toán trên toàn bộ Cây trò chơi (xem xét tất cả các đỉnh của cây theo kiểu vét cạn). Trong các trò chơi hay thì kích thước của cây trò chơi là cực lớn. Chẳng hạn, trong cờ vua, chỉ tính đến độ sâu 40 thì cây
+trò chơi đã có đến 10120 đỉnh. Nếu cây có độ cao $m$ và tại mỗi đỉnh có $b$ nước đi thì độ phức tạp về thời gian của thuật toán Minimax Search là $O(b^m)$.
+
+\subsubsection{Trò chơi có nhiều đối thủ (lớn hơn hai)}
+Nhiều trò chơi phổ biến cho phép nhiều hơn hai người chơi. Dẫn tới ý tưởng mở rộng hàm tính giá trị MINIMAX trong các trò chơi nhiều người chơi. \\
+
+Đầu tiên, chúng ta cần thay thế giá trị đơn lẻ cho mỗi nút bằng một véc tơ các giá trị. Ví dụ, trong trò chơi ba người chơi với người chơi A, B và C, một vectơ $< h_A,h_B,h_C>$ được liên kết với mỗi nút. Đối với trạng thái cuối, vectơ này cung cấp giá trị tiện ích của trạng thái theo quan điểm của mỗi người chơi. (Trong trò chơi hai người chơi, có tổng bằng 0, vectơ hai phần tử có thể được giảm xuống một giá trị duy nhất vì các giá trị luôn ngược nhau.) Cách đơn giản nhất để thực hiện điều này là hàm UTILITY trả về một vectơ tiện ích. 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=1]{images/chapter01/multi-game-tree.png}
+    \caption{Cây trò chơi trong trò chơi có ba đối thủ.}
+    \label{fig:multi-game-tree}
+\end{figure}
+
+Bây giờ xem xét trạng thái khởi tạo. Hãy xem xét nút được đánh dấu $X$ trong cây trò chơi được hiển thị trong Hình \ref{fig:multi-game-tree}. Trong trạng thái đó, người chơi C là người di chuyển. Hai lựa chọn dẫn đến trạng thái cuối với các vectơ tiện ích $<h_A = 1, h_B = 2, h_C = 6>$ và $<h_A = 4, h_B = 2, h_C = 3>$. Có $6>3$, do đó C nên chọn nước đi đầu tiên. Điều này có nghĩa là nếu đạt đến trạng thái $X$, lần chơi tiếp theo sẽ dẫn đến trạng thái cuối với các tiện ích $<h_A = 1, h_B = 2, h_C = 6>$. Do đó, giá trị được sao lưu của $X$ là vectơ này. Nói chung, giá trị sao lưu của nút $n$ là tiện ích
+vectơ của trạng thái kế thừa có giá trị cao nhất mà người chơi chọn tại $n$.\\
+
+Bất kỳ ai chơi các trò chơi nhiều người chơi, chẳng hạn như Diplomacy hoặc Settlers of Catan, đều nhanh chóng nhận ra rằng nhiều thứ đang diễn ra hơn so với trò chơi hai người chơi. Trò chơi nhiều người chơi thường liên quan đến các liên minh, dù chính thức hay không chính thức, giữa những người chơi. Liên minh được thực hiện và dừng lại khi trò chơi tiếp tục. Làm thế nào chúng ta hiểu được hành vi đó? Các liên minh có phải là hệ quả tự nhiên của các chiến lược tối ưu cho mỗi người chơi trong trò chơi nhiều người chơi không? Điều đó là có thể xảy ra.\\
+
+Ví dụ, giả sử A và B ở vị trí yếu và C ở vị trí mạnh hơn. Khi đó, việc cả A và B tấn công C thường là tối ưu hơn là với nhau, vì sợ rằng C sẽ tiêu diệt từng người một. Theo cách này, sự hợp tác xuất hiện từ hành vi ích kỷ thuần túy. Tất nhiên, ngay khi C suy yếu dưới cuộc tấn công chung, liên minh sẽ mất giá trị, và A hoặc B có thể vi phạm thỏa thuận. Trong một số trường hợp, các liên minh rõ ràng chỉ đơn thuần làm cho cụ thể những gì sẽ xảy ra. Trong các trường hợp khác, sự kỳ thị xã hội gắn liền với việc phá vỡ một liên minh, vì vậy người chơi phải cân bằng lợi ích trước mắt của việc phá vỡ liên minh chống lại bất lợi lâu dài của việc bị coi là không đáng tin cậy.\\
+
+Nếu trò chơi không có tổng bằng 0, thì sự hợp tác cũng có thể xảy ra với chỉ hai người chơi. Ví dụ, giả sử rằng có một trạng thái cuối với các tiện ích $<h_A = 1000, h_B = 1000>$ và 1000 là tiện ích cao nhất có thể cho mỗi người chơi. Sau đó, chiến lược tối ưu là cả hai người chơi làm mọi thứ có thể để đạt được trạng thái này — nghĩa là, người chơi sẽ tự động hợp tác để đạt được mục tiêu cùng mong muốn.
+
+\subsection{Thuật toán cắt tỉa Alpha-Beta}
+Trong thực tế, các trò chơi đều có giới hạn về thời gian. Do đó, để có thể tìm nhanh nước đi tốt (không phải tối ưu) thay vì sử dụng hàm kết cuộc và xét tất cả các đỉnh của cây trò chơi, ta sử dụng hàm đánh giá và chỉ xem xét một bộ phận của cây trò chơi. \\
+
+Thuật toán cắt tỉa Alpha-Beta cho phép cắt bỏ những nhánh không cần thiết trong Cây trò chơi. Phương pháp này làm giảm bớt số đỉnh phải xét mà không ảnh hưởng đến kết quả đánh
+giá trạng thái đó. Hãy xem xét lại cây trò chơi hai lớp từ Hình \ref{fig:minimax-search}. Ta xem xét cắt bỏ những nhánh không ảnh hưởng đến việc xét các trạng thái và chi tiết được giải thích trong Hình \ref{fig:alpha-beta}. Kết quả là chúng ta có thể xác định chiến lược MINIMAX mà không cần phải đánh giá hai trong số các nút lá.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.8]{images/chapter01/alpha-beta.png}
+    \caption{Các giai đoạn trong việc tính toán quyết định tối ưu cho cây trò chơi trong Hình \ref{fig:minimax-search}}
+    \label{fig:alpha-beta}
+\end{figure}
+
+Đơn giản công thức tính MINIMAX. Gọi hai phần tử kế tiếp không được đánh giá của nút C trong Hình \ref{fig:alpha-beta} có các giá trị $x$ và $y$. Sau đó, giá trị tiên ích của nút gốc được xác định như sau: 
+$$
+\begin{aligned}
+\text{MINIMAX(root)} &= \max(\min(3,12,8),\min(2,x,y),\min(14,5,2))\\
+&= \max(3\,\min(2,x,y),2)\\
+&= \max(3,z,2) \text{where z} = \min(2,x,y) \leq 2\\
+&= 3
+\end{aligned}
+$$
+Nói cách khác, giá trị của gốc và quyết định Minimax độc lập với giá trị của các lá $x$ và $y$, và do đó chúng có thể được cắt bỏ.\\
+
+Cắt tỉa Alpha – Beta có thể được áp dụng cho các cây ở độ sâu bất kỳ, và thường có thể cắt tỉa toàn bộ các cây con hơn là chỉ cắt tỉa lá. Nguyên tắc chung là: hãy xem xét một nút $n$ ở đâu đó trong cây (xem Hình \ref{fig:alpha-1}), sao cho Người chơi có quyền lựa chọn di chuyển đến $n$. Nếu người chơi có sự lựa chọn tốt hơn ở cùng mức (ví dụ: $m^{'}$ trong Hình \ref{fig:alpha-1}) hoặc tại bất kỳ điểm nào cao hơn trong cây (ví dụ: $m$ trong Hình \ref{fig:alpha-1}), thì Người chơi sẽ không bao giờ di chuyển đến $n$. Vì vậy, một khi chúng ta đã tìm hiểu đủ về $n$ (bằng cách kiểm tra một số nút con của nó) để đi đến kết luận này, chúng ta có thể tỉa nó.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=1]{images/chapter01/alpha-1.png}
+    \caption{Trường hợp chung cho cắt tỉa Alpha-Beta. Nếu trạng thái $m$ hoặc $m^{'}$ tốt hơn $n$ cho Người chơi thì sẽ không bao giờ đến trạng thái $n $ trong trò chơi.}
+    \label{fig:alpha-1}
+\end{figure}
+
+Cắt tỉa Alpha – Beta được lấy tên từ hai tham số bổ sung trong hàm MAX-VALUE (trạng thái, $\alpha, \beta$) (xem Hình 5.7) mô tả các giới hạn trên các giá trị đã sao lưu xuất hiện ở bất kỳ đâu dọc theo một chiến lược chơi (một đường đi trên cây):
+\begin{itemize}
+\item $\alpha$ = giá trị của lựa chọn tốt nhất (tức là giá trị cao nhất) mà chúng tôi đã tìm thấy cho đến nay tại bất kỳ điểm lựa chọn nào dọc theo đường dẫn cho MAX. Hãy nghĩ: $\alpha$ = “ít nhất”.
+\item $\beta$ = giá trị của lựa chọn tốt nhất (tức là giá trị thấp nhất) mà chúng tôi đã tìm thấy cho đến nay tại bất kỳ điểm lựa chọn nào dọc theo đường dẫn cho MIN. Hãy nghĩ: $\beta$ = “nhiều nhất”.
+\end{itemize}
+
+Tìm kiếm Alpha – Beta cập nhật các giá trị của $\alpha$ và $\beta$ tương ứng đối với từng trạng thái và cắt bớt các nhánh còn lại tại một nút ngay khi giá trị của nút hiện tại được biết là nhỏ hơn $\alpha$ hiện tại hoặc giá trị $\beta$ tương ứng cho MAX hoặc MIN. Các
+thuật toán hoàn chỉnh được đưa ra trong Hình \ref{fig:alpha-algo}. Hình \ref{fig:alpha-beta} là quá trình tiến hành thuật toán trên cây trò chơi.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=1]{images/chapter01/alpha-algo.png}
+    \caption{Thuật toán cắt tỉa Alpha - Beta}
+    \label{fig:alpha-algo}
+\end{figure}
+
+ Hiệu quả của việc cắt tỉa Alpha-Beta phụ thuộc nhiều vào thứ tự các trạng thái được kiểm tra. Ví dụ, trong Hình \ref{fig:alpha-beta}  trạng thái $(e)$ và $(f)$, chúng ta không thể lược bỏ bất kỳ phần tử kế tiếp nào của D vì những phần tử kế tiếp tồi tệ nhất (theo quan điểm của MIN) đã được tạo ra trước. Nếu phần tử kế tiếp thứ ba của D được tạo trước, với giá trị 2, chúng ta sẽ có thể cắt bớt hai phần tử kế tiếp còn lại. Điều này cho thấy rằng có thể đáng giá khi thử kiểm tra những hành động có khả năng là tốt nhất.
+ 
+ \subsection{Thuật toán tìm kiếm Cây Monte Carlo}
+Thuật toán Minimax và cắt tỉa alpha beta tỏ ra hiệu quả ở những cây trò chơi có hệ số phân nhánh thấp. Đối với nhiều trò chơi có hệ số phân nhanh cao như cờ vây, Cây tìm kiếm Monte Carlo (MCTS) là một hướng tiếp cận hiện đại và tỏ ra ưu việt hơn. Mô hình cây tìm kiếm Monte Carlo được kết hợp từ Cây tìm kiếm, Học tăng cường và giả lập Monte Carlo. \\
+
+AlphagoZero là một AI cờ vây mạnh nhất thế giới có áp dụng Thuật toán MCTS trong việc tìm chiến lược chơi. \\
+Tìm kiếm trên cây Monte Carlo thực hiện điều đó bằng cách duy trì tìm kiếm cây và phát triển nó trên mỗi lần lặp lại bốn bước sau (Hình \ref{fig:MTCS}): 
+\begin{itemize}
+\item \textbf{Selection:} Từ nút gốc, chọn đường đi tiềm năng nhất (dựa trên một vài statistics) cho đến khi gặp nút lá.
+\item \textbf{Expansion:} Tạo một nút lá từ nút hiện tại.
+\item \textbf{Simulation:} Mở rộng đến khi game kết thúc.
+\item \textbf{Back-propagation:} Lưu lại đường đi này và update statistics của các cạnh trên path đã chọn theo hướng từ dưới lên trên (từ nút lá đến nút gốc).
+\end{itemize}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.8]{images/chapter01/MTCS.png}
+    \caption{Quá trình tìm kiếm chiến lược theo thuật toán MTCS}
+    \label{fig:MTCS}
+\end{figure}
+
+Chúng ta lặp lại bốn bước này cho một số lần lặp lại đã đặt hoặc cho đến khi hết thời gian quy định và sau đó trả lại nước đi với số lần phát cao nhất. \\
+
+Một chính sách lựa chọn rất hiệu quả được gọi là "giới hạn tin cậy cao hơn áp dụng cho cây" hoặc UCT. Chính sách xếp hạng từng động thái có thể dựa trên công thức ràng buộc độ tin cậy trên UCT được gọi là UCB1. ) Đối với nút $n$, công thức là
+$$
+\text{UCB1(n)} = \frac{U(n)}{N(n)}+\text{C}\times\sqrt{\frac{\log{N (\text{PARENT(n))})}}{N(n)}}
+$$
+trong đó $U(n)$ là tổng tiện ích của tất cả các lượt chơi đi qua nút $n$, $N(n)$ là số lượt chơi qua nút $n$ và $PARENT (n)$ là nút cha của $n $trong cây. Như vậy $\frac{U(n)}{N(n)}$ là thuật ngữ diễn tả giá trị tiện ích trung bình của $n$. Công thức trong căn bậc hai chỉ sự thăm dò: nó có số đếm $N (n)$ ở mẫu số, có nghĩa là giá trị của công thức này sẽ cao đối với các nút mới chỉ được khám phá một vài lần. Trong tử số, nó gồm nhật ký của số lần chúng ta đã đi qua các nút cha mẹ của $n$. 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.8]{images/chapter01/UTC-MTCS.png}
+    \caption{Thuật toán MTCS}
+    \label{fig:UTC-MTCS}
+\end{figure}
+
+Hình \ref{fig:UTC-MTCS} mô tả thuật toán UCT MCTS hoàn chỉnh. Khi các lần lặp kết thúc, lượt đi có số lượt chơi cao nhất sẽ được trả về. Trong Cây trò chơi mô tả trong Hình \ref{fig:MTCS-tree}, sẽ tốt hơn nếu trả về nút có tiện ích trung bình cao nhất, nhưng ý tưởng là nút có 65/100 trận thắng tốt hơn một trận thắng 2/3 trận, bởi vì phần sau có rất nhiều bất ổn. Trong bất kỳ trường hợp nào, công thức UCB1 đảm bảo rằng nút có nhiều lượt chơi nhất hầu như luôn là nút có tỷ lệ thắng cao nhất, bởi vì quá trình lựa chọn ủng hộ tỷ lệ thắng ngày càng nhiều khi số lượt chơi tăng lên. 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.8]{images/chapter01/MTCS-tree.png}
+    \caption{Một vòng lặp trong quá trình tìm kiếm chiến lược chơi bằng thuật toán MTCS}
+    \label{fig:MTCS-tree}
+\end{figure}
+
+Thời gian để tính một lượt chơi là tuyến tính, không theo cấp số nhân, theo chiều sâu của cây trò chơi, vì chỉ thực hiện một nước đi tại mỗi điểm lựa chọn. Điều đó mang lại cho chúng tôi nhiều thời gian cho nhiều trò chơi. Ví dụ: hãy xem xét một trò chơi có hệ số phân nhánh là 32, trong đó trò chơi trung bình kéo dài 100 nước đi. Nếu chúng ta có đủ sức mạnh tính toán để xem xét một tỷ trạng thái của trò chơi trước khi chúng ta phải di chuyển, thì thuật toán tìm kiếm Minimax có thể tìm kiếm sâu 6 lớp, thuật toán Alpha – Beta hoàn hảo với thứ tự di chuyển có thể tìm kiếm 12 lớp và tìm kiếm Monte Carlo có thể thực hiện 10 triệu lượt chơi. \\
+
+Tìm kiếm Monte Carlo có thể được áp dụng cho các trò chơi hoàn toàn mới, trong đó không có cơ sở kinh nghiệm nào để rút ra để xác định một chức năng đánh giá. Miễn là ta biết các quy tắc của trò chơi, tìm kiếm Monte Carlo không cần thêm bất kỳ thông tin nào. Sự lựa chọn và các chính sách chơi có thể tận dụng tốt kiến thức chuyên môn được chế tạo thủ công khi có sẵn, nhưng các chính sách tốt có thể được học bằng cách sử dụng mạng thần kinh được đào tạo bằng cách tự chơi. Tìm kiếm Monte Carlo có một bất lợi khi có khả năng một động thái duy nhất có thể thay đổi diễn biến của trò chơi, bởi vì bản chất ngẫu nhiên của tìm kiếm Monte Carlo có nghĩa là nó có thể không xem xét bước đi đó. Nói cách khác, việc cắt tỉa Loại B trong tìm kiếm Monte Carlo có nghĩa là một lối chơi quan trọng có thể không được khám phá hết. Tìm kiếm Monte Carlo cũng có một bất lợi
+khi có những trạng thái trò chơi “rõ ràng” là bên này hay bên kia thắng (theo hiểu biết của con người và theo chức năng đánh giá), nhưng vẫn sẽ mất nhiều bước trong một lượt chơi để xác minh người chiến thắng. Từ lâu, người ta cho rằng tìm kiếm Alpha – Beta phù hợp hơn đối với các trò chơi như cờ vua với hệ số phân nhánh thấp và các chức năng đánh giá tốt, nhưng cách tiếp cận của Monte Carlo gần đây đã chứng tỏ sự thành công trong cờ vua và các trò chơi khác. \\
+
+Ý tưởng chung về việc mô phỏng các nước đi trong tương lai, quan sát kết quả và sử dụng kết quả để xác định nước đi nào là tốt là một loại học tập củng cố.
+
+\section{Các trò chơi ngẫu nhiên}
+Trong thực tế luôn xuất hiện các yếu tố ngẫu nhiên mà ta không thể đoán trước được. Các trò chơi ngẫu nhiên đưa ta gần hơn với thực tế đó, ví dụ sự ngẫu nhiên bằng ném xúc xắc.  Backgammon là một trò chơi ngẫu nhiên điển hình kết hợp may mắn (ném xúc xắc) và kỹ năng (lựa chọn việc di chuyển quân cờ). Ở vị trí của trò chơi Backgammon của Hình \ref{fig:Backgamon-position}, Trắng đã cán mốc 6–5 và có bốn bước di chuyển có thể có (mỗi bước di chuyển một quân về phía trước (theo chiều kim đồng hồ) 5 vị trí và một quân tiến về phía trước 6 vị trí). 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.8]{images/chapter01/Backgamon-position.png}
+    \caption{Một vị trí trong trò chơi Backgammon điển hình}
+    \label{fig:Backgamon-position}
+\end{figure}
+
+Ta có thể thấy việc tung được xúc xắc ảnh hưởng đến việc lựa chọn bước di chuyển các quân cờ của người chơi. Để tìm chiến lược tối ưu, ta sẽ thêm các nút Cơ hội - CHANCE tương ứng với các khả năng tung xúc xắc vào cây trò chơi. Các nút cơ hội được hiển thị dưới dạng vòng tròn trong Hình \ref{fig:Chance-tree}.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.8]{images/chapter01/Chance-tree.png}
+    \caption{Sơ đồ cây trò chơi cho một trạng thái của trò chơi Backgammon điển hình.}
+    \label{fig:Chance-tree}
+\end{figure}
+
+Vì các vị trí không có giá trị Minimax xác định do ảnh hưởng của việc tung xúc xắc, giải pháp là ta sẽ tính giá trị kỳ vọng Expected Value của mỗi vị trí bằng giá trị trung bình của tất cả các giá trị kỳ vọng có thể có của các nút cơ hội, Gọi đây là giá trị EXPECTMINIMAX. Công thức tính giá trị EXPECTMINIMAX như sau: \\
+EXPECTMINIMAX($s$) =
+$$\left\{\begin{matrix}
+&\text{UTILITY(s,MAX)} \quad\quad \quad \quad\quad\quad \quad \quad\quad \quad\quad \quad \text{if IS-TERMINAL(s)}\\
+&\max_{a \in \text{Actions(s)}} \text{EXPECTMINIMAX(RESULT(s, a))}\quad\quad \text{if TO-MOVE(s)}= \text{MAX} \\
+&\min_{a \in \text{Actions(s)}} \text{EXPECTMINIMAX(RESULT(s, a))} \quad\quad \text{if TO-MOVE(s)}= \text{MIN}\\
+&\sum_{r} \text{P(r) EXPECTMINIMAX(RESULT(s,r))} \quad\quad \text{if TO-MOVE(s)}= \text{CHANCE}
+\end{matrix}\right.
+$$
+
+Như vậy trong cây trò chơi của ta thì các nút cuối, MIN, MAX vẫn hoạt động bình thường, nhưng việc di chuyển sẽ phụ thuộc vào kết quả lần tung xúc xắc ở các nút cơ hội. Đối với các nút cơ hội,ta sẽ tính toán Expected Value, là tổng giá trị của tất cả các kết quả.\\
+
+Cũng như với thuật toán Minimax, ước lượng rõ ràng cần thực hiện với EXPECTMINIMAX là cắt bỏ tìm kiếm tại một số điểm và áp dụng một hàm đánh giá cho mỗi lá. Người ta có thể nghĩ rằng các hàm đánh giá cho các trò chơi như backgammon phải giống như các hàm đánh giá cho cờ vua - chúng chỉ cần đưa ra các giá trị cao hơn cho các vị trí tốt hơn. Nhưng trên thực tế, sự hiện diện của các nút cơ hội có nghĩa là người ta phải cẩn thận hơn về ý nghĩa của các giá trị. 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.8]{images/chapter01/Backgamon-tree.png}
+    \caption{Một phép biến đổi giá trị tiện ích mà bảo toàn thứ tự trên các giá trị của lá sẽ thay đổi nước đi tốt nhất.}
+    \label{fig:Backgamon-tree}
+\end{figure}
+
+Hình \ref{fig:Backgamon-tree} cho thấy điều gì sẽ xảy ra: với một hàm đánh giá gán các giá trị tiện ích lần lượt là $[1, 2, 3, 4]$ cho các lá, nước di chuyển $a_1$ là tốt nhất; trong trường hợp với các giá trị tiện ích lần lượt là $[1, 20, 30, 400]$, nước di chuyển $a_2 $ sẽ là nước tốt nhất. Do đó, chương trình hoạt động hoàn toàn khác nếu chúng ta thực hiện thay đổi đối với một số giá trị đánh giá, ngay cả khi thứ tự ưu tiên vẫn giữ nguyên. \\
+
+Nếu chương trình biết trước tất cả các lần tung xúc xắc sẽ xảy ra trong phần còn lại của trò chơi, thì việc giải một trò chơi với xúc xắc sẽ giống như giải một trò chơi mà không có xúc xắc, điều mà Thuật toán Minimax thực hiện trong thời gian $O (b^m)$, trong đó $b$ là số nhánh và $m$ là chiều sâu tối đa của cây trò chơi.\\
+
+Bởi vì EXPECTMINIMAX cũng đang xem xét tất cả các trình tự tung xúc xắc có thể có, nó sẽ có độ phức tạp là $O (b^{m}n^{m})$, trong đó $n$ là số lần tung xúc xắc riêng biệt.
+
+\section{Trò chơi quan sát một phần}
+Bobby Fischer tuyên bố rằng “cờ vua là chiến tranh”, nhưng cờ vua thiếu ít nhất một đặc điểm chính của các cuộc chiến tranh thực sự, đó là khả năng quan sát một phần. Trong “sương mù chiến tranh”, nơi ở của các đơn vị đối phương thường không được biết cho đến khi được tiếp xúc trực tiếp. Do đó, chiến tranh bao gồm việc sử dụng của các trinh sát, gián điệp để thu thập thông tin và sử dụng các biện pháp che giấu, vô tội vạ để gây hoang mang cho kẻ thù. \\
+
+Các trò chơi có thể quan sát được một phần có chung những đặc điểm này và do đó về chất lượng khác với các trò chơi trong các phần trước. Các trò chơi điện tử như StarCraft đặc biệt khó khăn, có thể quan sát được một phần, đa tác nhân, không xác định. Trong các trò chơi có thể quan sát một phần xác định, sự không chắc chắn về trạng thái của bàn cờ hoàn toàn xuất phát từ việc đối thủ không tiếp cận được với các lựa chọn đưa ra. Nhóm này bao gồm các trò chơi dành cho trẻ em như Battleship (trong đó tàu của mỗi người chơi được đặt ở các vị trí khuất khỏi đối thủ) và Chiến lược. \\
+
+Một số trò chơi quan sát được một phần là trò Kriegspiel, Poker, Phantom Go, Phantom tic-tac-toe và Screen Shogi.\\
+
+Các trò chơi bài như cầu, huýt sáo, trái tim và poker có khả năng quan sát một phần ngẫu nhiên, trong đó thông tin bị thiếu được tạo ra bởi việc chia bài ngẫu nhiên.\\
+
+Ngay từ cái nhìn đầu tiên, có vẻ như những trò chơi bài này giống như trò chơi xúc xắc: các quân bài được chia ngẫu nhiên và xác định các nước đi có sẵn cho mỗi người chơi, nhưng tất cả các “viên xúc xắc” đều được tung ra ngay từ đầu! Mặc dù sự tương tự này hóa ra là không chính xác, nhưng nó gợi ý một thuật toán: coi việc bắt đầu trò chơi như một nút cơ hội với mọi giao dịch có thể là kết quả và sau đó sử dụng công thức EXPECTIMINIMAX để chọn nước đi tốt nhất. Lưu ý rằng trong cách tiếp cận này, chỉ
+nút cơ hội là nút gốc; sau đó trò chơi trở nên hoàn toàn có thể quan sát được. Cách tiếp cận này đôi khi được gọi là tính trung bình theo khả năng thấu thị bởi vì nó giả định rằng một khi giao dịch thực tế đã xảy ra, trò chơi trở nên hoàn toàn có thể quan sát được đối với cả hai người chơi. Bất chấp sự hấp dẫn trực quan của nó, chiến lược này có thể dẫn người ta đi chệch hướng. Hãy xem xét câu chuyện sau: \\
+Ngày 1: Đường A dẫn đến một cái bình vàng; Đường B dẫn đến một ngã ba. Bạn có thể thấy rằng ngã ba bên trái dẫn đến hai bình vàng, và ngã ba bên phải dẫn đến việc bạn bị một chiếc xe buýt chạy qua.\\
+Ngày 2: Đường A dẫn đến một cái chậu vàng; Đường B dẫn đến một ngã ba. Bạn có thể thấy rằng ngã ba bên phải dẫn đến hai bình vàng, và ngã ba bên trái dẫn đến việc bạn bị một chiếc xe buýt chạy qua.\\
+Ngày 3: Đường A dẫn đến một cái chậu vàng; Đường B dẫn đến một ngã ba. Bạn được cho biết rằng một ngã ba dẫn đến hai hũ vàng, và một ngã ba dẫn đến việc bạn bị một chiếc xe buýt chạy qua. Thật không may, bạn không biết cái nĩa nào là cái nào.\\
+
+Sự thấu thị trung bình dẫn đến suy luận sau: vào Ngày 1, B là lựa chọn đúng; vào Ngày thứ 2, B là lựa chọn phù hợp; vào Ngày 3, tình hình cũng giống như Ngày 1 hoặc Ngày 2, vì vậy B vẫn phải là lựa chọn đúng đắn. \\
+
+Bây giờ chúng ta có thể thấy mức độ trung bình trên khả năng thấu thị không thành công như thế nào: nó không xem xét trạng thái tin tưởng mà tác nhân sẽ ở sau khi hành động. Một trạng thái tin tưởng hoàn toàn không biết là điều không mong muốn, đặc biệt khi một khả năng là cái chết chắc chắn. Bởi vì nó giả định rằng mọi trạng thái trong tương lai sẽ tự động là một trong những tri thức hoàn hảo, phương pháp thấu thị không bao giờ lựa chọn các hành động thu thập thông tin; cũng không lựa chọn các hành động che giấu thông tin với đối thủ hoặc cung cấp thông tin cho đối tác, vì nó cho rằng họ đã biết thông tin; và nó sẽ không bao giờ vô tội vạ trong poker, vì nó cho rằng đối thủ có thể nhìn thấy những lá bài của mình. \\
+
+Mặc dù có những hạn chế, tính trung bình dựa trên khả năng thấu thị có thể là một chiến lược hiệu quả, với một số thủ thuật để làm cho nó hoạt động tốt hơn. Trong hầu hết các trò chơi bài, số lượng giao dịch có thể có là khá lớn. Ví dụ, trong chơi cầu, mỗi người chơi chỉ nhìn thấy hai trong bốn bàn tay; có hai tay không nhìn thấy, mỗi lá 13 lá nên ta có $C^{13}_{26} = 10.400.600$. Giải quyết dù chỉ một thương vụ là khá khó khăn, vì vậy giải quyết được mười triệu là điều không thể. Một cách để đối phó với con số khổng lồ này là trừu tượng hóa: tức là bằng cách coi các bàn tay tương tự là giống hệt nhau. Ví dụ, điều quan trọng nhất là quân át và vua trong một ván bài, nhưng liệu ván bài có số 4 hay số 5 không quan trọng bằng và có thể bị loại bỏ.\\
+
+Một cách khác để đối phó với số lượng lớn là cắt bớt về phía trước: chỉ xem xét một mẫu ngẫu nhiên nhỏ của N giao dịch và một lần nữa tính điểm EXPECTIMINIMAX. Ngay cả đối với N khá nhỏ - giả sử, 100 đến 1.000 - phương pháp này cho một giá trị gần đúng. Nó cũng có thể được áp dụng cho các trò chơi xác định chẳng hạn như Kriegspiel. Nó cũng có thể hữu ích khi thực hiện tìm kiếm theo kinh nghiệm với mức giới hạn sâu hơn là tìm kiếm toàn bộ cây trò chơi.\\
+
+Không giống như cờ vua, Poker mang đến nhiều thử thách hơn cho AI bởi lối chơi phức tạp, khó đoán khi mỗi người chơi có rất ít thông tin về đối thủ. Thêm vào đó, họ có thể sử dụng nhiều chiến lược khác nhau để chiến thắng.\\
+
+Để giành chiến thắng, AI đòi hỏi phải xử lý lượng thông tin ẩn lớn hơn và đưa ra các chiến thuật phức tạp hơn. Bằng cách giải bài toán Poker nhiều người chơi. \\
+
+Facebook đã kết hợp với các nhà nghiên cứu tại Đại học Carnegie Mellon phát triển một phần mềm có tên Pluribus. Nó đã đánh bại hàng loạt người chơi poker nổi tiếng trên thế giới trong một ván đấu 6 người.\\
+
+Pluribus đặt nền tảng cho các AI trong tương lai để giải quyết các vấn đề phức tạp thuộc loại này. \\
+
+\section{Hạn chế của các thuật toán tìm kiếm trong trò chơi}
+Bởi vì việc tính toán các quyết định tối ưu trong các trò chơi phức tạp là không thể thực hiện được, nên tất cả các thuật toán phải đưa ra một số giả định và tính gần đúng. Tìm kiếm Alpha – Beta sử dụng đánh giá heuristic hoạt động như một ước lượng và tìm kiếm Monte Carlo tính toán giá trị trung bình gần đúng trên một lựa chọn ngẫu nhiên của các trận đấu. Việc lựa chọn sử dụng thuật toán nào phụ thuộc một phần vào tính năng của từng trò chơi: khi hệ số phân nhánh cao hoặc khó xác định chức năng đánh giá, tìm kiếm Monte Carlo được ưu tiên. Nhưng cả hai thuật toán đều mắc phải những hạn chế cơ bản. \\
+
+Một hạn chế của tìm kiếm Alpha – Beta là tính dễ bị lỗi trong hàm heuristic. Hình \ref{fig:limitation} cho thấy một cây trò chơi hai lớp mà hàm Minimax đề xuất lấy nhánh bên phải vì $100> 99$. Đó là nước đi chính xác nếu tất cả các đánh giá đều chính xác.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=1]{images/chapter01/limitation.PNG}
+    \caption{Một cây trò chơi hai lớp trong đó hàm Minimax heuristic có thể mắc lỗi}
+    \label{fig:limitation}
+\end{figure}
+
+Nhưng giả sử rằng việc đánh giá mỗi nút có lỗi độc lập với các nút khác và được phân phối ngẫu nhiên với độ lệch chuẩn là $\sigma$. Khi đó nhánh bên trái thực sự tốt hơn $71\%$ thời gian khi $\sigma = 5$ và $58\%$ thời gian khi $\sigma = 2$ (bởi vì một trong bốn lá bên phải có khả năng đi xuống dưới 99 trong những trường hợp này). Nếu các lỗi trong chức năng đánh giá không độc lập, thì khả năng xảy ra sai sót sẽ tăng lên. Rất khó để bù đắp điều này vì chúng tôi không có mô hình tốt về sự phụ thuộc giữa các giá trị của các nút anh em. \\
+
+Hạn chế thứ hai của cả Alpha – Beta và Monte Carlo là chúng được thiết kế để tính toán (giới hạn) giá trị của các bước di chuyển hợp pháp. Nhưng đôi khi có một động thái rõ ràng là tốt nhất (ví dụ: khi chỉ có một động thái hợp pháp), và trong trường hợp đó, không có lãng phí thời gian tính toán để tìm ra giá trị của động thái — tốt hơn là chỉ nên thực hiện. Một thuật toán tìm kiếm tốt hơn sẽ sử dụng ý tưởng về tiện ích của việc mở rộng nút, chọn các phần mở rộng nút có tiện ích cao — nghĩa là những phần có khả năng dẫn đến khám phá của một động thái tốt hơn đáng kể. Nếu không có mở rộng nút nào có tiện ích cao hơn chi phí của chúng (về mặt thời gian), thì thuật toán sẽ ngừng tìm kiếm và thực hiện. Điều này không chỉ hoạt động đối với các tình huống yêu thích rõ ràng mà còn đối với các trường hợp di chuyển đối xứng, không có lượng tìm kiếm nào cho thấy rằng một nước đi tốt hơn một nước đi khác.\\
+
+Loại suy luận về những gì tính toán phải làm được gọi là siêu phân tích (lý luận về lý luận). Nó không chỉ áp dụng cho việc chơi game mà còn cho bất kỳ loại suy luận nào.Tất cả các tính toán được thực hiện nhằm mục đích cố gắng đưa ra các quyết định tốt hơn, tất cả đều có chi phí và tất cả đều có khả năng dẫn đến sự cải thiện nhất định về chất lượng quyết định. Tìm kiếm Monte Carlo cố gắng thực hiện đo lường để phân bổ tài nguyên cho các phần quan trọng nhất của cây, nhưng không làm như vậy một cách tối ưu.\\
+
+Hạn chế thứ ba là cả Alpha-Beta và Monte Carlo đều thực hiện tất cả các suy luận của họ ở cấp độ di chuyển riêng lẻ. Rõ ràng, con người chơi trò chơi theo cách khác: họ có thể suy luận ở cấp độ trừu tượng hơn, xem xét một mục tiêu cấp cao hơn — ví dụ: bẫy nữ hoàng của đối thủ — và sử dụng mục tiêu đó để đưa ra các kế hoạch hợp lý một cách có chọn lọc. \\
+
+Vấn đề thứ tư là khả năng kết hợp học máy vào quá trình tìm kiếm trò chơi. Các chương trình trò chơi ban đầu dựa vào chuyên môn của con người để tạo thủ công các chức năng đánh giá, mở sách, chiến lược tìm kiếm và thủ thuật hiệu quả. Chúng ta chỉ mới bắt đầu thấy các chương trình như ALPHAZERO, dựa trên công nghệ máy học từ việc tự chơi thay vì chuyên môn do con người tạo ra cho trò chơi cụ thể. 
+
+\section{Kết luận}
+Chương này đã xem xét nhiều trò chơi khác nhau để hiểu cách chơi tối ưu có nghĩa là gì, để hiểu cách chơi tốt trong thực tế và để có cảm nhận về cách một tác nhân nên hành động trong bất kỳ loại môi trường đối địch nào. Những ý tưởng quan trọng nhất như sau:
+\begin{itemize}
+\item Một trò chơi có thể được xác định bởi trạng thái ban đầu (cách bàn cờ được thiết lập), các hành động pháp lý ở mỗi trạng thái, kết quả của mỗi hành động, bài kiểm tra trạng thái cuối (cho biết khi nào trò chơi kết thúc) và một chức năng tiện ích áp dụng cho các trạng thái đầu cuối để cho biết ai đã thắng và điểm số cuối cùng là bao nhiêu.
+\item Trong các trò chơi hai người chơi, rời rạc, xác định, di chuyển theo lượt và có tổng bằng 0 với thông tin hoàn hảo, thuật toán Minimax có thể chọn các nước đi tối ưu bằng cách liệt kê theo chiều sâu của cây trò chơi.
+\item Thuật toán tìm kiếm Alpha – Beta tính toán bước di chuyển tối ưu tương tự như Minimax, nhưng đạt được hiệu quả cao hơn nhiều bằng cách loại bỏ các cây con không liên quan.
+\item Thông thường, việc xem xét toàn bộ cây trò chơi (ngay cả với Alpha – Beta) là không khả thi, vì vậy chúng ta cần phải cắt bỏ tìm kiếm tại một số điểm và áp dụng một hàm đánh giá heuristic để ước tính mức độ tiện ích của một trạng thái.
+\item Một giải pháp thay thế được gọi là tìm kiếm trên cây Monte Carlo (MCTS) đánh giá các trạng thái không phải bằng cách áp dụng hàm heuristic mà bằng cách chơi hết trò chơi đến cùng và sử dụng các quy tắc của trò chơi để xem ai thắng. Vì các nước đi được chọn trong trận đấu có thể không phải là các bước đi tối ưu, quá trình được lặp lại nhiều lần và đánh giá là trung bình của các kết quả.
+\item Nhiều chương trình trò chơi tính toán trước bảng các nước đi tốt nhất trong phần mở đầu và kết thúc để họ có thể tra cứu nước đi thay vì tìm kiếm.
+\item Trò chơi ngẫu nhiên có thể được xử lý bằng EXPECTMINIMAX, một phần mở rộng của thuật toán Minimax đánh giá một nút cơ hội bằng cách lấy tiện ích trung bình của tất cả các nút con của nó, được tính theo xác suất của mỗi nút con.
+\item Trong các trò chơi có thông tin không hoàn hảo, chẳng hạn như Kriegspiel và Poker, cách chơi tối ưu đòi hỏi phải suy luận về trạng thái niềm tin hiện tại và tương lai của mỗi người chơi. Một đơn giản xấp xỉ có thể thu được bằng cách lấy trung bình giá trị của một hành động trên mỗi cấu hình có thể có của thông tin bị thiếu.
+\item Các chương trình đã đánh bại một cách rõ ràng những người chơi vô địch ở cờ vua, cờ caro, Othello, cờ vây, Poker và nhiều trò chơi khác. Con người giữ được lợi thế trong một số trò chơi của thông tin không hoàn hảo, chẳng hạn như Bridge và Kriegspiel. Trong các trò chơi điện tử như StarCraft và Dota 2, các chương trình cạnh tranh với các chuyên gia về con người, nhưng một phần thành công của chúng có thể là do khả năng của họ để thực hiện nhiều hành động rất nhanh chóng.
+\end{itemize}
+
+ 
+
+
+

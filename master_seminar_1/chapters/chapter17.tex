@@ -1,0 +1,364 @@
+\chapter{Vấn đề ra quyết định phức tạp}
+\section{Vấn đề ra quyết định tuần tự}
+Trước hết, để có thể hiểu vấn đề ra quyết tuần tự, ta xét một ví dụ như Hình 1.1 dưới đây:
+\begin{figure}[H]
+    \centering
+    \includegraphics{images/chapter17/vidu1.JPG}
+    \caption{Ví dụ ra ví dụ tuần tự}
+    \label{fig:my_label}
+\end{figure}
+Giả sử môi trường được thiết lập là môi trường có kích thước 4*3 các ô nhỏ được trong hình dưới đây. Ở trạng thái bắt đầu ở trạng thái START, tại mỗi bước thời gian vật phải di chuyển mỗi 1 ô. Ở trạng thái kết thúc, khi vật ở trạng thái ở ô có giá trị là (-1) hoặc (+1). Cũng giống như các vấn đế tìm kiếm, các hành động có sẵn ở mỗi trạng thái cố định, được định nghĩa bởi các hành động (ACTION). Ở đây trong môi trường ta xét, ta có 4 trạng thái của vật là Lên, Xuống, Trái, Phải. Ở đây, ta xét trong môi trường hoàn toàn có thể quan sát được, cụ thể ở mỗi trạng thái luôn biết vật ở đâu.
+Như ta đã biết, nếu điều kiện rõ ràng thì ta có 1 giải pháp là [Lên, Lên, Phải, Phải, Phải]. Nhưng không phải lúc nào môi trường cũng có điều kiện để ta có thể đi được. Trong một trường hợp khác, ta thêm các điều kiện như trong hình 1.1b, mỗi hành động có xác suất riêng. Ví dụ ở trạng thái 1, khi vật lên có xác suất là 0.8, xác suất sang trái và sang phải là 0.1. Trong khi đó, ta có tính giá trị của 1 chuỗi các bước đi, ví dụ như khi đi 5 bước thì sác xuất lớn nhất có thể đạt được chỉ là $0.8^5 = 0.32768$. Cũng có 1 trường khác khi ta đi đến giá trị (-1) là [Phải, Phải, Phải, Phải, Lên] là $ 0.1^4 * 0.8 $ thì giá trị sẽ rất nhỏ. \\
+\indent Trong chương 3 về mô hình chuyển tiếp, mô tả hành động trong mỗi trạng thái. Ở đây ta xét tính ngẫu nhiên trong mỗi hành động, ta xét $ P(s^{'}|s,a) $ là xác suất đạt đến trạng thái $ s^{'} $, nếu hành động $ a $ được thực hiện trạng thái $ s $. Ở đây, ta xét mô hình chuyển tiếp Markovian được định nghĩa là xác suất ở trạng thái $ s^{'} $ chỉ phụ thuộc và trạng thái $ s $ chứ không phụ thuộc vào lịch sử trạng thái ở trước đó.\\
+\indent Để định nghĩa về môi trường tác vụ, chúng ta chỉ xem xét chức năng cho các trạng thái. Khi ta xét một quyết định tuần tự, hàm giá trị sẽ phụ thuộc vào những chuỗi các trạng thái và hành động, lịch sử hành động, hơn là một trạng thái duy nhất. Vì vậy, ta sẽ tìm hiểu hàm giá trị trên lich sử các trạng thái. Để đơn giản, ta quy định rằng mọi chuyển đổi từ $ s $ sang $ s^{'} $ thông qua hành động $ a $, trạng thái sẽ nhận được giá trị là $ R(s, a, s^{'}) $, và bị giới hạn bởi $ \pm Rmax $.\\
+\indent Với ví dụ cụ thể đã nêu, với giá trị -0.04 cho tất cả các biến đổi đang chuyển đổi để chuyển về trạng trạng thái đích (có giá trị là +1 và -1). Cụ thể, nếu tác nhân đến được trạng thái đích là +1 sau 10 bước thì tổng tiện ích của nó là 9*-0.04 + 1 = 0.64. Tóm lại, một vấn đề quyết định tuần tự cho một môi trường ngẫu nhiêu, có thể nghiên cứu với mô hình chuyển đổi Markovian. Quy trình quyết định Markov (\textbf{MDP}) bao gồm tập hợp các trạng thái (Trạng thái đầu là $ s_{0} $), một tập hợp các hành động trong mỗi trạng thái, một mô hình chuyển tiếp có xác suất $ P(s^{'}|s,a) $ và hàm giá trị $ R(s,a,s^{'}) $, các phương pháp giải \textbf{MDP} liên quan đến lập trình động, đơn giản hoá vấn đề bằng cách sử dụng đệ quy lập trình động, chia nó thành các phần nhỏ và ghi nhớ các tham số tối ưu cho các phần con.\\
+\indent Câu hỏi tiếp theo là có một giải pháp nào để giải quyết vấn đề thì được miêu tả như thế nào? Không có chuỗi hành động cố định nào có thể giải quyết vấn đề, vì tác nhân có thể kết thúc trạng thái khác với mục tiêu. Một giải pháp thuộc loại này đó là chính sách. Theo nghiên cứu, biểu thị một loại chính sách bằng $ \pi $ và $ \pi(s) $ là hành động được đề xuất bởi $ \pi $. Bất kỳ với kết quả của hành đông là gì thì trạng thái kết quả sẽ nằm trong chính sách, và người dùng sẽ biết bước đi tiếp theo. \\
+\indent Mỗi khi một chính sách nhất định được thực thi, bắt đầu từ trạng thái ban đầu ngẫu nhiên của môi trường có thể có lịch sử trạng thái trong môi trường khác nhau. Do đó, chính sách được đo lường bằng tiện ích mong đợi của lịch sử môi trường tạo những chính sách tối ưu của quá trình. Ta sử dụng $ \pi^{*} $ là tác nhân quyết định phải làm gì bằng cách tham khảo cảm nhận hiện tại của nó, cho nó biết trạng thái hiện tại là $ s $, sau đó thực hiện hành động $ \pi^{*}(s) $.\\
+\indent Trong ví dụ như hình 1.1a. Có hai chính sách vì xác suất sang bên trái hay bên phải bằng nhau, giả sử đi lên từ vị trí $ (3,1) $, đi sang trái an toàn hơn, trong khi đi nhanh hơn lại rơi vào $ (4,2) $, nói chung trong 1 quá trình quyết định có nhiều chính sách tối ưu.
+\begin{figure}[H]
+    \centering
+    \includegraphics{images/chapter17/hinh17.2.JPG}
+    \caption{(a) Xét trong môi trường ngẫu nhiên với $r = -0.04$ trong quá trình chuyển đổi giữa các trạng thái. (b) xét trong các môi trường có phạm vi tối ưu $ r $ khác nhau}
+    \label{fig:my_label}
+\end{figure}	Ta thấy giá trị quá trình quyết định phụ thuộc vào giá trị $ r = R(s,a,s^{'}) $ đối với sự chuyển đổi trạng thái. Như ví dụ trên hình trên, khi tối ưu trong khoảng $ -0.0850 <r<-0.0273 $, trong hình 1.2b, cho thấy trong các phạm vi $ r $ khác nhau. \\
+\indent Sự ra đời của tính không chắc chắn đưa \textbf{MDP} đến gần với các bài toán tìm kiếm xác định. Vì lý do này \textbf{MDP} được nghiên cứu trong một số lĩnh vực, bao gồm AI, nghiên cứu hoạt động kinh tế, lý thuyết điều kiển, có nhiều thuật toán được đề xuất. Trước tiên, ta sẽ trình bày chi tiết hơn định nghĩa cho mô hình quyết định \textbf{MDP} 
+\subsection{Sự phụ thuộc theo thời gian}
+\indent Trong ví dụ hình 1.1, Hiệu suất của quá trình được đo bằng tổng tổng các chuyển đổi đã biến đổi. Lựa chọn hiệu suất không phải tuỳ ý, nhưng nó không phải là khả năng duy nhất của hàm trên lịch sử môi trường. Ta viết lại$ U_{h}([s_{0}, s_{1}, s_{2}...s_{n}]) $\\
+\indent Câu hỏi đầu tiên cần trả lời liệu có một hữu hạn hay vấn đề ra quyết định là vô hạn. Đường hữu hạn được hiểu là sau một thời gian cố định, hay
+	\begin{align*}
+	U_{h}([s_{0}, a_{0},s_{1},a_{1}...s_{N+k}])
+ = U_{h}([s_{0}, a_{0},s_{1},a_{1}...s_{N}])	
+    \end{align*}
+cho mọi $ k > 0 $. Ví dụ, giả sử một tác tử bắt đầu từ vị trí $(3,1)$ trong bài mô hình trò chơi trên. Ta giả sử $N=3$ để có cơ hội để đạt đến trạng thái +1, ta phải có đường đi trực tiếp đến vị trí +1 với hành động tối ưu là đi lên. Nếu $N=100$ thì hành động nhất định có thể phụ thuộc vào thời gian còn lại. Có nhiều thời gian để theo con đường an toàn bằng cách đi sang trái hoặc sang phả. Vì vậy giới hạn là vô hạn, một chính sách đi là tối ưu phụ thuộc vào thời gian, chúng ta gọi đó là trạng thái động.\\
+\indent Mặt khác, không có giới hạn trong thời gian cố định, do đó một hành động tối ưu chỉ phụ thuộc vào trạng thái hiện tại và chính sách tối ưu là không thay đổi. Do vậy, các chính sách cho trường hợp giới hạn vô hạn đơn giản hơn các chính sách cho trường hợp giới hạn là hữu hạn. Và trong phạm vi nội dung trình bày, chúng ta giải quyết bài toán trong giới hạn phạm vi vô hạn. Có thể hiểu chuỗi trạng thái hữu hạn trong MDP phạm vi vô hạn có chứa trạng thái đầu-cuối.\\
+\indent Tiếp theo, câu hỏi tiếp theo là làm thế nào để có một hàm tính toán giá trị tiện ích trên mỗi bước trạng thái. Để tính giá trị này, chúng ta bổ sung một phần thường chiết khấu cho trạng thái, hàm tiện ích của mỗi bước đi:
+\begin{align*}
+    U_{h}([s_{0}, a_{0},s_{1},a_{1}...]) = R(s_{0},a_{0},s_{1}) + \gamma R(s_{1},a_{1},s_{2})+ \gamma^{2} R(s_{1},a_{1},s_{2}) + \dots ,
+\end{align*}
+Với $\gamma$ là giá trị chiết khấu có giá trị từ 0 đến 1. Hệ số chiết khấu là một phần thưởng hiện tại hơn phần thưởng trong tương lai. Khi $\gamma$ gần bằng 1, chứng tỏ sẽ sẵn sàng chời đợi phần thưởng dài hạn hơn trong những bước đi, chính sách tiếp theo. Đặt biệt khi $\gamma =1$ phần thưởng chiết khấu giảm xuống đến mức đặc biệt trong trường hợp \textbf{phần thưởng thuần túy}. Lưu ý rằng tính cộng hưởng được sử dụng trong việc sử dụng hàm chi phí trong các thuật toán tìm kiếm heuristic.\\
+\indent Có một số lý do tại sao chúng ta lại cộng thêm giá trị chiết khấu hàm giá tiện ích. Như ta đã biết, xét cả trường hợp con người và động vật dường như đánh giá cao giá trị phần thưởng trong thời gian ngắn hơn là trong thời gian dài. Một vấn đề nữa là kinh tế: Nếu giá trị phần thưởng là tiền sẽ tốt hơn là bạn nên nhận chúng sớm hơn là muộn vì phần thưởng sớm giúp bạn đi đầu tư và tạo ra lợi nhuận trong khi bạn chờ đợi phần thưởng sau. Trong trường hợp này, hệ số chiết khấu $\gamma$ tương ứng với chỉ số $(1-\gamma)-1$, ví dụ hệ số chiết khấu $\gamma = 0.9$ tương ứng chỉ số xét là 11,1 \%.\\
+\indent Lý do tiếp theo là sự không chắc chắn về giá trị phần thưởng thực sự: Chúng có thể không bao giờ đến vì đủ loại lý do không được tính đến trong mô hình chuyển đổi. Theo một số giả định, hệ số chiết khấu $\gamma$ tương ứng với việc xác định xác suất $1-\gamma$ ngẫu nhiên ở mỗi bước thời gian, việc này hoàn toàn độc lập với hành động phát hiện.\\
+\indent Lý do tiếp theo về giá trị $\gamma$ là từ thuộc tính tự nhiên của các sở thích so với lịch sử hình thành. Theo thuật ngữ của lý thuyết tiện ích đa thuộc tính (được mô tả trong phần 16.4), mỗi chuyển tiếp từ trạng thái $s_{t} \underrightarrow{a_{t}} s_{t+1}$ có thể được xem là một thuộc tính của lịch sử các bước đi trước đó trong tập các trạng thái và bước đi $[s_{0}, a_{0},s_{1},a_{1}...]$. Về nguyên tắc, chức năng của hàm tiện ích có thể phụ thuộc theo những cách phức tạp tùy ý vào các thuộc tính. Tuy nhiên, có thể đưa ra giả định độc lập ưu tiên, cụ thể là ưu tiên của các tác tử giữa các trình tự trạng thái là cố định.\\
+\indent Giờ ta xét hai trạng thái có là $[s_{0}, a_{0},s_{1},a_{1}...]$ và $[s^{'}_{0}, a^{'}_{0},s^{'}_{1},a^{'}_{1}...]$, hai trạng thái này được tính từ bắt đầu quá trình chuyển đổi cụ thể $s_{0} = s^{'}_{0}, a_{0}= a^{'}_{0} ,s_{1}= s^{'}_{1} $. Sau đó, do tính ổn định cho các tùy chọn có nghĩa là hai lịch sử phải được sắp xếp theo thứ tự ưu tiên giống như các lịch sử $[s_{0}, a_{0},s_{1},a_{1}...]$ và $[s^{'}_{0}, a^{'}_{0},s^{'}_{1},a^{'}_{1}...]$. Có thể hiểu, tính ổn định là một giả định khá thừa, "vô thưởng vô phạt", tuy vậy khi ta bổ sung giá trị chiết khấu là hình thức tiện ích duy nhất trên lịch sử thỏa mãn tính ổn định và giá trị hàm lợi ích.\\
+\indent Lý do cuối cùng cho phần thưởng chiết khấu là nó có thể làm cho một số vô hạn triệt tiêu đi một cách hợp lý và thuận tiện. Với các phạm vi vô hạn, có một số khó khăn tiềm ẩn: Nếu môi trường ta xét không chứa trạng thái cuối hoặc các tác tử không bao giờ có thể tới được trạng thái cuối cùng, thì đây ta gọi môi trường sẽ dài vô hạn và các tiện ích và phần thưởng không chiết khấu cộng thêm nói chung sẽ là một miền vô hạn. Mặc dù chúng ta có thể chấp nhận với nhau rằng$+\infty$ sẽ tốt hơn $-\infty$, việc so sánh hai chuỗi trạng thái này có tiện ích ở phía $+\infty$ khó hơn. Do vậy, có ba giải pháp, hai trong ba số đó ta thấy:
+\begin{enumerate}
+    \item Với phần thưởng chiết khấu, tiện ích của một chuỗi vô hạn là hữu hạn. Trên thực tế, khi $\gamma < 1$ và phần thưởng bị giới hạn bởi giá trị $\pm R_{max}$, ta có:
+    \begin{align*}
+        U_{h}([s_{0}, a_{0},s_{1},a_{1}...]) = \sum_{t=0}^{\infty}\gamma^{t}R(s_{t}, a_{t},s_{t+1} \leq \sum_{t=0}^{\infty} \gamma^{t}R_{max} = \frac{R_{max}}{1-\gamma},\tag{17.1}
+    \end{align*}
+    Sử dụng công thức chuẩn cho tổng của một hình học vô hạn.
+    \item Nếu môi trường chứa các trạng thái đầu cuối và tác tử được đảm bảo cuối cùng tới một trạng thái thì chúng ta sẽ không bao giờ cần phải so sánh với chuỗi vô hạn. Một chính sách là chính sách phù hợp được đảm bảo để đạt được trạng thái cuối được gọi là chính sách phù hợp. Với các chính sách này, chúng ta sử dụng giá trị $\gamma =1$ (Tức là phần thưởng ta không cộng thêm triết khấu) Nếu ba chính sách đầu tiên được sử dụng trong hình 8.2 là chính xác nhưng chính sách thứ tư không phù hợp, rơi vào trạng thái lặp vô hạn thì tổng phần thưởng vô hạn được tính bằng cách tránh xa các trạng thái đầu-cuối khi phần thưởng cho sự chuyển đổi giữa các trạng thái là dương.
+    \item Các chuỗi vô hạn có thể được so sánh về phần thưởng trung bình nhận được mỗi lần chuyển trạng thái. Ta giả sử các chuyển đổi từ ô có vị trí $(1,1)$ trong môi trường đã xét $4*3$ có giá trị phần thưởng là 0.01 trong khi các chuyển đổi sánh ở nơi khác. Phần thưởng trung bình là một tiêu chí hữu ích cho một vấn đề, nhưng việc phân tích các thuật toán phần thưởng trung bình rất phức tạp
+\end{enumerate}
+Phần thưởng chiết khấu cộng thêm gây ra ít khó khăn nhất trong việc đánh giá lịch sử, vì vậy chúng ta sẽ sử dụng chúng từ đó đến nay.
+\subsection{Các chính sách tối ưu và tiện ích của các trạng thái}
+\indent Sau khi ta quyết định rằng tiện ích của lịch sử nhất định là tổng phần thưởng chiết khấu, chúng ta có thể so sánh các chính sách bằng cách so sánh các tiện ích mong đợi thu khi thực hiện các trạng thái. Chúng ta có thể giả sử các tác tử đang ở trạng thái ban đầu nào nào đó và xác định $S_{t}$ là một biến ngẫu nhiên là trạng thái mà tác nhận đạt được tại thời điểm $t$ khi thực hiện một chính sách $\pi$ cụ thể. (ta xét $S_{0} = s$, trạng thái mà tác tử ở trạng thhsi ban đầu ) Như vậy phân phối xác suất trên các trạng thái $S_{1},S_{2}...$ được xác định bởi trạng thái ban đầu $s$, chính sách $\pi$ và mô hình chuyển tiếp cho môi trường.\\
+\indent Giá trị tiện ích mong đợi thu được bằng cách thực hiện $\pi$ bắt đầu từ trạng thái $s$ được cho bởi công thức:
+\begin{align*}
+    U^{\pi}(s) = E \Bigg[\sum_{t=0}^{\infty}\gamma^{t}R(S_{t}, \pi(S_{t}), S_{t+1} \Bigg], 
+    \tag{17.2}
+\end{align*}
+Trong đó, kỳ vọng $E$ đối với phân bố xác suốt trên các chuỗi trạng thái được xác định bởi giá trị $s \text{ và } \pi$. Bây giờ trong tất cả các chính sách mà ta có thể lựa chọn, để thực thi bắt đầu mà có một hoặc nhiều các tiện ích mong đợi cao hơn tất cả các chính sách khác. Chúng ta sẽ sử dụng $\pi$ để biểu thị một trong những chính sách sau:
+\begin{align*}
+    \pi_{s}^{*} = \argmax_{\pi}U^{\pi}(s). \tag{17.3}
+\end{align*}
+Ở đây, ta lấy $\pi_{s}^{*}$ là một chính sách, do vậy nó đề xuất một hành động cho mọi trang thái, nó kết nối với $s$ đặc biệt là nó là một chinh sách tối ưu khi $s$ là trạng thái bắt đầu. Một hệ quả đáng chú ý của việc sử dụng các tiện ích chiết khấu với phạm vi vô hạn là chính sách tối ưu không phụ thuộc vào trạng thái bắt đầu. Thực tế nhận thấy: Nếu chính sách $\pi_{a}^{*}$ là tối ưu bắt đầu từ trạng thái $a$ và chính sách $\pi_{b}^{*}$ là tối ưu bắt đầu từ trạng thái $b$, sau đó khi chúng đạt đến trạng thái thứ ba $c$. Để đơn giản, ta viết $\pi^{*}$ là chính sách tối ưu.\\
+\indent Với định nghĩa về chính sách tối ưu trên, trạng thái là $U^{\pi^{*}}(s)$ tức là tổng số phần thưởng chiết khấu dự kiến nếu thực hiện một chính sách tối ưu. Chúng ta viết lại các $U(s)$ phù hợp với các ký hiệu trong chương 16 cho tiện ích của một trạng thái. Hình dưới cho thấy các tiện ích trong môi trường ta đang xét $(4*3)$, ta lưu ý rằng các tiện ích cao hơn đối với các trạng thái gần trạng thái cuoosicufng $+1$ và cần ít bước hơn để đến trạng thái cuối cùng này.
+\begin{figure}[H]
+    \centering
+    \includegraphics{images/chapter17/Capture.PNG}
+    \caption{Giá trị tiện ích trong môi trường xét với giá trị $\gamma = 1$, $r = -0.04$}
+    \label{fig:my_label}
+\end{figure}
+\indent Hàm giá trị $U(s)$ cho phép các tác tử lựa chọn hành động của mình bằng cách sử dụng nguyên tắc về hiệu quả tối đa, việc lựa chọn hành động tối đa hóa phần thưởng cộng thêm giá trị hàm lợi ích được chiết khấu dự kiến của trạng thái tiếp theo.
+\begin{align*}
+    \pi^{*}(s) = \argmax_{a \in A(s)}\sum_{s^{'}}P(s^{'}|s,a)[R(s,a,s^{'}) + \gamma U(s^{'}]. \tag{17.4}
+\end{align*}
+Chúng ta đã xác định các trạng thái, giá trị $U(s)$ là tổng số phần thưởng chiết khấu dự kiến từ thời điểm đo trở đi. Từ đó, có thể thấy rằng môi quan hệ trực tiếp giữa tiện ích của trạng thái và tiện ích giữa trạng thái xung quanh. Ở đây, tiện ích của trạng thái xung quanh là phần thưởng mong đợi cho quá trình chuyển đổi tiếp theo cộng với tiện ích chiết khấu của trạng thái tiếp theo, giả sử rằng tác tử chọn hành động tối ưu. Đó là tiện ích của một trạng thái được cung cấp bởi công thức:
+\begin{align*}
+    U(s) = \max_{a \in  A(s)}\sum_{s^{'}}P(s^{'}|s,a)[R(s,a,s^{'}) + \gamma U(s^{'}] \tag{17.5}
+\end{align*}
+ta gọi phương trình trên là phương trình \textbf{Bellman}
+\indent Một đại lượng quan trọng khác là hàm tiện ích hành động hay là hàm $Q(s,a)$ là tiện ích mong đợi của việc thực hiện một hành động nhất định trong một trạng thái nhất định. Hàm $Q(s,a)$ được xác định:
+\begin{align*}
+    U(s) = \max_{a}Q(s,a) 
+    \tag{17.6}
+\end{align*}
+Hơn nữa, chính sách tối ưu có thể được tính theo công thức sau:
+\begin{align*}
+    \pi^{*}(s) = \argmax_{a}Q(s,a) \tag{17.7}
+\end{align*}
+Chúng ta cũng có thể triển khai phương trình Bellman cho hàm $Q$, lưu ý tổng phần thưởng dự kiến cho việc thực hiện một hành động là phần thưởng cộng với tiện ích chiết khấu của trạng thái kết quá, do vậy hàm $Q$ được mô tả theo công thức:
+\begin{align*}
+    Q(s,a) &= \sum_{s^{'}}P(s^{'}|s,a)[R(s,a,s^{'}) + \gamma U(s^{'}]\\
+    &=\sum_{s^{'}}P(s^{'}|s,a)[R(s,a,s^{'}) + \gamma \max_{a^{'}}Q(s^{'},a^{'})] \tag{17.8}
+\end{align*}
+Để giải phương trình Bellman cho phương trình $U$ hoặc $Q$, hàm $Q$ xuất hiện lặp đi lặp lại cho các thuật toán giải\textbf{MDP}, sau đây là thuật giải:
+\begin{align*}
+    &\textbf{function}\quad \text{Q-Value}(mdp,s,a,U) \textbf{returns } \text{ a utility value}\\
+    &\textbf{return } \sum_{s^{'}}P(s^{'}|s,a)[R(s,a,s^{'}) + \gamma U(s^{'}]
+\end{align*}
+\subsection{Thang đo giá trị phần thưởng}
+\indent Trong chương 16, ta xác định quy mô của tiện ý là tùy ý: một phép biến đổi affine không thay đổi quyết định tối ưu, chúng ta có thể thay thế hàm $U(s)$ bằng hàm $U^{*}(s) = mU(s) + b$ trong đó $m,b$ là các giá trị hằng số cho sao $m>0$. Có thể thấy rằng, tiện ích là tổng chiết khấu của phần thưởng, sự chuyển đổi tương tự của phần thưởng sẽ không làm thay đổi cái chính sách tối ưu trong \textbf{MDP}:
+\begin{align*}
+    R^{'}(s, a, s^{'}) = m R(s,a s^{'}) + b
+\end{align*}
+Tuy nhiên, để tối ưu hóa tiện ích dẫn đến sự tự do trong việc xác định phàn thưởng, ta sử dụng thêm hàm $\Phi(s)$ đối với trạng thái $s$:
+\begin{align*}
+     R^{'}(s, a, s^{'}) = R(s,a s^{'}) + \gamma \Phi(s^{'}) - \Phi(s) \tag{17.9}
+\end{align*}
+Để chứng minh công thức này là phép biến đổi đúng, ta cần chúng minh 2 phép \textbf{MDP} là $M, M^{'}$ có các chính sách tối ưu giống hạt nhau miễn là chúng chỉ khác nhau về hàm phần thưởng như được chỉ ra trong thức (17.9), chúng ta có phép biến đổi sau:
+\begin{align*}
+    Q(s,a) = \sum_{s^{'}}P(s^{'}|s,a)[R(s,a,s^{'}) + \gamma \max_{a^{'}}Q(s^{'},a^{'})]
+\end{align*}
+Ta có $Q^{'}(s,a) = Q(s,a) - \Phi (s)$, thì :
+\begin{align*}
+    Q^{'}(s,a) + \Phi (s) = \sum_{s^{'}}P(s^{'}|s,a)[R(s,a,s^{'}) + \gamma \max_{a^{'}}Q^{'}(s^{'},a^{'}) + \Phi (s^{'}]
+\end{align*}
+tiếp tục phép biến đổi:
+\begin{align*}
+     Q^{'}(s,a)  &= \sum_{s^{'}}P(s^{'}|s,a)[R(s,a,s^{'}) + \gamma \max_{a^{'}}Q^{'}(s^{'},a^{'}) -\Phi (s) + \gamma\Phi (s^{'}]\\
+     &=\sum_{s^{'}}P(s^{'}|s,a)[R(s,a,s^{'}) + \gamma \max_{a^{'}}Q^{'}(s^{'},a^{'})]
+\end{align*}
+Nói cách khác, $Q^{'}(s,a)$ thỏa mãn phương trình Bellman \textbf{MDP} $M^{'}$, bây giờ bằng công thức (17.7) chúng ta có thể trích xuất chính sách tối ưu cho phương án $M^{'}$:
+\begin{align*}
+    \pi^{*}_{M^{'}}(s) = \argmax_{a}Q^{'}(s,a)=\argmax_{a}Q(s,a)-\Phi(s)=\argmax_{a}Q(s,a)=\pi^{*}_{M}(s).
+\end{align*}
+\indent Thoạt nhìn, có vẻ hơi chủ quan rằng ta có thể sửa đổi phần thưởng theo cách này mà không cần thay đổi chính sách tối ưu. Chúng ta nhớ rằng tất cả các chính sách đều tối ưu với chức năng phần thưởng là 0 ở mọi trạng thái. Điều này có nghĩa, tất cả các chính sách đề tối ưu cho bất kỳ phần thưởng dựa trên tiềm năng có dạng $R(s,a,s^{'}=\gamma \Phi(s^{'})-\Phi(s)$.\\
+\indent Tính linh hoạt được tạo ra, có nghĩa chúng ta thực sự có thể làm cho các tác tử có những phần thưởng ngay lập tức trực tiếp hơn những gì mà tác tử nên thực hiện. Trên thực tế, nếu ta đặt $\Phi(s)=U(s)$ thì chính sách tham lam đối với chính sách $\pi(G)$ đối với phần thưởng $R^{'}$ cũng là một chính sách tối ưu:
+\begin{align*}
+    \pi_{G}(s) &= \argmax_{a}\sum_{s^{'}}P(s^{'}|s,a)R^{'}(s,a,s^{'})\\
+    &=\argmax_{a}\sum_{s^{'}}P(s^{'}|s,a)[R^{'}(s,a,s^{'})+\gamma\Phi(s^{'})-\Phi(s)]\\
+    &=\argmax_{a}\sum_{s^{'}}P(s^{'}|s,a)[R^{'}(s,a,s^{'})+\gamma U(s^{'})-U(s)]\\
+    &=\argmax_{a}\sum_{s^{'}}P(s^{'}|s,a)[R^{'}(s,a,s^{'})+\gamma U(s^{'})]\\
+    &=\pi^{*}(s).
+\end{align*}
+Tât nhiên khi ta đặt $\Phi(s) = U(s)$ chúng ta cần biết hàm $U(s)$, những vẫn có giá trị đáng kể trong việc xác định một chức năng phần thưởng hữu ích trong phạm vi có thể. Việc này tương tự như việc người huấn luyện động vật làm khi họ cung cấp một món ăn nhỏ cho động vật mỗi bước trong trình tự mục tiêu.
+\subsection{Mô tả bài toán MDPs}
+Cách đơn giản nhất để biểu diễn $P(s^{'}|s,a)$ và $R(s,a,s^{'}$ bằng các bảng ba chiều lớn có kích thước $|S|^2|A|$. Điều này tốt cho các bài toán nhỏ có kích thước nhỏ. Trong một số trường hợp, các bảng hầu hết các mục nhập bằng 0 vì mỗi trạng thái $s$chỉ có thể chuyển sang trạng thái giới hạn $s^{'}$. ĐỐi với các bài toán lớn hơn, sẽ có những cách biếu diễn phù hợp.\\
+\indent Cũng giống như trong chương 16, trong đó mạng Bayes được mở rộng với các nút hành động và tiện ích để tạo mạng quyết định, chúng ta có thể đại diện cho các MDP bằng cách mở rộng mạng Bayes động, với các nút quyết định, phần thưởng và tiện ích để tạo mạng quyết định dộng hoặc DDN. Cụ thể, DDN là các đại diện được kiểm chứng theo thuật ngữ chỉ mức độ lợi thế về độ phức tạp theo cấp số nhân so với các biểu diễn nguyên tử và có thể mô hình hóa các vấn đề khá quan trọng trong thế giới thực.
+\begin{figure}[H]
+    \centering
+    \includegraphics{images/chapter17/img17.4.PNG}
+    \caption{Mạng quyết định cho robot di động với các trạng thái cho mức pin, trạng thái sạc, vị trí và vận tốc cũng như các biến hành động cho động cơ bánh trái và phải và để sạc}
+    \label{fig:my_label}
+\end{figure}
+Không gian trạng thái cho MDP là tích Descartes của các phạm vi của các biến số. Như trên ví dụ được minh họa của hình ảnh trên, các ACTION bao gồm là phương pháp di chuyển, lên xuống, trái phải, sức mạnh hay công suất. Tập hợp các hành động cho MDP là tích số Descartes của các phạm vi của biến này. Lưu ý rằng mỗi biến hành động chỉ ảnh hưởng đến một tập con của các biến trạng thái.\\
+\indent Mô hình chuyển đổi tổng thể là phân phối có điều kiện \textbf{$P(X_{t+1}|X_{t},A_{t}$} có thể được tính như một tích các xác suất có điều kiện từ DDN. Phần thưởng ở đây là một biến duy nhất chỉ phục thuộc vào vị trí $X$ (Ví dụ như mục tiêu là điểm đến) là Sạc, vì robot phải trả tiền điện được sử dụng, trong mô hình cụ thể này, phần thưởng không phụ thuộc vào hành động hoặc trạng thái kết quả.\\
+\indent Mạng trong hình 17.4 đã được dự kiến trong tương lai ba bước lưu ý rằng mạng bao gồm các nút phần thưởng trong các điểm thời gian là $t, t+1, t+2$  nhưng nếu giá trị hàm tiện ích là thời điểm $t+3$ là bởi vì tác tử phải tối đa hóa tổng (chiết khấu) của tất cả các phần thưởng trong tương lai, và $XU_{t+3}$đại diện cho phần thưởng cho tất cả các phần thưởng từ thời điểm $t+30 $trở đi. Nếu có sẵn các phương pháp xấp xỉ Heuristic cho $U$, nó có thể được đưa vào biểu diễn MDP theo các này và được sử dụng thay cho việc mở rộng thêm. Cách tiếp cận này có liên quan chặt chẽ đến việc sử dụng chức năng tìm kiếm theo độ sâu có giới hạn và đánh giá kinh nghiệm cho mô hình trò chơi đã được giới thiệu ở chương 5.\\
+\section{Các thuật toán MDPs}
+Trong mục này, chúng ta cùng tìm kiểu một số thuật toán khác nhau để giải quyết bài toán MDPs. Các thuật toán hay được sử dụng để giải quyết bài toán là \textbf{Lặp giá trị}. \textbf{Lặp phương pháp}, \textbf{sử dụng hệ phương trình tuyến tính}.
+\subsection{Phương pháp lặp giá trị}
+Phương trình Bellman là cơ sở của thuật toán lặp giá trí để giải bài toán MDP. Nếu có $n$ trạng thái, ta có $n$ phương trình Bellman để miêu tả các trạng thái. Với $n$ phương trình chứa $n$ ẩn số-các tiện ích của các trạng thái. Vì vậy, chúng tôi muốn giải các phương trình đồng thời để tìm các tiện ích tốt nhất. Có một vấn đề ở đây là các phương trình ta xét là phương trình phi tuyến, bởi vì toán tử \textbf{max} không phải toán tử tuyến tính. Trong khi các hệ phương trình tuyến tính có thể được giải nhanh bằng kỹ thuật đại số tuyến tính. Các phương trình phi tuyến khó giải hơn, một điều cần thử là cách tiếp cận lặp đi lặp lại, chúng ta bắt đầu với các giá trị ban đầu tùy ý cho các tiện ích, tính toán về phải của phương trình và xét vế trái của phương trình, do vậy cập nhật tiện ích của mỗi trạng thái từ các tiện ích của các vùng lân cận, chúng ta lặp cho đến khi đạt được trạng thái cân bằng.\\
+\indent Gọi $U_{i}(s)$ là giá trị tiện ích cho trạng thái $s$ ở lần thứ i, để sử dụng bước lặp này, ta sử dụng cập nhật phương trình Bellman:
+\begin{align*}
+U_{i+1}(s) \longleftarrow \max_{a \in A(s)}\sum_{s^{'}}P(s^{'}|s,a[R(s,a,s^{'}+\gamma U_{i}(s^{'})] \tag{17.10}
+\end{align*}
+Trong đó bản cập nhật được giả định áp dụng đồng thời cho tất cả các trạng thái tại mỗi lần lặp. Nếu chúng tôi áp dụng phương trình Bellman vô hạn, chúng tôi được đảm bảo đạt đến trạng thái cân bằng, trong trường hợp này, các giá trị tiện ích cuối cùng cũng phải là nghiệm của phương trình Bellman. Trên thực tế, giải các phương trình các duy nhất và chính sách tương ứng là tối ưu. Thuật toán chi tiết được minh họa:
+\begin{figure}[H]
+    \centering
+    \includegraphics{images/chapter17/hinh 17.6.PNG}
+    \caption{Phương pháp lặp giá trị}
+    \label{fig:my_label}
+\end{figure}
+\textbf{Sự hội tụ của phép lặp giá trị}\\
+Như đã giới thiệu phần thuật toán, ta đã kết luận, kh giải phương trình Bellman hội tụ được nghiệm thì ta dừng thuật toán. Trong mục nhỏ này, ta sẽ tìm hiểu về thế nào về nghiệm hội tụ của phương trình Bellman. Ở đây, ta có hai tính chất quan trọng để đánh giá sự hội tụ:
+\begin{itemize}
+    \item Tại một điểm cố định; nếu có hai điểm cố định thì chúng sẽ không tiến lại gần nhau khi tác dụng hàm.
+    \item Khi hàm được áp dụng cho bất kỳ đối số nào, giá trị phải tiến đến điểm cố định hơn (vì điểm cố định không di chuyển), do đó việc áp dụng lặp đi lặp lại luôn đạt đến điểm cố định trong giới hạn.
+\end{itemize}
+\subsection{Phương pháp lặp chính sách}
+Trong phần trước, chúng ta đã thấy rằng có thể có một chính sách tối ưu ngay cả khi ước tính hàm tiện ích không chính xác. Nếu một hành động rõ ràng là tốt hơn tất cả các hành động khác, thì hiệu quả chính xác của các tiện ích trên các trạng thái liên quan không cần phải chính xác. Cái nhìn này là gợi ý một cách thay thế để tìm ra các chính sách tối ưu. Thuật toán lặp lại chính sách là bước xen kẽ các bước sau, bắt đầu từ chính sách ban đầu $\pi_{0}$.
+\begin{itemize}
+    \item \textbf{Đánh giá chính sách} :Với chính sách $\pi$, ta đặt $U_{i} = U^{\pi_{i}}$ là tiện ích của mỗi trạng thái nếu chính sách $\pi_{i} $
+    \item \textbf{Cải tiến chính sách}: Tính toán lại chính sách mới $\pi_{i+1} $ dựa trên $U_{i} $
+\end{itemize}
+Thuật toán kết thúc khi bước cải tiến chính sách không mang lại thay đổi trong tiện ích. Tại thời điểm này, chúng ta biết hàm tiện ích $U_{i}$ là một điểm cố định trong bản cập nhật Bellman, vì vậy nó là nghiệm của phương trình Bellman và $\pi_{i}$ là chính sách tối ưu. Bởi vì chỉ có nhiều chính sách cho một không gian trạng thái hữu hạn.\begin{figure}
+    \centering
+    \includegraphics{images/chapter17/hinh 17.9.PNG}
+    \caption{Giải thuật trong thuật toán Lặp chính sách trong bài toán MDPs}
+    \label{fig:my_label}
+\end{figure}
+Vậy một câu hỏi được đặt ra làm thế nào để có thể đánh giá chính sách? Thuật toán chỉ ra rằng làm như vậy đơn giản hơn giải các phương trình Bellman, bởi vì hành động trong mỗi trạng thái được cố định bởi chính sách. Ở mỗi lần lặp thứ $i$, chính sách $\pi_{i}$ chỉ ra hành động $\pi_{i}$ ở trạng thái $s$. Điều nàu có nghĩa chúng ta sẽ có cách giải đơn giản hơn phương trình Bellman. \\
+\begin{align*}
+    U_{i}(s) = \sum_{s^{'}}P(s^{'}|\pi_{i}(s))[R(s, \pi_{i}(s), s^{'})+\gamma U_{i}(s^{'}) ]) \tag{17.14}
+\end{align*}
+\indent Đối với không gian trạng thái nhỏ, đánh giá chính sách  bằng cách sử dụng các phương pháp giải chính xác thường là cách tiếp cận hiệu quả nhất. Đối với không gian trạng thái lớn (do vậy, ta có loại trừ không gian $O(n^{3}$, thì không cần thiết phải đánh giá chính sách chính xác. Thay vào đó, chúng ta có thể thực hiện một số bước lặp lại giá trị được đơn giản hơn, để đưa ra giá trị gần đúng hợp lý của các tiện ích, do vậy, ta sử dụng phương trình sau:
+\begin{align*}
+    U_{i+1}(s) \longleftarrow \sum_{s^{'}}P(s^{'}|\pi_{i}(s))[R(s, \pi_{i}(s), s^{'})+\gamma U_{i}(s^{'}) ])
+\end{align*}
+Việc sử dụng phép lặp này được gọi là lặp lại chính sách đã sửa đổi.
+\indent Các thuật đã được mô tả cho đến này đều liên quan đến việc tính toán hàm tiện ích hoặc chính sách cho tất cả các trạng thái cùng một lúc. Nó chỉ ra rằng điều này là hoàn toàn không cần thiết. Trên thực tế, trên mỗi lần lặp chúng ta có thể lwuac chọn bất kỳ tập con trạng thái nào và áp dụng một trong hai phương pháp lặp. Những thuật toán này được gọi là phép lặp chính sách khong đồng bộ. Với một số điều kiện nhất định về chính sách ban đầu và chức năng tiện ích ban đầu, việc lặp lại chính sách không đồng bộ được đảm bảo hội tụ đến một chính sách tối ưu. Với một số trường hợp, người ta có thể kết hợp một số thuật toán và phương pháp tìm kiếm heuristic hiệu quả hơn. 
+\subsection{Sử dụng hệ phương trình tuyến tính}
+Hệ phương trình tuyến tính đã được giới thiệu trong chương "Tìm kiếm trong môi trường phức tạp" là một cách tiếp cận để xây dựng bài toán tối ưu hóa có ràng buộc và sử dụng những thuật toán của lớp bài toán này vận dụng giải bài toán MDP. Ta thấy, các phương trình Bellman liên quan đến nhiều đến hàm tổng và $\max$, có lẽ vì vậy, ý tưởng là một MDP được rút gọn thành một hệ phương trình tuyến tính: Với mọi trạng thái $s$ và hành động $s$ta có
+\begin{align*}
+    U(s) \geq \sum_{s^{'}}P(s^{'}|s,a)[R(s,a,s^{'}+\gamma U(s^{'})]
+\end{align*}
+Bất đẳng thức này là do lập phương trình động sang phương trình tuyến tính, điều này có được là do các thuật toán và các rất đề phức tạp thuật toán được nghiên cứ và áp dụng. Ví dụ, từ thực tế, các hệ phương trình tuyến tính có thể giải được trong thời gian đa thức, người ta chỉ ra rằng MDP có thể được giải được trong thời gian đa thức theo số lượng trạng thái và hành động. Tuy vậy, các bộ giải hệ phương trình tuyến tính hiếm khi hiệu quả như lập trình động để giải các bài toán MDP. Hơn nữa, thời gian đa thức nghe có vẻ tốt, nhưng khi giải các bài toán MDP, số lượng trạng thái cũng như hành động thường rất lớn, để có thể giải số lượng lớn như vậy, tuy là thời gian đa thức nhưng chắc chắn đây không phải là con số nhỏ khi thực hiện. Cuối cùng, ngay khi cả những thuật toán tìm kiếm đơn giản nhất,khó hiểu nhất trong chương 3 cũng chạy theo thời gian tuyến tính với số lượng trạng thái và hành động lớn thì hiệu quả cũng có những hạn chế nhất định.
+\subsection{Sử dụng thuật toán trực tuyến}
+Nếu các thuật toán lặp giá trị hay lặp chính sách được gọi là thuật toán ngoại tuyến giống như thuật toán A* đã trình bày, chúng tạo ra một giải pháp tối ưu cho vấn đề, sau này có thể được thực thi bởi các tác tử đơn giản. Nhưng với các MPD đủ lơn, thì các thuật toán ngoại tuyến chính xác, ngay cả trong thời gian đa thức là không thể. Do vậy, một số kỹ thuật được phát triển cho giải pháp ngoại tuyến gần đúng MDPs.\\
+\indent Cách tiếp cận đơn giản nhất là sử dụng thuật toán EXPECTIMNIMAX cho cây trò chơi được mô tả: Thuật toán EXPECTIMINMAX được xây dựng, minh họa như hình dưới đây:
+\begin{figure}[H]
+    \centering
+    \includegraphics{images/chapter17/hinh 17.10.PNG}
+    \caption{Một phần cây tìm kiếm cho bài toán 4*3 bắt đầu từ nút (3;2)}
+    \label{fig:my_label}
+\end{figure}
+\indent Đối với các bài toán trong đó hệ số chiết khấu $\gamma$ không quá gần 1, phạm vi $\epsilon$ là một giá trị hữu hạn. Giả sử $\epsilon$ là một giới hạn có sai số tuyệt đối trong các tiện ích được tính toán từ một cây Expectimax có độ sâu giới hạn, so với hàm tiện ích chính xác trong MDP. Khi đó phạm vi $\epsilon$ là độ $H$ của cây sao cho tổng phần thưởng bên ngoài bất kỳ cả lá nào ở độ sâu đó nhỏ hơn $\epsilon$, có thể hiểu rằng bất cứ điều gì xảy ra sau $H$ đều không liên quan vì nó còn rất xa. Vì tổng phần thưởng không vượt quá giá trị $\gamma^{H}R_{max}/(1-\gamma)$ và độ sâu của $H = [\log_{\gamma} \epsilon(1-\gamma) / R_{max}]$ là đủ. Vì vậy, việc xây dựng một cái cây có độ sẽ đưa ra những quyết định gần như là tối ưu.\\
+\section{Bài toán Bandit Problem}
+Ở Las Vegas, một \textit{one-armed bandit} là một máy chơi đánh bạc. Người chơi có thể đưa đồng xu vào máy, kéo cần và thu tiền nếu thắng (có những điều kiện để thắng máy này riêng cho mỗi máy). Một máy Bandit có $n$ cấp độ, đằng sau các cấp độ này là một phân bố xác suất thằng là cố định nhưng rất là thấp, và không xác định . Đây là một mô hình thức được miêu tả trong nhiều vấn đề thực tế như bài toán đầu tư, bạn có $n$ khoản đầu tư có thể đưa ra một phần tiền tiết kiệm của bạn, và $n$ dự án khả thi để bạn đầu tư, đương nhiên xác suất thành công mỗi lần đầu tư là khác nhau, bây câu hỏi làm sao bạn có thể đạt được số tiền tích lũy tốt nhất tùy thuộc dự án cũng như số tiền bạn đầu tư, hay bài toán hiển thị quảng cáo trên trang web làm sao bạn bỏ tiền để quảng cáo trên các trang web với số tiền thích hợp nhất mà tiếp cận được khách hàng nhiều nhất. \\
+\indent Có một số định nghĩa khác nhau về bài toán Bandit problem, có thể kể đến một số khái niệm hay cách mô tả như sau:
+\begin{itemize}
+    \item Mỗi nhánh $M_{i}$ là một Markov reward process hay là MRP, nghĩ là một MDP là một MRP thực hiện hành động $a_{i}$. Nó có các trạng thái là $S_{i}$, mô hình chuyển tiếp $P_{i}(s^{i}|s, a_{i}$, phần thưởng $S_{i}(s,a_{i}|, s^{'}$. Cách xác định sự phân bố trên các chuỗi phần thưởng là $R_{i,0},R_{i,1},R_{i,2}\dots$ với $R_{i,t}$ là các biến ngẫu nhiên.
+    \item Bài toán Bandit problem là một MDP, không gian trạng thái là một tích Descartes $S= S_{1}xS_{2}...xS_{n}$, các hành động $a_{1}xa_{2}...xa_{n}$, mô hình chuyển đổi trạng thái của bất kỳ nhánh nào $M_{i}$ được chọn, theo mô hình chuyển tiếp cụ thể của nó, giữ nguyên các nhánh khác, và hệ số chiết khấu là $\gamma$.
+    \end{itemize}
+Tuy vậy nhưng định nghĩa khá chung chung, bao gồm một hoạt các trường hợp. Nhưng điều quan trọng là tính độc lập giữa các trạng thái, chỉ được kết hợp với nhau bở thục tế là tác tử chỉ có thể hoạt động trên một nhánh tjai một thời điểm. Có thể xác định phiên bản tổng quát hơn trong đó các nỗi lực phân đoạn có thể được áp dụng đồng thời cho tất cát các nhánh, nhưng tổng nỗ lực trên tất cả các nhánh là bị giới hạn: Kết quả được mô tả sẽ chuyển sang trường hợp khác.
+ \begin{figure}[H]
+     \centering
+     \includegraphics{images/chapter17/hinh 17.12.PNG}
+     \caption{Một ví dụ đơn giản cho bài toán bandit problem với hai nhánh}
+     \label{fig:my_label}
+ \end{figure}
+ Ta tổng quát hóa bài toán. Ta xét nhánh đầu tiên là $M$ sinh ra một chuỗi tuy ý $R_{0},R_{1}...,R_{n}$ và nhánh thứ hai là $M_{\lambda}$ cho ra chuỗi $\lambda,\lambda, \dots$ Đây được coi là làm một Bài toán bandit cổ điển nhất về mặt hình thức tương đương trường hợp có một nhánh $M$ tạo ra các phần thưởng $R_{0},R_{1}...,R_{n}$ và $\lambda$ là chi phí cho mỗi lần kéo. Chỉ với một nhánh, sự lựa chọn duy nhất là kéo tiếp hoặc dừng lại. Nếu bạn két cánh tay đầu tiên $T$ lần, chúng ta nói thời gian dừng là T.\\
+ \indent Quay trở lại với phiên bản của chúng ta đang xét đến làm $M, M_{\lambda}$, giả sử khi $T$ lần kéo nhánh đầu tiên, một chiến lược tối ưu cuối cùng kéo nhánh thứ hai lần đầu tiên. Vì ta không có thông tin nào thu được từ trạng thái này (chúng ta chỉ biết phần tưởng co xác suất là $\lambda$), tại thời điểm $T+1$ tiến theo, chúng ta sẽ ở trong tình huống tương tự và do đó, một chiến lược tối ưu phải được đưa ra. \\
+ \indent Tương tự, chúng ta có thể nói rằng một chiến lược tối ưu là chạy một nhánh $M$ đến thời gian $T$ sau đó chuyển sang trạng thái $M\lambda$ trong khoảng thời gian còn lại. Có thể tại thời điểm $T=0$ nếu chiến lược chọn $M_{\lambda}$ ngay lập tức hoặc $T=\infty$ nếu chiến lược không bao giờ chọn $m\lambda$ hoặc đâu đó ở giữa. Bây giờ chúng ta xem xét giá trị là $\lambda$ sao cho một chiến lược tối ưu chính xách là không quan tâm giữa chạy đến nhánh $M$ mãi mãi như hình (a) hay như trường hợp (b) chọn ngay $M_{\lambda}$ ngay lập tức. tại điểm giới hạn chúng ta có:
+ \begin{align*}
+     \max_{T>0}\Bigg[ \bigg( \sum_{t=0}^{T-1} \gamma^{t}R_{t}\bigg) \sum_{t=T}^{\infty} \gamma^{t}\lambda  \bigg] = \sum_{t=0}^{\infty} \gamma^{t}\lambda
+ \end{align*}
+ Hay 
+ \begin{align*}
+     \lambda = \max_{T>0} \dfrac{E \Bigg( \sum_{t=0}^{T-1} \gamma^{t}R_{t} \bigg)}{E \Bigg( \sum_{t=0}^{T-1} \gamma^{t} \bigg)} \tag{17.15}
+ \end{align*}
+ Phương trình này xác định một loại “giá trị” đối với M về khả năng mang lại phần thưởng kịp thời; tử số của phân số đại diện cho một tiện ích trong khi mẫu số có thể được coi là "thời gian chiết khấu", vì vậy giá trị mô tả tiện ích tối đa có thể đạt được trên một đơn vị thời gian chiết khấu. (Điều quan trọng cần nhớ là $T$ trong phương trình là thời gian dừng, được điều chỉnh bởi quy tắc dừng thay vì là một số nguyên đơn giản; nó chỉ giảm xuống một số nguyên đơn giản khi M là một chuỗi phần thưởng xác định.) Phương trình (17.15) được gọi là chỉ số Gittins.\\
+ \subsection{Tính chỉ số Gittins}
+ \indent Để tính chit số Gittins cho nhánh nói chung với trạng thái hiện tại $s$, chúng ta chỉ cần thực hiện các quan sát sau: Tại điểm giới hạn mà chính sách tối ưu là không quan tâm giữa việc lựa chọn nhánh $M$ hay nhánh $M\lambda$, giá trị của việc lựa chọn $M$ cũng như giá trị của việc chọn một dãy vô hạn $\lambda$.
+ \begin{figure}[H]
+     \centering
+     \includegraphics{images/chapter17/hinh 17.13.PNG}
+     \caption{Hình ảnh mô tả hai nhánh của Bendit với trạng thái $M$ và $M_{\lambda}$}
+     \label{fig:my_label}
+ \end{figure}
+ Giả sử chúng ta tăng $M$ để tại mỗi trạng thái $M$, tác tử có hai sự lựa chọn: hoặc là tiếp tục đi theo nhánh $M$, hoặc là bỏ nhánh $M$ và nhận một dãy vô hạn phần thưởng $\lambda$ (xem hình 9.9(a)) Điều này biến nhánh $M$ thành MDP. Do đó, giá trị của một chính sách tối ưu trong MDP mới bằng giá trị của một chuỗi vô hạn phần thưởng $\lambda$, nghĩa là $\lambda/(1-\\lambda$, nhưng tất nhiên chúng ta không biết giá trị của $\lambda$ để đưa vào MDP. Nhưng chúng ta biết rằng tại điểm giới hạn, một chính sách tối ưu quan tâm giữa hai nhánh $M$ và $M_{\lambda}$ Vì vậy, chúng ta có thể lựa chọn con đường chọn lại nhánh $M$ từ trạng thái ban đầu $s$. 
+ \subsection{Vấn đề về Bernoulli bandit}
+ Bernoulli bandit có lẽ là trường hợp đơn giản nhất và nổi tiếng nhất của bài toán Bandit problem. Cụ thể, trong mỗi nhánh của $M_{i}$ tạo ra phần thưởng là 0 hoặc 1 với xác suất $\mu_{i}$ cố định, nhưng xác suất này chưa biết. Trạng thái của nhánh $M_{i}$ được xác định bởi hai trị số là $s_{i}, f{i}$ số lần thành công (1s) và thất bại (0s). Xác suất chuyển tiếp dự đoán kết quả tiếp theo của 0 là $s_{i} / (s_{i}+ f_{i})$ và 0 là $f_{i} / (s_{i}+ f_{i})$, ta có thể hình dung hình qua hình ảnh sau:
+ \begin{figure}[H]
+     \centering
+     \includegraphics{images/chapter17/hinh 17.14.PNG}
+     \caption{Các trạng thái, phần thưởng và xác suất chuyển tiếp trong Bernoulli Bendit và (b) chỉ số Gittins cho các trạng thái trong quá trình Bernoulli Bendit}
+     \label{fig:my_label}
+ \end{figure}
+ Chúng ta hoàn toán có thể áp dụng biến đổi của phần trước để tính chỉ số Gittins của nhánh Beroulli vì ta đang xét môi trường có vô hạn trạng thái. Tuy nhiên, chúng ta có thể thu được một giá trị gần đúng, có thể chấp nhận được rất chính xác bằng các giải MDP rút gọi với trạng thái $s_{i} + f_{i} = 100$ và $\gamma = 0.9$, và kết quả được minh họa trong hình trên. Kết quả trực quan này là hợp lý, chúng ta thấy rằng, nhánh có xác suất hoàn vốn cao hơn nên ưu tiên hơn, nhưng cũng có phần thưởng thăm dò liên quan đến nhánh mới chỉ được thử một vài lần.\\
+ \subsection{Tính gần đúng chính sách tối ưu trong Bandit}
+ \indent Tính toán các chỉ số Gittins cho các vấn đề trực tế hơn hiếm khi dễ dàng. May mắn thay, các thuộc tính chung được quan sát trong phần trước, cụ thể là sự mong muốn của một số kết hợp giữa giá trị ước tính và sự không chắc chắn-sự tạo ra các chính sách đơn giản hóa ra gần như tốt hơn các chính sách tối ưu.\\
+ \indent Lớp phương pháp đầu tiên sử dụng giới hạn tin cậy trên hoặc phương pháp Heuristic UCB, giới hạn tin cậy trên trước đây đã được giới hiệu cho tìm kiếm trên cây Monte Carlo (đã được giới thiệu ở phần 5.11) Ý tưởng cơ bản là sử dụng các mẫu từ mỗi nhánh để thiết lập khoảng tin cậy cho giá trị của nhánh để thiết lập khoảng tin cậy cho giá trị của nhánh. Có thể hiểu là trong một phạm vi giá trị nào đó có thể ước tính thì là một giá trị có độ tin cậy cao, sau đo chọn nhánh có giới hạn trên cao nhất trên khoảng tin cậy của nó. Giới hạn trên là tính giá trị hiện tại của $\hat{\mu_{i}}$cộng với một bội số của độ lệch chuẩn của độ đảm bảo trong thanh đo giá trị. Độ lệch chuẩn tỉ lệ $\sqrt{1/N_{i}}$ trong đó $N_{i}$ là số lần nhánh $M_{i}$ được lấy mẫu. Vì vậy, chúng ta có một giá trị chỉ số gần đúng cho nhánh $M_{i}$ được cho bởi công thức:
+ \begin{align*}
+     UCB(M_{i}) = \hat{\mu_{i}} + g(N)/\sqrt{N_{i}},
+ \end{align*}
+ Trong đó $g(N)$ là một hàm số thích hợp của $N$, tổng số mẫu được lấy ra từ tất cả các nhánh. Chính sách $UCB$ chỉ cần chọn nhánh có giá trị $UCB$ cao nhất. Lưu ý rằng giá trị $UCB$ không hoàn toàn là một chỉ số vì nó phụ thuộc vào $N$, tổng số mẫu được lấy trên tất cả các nhánh chứ không chỉ trên nhánh đó.\\
+ \indent Phương pháp thứ hai là phương pháp Thompson. Chọn ngẫu nhiên một nhánh theo xác suất mà nhánh trên thực tế là tối ưu, dựa trên các mẫu đã có. Giả sử $P_{i}(\mu_{i})$là một phân phối xác suất hiện tại cho giá trị thực của nhánh $M_{i}$. Sau đó, một cách đơn giản để thực hiện phương pháp này là tạo ra một mẫu từ $P_{i}$ và sau đó chọn mẫu tốt nhất. thuật toán này cũng có điểm hạn chế là độ phức tạp là $O(\log N).$
+ \subsection{Một số biến thể không có chỉ số}
+ \indent Vấn đề Bandit có khá nhiều ứng dụng, một trong số đó là thử nghiệm các phương pháp điều trị trong y tế mới đối với những bệnh nhân bị bệnh. Cụ thể với nhiệm vụ này, mục tiêu tối đa hóa tổng số lần thành công theo thời gian rõ ràng có ý nghĩa: Mỗi lần thử nghiệm thành công có nghĩa là một mạng người được cứu sống, và chiều ngược lại mỗi lần thất bại thì một mạng người sẽ ra đi mãi mãi. Nếu chúng thay đổi các giả định một chút, một vấn đề khác lại xuất hiện. Giả sử rằng, thay vì xác định phương pháp điều trị y tế tốt nhất cho từng bệnh nhân mới, chúng ta thay sẽ thử nghiệm các loại thuốc khác nhau trên các mẫu vi khuẩn với mục tiêu quyết định loại thuốc nào tốt nhất, sau đó sẽ đưa loại thuốc đó vào sản xuất. Trong trường hợp này, không có chi phí bổ sung nếu chi khuẩn chết-một khoản chi phí cố định cho mỗi lần kiểm tra, nhưng chúng ta phải giảm thiểu tối đa việc thử nghiệm thất bại. thay đó, người ta sẽ thử nghiệm một các có bài bản nhât, cố gắng đưa ra quyết định nhanh nhất, tốt nhất để hạn chế những tiêu cực nhất.\\
+ \indent Một khái niệm quan trọng của quá trình Bendit là siêu quy trình hay BSP, trong đó mỗi nhánh là một quy đình quyết định Markov đầy đủ, chứ không phải là quy trình Markov chỉ với hành động khả thi. Tất cả các thuộc tính được giữ nguyên: Các nhánh đọc lập, chỉ có thể thực hiện một (hoặc một số giới hạn) tại một thời điểm và có một hệ số chiết khấu duy nhất. Một ví dụ về BSP bao gồm cuộc sống hằng ngày mà một người có thể thực hiện, một người có thể tham giá một nhiệm cụ tại một thời điểm, mặc dù một nhiệm vụ có thể cần chú ý; quản lý dự án với nhiều chương trình, giảng dạy cho nhiều học sinh có mức độ nhận thức khác nhau, để miêu tả các trường hợp này, người ta gọi là đa nhiệm. Nó phổ biến đế mức khó nhận thấy, khi đưa ra quyết định trong thực tế, các nhà phan tích quyết định hiếm khi hỏi khác hàng của họ liệu có những vấn đề khác không.\\
+ \indent Có thể lý giải như sau: “Nếu có $n$ MDP rời rạc thì rõ ràng một chính sách tối ưu tổng thể được xây dựng từ các giải pháp tối ưu của từng MDP. Với chính sách $\pi_{i}$ tối ưu của nó, mỗi MDP trở thành một quá trình thưởng Markov trong đó chỉ có một hành động  $\pi_{i}(s)$ ở mỗi trạng thái $s$. Vì vậy, chúng tôi đã rút gọn siêu quy trình của tên cướp có vũ trang $n$ thành quy trình Bendit. ” Ví dụ: nếu một nhà phát triển bất động sản có một đội xây dựng và một số trung tâm mua sắm để xây dựng, có vẻ như một lẽ thường tình là người ta nên đưa ra kế hoạch xây dựng tối ưu cho mỗi trung tâm mua sắm và sau đó giải quyết vấn đề kẻ cướp để quyết định nơi gửi phi hành đoàn mỗi ngày. Mặc dù điều này nghe có vẻ rất hợp lý, nhưng nó không chính xác. Trên thực tế, chính sách tối ưu toàn cầu cho một BSP có thể bao gồm các hành động dưới mức tối ưu cục bộ theo quan điểm của MDP cấu thành mà chúng được thực hiện. Lý do cho điều này là sự sẵn có của các MDP khác để hành động làm thay đổi sự cân bằng giữa phần thưởng ngắn hạn và dài hạn trong một MDP thành phần. Trên thực tế, nó có xu hướng dẫn đến hành vi tham lam hơn trong mỗi MDP (tìm kiếm phần thưởng ngắn hạn) bởi vì việc nhắm đến phần thưởng dài hạn trong một MDP sẽ làm trì hoãn phần thưởng trong tất cả các MDP khác.\\
+ \indent Một ví dụ khác: giả sử lịch trình xây dựng tối ưu tại địa phương cho một trung tâm mua sắm có cửa hàng đầu tiên có sẵn cho thuê vào tuần 15, trong khi lịch trình dưới mức tối ưu chi phí cao hơn nhưng có cửa hàng đầu tiên vào tuần thứ 5. Nếu có bốn trung tâm mua sắm để xây dựng, có thể tốt hơn nếu sử dụng lịch trình dưới mức tối ưu tại địa phương trong mỗi lịch trình để giá thuê bắt đầu đến từ các tuần 5, 10, 15 và 20, thay vì các tuần 15, 30, 45 và 60. Nói cách khác, giá thuê sẽ chỉ là 10 -chậm trễ hàng tuần đối với một MDP duy nhất sẽ chuyển thành độ trễ 40 tuần đối với MDP thứ tư. Nhìn chung, các chính sách tối ưu toàn cầu và địa phương nhất thiết chỉ trùng khớp khi hệ số chiết khấu là 1; trong trường hợp đó, không có chi phí để trì hoãn phần thưởng trong bất kỳ MDP nào.\\
+ \indent Một chính sách tối ưu như vậy nếu tồn tại được gọi là chính sách thống trị. Được giải thích là bằng cách thêm các hành động vào các trạng thái, luôn có thể tạo một phiên bản thoải mái của MDP (xem Phần 3.6.2) để nó có một chính sách thống trị, do đó đưa ra giới hạn trên về giá trị của hành động trong cánh tay. Giới hạn dưới có thể được tính toán bằng cách giải quyết từng nhánh riêng biệt (có thể mang lại chính sách dưới mức tối ưu về tổng thể) và sau đó tính toán các chỉ số Gittins. Nếu giới hạn dưới cho hành động trong một nhánh cao hơn giới hạn trên cho tất cả các hành động khác, thì vấn đề đã được giải quyết; nếu không, thì sự kết hợp giữa tìm kiếm trước và tính toán lại các giới hạn được đảm bảo để cuối cùng xác định một chính sách tối ưu cho BSP. Với cách tiếp cận này, các BSP tương đối lớn (1040 trạng thái trở lên) có thể được giải quyết trong vài giây.
+ \section{MDPs quan sát được một phần}
+ \indent Trong mục đầu tiên, trong mô tả quá trình ra quyết định của Markov giả định trong môi trường quan sát được. Với giả định này, ta luôn biết tác tử đang ở trạng thái này, ddiefu này kết hợp với giả thuyết Markov cho mô hình chuyển tiếp, có nghĩa là chính sách tối ưu chỉ phụ thuộc vào trạng thái hiện tại. Tuy vậy, khi môi trường chỉ có thể quan sát được một phần, thì phạm vi sẽ thu gọn hơn rất nhiều, kém rõ ràng hơn. Trong môi trường này, tác tử có đôi lúc sẽ không biết mình đang ở trạng thái nào, vì vậy tác tử không thể thực hiện được $\pi (s)$ hành động cho các khuyến nghị của trạng thái đó. Hơn nữa, tiện ích của trạng thái $s$ và hành động tối ưu trong đó không chỉ phụ thuộc vào trạng thái hiện tại mà còn phụ thuộc vào mức độ tác tử nó biết đang ở trạng thái nào để thực hiện hành động. Với những lý do này, MDPs chỉ quan sát được một phần (Viết tắt là POMDPs) là MDP có thể quan sát được một phần các trạng thái, hành động, phần thưởng được xem là mô hình khó hơn nhiều so với MDP thông thường. Tuy vậy bài toán POMDP là trường hợp khó có thể tránh khỏi trong thế giới thực, vì chúng ta luôn gặp trường hợp bị mất phương hướng trong một số trường hợp.\\
+ \subsection{Mô tả POMDPs}
+ \indent Trước hết, ta xác định đúng và mô tả đầy đủ về bài toán POMDP. Về cơ bản, POMDP có các thành phần giống như bài toán MDP-mô hình chuyển tiếp $P(s^{'}|s,a)$, tập hành động $A$, hàm phần thưởng $R(s, a, s^{'})$, mô hình cảm biến xác suất $P(e|s)$, như ta đã biết, mô hình cảm biến xác định xác suất nhận biết bằng chứng $e$ ở trạng thái $s$. Như đối với MDP, chúng ta có thể có được các biểu diễu nhỏ gọn cho bài toán POMDP lớn bằng cách sử dụng mạng quyết định động, ở đây do môi trường bị ẩn một số trường hợp nên ta thêm bộ cảm biến\textbf{$E_{t}$}, giả định các biến trạng thái\textbf{$X_{t}$} có thể không quan sát được một cách trực tiếp. Mô hình cảm biến POMDP sau đó được đưa ra bởi công thức \textbf{$P(E_{t}|X_{t})$}, ví dụ chúng ta thêm các cảm biến DDN trong hình mô tả hành động của robot lau nhà, chẳng hạn như cảm biến Meter để ước tính độ lớn của vécto vận tốc\textbf{$X^{'}(t)$}. Cảm biến này cung cấp khoảng cách tính từ vị trí của robot đến bức tường từng hướng trong số bốn hướng chính liên quan đến hướng hiện tại của robot. Các giá trị này phụ thuộc vào vị trí hiện tại, định hướng \textbf{$(t)$}.\\
+ \indent Trong các chương "Môi trường tìm kiếm phức tạp" và "Lập kế hoạch tự động", chúng ta đã nghiên cứu về các vấn đề lập kế hoạch không xác định và có thể quan sát một phần và xác định các trạng thái niềm tin-là tập hợp các trạng thái thực tế mà tác nhân có thể ở, có thể hiểu khái niệm là để mô tả và tính toán các giái pháp có thể xảy ra. Trong POMDPs, trạng thái niềm bin $b$ trở thành xác suất trên tất cả có thể có. Ví dụ, trong các trạng thái in tưởng cho bài POMDP cho bài môi trường 4*3 có thể là phân phối đồng đều trên chín trạng thái danh nghĩa cùng với số 0 cho trạng thái đầu cuối, nghĩa là tập hợp trạng thái có thể xảy ra là ${1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 1/9, 0, 0}$.
+ \indent Chúng ta sử dụng kí hiệu $b(s)$ chỉ các xác suất được gán cho trạng thái $s$ bởi trạng thái niềm tin $b$. Tác tử có thể tính toán trạng thái niềm tin hiện tại của nó dưới dạng thực tế với chuỗi các khái niệm và hành động. Đây thực chất là một phương pháp lọc đệ quy chỉ ra trạng thái niềm tin mới từ trạng thái niềm tin trước đó. Đối với POMDP, chúng ta cũng có một hành động để xem xét nhưng cơ bản kết quả giống nhau. Nếu như $b$ là trạng thái niềm tin trước đo và tác tử thực hiện hành động $a$ và sau đó nhận thức bằng chứng $e$, dựa vào đây, trạng thái niềm tin mới thu được bằng các tính xác suất hiện đang ở trạng thái $s^{'}$, cho mỗi $s^{'}$, ta có công thức sau:
+ \begin{align*}
+     b^{'}(s^{'}) = \alpha P(e|s^{'})\sum_{s}P(s^{'}|s,a)b(s).
+ \end{align*}
+ Với $\alpha$ là một hằng số chuẩn hóa sao cho tổng trạng thái niềm tin bằng 1. Bằng cách áp dụng toán tử lọc, ta có thể viết điều này:
+ \begin{align*}
+     b^{'} = \alpha \text{FORWARD}(b,a,e) \tag{17.16}
+ \end{align*}
+ Quay lại ví dụ bài toán POMDP trong môi trường có kích thước 4*3, giả sử tác tử di chuyển sang trái và cảm biến của tác tử báo cáo là một bức tường liền kề, thì rất có thể tác nhân sẽ di chuyển sang ô (3,1), mặc dù không được đảm bảo, vì cả khi chuyển động và cảm biến đều bị nhiễu.\\
+ \indent Thông tin chi tiết cơ bản để hiểu về bài toán POMDP là \textit{Tối ưu hành động phụ thuộc vào trạng thái niềm tin hiện tại của tác tử}. Một chính sách tối ưu của tác tử được miêu tả là $\pi^{*}(b)$ cho mỗi bước của hành động. Nó không phụ thuộc vào trạng thái thực tế của phạm vi xét, đây có thể coi là điều tốt với bài toán vì nếu phạm vi không biết cà trạng thái thực tế của tác tử, tác tử những gì nó biết là trạng thái niềm tin. Do đó, chu kỳ quyết định của tác tử trong POMDP có thể được chia thành 3 bước sau:
+ \begin{enumerate}
+     \item Với trạng thái niềm tin của $b$, ta xây dựng một hành động có dạng $a=\pi ^{*}(b)$.
+     \item Quan sát $e$.
+     \item Đặt trạng thái niềm tin hiện tại thành $\text{FORWARD}(b,a,e)$ và lặp lại các bước này
+ \end{enumerate}
+ Chúng ta có thể coi POMDPs là yêu cầu tìm kiếm trong không gian trạng thái niềm tin, giống như các phương pháp cho các bài toán không có cảm biến và dự phòng trong Chương "Tìm kiếm trong môi trường phức tạp". Sự khác biệt chính là không gian trạng thái niềm tin POMDP là tính liên tục, bởi vì trạng thái niềm tin POMDP là một xác suất phân bổ. Ví dụ, trạng thái niềm tin đối với bài toán 4*3 là một điểm trong không gian liên tục 11 chiều. Một hành động thay đổi trạng thái niềm tin, không chỉ trạng thái vật lý, bởi vì nó ảnh hưởng đến cảm nhận được tiếp nhận. Do đó, hành động được đánh giá ít nhất một phần theo kết quả thông tin mà tác nhân thu được. Do đó, POMDP bao gồm giá trị của thông tin (Phần 6 của Chương quyết định đơn giản) như một thành phần của vấn đề quyết định:
+ \begin{align*}
+     P(e|a,b) &= \sum_{s^{'}}P(e|a,s^{'},b)P(s^{'}|a,b)\\
+     &=\sum_{s^{'}}P(e|s^{'})P(s^{'}|a,b)\\
+     &= \sum_{s^{'}}P(e|s^{'})\sum_{s}P(s^{'}|s,a)b(s).
+ \end{align*}
+ Chúng ta hãy viết lại các xác suất có điều kiện để đạt được $b^{'}$ từ $b$ và hành động $a$ đã cho, dưới dạng $P(b^{'}|b,a)$, xác suất này có thể được tính:
+ \begin{align*}
+     P(b^{'}|b,a) &= \sum_{e}P(b^{'}|e,a,b)P(e|a,b)\\
+     &=\sum_{e}P(b^{'}|e,a,b)\sum_{s^{'}}P(e|s^{'})\sum_{s}P(s^{'}|s,a)b(s). \tag{17.17}
+ \end{align*}
+ Với $P(b^{'}|e,a,b$ là 1 nếu $b^{'} = \text{FORMARD}(b,a,e)$  bằng 0 trong các trường hợp còn lại.
+ \indent Với phương trình (17.17) có thể được xem để xác định một mô hình chuyển tiếp cho không gian trạng thái niềm tin. Chúng ta cũng có thể xác định một hàm phần thưởng cho các chuyển đổi trạng thái niềm tin, có nguồn gốc từ phần thưởng dự kiến của các chuyển đổi trạng thái mà có thể quan sát được có thể xảy ra. Ở đây, ta sử dụng đơn giản $\rho (b,a)$, phần thưởng mong muốn nếu tác tử thực hiện hành động $a$ ở trạng thái tin tưởng $b$:
+ \begin{align*}
+     \rho(b,a) = \sum_{s}b(s)\sum_{s^{'}}P(s^{'}|s,a)S(s,a,s^{'}).
+ \end{align*}
+ Cùng với hai xác suất $P(b^{'}|b,a$ và $\rho(b,a)$ xác định MDP quan sát được trên không gian của trạng thái niềm tin. Hơn nữa, có thể chỉ ra rằng một chính sách tối ưu cho MDP này, $\pi^{'}(b)$, cũng là một chính sách tối ưu cho POMDP ban đầu. Nói cách khác, việc giải một POMDP trên không gian trạng thái niềm tin tương ứng. Thực tế này có lẽ ít ngạc nhiên hơn nếu chúng ta nhớ rằng trạng thái niềm tin luôn có thể quan sát được với tác tử.
+\section{Thuật toán giải vấn đề POMDPs}
+Chúng ta đã chỉ ra cách giảm POMDP xuống MDP, nhưng MDP mà chúng ta thu được có không gian trạng thái liên tục (và bậc cao). Điều này có nghĩa là chúng ta sẽ phải thiết kế lại các thuật toán lập trình động từ Phần 10.2.1 và 10.2.2, giả định một không gian trạng thái hữu hạn và một số hành động hữu hạn. Ở đây chúng ta mô tả thuật toán lặp giá trị được thiết kế đặc biệt cho POMDP, tiếp theo là thuật toán ra quyết định trực tuyến tương tự như thuật toán được phát triển cho các trò chơi trong Chương về lý thuyết trò chơi.\\
+\subsection{Thuật toán lặp giá trị cho bài toán POMDPs}
+\indent Trong phần 10.2.1 đã mô tả một thuật toán lặp giá trị tính toán một giá trị tiện ích cho mỗi trạng thái. Với trạng thái niềm tin vô hạn, chúng ta cần phải sáng tạo hơn. Hãy xem xét một chính sách tối ưu $\pi^{*}$ và ứng dụng của nó trong một trạng thái niềm tin cụ thể $b$: chính sách tạo ra một hành động, sau đó, đối với mỗi nhận thức tiếp theo, trạng thái niềm tin được cập nhật và một hành động mới được tạo ra. Do đó, đối với trạng thái $b$ cụ thể này, chính sách hoàn toàn tương đương với một kế hoạch có điều kiện, như được định nghĩa trong chương về "tìm kiếm trong môi trường phức tạp" cho các vấn đề không xác định và một phần có thể quan sát được. Thay vì nghĩ về các chính sách, chúng ta hãy nghĩ về các kế hoạch có điều kiện và tiện ích mong đợi của việc thực hiện một kế hoạch có điều kiện cố định thay đổi như thế nào với trạng thái tin tưởng ban đầu. Chúng ta thực hiện hai nhận xét:
+\begin{enumerate}
+    \item Gọi công dụng của việc thực hiện một kế hoạch có điều kiện cố định $p$ bắt đầu ở trạng thái $b$ là $\alpha_{p}(s)$. Khi đó, tiện ích mong đợi của việc thực thi $p$ ở trạng thái tin tưởng $b$ chỉ là $\sum_{s}b(s)\alpha_{p}(s)$, hoặc $b\alpha_{p}(s)$ nếu chúng ta coi cả hai đều là vectơ. Do đó, tiện ích mong đợi của một kế hoạch có điều kiện cố định thay đổi tuyến tính với b; nghĩa là, nó tương ứng với một siêu phẳng trong không gian niềm tin.
+    \item Tại bất kỳ trạng thái tin tưởng $b$, một chính sách tối ưu sẽ chọn thực hiện phương án có điều kiện với hiệu quả mong đợi cao nhất; và tiện ích mong đợi của $b$ theo một chính sách tối ưu chỉ là phương án có điều kiện đó: $U(b) = U^{\pi^{*}}(b)=\max_{p}b.\alpha_{p}$ Nếu một chính sách tối ưu $\pi^{*}$ chọn thực hiện $p$ bắt đầu từ  $b$, thì điều hợp lý là nó có thể chọn thực hiện $b$ ở các trạng thái tin tưởng rất gần với $b$; thực tế, nếu chúng ta ràng buộc độ sâu của các kế hoạch có điều kiện, thì chỉ có rất nhiều kế hoạch như vậy và không gian liên tục của các trạng thái niềm tin nói chung sẽ được chia thành các vùng, mỗi vùng tương ứng với một phương án có điều kiện cụ thể là tối ưu trong vùng đó.
+\end{enumerate}
+Từ hai quan sát này, chúng ta thấy rằng hàm tiện ích $U(b)$ trên các trạng thái niềm tin, là cực đại của một tập hợp các siêu mặt phẳng, sẽ là tuyến tính từng mảnh và lồi.\\
+\indent Để minh họa điều này, chúng ta sử dụng một phạm vi đơn giản. Các trạng thái được gắn nhãn $A$ và $B$ và có hai hành động: Giữ nguyên với xác suất 0.9 và Chuyển sang trạng thái khác với xác suất 0.9. Phần thưởng là $R (·, ·, A) = 0$ và $ R (·, ·, B) = 1$ nghĩa là, bất kỳ quá trình chuyển đổi nào kết thúc bằng $A$ đều có phần thưởng là 0 và bất kỳ chuyển đổi nào kết thúc bằng $B$ đều có phần thưởng là 1. Bây giờ chúng ta sẽ giả sử hệ số chiết khấu $\gamma = 1$. Cảm biến dự báo đúng trạng thái với xác suất 0,6. Rõ ràng, đại lý nên Ở lại khi nó ở trạng thái $B$ và di chuyển khi nó ở trạng thái $A$. Vấn đề là nó không biết nó ở đâu!.
+\begin{figure}[H]
+    \centering
+    \includegraphics{images/chapter17/hinh 17.15.PNG}
+    \caption{(a) Tiện ích của hai kế hoạch một bước như một hàm của trạng thái tin tưởng ban đầu b (B) cho hai trạng thái, với hàm tiện ích tương ứng được in đậm. (b) Các tiện ích cho 8 kế hoạch hai bước riêng biệt. (c) Các tiện ích cho bốn kế hoạch hai bước chưa được chiếu sáng. (d) Chức năng tiện ích cho các kế hoạch tám bước tối ưu.}
+    \label{fig:my_label}
+\end{figure}
+\indent Ưu điểm của thế giới hai trạng thái là không gian niềm tin có thể được hình dung trong một chiều, bởi vì hai xác suất $b(A)$ và $b(B)$ tổng bằng 1. Trong Hình 11.11 (a), x-axi đại diện cho trạng thái niềm tin, được xác định bởi $b(B)$ , xác suất ở trạng thái $B$. Bây giờ chúng ta hãy xem xét các kế hoạch một bước [Stay] và [Go], mỗi kế hoạch nhận được phần thưởng cho một lần chuyển đổi như sau:
+\begin{align*}
+    \alpha_{\text{[Stay]}}(A) &= 0.9R(A,Stay,A) + 0.1(A.Stay,B) = 0.1\\
+    \alpha_{\text{[Stay]}}(B) &= 0.1R(B,Stay,A) + 0.1(B.Stay,B) = 0.9\\
+    \alpha_{\text{[Go]}}(A) &= 0.1R(A,Go,A) + 0.9(A,Go,B) = 0.9\\
+    \alpha_{\text{[Go]}}(B) &= 0.9R(B,Stay,A) + 0.1(B,Stay,B) = 0.1
+\end{align*}
+Các siêu mặt phẳng (đường thẳng, trong trường hợp này) cho $b.\alpha_{\text{[Stay]}}$ và $b.\alpha_{\text{[Go]}}$ được thể hiện trong Hình 11.11(a). Do đó, hàm tiện ích cho bài toán trong phạm vi hữu hạn cho phép chỉ một hành động và trong mỗi “phần” của hàm tiện ích tuyến tính từng phần, một hành động tối ưu là hành động đầu tiên của phương án có điều kiện tương ứng. Trong trường hợp này, chính sách một bước tối ưu là Ở lại khi $\b(B) > 0.5$ và sẽ di chuyển $Go$ trong trường hợp còn lại.\\
+Có tám kế hoạch độ sâu 2 riêng biệt trong tất cả, và các tiện ích của chúng được thể hiện trong Hình 11.11(b). Lưu ý rằng bốn trong số các kế hoạch, được thể hiện dưới dạng các đường đứt nét, là không tối ưu trong toàn bộ không gian kế hoạch tổng thể - chúng ta nói rằng các kế hoạch này bị chi phối và chúng không cần phải xem xét thêm. Có bốn kế hoạch không được chọn lọc, mỗi kế hoạch là tối ưu trong một vùng cụ thể, như thể hiện trong Hình 11.11(c).\\
+\indent Chúng tôi lặp lại quy trình cho độ sâu 3. Nói chung, cho $p$ là một kế hoạch có điều kiện theo chiều sâu mà hành động ban đầu của nó là $a$ và kế hoạch con có độ sâu là $(d-1)$ đối với nhận thức $e$ là $p.e$; sau đó ta sử dụng công thức:
+\begin{align*}
+    \alpha_{p}(s) = \sum_{s^{'}}P(s^{'}|s,a)[R(s,a,s^{'}) + \gamma \sum_{e}P(e|s^{'})\alpha_{p.e}(s^{'})] \tag{17.18}
+\end{align*}
+Phép đệ quy này cung cấp cho chúng ta một thuật toán lặp giá trị, được cho trong Hình 11.12. Cấu trúc của thuật toán và phân tích lỗi của nó tương tự như cấu trúc của thuật toán lặp giá trị cơ bản trong Hình 11.6; sự khác biệt chính là thay vì tính toán một số tiện ích cho mỗi tiểu bang, POMDP-VALUE-ITERATION duy trì một bộ sưu tập các kế hoạch chưa được kiểm tra
+\begin{figure}
+    \centering
+    \includegraphics{images/chapter17/hinh 17.16.PNG}
+    \caption{Các bước của thuật toán lặp giá trị cho bài toán POMDP}
+    \label{fig:my_label}
+\end{figure}
+Lưu ý rằng trạng thái niềm tin trung gian có giá trị thấp hơn trạng thái $A$ và trạng thái $B$, bởi vì ở trạng thái trung gian các tác tử thiếu thông tin cần thiết để chọn một hành động tốt. Đây là lý do tại sao thông tin có giá trị theo nghĩa được xác định và các chính sách tối ưu trong POMDP thường bao gồm hành động thu thập thông tin.\\
+\indent Kể từ khi thuật toán này được phát triển vào những năm 1970, đã có một số tiến bộ, bao gồm các dạng lặp giá trị hiệu quả hơn và các loại thuật toán lặp chính sách khác nhau. Một số trong số này được thảo luận trong phần ghi chú ở cuối chương. Tuy nhiên, đối với các POMDP nói chung, việc tìm kiếm các chính sách tối ưu là rất khó (thực tế là khó khăn cho PSPACE - là một bài toán rất khó). Phần tiếp theo mô tả một phương pháp gần đúng khác để giải các POMDP, một phương pháp dựa trên tìm kiếm trước.
+\subsection{Thuật toán tìm kiếm trực tuyến cho bài toán POMDPs}
+Những bước cơ bản để xây dựng thuật toán giải  POMDP trực tuyến rất đơn giản: nó bắt đầu với một số trạng thái tin tưởng trước đó; nó chọn một hành động dựa trên một số quá trình cân nhắc tập trung vào trạng thái niềm tin hiện tại của nó; sau khi hành động, nó nhận được một quan sát và cập nhật trạng thái niềm tin của nó bằng cách sử dụng một thuật toán lọc; và quá trình lặp lại.\\
+\begin{figure}
+    \centering
+    \includegraphics{images/chapter17/hinh 17.17.PNG}
+    \caption{Một phần của cây expectimax cho POMDP 4 × 3 với trạng thái tin tưởng ban đầu đồng nhất. Các trạng thái niềm tin được mô tả bằng bóng mờ tỷ lệ thuận với xác suất ở mỗi vị trí.}
+    \label{fig:my_label}
+\end{figure}
+Một lựa chọn rõ ràng cho quá trình là thuật toán expectimax được giới thiệu trong mục 4 phần 2, ngoại trừ các trạng thái niềm tin chứ không phải như các nút quyết định trong cây. Các nút cơ hội trong cây POMDP có các nhánh được gắn nhãn bởi các quan sát có thể có và dẫn đến trạng thái tin tưởng tiếp theo, với các xác suất chuyển đổi được đưa ra bởi Công thức (17.17). Một đoạn của cây expectimax trạng thái niềm tin cho POMDP 4 × 3 được thể hiện trong Hình 11.12\\
+\indent Độ phức tạp về thời gian của một tìm kiếm toàn diện đến độ sâu d là $O(|A|^{d}.|E|^{d})$ trong đó $|A| $là số lượng các hành động có sẵn và $|E|$ là số lượng các khái niệm có thể có. (Lưu ý rằng con số này ít hơn nhiều so với số lượng kế hoạch có điều kiện theo chiều sâu có thể được tạo ra bằng cách lặp lại giá trị.) Như trong trường hợp có thể quan sát được, lấy mẫu tại các nút cơ hội là một cách tốt để cắt giảm hệ số phân nhánh mà không làm mất quá nhiều độ chính xác trong quyết định cuối cùng. Do đó, mức độ phức tạp của việc ra quyết định trực tuyến gần đúng trong POMDP có thể không tệ hơn nhiều so với MDP.\\
+\indent Các tác tử POMDP dựa trên mạng quyết định động và ra quyết định trực tuyến có một số lợi thế so với các thiết kế tác nhân đơn giản hơn khác được trình bày trong các chương trước. Đặc biệt, họ xử lý các môi trường ngẫu nhiên, có thể quan sát được một phần và có thể dễ dàng sửa đổi “kế hoạch” của mình để xử lý các bằng chứng bất ngờ. Với các mô hình cảm biến thích hợp, họ có thể xử lý lỗi cảm biến và có thể lập kế hoạch thu thập thông tin. Chúng thể hiện "sự suy giảm đáng kể" dưới áp lực thời gian và trong các môi trường phức tạp, sử dụng các thuật toán xấp xỉ khác nhau.\\
+\indent Vậy còn thiếu những gì? Trở ngại chính đối với việc triển khai các tác nhân như vậy trong thế giới thực là không có khả năng tạo ra hành vi thành công trong quy mô thời gian dài. Các lượt chơi ngẫu nhiên hoặc gần như ngẫu nhiên không có hy vọng nhận được bất kỳ phần thưởng tích cực nào, chẳng hạn như nhiệm vụ đặt bàn cho bữa tối, có thể thực hiện hàng chục triệu hành động kiểm soát động cơ. Có vẻ như cần phải mượn một số ý tưởng lập kế hoạch phân cấp được mô tả trong 4 mục lập kế hoạch tự động. Tại thời điểm viết bài, vẫn chưa có những cách hiệu quả và thỏa đáng để áp dụng những ý tưởng này trong môi trường ngẫu nhiên, có thể quan sát được một phần.\\
+\section{Tổng kết}
+Chương này chỉ ra cách sử dụng kiến thức về thế giới để đưa ra quyết định ngay cả khi kết quả của một hành động không chắc chắn và phần thưởng cho hành động có thể không được gặt hái cho đến khi nhiều hành động đã trôi qua. Những điểm chính như sau:
+\begin{itemize}
+    \item Các vấn đề về quyết định tuần tự trong môi trường ngẫu nhiên, còn được gọi là \textbf{quy trình quyết định Markov}, hoặc MDP, được xác định bởi một mô hình chuyển tiếp xác định kết quả xác suất của các hành động và một hàm phần thưởng chỉ định phần thưởng ở mỗi trạng thái.
+    \item Tiện ích của một chuỗi trạng thái là tổng tất cả các phần thưởng trong chuỗi, có thể được chiết khấu theo thời gian. Giải pháp của MDP là một chính sách liên kết quyết định với mọi trạng thái mà đại lý có thể đạt được. Một chính sách tối ưu tối đa hóa tiện ích của các trình tự trạng thái gặp phải khi nó được thực thi.
+    \item Tiện ích của một trạng thái là tổng phần thưởng dự kiến khi một chính sách tối ưu được thực thi từ trạng thái đó. Thuật toán lặp giá trị giải quyết lặp đi lặp lại một tập hợp các phương trình liên quan đến tiện ích của mỗi trạng thái với các trạng thái lân cận của nó.
+    \item Việc lặp lại chính sách xen kẽ giữa việc tính toán các tiện ích của các tiểu bang theo chính sách hiện tại và cải thiện chính sách hiện tại đối với các tiện ích hiện tại.
+    \item MDP có thể quan sát được một phần, hay POMDP, khó giải quyết hơn nhiều so với MDP. Chúng có thể được giải quyết bằng cách chuyển đổi thành MDP trong không gian liên tục của các trạng thái niềm tin; cả thuật toán lặp giá trị và lặp chính sách đều đã được phát minh. Hành vi tối ưu trong POMDPs bao gồm thu thập thông tin để giảm sự không chắc chắn và do đó đưa ra quyết định tốt hơn trong tương lai.
+    \item Một tác nhân lý thuyết quyết định có thể được xây dựng cho môi trường POMDP. Tác nhân sử dụng mạng quyết định động để đại diện cho các mô hình chuyển đổi và cảm biến, để cập nhật trạng thái niềm tin của nó và dự kiến các chuỗi hành động có thể xảy ra.
+\end{itemize}
+
+
+

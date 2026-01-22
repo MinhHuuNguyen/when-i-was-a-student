@@ -1,0 +1,246 @@
+\chapter{Biểu diễn tri thức}
+
+\section{Giới thiệu}
+- Trí tuệ nhân tạo là một nhánh của khoa học liên quan đến việc làm cho máy có trí thông minh (suy nghĩ, hiểu ngôn ngữ, tự học,…).\\
+- Trí tuệ nhân tạo = Suy diễn + Tri thức\\
+- Biểu diễn tri thức (knowledge representation) là một thành phần của trí tuệ nhân tạo, là nền tảng của trí tuệ nhân tạo (các phương pháp, cách thức biểu diễn tri thức và các công cụ hỗ trợ việc biểu diễn tri thức).\\
+- Dữ liệu, Thông tin, Tri thức:\\
+ + Dữ liệu (data): là các sự kiện (facts) hoặc các ký hiệu (symbols).\\
+    VD: Nhiệt độ ngoài trời là 5 độ C\\
+ + Thông tin (information): là dữ liệu đã được xử lý hoặc chuyển  đổi thành những dạng hoặc cấu trúc phù hợp cho việc sử dụng của con người.\\
+    VD: Ngoài trời thời tiết lạnh.\\
+ + Tri thức (knowledge): là sự hiểu biết (nhận thức) về thông tin.\\
+    VD: Nếu ngoài trời thời tiết lạnh thì bạn nên mặc áo choàng ấm.\\
+    
+\section{Kĩ thuật bản thể học}
+- Các khái niệm chung về sự kiện, thời gian, đối tượng vật lý,.. xảy ra trong nhiều lĩnh vực khác nhau.\\
+- Biểu diễn những khái niệm trừu tượng này được gọi là kỹ thuật bản thể học (ontology) - là một mô hình dữ liệu biểu diễn một lĩnh vực và được sử dụng để suy luận về các đối tượng trong lĩnh vực đó và mối quan hệ giữa chúng.\\
+- Một ontology là một đặc tả (biểu diễn) hình thức và rõ ràng về các khái niệm.\\
+- Một ontology là một từ vựng dùng chung, được dùng để biểu diễn (mô hình) một lĩnh vực cụ thể: \\
+   + Các đối tượng và/hoặc các khái niệm.\\
+   + Các lớp: Các tập hợp, hay kiểu của các đối tượng.\\
+   + Các thuộc tính và các quan hệ của chúng.\\
+- Một ontology có thể được xem như là một cơ sở tri thức.\\
+- Nội dung của ontology \\
++ Ví dụ: Bài toán sắp xếp các khối (blocks):\\
+	- Các lớp đối tượng: Blocks, Robot Hands \\
+	- Các thuộc tính: shapes of blocks, color of blocks\\
+	- Các quan hệ: On, Above, Below, Grasp\\
+	- Các quá trình: thiết kế hoặc xây nên một tòa tháp\\
+- Mục đích sử dụng của ontology\\
+ + Chia sẻ tri thức\\
+     Ví dụ: Giữa những người sử dụng, giữa các hệ thống, … \\
+ + Sử dụng lại tri thức\\
+     Ví dụ: Sử dụng lại (một phần) tri thức khi các mô hình hoặc hệ thống thay đổi\\
+- Những bản thể luận tồn tại đã được tạo ra dọc theo bốn lộ trình\\
+1. Bởi một nhóm các nhà bản thể học hoặc nhà logic học được đào tạo, những người kiến trúc bản thể học và viết
+tiên đề. Hệ thống CYC chủ yếu được xây dựng theo cách này (Lenat và Guha, 1990).\\
+2. Bằng cách nhập danh mục, thuộc tính và giá trị từ cơ sở dữ liệu hoặc các cơ sở dữ liệu hiện có.
+DBPEDIA được xây dựng bằng cách nhập dữ kiện có cấu trúc từ Wikipedia (Bizer et al., 2007). \\
+3. Bằng cách phân tích cú pháp các tài liệu văn bản và trích xuất thông tin từ chúng.TEXTRUNNER cũ là
+được xây dựng bằng cách đọc một kho dữ liệu lớn của các trang Web (Banko và Etzioni, 2008).\\
+4. Bằng cách lôi kéo những người nghiệp dư không có kinh nghiệm nhập môn kiến thức thông thường.OPENMIND
+hệ thống được xây dựng bởi các tình nguyện viên, những người đề xuất các dữ kiện bằng tiếng Anh (Singh và cộng sự, 2002;
+Chklovski và Gil, 2005).\\
+Ví dụ: Sơ đồ tri thức của Google sử dụng nội dung có cấu trúc từ Wikipedia,
+kết hợp nó với các nội dung khác được thu thập từ khắp nơi trên web dưới sự quản lý của con người. Nó
+chứa hơn 70 tỷ dữ kiện và cung cấp câu trả lời cho khoảng một phần ba các tìm kiếm trên Google
+(Dong và cộng sự, 2014).\\
+\begin{center}
+	\begin{figure}[H]
+		\begin{center}
+	\includegraphics[scale=0.6]{images/chapter10/1.png}
+	\caption{Bản thể luận của thế giới.}
+    \label{bando}
+		\end{center}
+	\end{figure}
+\end{center}
+\section{Danh mục và đối tượng}
+Logic bậc nhất giúp dễ dàng trình bày sự thật về các danh mục, bằng cách liên hệ các đối tượng với danh mục bằng cách định lượng (quantifying) qua các thành viên của nó.\\
+Ví dụ :\\
++ Một đối tượng là một thành viên của một danh mục: $ BB9 \in Basketballs$ \\
+	+ Một danh mục là một lớp con của một danh mục khác: $ Basketballs \subset Balls $\\
+	+ Tất cả các thành viên của một danh mục đều có một số thuộc tính: 	  	   $(x \in Basketballs)  \Longrightarrow Spherical(x) $\\
+	+ Các thành viên của một danh mục có thể được công nhận bởi một số thuộc 	tính.\\
+	  $ Orange(x) \wedge Round(x)  \wedge Diameter(x)=9.5 ′′ \wedge x  \in Balls \Longrightarrow x \in Basketballs $ \\
+	+ Một danh mục nói chung có một số thuộc tính:\\ $Dogs \in DomesticatedSpecie$\\
+- Hai hoặc nhiều danh mục sẽ rời rạc nếu chúng không có thành viên chung.\\
+-Một đối tượng được biểu diễn bởi (Object, Property, Value): được gọi là cách biểu diễn bằng bộ ba đối tượng-thuộc tính-giá trị.\\
+Nếu chúng ta gộp nhiều thuộc tính của cùng một kiểu đối tượng thành một cấu trúc, thì chúng ta có cách biểu diễn hướng đối tượng.\\
+VD: \\
++	Prop(Object, Property1 , Value1 ) \\
++	Prop(Object, Property2 , Value2 ) \\
+	…\\
++	Prop(Object, Propertyn , Valuen )\\
+
+\subsection{Thành phần vật lí}
+- Sử dụng quan hệ PartOf để nói rằng một thứ là một phần của một thứ khác.\\
+- VD :Romania là một phần của Châu Âu:
+	PartOf(Romania, Europe)\\
+- Quan hệ PartOf có tính bắc cầu và phản xạ:\\
++	$PartOf (x, y) \wedge PartOf (y, z)  \Longrightarrow PartOf (x, z)$\\
++	$PartOf (x, x)$\\
+- Khái niệm Bunch (nhóm): \\
+    Ví dụ, nếu táo là Apple1, Apple2 và Apple3, sử dụng khái niệm  BunchOf ({Apple1, Apple2, Apple3}) biểu thị đối tượng kết hợp với ba quả táo là các phần (không phải phần tử).\\
+    Sau đó chúng ta có thể sử dụng Bunch như một đối tượng bình thường, mặc dù không có cấu  trúc.\\
+- Đặc biệt: BunchOf ({x}) = x.
+\subsection{Phép đo}
+- Trong cả lý thuyết khoa học và lý thuyết chung về thế giới, các vật thể có chiều cao, khối lượng, chi phí,
+và như thế. Các giá trị mà chúng tôi gán cho các thuộc tính này được gọi là số đo (measures).\\
+-Ví dụ :
+ độ dài là độ dài của đoạn thẳng là 1,5 inch hoặc 3,81 cm.\\
+-Natural Kinds(Loại tự nhiên):\\
+Một số danh mục có định nghĩa chặt chẽ: một đối tượng là một hình tam giác nếu và chỉ khi nó là
+một đa giác với ba cạnh. Mặt khác, hầu hết các danh mục trong thế giới thực
+không có định nghĩa rõ ràng, chúng được gọi là loại tự nhiên.\\
+VD: gần giống hình cầu.\\
+- Typical (danh mục tiêu biểu): ngoài danh mục Tomatoes, sẽ có danh mục Typical(Tomatoes) - thay vì có một định nghĩa đầy đủ về quả cà chua, có một tập hợp các thuộc tính dùng để xác định đối tượng rõ ràng là quả cà chua điển hình. \\
+- VD: $x \in Typical (Tomatoes) \Longrightarrow  Red (x) \wedge Round (x) $.
+\section{Sự kiện}
+Các đối tượng của phép tính sự kiện là các sự kiện (events), sự trôi chảy (fluents) và các mốc thời gian (time points).\\
+- Tập hợp đầy đủ các vị từ cho một phiên bản của phép tính sự kiện là:\\
+1.	$T (f, t_1 , t_2)$: Fluent $f$ luôn đúng trong mọi thời điểm từ $t_1$ đến $t_2$.\\
+2.	$ Happens(e,t_1,t_2)$: Sự kiện $e$ bắt đầu ở thời điểm $t_1$  và kết thúc ở thời điểm $t_2$.\\
+3.	$Initiates(e, f,t)$: Sự kiện $e$ khiến $f$ trôi chảy trở thành sự thật tại thời điểm $t$.\\
+4.	$Terminates(e, f,t) $: Sự kiện $e$ khiến $f$ trôi chảy không còn đúng tại thời điểm $t$.\\
+5. $Initiated(f,t1,t2)$: Fluent $f$ trở thành đúng tại một thời điểm nào đó giữa $t_1$ và $t_2$.\\
+6. $Terminated(f,t_1,t_2)$: Fluent  $f$ không còn đúng tại một thời điểm nào đó giữa $t_1$ và $t_2$.\\
+7. $t_1 \textless t_2$: Thời điểm $t_1$ xảy ra trước thời điểm $t_2$.\\
+- Phép tính sự kiện mở ra cho chúng ta khả năng nói về các mốc thời gian và khoảng thời gian ( time points and time intervals).\\
+- Chúng ta sẽ xem xét hai loại khoảng thời gian: khoảnh khắc và khoảng thời gian kéo dài (moments and extended intervals).\\
+- Sự khác biệt là moments  không có thời lượng:\\ 
+$	Partition(\{ Moments,ExtendedIntervals \},Intervals) i \in Moments \Leftrightarrow Duration(i)=Seconds(0)$.\\
+- Duration: cho biết sự khác biệt giữa thời gian kết thúcvà thời gian bắt đầu:\\
+	$Interval(i) \Longrightarrow Duration(i)= (Time(End(i))−Time(Begin(i)))$.\\
+- Meet: Hai khoảng thời gian Được gọi là meets nếu thời gian kết thúc của lần thứ nhất bằng thời gian bắt đầu của lần thứ hai.\\
+- Ví dụ:\\
++ $Interval(i)  \Longrightarrow Duration(i)= (Time(End(i))−Time(Begin(i)))$.\\
++ $Time(Begin(AD1900))=Seconds(0)$.\\
++ $Time(Begin(AD2001))=Seconds(3187324800)$.\\
++ $Time(End(AD2001))=Seconds(3218860800)$.\\
++ $Duration(AD2001)=Seconds(31536000)$.\\
+- Ta có: \\
++ $Meet(i, j) \Leftrightarrow End(i)=Begin(j)$\\
++ $Before(i, j) \Leftrightarrow End(i) \textless Begin(j)$\\
++ $After(j,i) \Leftrightarrow Before(i, j)$\\
++ $During(i, j) \Leftrightarrow Begin(j) \textless Begin(i) \textless End(i) \textless End(j)$\\
++ $Overlap(i, j) \Leftrightarrow Begin(i) \textless Begin(j) \textless End(i) \textless End(j)$\\
++ $Starts(i, j) \Leftrightarrow Begin(i) = Begin(j)$\\
++ $Finishes(i, j) \Leftrightarrow End(i) = End(j)$\\
++ $Equals(i, j) \Leftrightarrow Begin(i) = Begin(j) \wedge End(i) = End(j)$\\
+\begin{center}
+	\begin{figure}[H]
+		\begin{center}
+	\includegraphics[scale=0.6]{images/chapter10/2.png}
+	\caption{Dự đoán về khoảng thời gian.}
+    \label{bando}
+		\end{center}
+	\end{figure}
+\end{center}
+
+
+\section{Logic phương thức}
+Logic thông thường : cho phép chúng ta diễn đạt "P là đúng" hoặc "P là sai."\\
+- Logic phương thức: bao gồm các toán tử phương thức đặc biệt lấy câu (sentences) (chứ không phải thuật ngữ) làm đối số.\\
+VD: “A knows P” được biểu diễn bằng kí hiệu $ K_A{P}$ với K là toán tử phương thức kiến thức (modal operator for knowledge),truyền vào 2 đối số agent (tác nhân) và sentence.\\
+- Logic phương thức có thể được sử dụng để suy luận về các câu kiến thức lồng nhau.\\
+VD: $ K_A{P} \wedge K_A{(P \Longrightarrow Q)} \Longrightarrow K_A{Q}      $ \\
+- Cú pháp của logic phương thức giống như logic bậc nhất, ngoại trừ các câu cũng có thể làđược hình thành với các toán tử phương thức.\\
+- Ngữ nghĩa của logic phương thức phức tạp hơn. Trong logic bậc nhất, một mô hình chứa tập hợp các đối tượng và một diễn giải ánh xạ từng tên với đối tượng, mối quan hệ hoặc hàm số. \\
+- Nói chung, một nguyên tử tri thức  $ K_A{P}$ đúng trong thế giới w nếu và chỉ khi P đúng trong mọi thế giới có thể truy cập từ w. Sự thật của các câu phức tạp hơn được suy ra bởi ứng dụng đệ quy-cation của quy tắc này và các quy tắc thông thường của logic bậc nhất. Điều đó có nghĩa là logic phương thức có thể được sử dụng để suy luận về các câu kiến thức lồng nhau: những gì một tác nhân biết về một tác nhân khác kiến thức của đại lý.\\
+- Chúng ta có thể định nghĩa các tiên đề tương tự cho niềm tin (thường được ký hiệu là B) và các phương thức khác. Tuy vậy, một vấn đề với phương pháp tiếp cận logic phương thức là nó giả định tính toàn diện logic về phần của các đại lý. Có nghĩa là, nếu một tác nhân biết một tập hợp các tiên đề, thì nó sẽ biết tất cả các hệ quả của những tiên đề. \\
+
+\section{Hệ thống lý luận cho các danh mục}
+\subsection{Mạng ngữ nghĩa}
+Mạng ngữ nghĩa (Semantic Network - SN) là phương pháp
+biểu diễn dựa trên đồ thị graph-based representation).\\
+- Một mạng ngữ nghĩa bao gồm một tập các nút (nodes) và
+các liên kết (links) để biểu diễn định nghĩa của một khái niệm
+(hoặc của một tập các khái niệm).\\
++ Các nút biểu diễn các khái niệm.\\
++ Các liên k Các liên kết biểu diễn các mối quan hệ (liên hệ) giữa các khái các khái
+niệm.\\
+- Quá trình suy diễn (reasoning/inference) trong mạng ngữ
+nghĩa được thực hiện thông qua cơ chế lan truyền:\\
++ Tác động (Activation)\\
++ Kế thừa (Inheritance) \\
+- Việc kế thừa trở nên phức tạp khi một đối tượng có thể thuộc nhiều loại hoặc khi một danh mục có thể là một tập hợp con của nhiều hơn một danh mục khác.
+Trong những trường hợp như vậy, thuật toán kế thừa có thể tìm thấy hai hoặc nhiều giá trị xung đột. Vì lý do này, đa kế thừa bị cấm trong một số ngôn ngữ LT hướng đối tượng.\\
+ + VD: Trong Java sử dụng kế thừa trong hệ thống phân cấp lớp. Khi kế thừa class con được hưởng tất cả các phương thức và thuộc tính của class cha. Tuy nhiên, nó chỉ được truy cập các thành viên public và protected của class cha. Nó không được phép truy cập đến thành viên private của class cha.\\
+ \begin{center}
+	\begin{figure}[H]
+		\begin{center}
+	\includegraphics[scale=0.8]{images/chapter10/3.png}
+	\caption{Biểu diễn của một mạng ngữ nghĩa}
+    \label{bando}
+		\end{center}
+	\end{figure}
+\end{center}
+\subsection{Logic mô tả}
+Cú pháp của logic bậc nhất được thiết kế để giúp chúng ta dễ dàng nói những điều về các đối tượng.
+- Lôgic mô tả (Description logics): là các ký hiệu được thiết kế để giúp mô tả các định nghĩa và mô tả dễ dàng hơn thuộc tính của các danh mục.\\
+ - Nhiệm vụ suy luận chủ yếu cho logic mô tả là subsumption (kiểm tra nếu một danh mục là một tập hợp con của một danh mục khác bằng cách so sánh các định nghĩa của chúng) và phân loại (kiểm tra  liệu một đối tượng có thuộc về một danh mục hay không).\\
+- Ví dụ : $Bachelor = And(Unmarried,Adult,Male)$\\
+    Tương đương trong logic bậc nhất sẽ là :\\
+          $Bachelor(x) \Leftrightarrow Unmarried(x) \wedge Adult(x) \wedge Male(x)$\
+\begin{center}
+	\begin{figure}[H]
+		\begin{center}
+	\includegraphics[scale=0.7]{images/chapter10/4.png}
+	\caption{Cú pháp của các mô tả trong một tập con của ngôn ngữ C}
+    \label{bando}
+		\end{center}
+	\end{figure}
+\end{center}
+- Ví dụ: \\
+$And(Man,AtLeast(3,Son),AtMost(2,Daughter), \\	All(Son,And(Unemployed,Married,All(Spouse,Doctor))), \\	All(Daughter,And(Professor,Fills(Department,Physics,Math))))$\\
+Mô tả một nhóm đàn ông có ít nhất ba con trai, tất cả đều thất nghiệp và kết hôn với bác sĩ, và nhiều nhất là hai cô con gái đều là giáo sư vật lý hoặc toán học.\\
+
+\section{Lý luận với thông tin mặc định}
+\subsection{Mô tả và logic mặc định}
+Ví dụ, khi một người nhìn thấy một chiếc ô tô đậu trên đường phố, một người bình thường sẵn sàng tin rằng nó có bốn bánh mặc dù chỉ có ba cái được nhìn thấy. Bây giờ, lý thuyết xác suất chắc chắn có thể đưa ra một kết luận rằng bánh xe thứ tư tồn tại với xác suất cao. Tuy nhiên, đối với hầu hết mọi người, khả năng xe không có bốn bánh sẽ không phát sinh trừ khi có một số bằng chứng mới. Vì vậy, có vẻ như kết luận bốn bánh được đưa ra theo mặc định, trong trường hợp không có bất kỳ lý do nào để nghi ngờ điều đó. Nếu có bằng chứng mới — ví dụ: nếu người ta thấy chủ xe chở một bánh xe và nhận thấy rằng chiếc xe đã bị kích - sau đó kết luận có thể được rút lại. Kiểu lý luận này được cho là thể hiện tính không đơn điệu.\\
+- Circumscription: Ý tưởng là chỉ định các vị từ cụ thể được cho là “as false as possible” - đó là sai đối với mọi đối tượng ngoại trừ những đối tượng mà chúng được biết là đúng.\\
+- Circumscription có thể được xem như một ví dụ về logic ưu tiên mô hình: một câu được đưa vào (với trạng thái mặc định) nếu nó đúng trong tất cả các mô hình KB được ưu tiên, trái ngược với yêu cầu của chân lý trong tất cả các mô hình trong lôgic học cổ điển.\\
+- Ví dụ: $Bird(x) \wedge  \neg Abnormal_1(x) \Longrightarrow Flies(x)$.\\
+- Default logic: Logic mặc định là một chủ nghĩa hình thức trong đó các quy tắc mặc định có thể được viết để tạo ra các kết luận phi đơn điệu.\\
+Công thức: $P : J_1,...,J_n / C$\\
+trong đó $P$ được gọi là điều kiện tiên quyết,$C$ là kết luận và $J_i$ là điều kiện biện minh - nếu có trong số đó có thể được chứng minh là sai, khi đó không thể rút ra kết luận. Bất kỳ biến nào xuất hiện trong   $J_i$  hoặc $C$ cũng phải xuất hiện trong $P$.\\
+- Ví dụ:	$Bird(x) : Flies(x)/Flies(x)$.\\
+Quy tắc này có nghĩa là nếu $Bird (x)$ là đúng và nếu $Flies (x)$ phù hợp với cơ sở kiến thức (knowledge base ) thì $ Flies (x)$ có thể được kết luận theo mặc định.\\
+\subsection{Hệ thống duy trì sự thật}
+Dùng để xử lý các bản cập nhật và sửa đổi kiến thức một cách hiệu quả. \\
+- Nhiều suy luận được rút ra bởi một hệ thống biểu diễn tri thức sẽ chỉ có trạng thái mặc định, thay vì hoàn toàn chắc chắn. Một số trong số này là sai và sẽ phải rút lại khi đối mặt với những thông tin mới. Quá trình này được gọi là sửa đổi niềm tin (belief revision).\\
+- Ví dụ: Muốn thực thi $ TELL(KB, \neg P)$.\\
+Để tránh xử lí mâu thuẫn, trước tiên chúng ta phải thực hiện $ RETRACT(KB, P)$ \\
+Tuy nhiên, vấn đề nảy sinh nếu bất kỳ câu bổ sung nào được suy ra từ $P$  và khẳng định trong $KB$. Ví dụ, hàm ý $P \Longrightarrow Q$ có thể được sử dụng để thêm $Q$.\\
+Một Giải pháp (Solution) - rút gọn tất cả các câu được suy ra từ $P$ - không thành công      vì những câu như vậy có thể có các biện pháp khác ngoài $P$.\\
+    Ví dụ, nếu $R$ và  $R \Longrightarrow  Q $ cũng nằm trong $KB$, thì $Q$ sẽ không phải bị loại bỏ sau khi tất cả.
+$\Longrightarrow$    
+Hệ thống TMS giải quyết được các vấn đề này.\\
+\textbf{Hệ thống TMS}\\
+Ví dụ thực hiện  $ RETRACT(KB, P_i)$ hệ thống trở lại trạng thái ngay trước khi $P_i$ được   thêm vào, do đó loại bỏ cả $P_i$  và bất kỳ suy luận nào được suy ra từ $P_i$
+.
+\\
+Thực hiện tương tự với$P_{i+1}$ đến $P_n$.\\
+Tuy nhiên đối với hệ thống cơ sở dữ liệu lớn điều này là khó thực hiện. \\
+\textbf{Hệ thống JTMS}\\
+Trong JTMS, mỗi câu trong cơ sở kiến ​​thức được chú thích bằng một lời giải thích bao gồm biện minh (justification) của tập hợp các câu mà từ đó nó được suy ra.\\
+Ví dụ, nếu $KB$ đã chứa $P \Longrightarrow Q$, thì $TELL(P)$ sẽ làm cho $Q$ được thêm vào với phép biện minh $\{P, P \Longrightarrow Q\}$.\\
+Với lệnh gọi $RETRACT(P)$, JTMS sẽ xóa chính xác những câu đó cho mà $P$ là thành viên của mọi biện minh.\\
++ Nếu $\{P, P \Longrightarrow Q\}$, nó sẽ bị loại bỏ.\\
++ Nếu nó có thêm phần biện minh $\{P, P \vee R \Longrightarrow Q\}$, nó sẽ bị loại bỏ.\\
++ Nếu $\{P, P \Longrightarrow Q\}$, sẽ không bị xóa.\\
+
+\section{Kết luận}
+Bài báo đã đưa ra cách biểu diễn tri thức và các vấn đề liên quan trong trí tuệ nhân tạo, bao gồm các vấn đề chính như sau:\\
+- Biểu diễn tri thức quy mô lớn yêu cầu một bản thể luận có mục đích chung để tổ chứcvà gắn kết các lĩnh vực kiến  thức cụ thể khác nhau lại với nhau.\\
+- Bản thể luận có mục đích chung cần bao hàm nhiều kiến  thức và phảivề nguyên tắc có khả năng xử lý bất kỳ miền nào.\\
+- Xây dựng một bản thể luận lớn, có mục đích chung là một thách thức đáng kể chưađược thực hiện đầy đủ, mặc dù các khuôn khổ hiện tại dường như khá mạnh mẽ.\\
+- Các loại tự nhiên không thể được định nghĩa hoàn toàn theo logic, nhưng các thuộc tính của các loại tự nhiên có thể được đại diện.
+- Các hành động, sự kiện và thời gian có thể được biểu diễn bằng phép tính sự kiện. Làm lại như vậy cho phép một tác nhân xây dựng các chuỗi hành động và đưa ra các suy luận logic về những gì sẽ đúng khi những hành động này xảy ra.\\
+- Hệ thống biểu diễn mục đích đặc biệt, chẳng hạn như mạng ngữ nghĩa và mô tả lôgic học, đã được tạo ra để giúp tổ chức một hệ thống phân cấp các danh mục. Di sản là một dạng suy luận quan trọng, cho phép các thuộc tính của các đối tượng được suy ra từ tư cách thành viên của họ trong các danh mục.\\
+- Lôgic phi đơn điệu, chẳng hạn như mô tả vòng tròn và lôgic mặc định, nhằm giới hạn lý luận mặc định chắc chắn nói chung.\\
+- Hệ thống bảo trì sự thật xử lý các bản cập nhật và sửa đổi kiến thức một cách hiệu quả.\\
+- Rất khó để xây dựng các bản thể luận lớn bằng tay,  rút ra kiến thức từ văn bản làm cho công việc dễ dàng hơn.\\
+
+

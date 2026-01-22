@@ -1,0 +1,206 @@
+\chapter{Lập kế hoạch tự động}
+\section{Giới thiệu Ngôn ngữ biểu diễn PDDL giải bài toán lập kế hoạch cổ điển}
+
+Lập một kế hoạch hành động là một yêu cầu quan trọng đối với một tác tử thông minh. Cách biểu diễn hành động và trạng thái tốt, cùng với một thuật toán tốt sẽ khiến cho việc lập một kế hoạch hành động trở nên dễ dàng hơn.
+\par
+Đầu tiên, tác giả giới thiệu một ngôn ngữ biểu diễn thống nhất tổng quát cho việc lập bài toán, giúp biểu diễn nhiều miền một cách tự nhiên và cô đọng, có khả năng mở rộng đối với những bài toán lớn, và không yêu cầu “ad hoc heuristic” đối với miền mới.\\
+Tiếp theo, tác giả sẽ giới thiệu những thuật toán hiệu quả cho việc lập kế hoạch, và giới thiệu những phiên bản heuristic của chúng.\\
+Sau đó, tác giả sẽ mở rộng ngôn ngữ biểu diễn để biểu diễn được những hành động có phân cấp bậc, phù hợp với những bài toán phức tạp.\\
+Tiếp theo, tác giả giải thích cho những miền không xác định và chỉ có thể quan sát được một phần. Và sau đó, tác giả mở rộng ngôn ngữ biểu diễn một lần nữa để giải quyết các bài toán xếp lịch với những hạn chế về mặt tài nguyên.\\
+Cuối cùng, tác giả sẽ đánh giá hiệu quả của các kỹ thuật trên.
+\par
+Lập kế hoạch cổ điển được định nghĩa là công việc đi tìm một chuỗi các hành động để đạt được mục tiêu trong một môi trường rời rạc, xác định, tĩnh và có thể quan sát toàn phần.\\
+Để giải quyết được các vấn đề trên, tác giả nhắc đến một ngôn ngữ biểu diễn Planning Domain Definition Language, gọi tắt là PDDL. PDDL cơ bản có thể giúp ta xử lý được những bài toán Lập kế hoạch cổ điển, phiên bản mở rộng của PDDL có thể xử lý được những bài toán với những miền liên tục, quan sát một phần, xảy ra đồng thời và có nhiều tác tử.
+\par
+Trong PDDL, một trạng thái được biểu diễn bằng một chuỗi các tình trạng đơn thuộc tính, không có biến. PDDL sử dụng hai giả thuyết, một là giả thuyết thế giới đóng: những tình trạng không được nhắc đến đều là sai, hai là giả thuyết tên độc nhất. Một số tình trạng không được chấp thuận để biểu diễn trong một trạng thái: tình trạng có biến, tình trạng có sự phủ định, tình trạng sử dụng ký hiệu hàm.
+\par
+Trong PDDL, một lược đồ hành động đại diện cho một nhóm hành động hằng (hành động không chứa biến).
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=1]{images/chapter11/Picture1.png}
+\end{figure}
+
+\noindent
+Một lược đồ hành động bao gồm tên hành động, danh sách các biến trong lược đồ, điều kiện tiên quyết và tác động. Ta có thể thay thế các biến trong lược đồ hành động bằng các biến hằng để thu được một hành động hằng.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=1]{images/chapter11/Picture2.png}
+\end{figure}
+
+\noindent
+Một hành động hằng được gọi là có thể xảy ra ở trạng thái s nếu trạng thái s thoả mãn tất cả các điều kiện tiên quyết của hành động đó. Kết quả sau khi thực thi hành động có thể xảy ra ở trạng thái s được định nghĩa là trạng thái s’, trong đó bao gồm các tình trạng của trạng thái s, loại bỏ các tình trạng phủ định của hành động (danh sách tình trạng xoá) và thêm các tình trạng khẳng định của hành động (danh sách tình trạng thêm).
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=1]{images/chapter11/Picture3.png}
+\end{figure}
+
+\noindent
+Trạng thái khởi tạo là một chuỗi các tình trạng đơn thuộc tính, không có biến. Mục tiêu là một chuỗi các tình trạng có thể có biến.
+\par
+\textbf{Ví dụ}: Bài toán lập kế hoạch vận tải hàng không.\\
+Bài toán có thể được định nghĩa với ba hành động \textit{Load}, \textit{Unload}, và \textit{Fly}. Mỗi hành động tạo ra các tác động \textit{In(c, p)} là kiện hàng \textit{c} nằm bên trong máy bay \textit{p}, và \textit{At(x,a)} nghĩa là vật \textit{x} (có thể là kiện hàng hoặc máy bay) nằm tại sân bay \textit{a}. \\
+Trạng thái khởi tạo của bài toán bao gồm các đối tượng: Kiện hàng \textbf{C1}, Kiện hàng \textbf{C2}, Máy bay \textbf{P1}, Máy bay \textbf{P2}, Sân bay \textbf{JFK}, Sân bay \textbf{SFO} và các tình trạng sau: Kiện hàng \textbf{C1} \textit{At} sân bay \textbf{SFO}, Kiện hàng \textbf{C2} \textit{At} sân bay \textbf{JFK}, Máy bay \textbf{P1} \textit{At} sân bay \textbf{SFO} và Máy bay \textbf{P2} \textit{At} sân bay \textbf{JFK}. Mục tiêu của bài toán là sao cho Kiện hàng \textbf{C1} \textit{At} sân bay \textbf{JFK} và Kiện hàng \textbf{C2} \textit{At} sân bay \textbf{SFO}. \\
+Khi một máy bay bay từ một sân bay tới một sân bay khác, kiện hàng trong máy bay đó sẽ cũng di chuyển theo máy bay. Ta có thể nói rằng, đối với kiện hàng, nó có thể \textit{At} bất cứ nơi nào nếu nó đang \textit{In} một chiếc máy bay nào đó, còn kiện hàng chỉ có thể \textit{At} khi mà nó được \textit{Unload} từ máy bay xuống một sân bay nào đó. Từ đó, ta có thể hiểu \textit{At} nghĩa là thực sự nó ở một vị trí cố định nào đó.\\
+Dưới đây là mô tả PDDL của bài toán lập kế hoạch vận tải hàng không nói trên.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=1]{images/chapter11/Picture4.png}
+\end{figure}
+
+\noindent
+Lời giải của bài toán nói trên có thể được thiết kế gồm một chuỗi các hành động có thứ tự như sau:
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.8]{images/chapter11/Picture5.png}
+\end{figure}
+
+\section{Giới thiệu các thuật toán lập kế hoạch cổ điển}
+Mô tả của bài toán Lập kế hoạch cổ điển cung cấp một phương án rõ ràng để xuất phát từ trạng thái khởi tạo, tìm kiếm trong không gian trạng thái và hướng tới mục tiêu. Một lợi ích của khai báo biểu diễn của lược đồ các hành động là chúng ta có thể đi ngược lại, xuất phát từ mục tiêu và tìm đường để đi tới trạng thái khởi tạo. Ngoài ra, chúng ta cũng có thể đưa mô tả của bài toán về dạng tập hợp của các câu logic, để có thể ứng dụng các thuật toán suy luận logic nhằm tìm lời giải.
+
+\subsection{Giới thiệu thuật toán tìm kiếm tiến lên}
+Ta có thể giải các bài toán Lập kế hoạch bằng việc áp dụng bất kỳ thuật toán tìm kiếm heuristic nào. Ta tìm kiếm các hành động có thể xảy ra nhằm đưa trạng thái khởi tạo đến được mục tiêu (hành động là khi thay thế các biến trong lược đồ hành động bằng các biến hằng). Để xác định được hành động có thể xảy ra, ta phải thống nhất được trạng thái hiện tại với điều kiện tiên quyết của hành động đó. Điều kiện tiên quyết của một lược đồ hành động có thể được thống nhất theo nhiều phương án khác nhau với trạng thái hiện tại, từ đó tạo ra một không gian các trạng thái có thể xảy ra. Tuy nhiên, không gian trạng thái này có thể rất lớn dẫn đến việc giải quyết các bài toán này trở nên bất khả thi.
+\par
+\textbf{Ví dụ}: Bài toán lập kế hoạch vận tải hàng không: \\
+Ta có ở trạng thái khởi tạo \textbf{10 sân bay}, mỗi sân bay có \textbf{5 máy bay} và \textbf{20 kiện hàng}. Mục tiêu là lập kế hoạch để vận chuyển toàn bộ các kiện hàng từ \textbf{sân bay A} tới \textbf{sân bay B}.\\
+Đối với con người, ta có thể dễ dàng xây dựng được một lời giải gồm 41 bước giải, bao gồm: 20 bước giải để đưa 20 kiện hàng lên một máy bay nào đó ở sân bay A, 1 bước giải để bay chiếc máy bay đó từ sân bay A tới sân bay B, và 20 bước giải để dỡ hàng từ máy bay đó từ trên máy bay xuống sân bay B.\\
+Tuy nhiên, để tìm được lời giải như trên, ta cần tìm trong một không gian trạng thái khổng lồ. Mỗi một máy bay có thể bay tới 9 sân bay còn lại, từ đó ta có: 50 máy bay x 9 điểm đến = 450 hành động (tương ứng với 450 trạng thái có thể xảy ra), và với mỗi một kiện hàng có thể được đưa lên một trong 50 máy bay tại tất cả sân bay, từ đó ta có: 200 kiện hàng * 50 máy bay = 10,000 hành động (tương ứng với 10,000 trạng thái có thể xảy ra). Lưu ý: đây chỉ là số lượng hành động, không phải là số lượng hành động có thể xảy ra.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=1]{images/chapter11/Picture6.png}
+\end{figure}
+
+Mặc dù không gian trạng thái rất lớn, nhưng với các thuật toán độc lập miền heuristic, việc sử dụng phương án tìm kiếm tiến lên vẫn là khả thi trong việc giải các bài toán thực tế.
+
+\subsection{Giới thiệu thuật toán tìm kiếm ngược}
+Đối với tìm kiếm ngược, ta sẽ tìm một chuỗi các bước hành động xuất phát từ mục tiêu cho đến khi đạt được trạng thái khởi tạo. Tại mỗi bước, ta tìm các hành động thích hợp, và điều này giúp giảm không gian trạng thái một cách đáng kể.\\
+Một hành động thích hợp là hành động mà tác động của nó thống nhất với mục tiêu và không có tác động nào phủ định lại mục tiêu. Xuất phát từ mục tiêu g và hành động thích hợp a, việc hồi quy từ g theo a sẽ mang lại trạng thái g’ được mô tả với các tình trạng khẳng định và phủ định như sau:
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=1]{images/chapter11/Picture7.png}
+\end{figure}
+
+\textbf{Ví dụ}: Bài toán lập kế hoạch vận tải hàng không: \\
+Ta vẫn sử dụng bài toán như ví dụ ở phần trên. Tuy nhiên, nếu ta có trước mục tiêu là chuyển kiện hàng C2 tới sân bay SFO. Từ đó, ta xác định được rằng biến kiện hàng cần được thay thế bằng biến hằng C2, và biến sân bay cần được thay thế bằng biến hằng SFO, còn biến máy bay thì không yêu cầu xác định và có thể dùng bất cứ máy bay nào, ta có hành động như sau:
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=1]{images/chapter11/Picture8.png}
+\end{figure}
+
+Với đa số các trường hợp, tìm kiếm ngược giảm không gian trạng thái so với tìm kiếm tiến lên. Tuy nhiên, tìm kiếm ngược sử dụng các trạng thái có biến nên khó có thể đưa ra được thuật toán heuristic tốt so với việc sử dụng trạng thái không có biến.
+
+\subsection{Giới thiệu một số phương án tiếp cận khác}
+Một hướng tiếp cận khác được gọi là Graphplan, sử dụng cấu trúc dữ liệu đặc biệt là đồ thị trong việc lập kế hoạch. Mã hoá các ràng buộc về điều kiện tiên quyết và tác động của hành động và cách mà chúng loại trừ lẫn nhau.
+\par
+Đại số tình huống là một phương pháp mô tả bài toán lập kế hoạch bằng logic bậc nhất. Nó sử dụng tiên đề trạng thái người kế vị và logic bậc nhất giúp nó trở nên linh hoạt và ngắn gọn hơn.
+\par
+Một cách tiếp cận khác được gọi là lập kế hoạch sắp xếp một phần đại diện cho một kế hoạch tương ứng với một đồ thị, trong đó, mỗi hành động là một đỉnh trong đồ thị và mỗi một điều kiện tiên quyết là một cạnh trong đồ thị xuất phát từ một hành động khác (hoặc trạng thái khởi tạo), từ đó, chỉ ra rằng hành động trước thiết lập nên điều kiện tiên quyết.
+
+
+\section{Giới thiệu các thuật toán heuristic lập kế hoạch}
+Cho dù là tìm kiếm tiến lên hay tìm kiếm ngược thì đều cần các thuật toán heuristic tốt. Một thuật toán heuristic chấp nhận được được sinh ra từ bài toán yếu, là bài toán dễ giải hơn. Phương pháp giải chính xác của bài toán yếu sẽ trở thành thuật toán heuristic của bài toán ban đầu.
+\par
+Bài toán tìm kiếm là một đồ thị mà các đỉnh là các trạng thái còn các cạnh là các hành động, mục tiêu là tìm đường đi xuất phát từ trạng thái khởi tạo đến trạng thái mục tiêu. Có hai cách làm yếu bài toán: một là thêm các cạnh, giúp việc tìm đường đi trở nên dễ dàng hơn, hai là gộp các đỉnh tạo thành đỉnh mới giúp giảm không gian các trạng thái từ đó tìm kiếm dễ hơn.
+\par
+Đầu tiên, tác giả đề cập đến thuật toán heuristic thêm cạnh vào đồ thị. Thuật toán heuristic đơn giản nhất đó là loại bỏ tất cả các điều kiện tiên quyết. Mỗi một hành động đều là hành động có thể xảy ra ở mọi trạng thái và mỗi tình trạng đơn trong mục tiêu đều có thể đạt được với duy nhất một bước hành động. Từ đó, số bước giải của bài toán yếu gần như tương ứng tới số tình trạng chưa thoả mãn của mục tiêu (gần như tương ứng bởi vì có một số hành động giúp thoả mãn được nhiều tình trạng và ngược lại, một số hành động lại làm không thoả mãn tình trạng).
+\par
+Trong nhiều bài toán, thuật toán heuristic thu được bằng việc đánh giá và loại bỏ. Đầu tiên, tác giả loại bỏ tất cả các điều kiện tiên quyết và các tác động không liên quan tới mục tiêu của hành động. Sau đó, tác giả đếm số hành động nhỏ nhất cần để đạt được mục tiêu. Đây là bài toán bao phủ tập hợp và nó là NP-khó. Một thuật toán tham lam đơn giản có thể giải quyết với độ phức tạp O(logn) nhưng nó sẽ làm mất đi sự đảm bảo về tính chấp nhận được.
+\par
+Một phương án khác là thuật toán heuristic loại bỏ những danh sách xoá, hay nói cách khác là tác giả làm yếu bài toán ban đầu bằng cách loại bỏ tất cả những tác động phủ định. Điều này sẽ giúp cho bài toán yếu dễ dàng hơn và đơn điệu tiến thẳng tới mục tiêu, bởi vì không có hành động nào hoàn tác lại tác động của hành động khác.
+
+\subsection{Giới thiệu phương pháp cắt bỏ theo miền độc lập}
+Các cách biểu diễn có tổ chức giúp ta nhận ra một cách dễ dàng các trạng thái chỉ là biến thể của trạng thái khác. Các trạng thái này đối xứng, hay nói cách khác, việc lựa chọn một trong số các trạng thái này không tạo ra sự khác biệt và ta chỉ nên xem xét một trong số đó. Đây là quá trình giảm bớt đối xứng: ta chỉ xem xét tới một nhánh và loại bỏ tất cả các nhánh đối xứng còn lại của cây tìm kiếm.
+\par
+Một hướng khác là dựa vào kết quả của bài toán yếu, ta lập được một kế hoạch yếu, từ đó, ta sẽ có hành động ưu tiên. Tuy rằng ta có thể loại bỏ mất phương án tối ưu, nhưng ta sẽ chỉ tập trung việc tìm kiếm vào những nhánh có hứa hẹn.
+\par
+Đôi khi, ta có thể giải bài toán một cách hiệu quả bằng việc nhận ra những tương tác phủ định có thể bị loại bỏ. Tác giả gọi một vấn đề có chuỗi hoá mục tiêu con nếu tồn tại một chuỗi các mục tiêu con có thứ tự sao cho kế hoạch có thể đạt được những mục tiêu đó mà không cần hoàn tác bất cứ mục tiêu con nào đạy được trước đó. Phương án này cũng được sử dụng trong tàu không gian Deep Space One của NASA, giúp họ có thể điều khiển con tàu trong thời gian thực.
+
+\subsection{Giới thiệu xây dựng trạng thái trừu tượng}
+Bài toán yếu có thể giúp ta tính toán được giá trị của của hàm heuristic đối với bài toán ban đầu. Tuy nhiên có nhiều bài toán có không gian trạng thái rất lớn, mà bài toán yếu không thể giảm được kích thước của không gian trạng thái, dẫn đến thuật toán heuristic lúc đó cũng rất tốn kém để có thể thực hiện. Do đó, ta cần giảm bớt kích thước của không gian trạng thái bằng cách tạo ra các trạng thái trừu tượng, đưa nhiều trạng thái trong cách biểu diễn không có biến trở thành một cách biểu diễn trừu tượng của trạng thái.
+\par
+\textbf{Ví dụ}: Bài toán lập kế hoạch vận tải hàng không: \\
+Ta có bài toán với 10 sân bay, 50 máy bay, và 200 kiện hàng. Mỗi máy bay có thể xuất hiện ở 1 trong 10 sân bay, và mỗi kiện hàng có thể xuất hiện ở trên 1 trong 50 máy bay hoặc ở tại 1 trong số 10 sân bay. Từ đó, ta có \begin{math}10^{50} \times (50 + 10)^{200} = 10^{405}\end{math} trạng thái.\\
+Nếu ta xét một bài toán cụ thể với yêu cầu các kiện hàng chỉ xuất hiện ở trong 5 sân bay nào đó xác định và các kiện hàng đó có cùng điểm đến, từ đó, ta có \begin{math}10^{5} \times (5 + 10)^{5} = 10^{11}\end{math} trạng thái. Lúc này, không gian trạng thái được giảm đi một cách đáng kể.\\
+Lời giải trong không gian trạng thái trừu tượng lúc này sẽ ngắn hơn nhiều so với không gian trạng thái ban đầu (và nó sẽ trở thành thuật toán heuristic chấp nhận được đối với bài toán ban đầu). Hơn nữa, thuật toán heuristic này cũng dễ dàng có thể mở rộng để giải bài toán ban đầu bằng việc bổ sung thêm các hành động \textit{Load} và \textit{Unload}.
+\par
+Ý tưởng chìa khoá trong việc xây dựng thuật toán heuristic đó là việc phân rã: chia vấn đề thành nhiều phần nhỏ, giải quyết từng phần nhỏ và tổng hợp kết quả từng phần. Giả thuyết về mục tiêu con độc lập là chi phí để giải quyết một chuỗi các mục tiêu con gần bằng tổng chi phí giải quyết mỗi mục tiêu con một cách độc lập. Giả thuyết về mục tiêu con độc lập có thể lạc quan hoặc bi quan. Lạc quan ở đây có nghĩa là có các tương tác phủ định giữa các kế hoạch con cho mỗi mục tiêu con. Ngược lại, bi quan ở đây có nghĩa là các kế hoạch con chứa các hành động thừa thãi, các hành động có thể loại bỏ hoặc thay thể bằng một hành động khác khi kết hợp các hành động con lại với nhau.
+
+\section{Lập kế hoạch theo thứ bậc}
+Việc giải bài toán lập kế hoạch là việc đưa ra giải pháp gồm một số lượng cố định các hành động đơn. Các hành động có thể nối đuôi nhau thành một chuỗi và các thuật toán hiện đại nhất có thể đưa ra lời giải với vài ngàn hành động.\\
+Ta có một ví dụ về việc lập kế hoạch đi du lịch, một hành động có thể là "di chuyển bằng máy bay từ San Francisco đến Honolulu" nhưng nó cũng có thể là "nghiêng đầu gối đi 5 độ" để có thể điều khiển được xe máy. Sự khác nhau trong các cấp bậc của hành động có thể khiến ta tạo ra không phải hành ngàn, mà thậm chí là hàng triệu, hàng tỷ hành động nối đuôi nhau.\\
+Một kế hoạch cấp cao cho việc lập kế hoạch đi du lịch có thể bao gồm các hành động: Đi tới sân bay San Francisco; lên chuyến bay HA 11 để tới Honolulu; nghỉ dưỡng trong hai tuần; bắt chuyến bay 12 để về tới San Francisco; về nhà. Tuy nhiên, một hành động "Đi tới sân bay San Francisco" cũng có thể được coi là một bài toán lập kế hoạch với lời giải là: Chọn hãng dịch vụ di chuyển, đặt một chiếc xe, đi tới sân bay. Tiếp tục, các hành động cũng có thể được phân rã nhỏ hơn, cho đến khi đạt được chững hành động cấp thấp.
+\par
+Trong phần này, chúng ta tập trung vào khái niệm \textit{phân rã theo thứ bậc}, ý tưởng giúp giải quyết hầu hết các vấn đề liên quan đến độ phức tạp
+
+\subsection{Các hành động cấp cao}
+Ý tưởng của phân rã theo thức bậc dựa vào các mạng công việc có thứ bậc hay còn gọi là lập kế hoạch HTN. Ta có thể giả sử rằng, một bộ các hành động có thể quan sát và xác định hoàn toàn, được gọi là các hành động nguyên thuỷ, với các lược đồ điều kiện tiên quyết - tác động tiêu chuẩn. Mỗi hành động cấp cao có một hoặc một vài các refinements, gồm một chuỗi các hành động, trong đó, mỗi hành động có thể là một hành động cấp cao hoặc một hành động nguyên thuỷ.\\
+\textbf{Ví dụ}: Hành động đi từ nhà đến sân bay: \\
+Hành động “Đi tới sân bay San Francisco”, được biểu diễn chính quy bằng \textit{Go(Home,SFO)}, có thể có hai refinements như sau. Trong đó, ta có thể "Lái xe từ nhà tới bãi đỗ xe của sân bay SFO" và "Di chuyển bằng xe đưa đón từ bãi đỗ xe của sân bay SFO tới sân bay SFO" hoặc ta có thể "Bắt taxi đi từ nhà tới sân bay SFO".
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.8]{images/chapter11/Picture9.png}
+\end{figure}
+
+\noindent
+Từ ví dụ, ta có thể kết luận rằng, các hành động cấp cao và các refinements của chúng hiện thân cho câu trả lời của câu hỏi "Làm việc đó như thế nào". Trong đó, ta chỉ xét tới các bước hành động liên quan trực tiếp tới việc hoàn thành việc đó (như việc lái xe hoặc việc sử dụng dịch vụ di chuyển), còn những hành động không liên quan trực tiếp tới việc hoàn thành công việc không được xét đến (ví dụ như hành động uống sữa hay hành động chơi cờ vua).
+\par
+Ngoài ra, các hành động cấp cao có thể có nhiều cách thực hiện khác nhau và mỗi refinements của hành động cấp cao được gọi là một cách thực hiện của hành động cấp cao đó.\\
+\textbf{Ví dụ}: Trong hệ toạ độ: \\
+Ta xét hành động cấp cao \textit{Navigate([1,3],[3,2])}. Ta có thể thấy \textit{[Right,Right,Down]} and \textit{[Down,Right,Right]} là hai cách thực hiện của hành động cấp cao trên. Ta có thể nói rằng: Một hành động cấp cao thành công trong một trạng thái nếu một trong số các cách thực hiện của nó có thể thoả mãn trạng thái đó và đạt được mục tiêu.
+
+\subsection{Tìm kiếm các giải pháp nguyên thuỷ}
+Lập kế hoạch HTN thường được xây dựng với một hành động cấp cao đơn được gọi là \textit{Act} và đích hướng đến là tìm cách thực hiện \textit{Act} sao cho đạt được mục tiêu. Cách tiếp cận này khá là tổng quát. Bài toán lập kế hoạch cổ điển có thể được định nghĩa như sau: với mỗi một hành động nguyên thuỷ \textit{ai}, ta có một refinement của \textit{Act} với các bước \textit{[ai, Act]} tạo ra định nghĩa đệ quy của \textit{Act}. Tuy nhiên, ta cần phải tạo ra điểm dừng của vòng đệ quy này, bằng cách tạo ra một refinement khác của \textit{Act}, trong đó, không có danh sách các bước và có điều kiện tiên quyết trùng với mục tiêu của bài toán.\\
+Cách tiếp cận này dẫn đến một thuật toán đơn giản: Lặp đi lặp lại việc chọn hành động cấp cao trong kế hoạch hiện tại và thay thế nó bằng các refinement của nó, cho tới khi đạt được mục tiêu. Dưới đây là phương án thực hiện của thuật toán giải bài toán tìm kiếm theo cấp bậc dựa trên thuật toán tìm kiếm rộng. Kế hoạch được xem xét đến bằng độ sâu của các refinement lồng vào nhau, thay vì số lượng các bước nguyên thuỷ.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.5]{images/chapter11/Picture10.png}
+\end{figure}
+
+Chìa khoá của lập kế hoạch HTN là lập ra được bộ thư viện bao gồm các phương pháp đã biết để thực hành được các hành động cấp cao phức tạp. Một cách để xây dựng thư viện là dựa vào các phương pháp rút ra từ các kinh nghiệm giải quyết vấn đề. Một khía cạnh quan trọng đó là khả năng khái quát hoá các phương pháp, loại bỏ các chi tiết cụ thể đối với một vấn đề nào đó nhất định và chỉ giữ lại những thành phần quan trọng trong kế hoạch.
+
+\subsection{Tìm kiếm giải pháp trừu tượng}
+Thuật toán tìm kiếm theo cấp bậc ở phần trước đã tinh chỉnh các hành động cấp cao trở thành các chuỗi các hành động nguyên thuỷ để xác định liệu kế hoạch đó có thể thực hiện hay không. Điều này lại gây ra mâu thuẫn đối với một cảm nhận thông thường: đó là một kế hoạch có thể được tạo bởi hai hoặc nhiều hành động cấp cao, như sau:\\
+\textit{[Drive(Home, SFOLongTermParking), Shuttle(SFOLongTermParking, SFO)]}\\
+Cách tiếp cận này có thể mang lại kết quả nhưng không cần quan tâm tới những hành động quá cụ thể như chọn đường nào để đi, chọn chỗ nào để đỗ xe ... Giải pháp của cách tiếp cận này bắt đầu bằng việc ta cần viết mô tả điều kiện tiên quyết - tác động của các hành động cấp cao (tương tự như cách ta làm với các hành động nguyên thuỷ). Sau đó, từ mô tả điều kiện tiên quyết - tác động, ta dễ dàng tìm được các hành động cấp cao để đạt được mục tiêu. Cuối cùng, để triển khai lập kế hoạch thứ bậc, ta phân tích từng hành động cấp cao thành các hành động nguyên thuỷ. Do đó, việc tìm kiếm trong không gian nhỏ các hành động cấp cao giúp ta giảm đáng kể tài nguyên tìm kiếm.\\
+Để cách tiếp cận này thành công thì mỗi kế hoạch cấp cao (mà được cho rằng đạt được mục tiêu cần) đạt được mục tiêu theo cách định nghĩa ở phần trước: đó là kế hoạch thành công là kế hoạch có ít nhất một cách thực hiện đạt được mục tiêu. Đây gọi là tính chất refinement nhìn xuống của một mô tả hành động cấp cao.
+\par
+Xuất phát từ trạng thái \textit{s}, ta có một định nghĩa \textbf{\textit{Tập có thể đạt được}} của một hành động cấp cao \textit{h} các tập tất cả các trạng thái có thể đạt được khi ta sử dụng tất cả các cách thực hiện của hành động \textit{h} lên trạng thái \textit{s} ban đầu. Ký hiệu là \textit{REACH(s, h)}. Hơn nữa, ta cũng có định nghĩa \textbf{\textit{Tập có thể đạt được}} của một chuỗi các hành động cấp cao. Xuất phát từ trạng thái \textit{s}, \textit{Tập có thể đạt được} của chuỗi hai hành động cấp cao \textit{[h1,h2]} là hợp của các tập hợp các trạng thái có thể đạt được khi áp dụng hành động cấp cao \textit{h2} vào tập các trạng thái có thể đạt được từ hành động cấp cao \textit{h1} trên trạng thái \textit{s}:
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.5]{images/chapter11/Picture12.png}
+\end{figure}
+
+Từ những định nghĩa nói trên, một kế hoạch cấp cao (chuỗi các hành động cấp cao) được gọi là đạt được mục tiêu nếu tập các trạng thái có thể đạt được giao với tập các trạng thái mục tiêu, ngược lại, nếu tập các trạng thái có thể đạt được không giao với tập các trạng thái mục tiêu, kế hoạch lúc này được gọi là không đạt được mục tiêu.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.3]{images/chapter11/Picture11.png}
+\end{figure}
+
+Tập các trạng thái mục tiêu được đánh dấu bằng khung vuông màu tím, tập các trạng thái có thể đạt được được đánh dấu bằng khung màu xanh da trời. Các mũi tên màu đen và nâu thể hiện các cách thực hiện có khả năng xảy ra của \textit{h1} và \textit{h2}. Hình a là tập có thể đạt được của một hành động cấp cao \textit{h1} tại trạng thái \textit{s}. Hình b là tập có thể đạt dược từ chuỗi hành động cấp cao \textit{[h1, h2]}. Tập có thể đạt được này có giao với tập mục tiêu, ta kết luận, chuỗi hành động cấp cao \textit{h1, h2} có thể đạt được mục tiêu.
+\par
+Ví dụ như phía trên là ví dụ mà các hành động cấp cao từ một trạng thái nào đó tạo ra tập có thể đạt được \textbf{\textit{một cách chính xác}}. Tuy nhiên, trong thực tế, mỗi hành động cấp cao thể có có rất nhiều cách thực hiện, thậm chí là vô số, từ đó việc xác định tập có thể đạt được cũng ko chính xác. Tác giả có đề xuất việc tạo ra một bản mô tả xấp xỉ thay thế cho mô tả chính xác. Có hai loại mô tả xấp xỉ: xấp xỉ lạc quan và xấp xỉ bi quan. Xấp xỉ lạc quan có tập có thể đạt được lớn hơn tập có thể đạt được chính xác, và ngược lại, xấp xỉ bi quan có tập có thể đạt được nhỏ hơn tập có thể đạt được chính xác.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.8]{images/chapter11/Picture14.png}
+\end{figure}
+
+Tập các trạng thái mục tiêu được đánh dấu bằng khung vuông màu tím, tập các trạng thái có thể đạt được bằng xấp xỉ bi quan được đánh dấu bằng khung màu xanh da trời (đường viền nét liền), tập các trạng thái có thể đạt được bằng xấp xỉ lạc quan được đánh dấu bằng khung màu xanh lá cây (đường viền nét đứt).
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.5]{images/chapter11/Picture13.png}
+\end{figure}
+
+Trong hình a, mũi tên màu đen thể hiện kế hoạch thành công (đạt được tới tập mục tiêu), mũi tên màu nâu thể hiện kế hoạch thất bại (không đạt được tới tập mục tiêu). Trong hình b, thể hiện kế hoạch \textit{có thể} đạt được tới mục tiêu (do tập trạng thái có thể đạt được của xấp xỉ lạc quan có giao với tập mục tiêu) nhưng kế hoạch đó \textit{không chắc chắn} đạt được tới mục tiêu (do tập trạng thái có thể đạt được của xấp xỉ bi quan không có giao với tập mục tiêu).

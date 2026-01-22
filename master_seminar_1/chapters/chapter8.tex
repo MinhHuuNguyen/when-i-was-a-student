@@ -1,0 +1,354 @@
+\chapter{Logic bậc nhất}
+
+Trí tuệ nhân tạo là một lĩnh vực nghiên cứu của khoa học máy tính và khoa học tính toán nói chung. Có nhiều quan điểm khác nhau về trí tuệ nhân tạo và do vậy có nhiều định nghĩa khác nhau về lĩnh vực này. Mục đích của trí tuệ nhân tạo là xây dựng các {\it thực thể thông minh}. Trí tuệ nhân tjao là lĩnh vực nghiên cứu xây dựng các hệ thống máy tính có đặc điểm sau: hệ thống hành động như người; hệ thống có thể suy nghĩ như người; hệ thống có thể suy nghĩ hợp lí và hệ thống hành động hợp lí.
+
+Một yêu cầu quan trọng với hệ thống thông minh là phải có khả năng sử dụng tri thức về thế giới xung quanh và lập luận với tri thức đó. Rất khó để đạt được những hành vi thông minh và mềm dẻo mà không có tri thức về thế giới xung quanh và khả năng suy diễn với tri thức đó. Sử dụng tri thức và lập luận đem lại những tri thức sau:
+\begin{itemize}
+	\item Hệ thống dựa trên tri thức có tính mềm dẻo cao. Việc kết hợp tri thức và lập luận cho phép tạo ra tri thức khác, giúp hệ thống đạt được những mục tiêu khác nhau, đồng thời có khả năng lập luận về bản thân mục tiêu.
+	\item Sử dụng tri thức và lập luận cho phép hệ thống hoạt động cả trong trường hợp thông tin quan sát về môi trường là không đầy đủ. hệ thống có thể kết hợp tri thức chung đã có để bổ sung cho thông tin quan sát được khi cần ra quyết định. Ví dụ, khi giao tiếp bằng ngôn ngữ tự nhiên, có thể hiểu một câu nagwns gọn nhờ sử dụng tri thức đã có về ngữ cảnh giao tiếp và nội dung liên quan tới chủ đề.
+	\item Việc sử dụng tri thức có thể thuận lợi cho việc xây dựng hệ thống. Thay vì lập trình lại hoàn toàn hệt thống, có thể thay đổi tri thức trang bị cho hệ thống và mô tả mục đích cần đạt được, đồng thời giữ nguyên thủ tục lập luận.	
+\end{itemize}
+
+Các hệ thống có sử dụng tri thức được gọi là hệ dựa trên tri thức. hệ thống loại này bao gồm thành phần cơ bản như {\it cơ sở tri thức} (Knowledge Base, viết tắt là KB). Cơ sở tri thức bao gồm các câu hay các công thức trên một ngôn ngữ nào đó và chứa các tri thức về thế giới của bà toán. Để có thể sử dụng tri thức, tri thức cần được biểu diễn dưới dạng thuận tiện cho việc mô tả và suy diễn. Nhiều ngôn ngữ và mô hình biểu diễn tri thức đã được thiết kế để phục vụ mục đích này. Ngôn ngữ biểu diễn tri thức phải là {\it ngôn ngữ hình thức}  để tránh tính trạng nhập nhằng như thường gặp trong ngôn ngữ tự nhiên. Một ngôn ngữ biểu diễn tri thức phải có các tính chất sau:
+\begin{itemize}
+	\item Ngôn ngữ phải có khả năng biểu đạt tốt, tức là cho phép biểu diễn mọi tri thức và thông tin cần thiết cho bài toán.
+	\item Cần đơn giản và hiệu quả, tức là cho phép biểu diễn ngắn gọn tri thức, đồng thời cho phép đi đến kết luận với khối lượng tính toán thấp.
+	\item Gần với ngôn ngữ tự nhiên để thuận lợi cho người sử dụng trong việc mô tả tri thức.
+\end{itemize}
+
+Trong chương này, ta sẽ xem xét logic với vai trò là phương tiện để biểu diễn tri thức. Một trong các dạng biểu diễn tri thức trong máy tính là logic bậc nhất (hay còn gọi là logic vị từ). Cũng như mọi ngôn ngữ biểu diễn tri thức, logic bậc nhất được xác định bởi ba thành phần như sau:
+\begin{itemize}
+	\item {\it Cú pháp:} bao gồm các kí hiệu và quy tắc liên kết các kí hiệu để tạo thành câu hay biểu thức logic. Một ví dụ cú pháp là các kí hiệu và quy tắc xây dựng biểu thức toán học trong số học và đại số.
+	\item {\it Ngữ nghĩa:} ngữ nghĩa của ngôn ngữ cho phép ta xác định ý nghĩa của các câu trong một miền nào đó của thế giới hiện thực, xác định các sự kiện hoặc sự vật phản ảnh thế giới thực của câu. 
+	\item {\it Cơ chế suy diễn:} là phương pháp cho phép sinh ra các câu mới từ các câu đã có hoặc kiểm tra liệu các câu có phải là hệ quả logic của nhau. Ta có thể sử dụng suy diễn để sinh ra các tri thức mới từ tri thức đã có trong cơ sở tri thức.
+\end{itemize}
+
+Logic mệnh đề có ưu điểm là đơn giản nhưng khả năng biểu đạt hạn chế, không thể sử dụng để biểu diễn tri thức một cách ngắn gọn cho những bài toán có độ phức tạp lớn. Chẳng hạn để thể hiện nhận xét "Tất cả học sinh lớp 10A chăm học" ta phải sử dụng các câu riêng rẽ để thể hiện từng học sinh cụ thể trong lớp đó chăm học. Trong chương này ta sẽ xem xét cú pháp và ngữ nghĩa của logic bậc nhất.
+
+\section{Đặc điểm}
+\quad Đặc điểm quan trọng nhất của logic bậc nhất là cho phép biểu diễn thế giới xung quanh dưới dạng các đối tượng, tính charta đối tượng, và quan hệ giữa các đối thượng đó. Việc sử dụng đối tượng là rất tự nhiên trong thế giới thực và trong ngôn ngữ tự nhiên, với danh từ biểu diễn đối tượng, tính từ biểu diễn tính chất và động từ biểu diễn quan hệ giữa các đối tượng. Có thể kể ra rất nhiều ví dụ về đối tượng, tính chất và quan hệ:
+\begin{itemize}
+	\item Đối tượng: một chiếc bàn, một cái cây, một chiếc xe máy, một con số,...
+	\item Tính chất: cái ghế có thể có tính chất như là có bốn chân, làm bằng gỗ; con người có thể có tính chất là cao, béo,...
+	\item Quan hệ: cha con, anh em, bạn beg (giữa con người); lớn hơn, nhỏ hơn, bằng nhau (giữa các con só); bên trong, bên ngoài, nằm cạnh, nằm trên (giữa các đồ vật),...
+	\item Hàm: một trường hợp riêng của quan hệ là quan hệ hàm, trong đó với mỗi đầu vào là một hoặc nhiều đối tượng, ta có thể có một giá trị hàm duy nhất, cũng là một đối tượng.
+	
+	Ví dụ: Tay trái của ai đó, cha của ai đó, ước chung của hai số.
+\end{itemize}
+
+Logic bậc nhất có cú phép và ngữ nghĩa được xây dựng dựa trên khái niệm đối tượng. Hệ thống logic này đóng vai trò quan trọng trong việc biểu diễn tri thức do có khả năng biểu diễn phong phú và tự nhiên, đồng thời là cơ sở cho nhiều hệ thống logic khác.
+
+\section{Cú pháp và ngữ nghĩa}
+\quad Trong phần này ta sẽ xem xét cú pháp, tức là quy tắc tạo ra những câu hay biểu thức logic của logic bậc nhất cùng với ngữ nghĩa của những cấu trúc đó.
+
+\noindent {\bf Các kí hiệu và ý nghĩa}
+
+Logic bậc nhất sử dụng những dạng kí hiệu sau:
+
+\begin{itemize}
+	\item Kí hiệu hằng logic: True, False.
+	\item Kí hiệu hằngc: mỗi hằng tương đương với một đối tượng, ví dụ như số 3, Vịnh Hạ Long, bạn An.
+	\item Kí hiệu biến: $x,y,z,\dots$ biểu diễn lớp đối tượng. Ý nghĩa và miền của biến do người dùng quy định.
+	\item Kí hiệu vị từ: Thích(An, Bình), Làm\_từ\_gỗ(tủ), Anh\_em(Tú, Tư, Toàn).
+	
+	Kí hiệu vị từ thể hiện quan hệ giữa các đối tượng hoặc tính chất của đối tượng. 
+	
+	Mỗi vị từ có thể có $n$ tham số ($n\ge 0$).
+	
+	Ví dụ: Thích là vị từ của hai tham số, Làm\_từ\_gỗ là vị từ một tham số. Các kí hiệu vị từ không tham số là các kí hiệu mệnh đề.
+	\item Kí hiệu hàm: Mẹ\_của(An), min(2;5;6),...
+	
+	Kí hiệu hàm thể hiện quan hệ hàm. Mỗi hàm có thể có $n$ tham số ($n\ge 1$). Mặc dù cú pháp của hàm tương tự cú pháp vị từ nhưng hàm trả về giá trị là đối tượng, trong khi vị từ trả về giá trị True hoặc False.
+	\item Kí hiệu kết nối logic: $\vee$ (hội), $\wedge$ (tuyển), $\neg$ (phủ định), $\Rightarrow$ (kéo theo), $\Leftrightarrow$ (tương đương).
+	\item Kí hiệu lượng tử: $\forall$ (với mọi), $\exists$ (tồn tại).
+	\item Kí hiệu ngăn cách: dấu phẩy, dấu chấm, dấu ngoặc.	
+\end{itemize}
+
+Tương tự như với mệnh đề, ngữ nghĩa cho phép liên kết biểu thức logic với thế
+giới của bài toán để xác định tính đúng hoặc sai của biểu thức. Một liên kết cụ thể như vậy	được gọi là một {\it minh họa}. Minh họa xác định cụ thể đối tượng, quan hệ và hàm mà các ký hiệu hằng, vị từ, và ký hiệu hàm thể hiện.
+
+Để xác định một minh họa, trước hết ta cần xác định một mi ền đối tư ợng (nó bao gồm	tất cả các đối tượng trong thế giới mà ta quan tâm). Cũng có thể xác định miền đối tượng cho từng tham số của một vị từ hoặc một hàm nào đó. Ví dụ trong vị từ Thích$(x,y)$, miền của $x$ là tất cả mọi người, miền của $y$ là các loại động vật. Số đối tượng có thể là vô hạn, chẳng hạn trong trường hợp miền đối tượng là toàn bộ số thực.
+
+Việc lựa chọn tên cho hằng, biến, vị từ, và hàm hoàn toàn do người dùng quyết định. Có
+thể có nhiều minh họa khác nhau cho cùng một thế giới thực. Tương tự như với logic mệnh
+đề, việc suy diễn, tính đúng đắn của biểu thức, hay việc xác định hệ quả logic được xác định dựa trên toàn bộ minh họa. Tuy nhiên, việc liệt kê toàn bộ minh họa trong logic vị từ phức tạp hơn nhiều so với logic mệnh đề, thậm chí không thể thực hiện được, so số lượng minh họa có thể là vô hạn.
+
+\noindent {\bf Hạng thức (term)}
+
+Hạng thức (term) là biểu thức logic có kết quả là đối tượng. Hạng thức được xác định đệ
+quy như sau:
+\begin{itemize}
+	\item Các ký hiệu hằng và các ký hiệu biến là hạng thức.
+	\item Nếu $t_1, t_2, t_3, ..., t_n$ là n hạng thức và $f$ là một ký hiệu hàm $n$ tham số thì $f(t_1, t_2, t_3, ..., t_n)$ là hạng thức. Một hạng thức không chứa biến được gọi là một hạng thức cụ thể hay hạng thức nền (ground term).
+\end{itemize}
+
+Chẳng hạn, An là ký hiệu hằng, Mẹ\_của là ký hiệu hàm, thì Mẹ\_của(An) là một hạng thức cụ thể. Nhờ sử dụng ký hiệu hàm, ta không cần đặt tên cho tất cả các đối tượng. Chẳng hạn, thay vì dùng một hằng cụ thể để biểu diện mẹ của An, ta có thể dụng ký hiệu hàm Mẹ\_của (An).
+
+Ngữ nghĩa của hạng thức như sau: các hằng, biến, tham số tương ứng với đối tượng trong miền đối tượng; ký hiệu hàm tương ứng với quan hệ hàm trong thế giới thực; hạng thức tương ứng với đối tượng là giá trị của hàm khi nhận tham số.
+
+\noindent {\bf Kí hiệu "="}
+
+Hai hạng thức bằng nhau và được ký hiệu "=" nếu cùng tương ứng với một đối tượng.
+
+Ví dụ: Mẹ\_của(Vua\_Tự\_Đức) = Bà\_Từ\_Dũ.
+
+Tính đúng đắn của quan hệ bằng được xác định bằng cách kiểm tra hai vế của ký tự "=".
+
+\noindent {\bf Câu nguyên tử (câu đơn)}
+
+Các {\it câu nguyên tử}, còn gọi là {\it câu đơn}, được xác định như sau:
+\begin{itemize}
+	\item True và False là các câu nguyên tử.
+	\item Vị từ có tham số là hạng thức là câu nguyên tử.
+	\item Hạng thức 1 = hạng thức 2 là câu nguyên tử.
+\end{itemize}
+
+Ví dụ : Yêu (An, Mẹ\_của(An)).
+
+Câu nguyên tử nhận giá trị đúng (true) trong một minh họa nào đó nếu quan hệ được
+biểu diễn bới ký hiệu vị từ là đúng đối với các đối tượng được biểu diễn bới các hạng thức đóng vai trò thông số. Như vậy, câu nguyên tử thể hiện những sự kiện (đơn giản) trong thế giới của bài toán và do vậy tương đương với các mệnh đề.
+
+Một câu nguyên tử là đúng nếu trong một minh họa nào đó nếu quan hệ được biểu diễn bởi vị tự của câu tồn tại giữa các tham số của vị từ trong minh họa đó. Nhắc lại: minh họa là cách gán giá trị cụ thể cho các ký hiệu và biến trong thế giới nào đó.
+
+\noindent {\bf Câu}
+
+Từ các câu nguyên tử, sử dụng các kết nối logic và các lượng tử, ta xây dựng nên các
+câu. Câu được định nghĩa đệ quy như sau:
+\begin{itemize}
+	\item Câu nguyên tử là câu.
+	\item Nếu $G$ và $H$ là các câu nguyên tử, thì các biểu thức $(G \wedge H)$, $(G \vee H)$, $(\neg G)$, $(G\Rightarrow H)$, $(G\Leftrightarrow H)$ là câu.
+	\item Nếu $G$ là một câu nguyên tử và $x$ là biến thì các biểu thức $(\forall x G)$, $(\exists x G)$ là câu, trong đó $\forall, \exists$ là các lượng tử logic sẽ được đề cập tới trong phần sau.
+\end{itemize}
+
+Các câu không phải là câu nguyên tử sẽ được gọi là các câu phức hợp. Các câu không chứa biến được gọi là câu cụ thể. Khi viết các công thức ta sẽ bỏ đi các dấu ngoặc không cần thiết, chẳng hạn các dấu ngoặc ngoài cùng.
+
+Ví dụ: 
+
+	 $\neg$ Ghét ( Hoa, Mẹ\_của ( Hoa));
+	 
+	 Anh\_em (Nam, Dũng) $\wedge$ Anh\_em (Dũng, Nam);
+	 
+	Thuận\_tay\_trái ($x$) $\vee$ Thuận\_tay\_phải ($x$);
+	
+	 Anh\_của($x, y$) $\Rightarrow \neg$ Anh\_của ($y, x$).
+
+
+Ngữ nghĩa của câu phức hợp được xác định một cách đệ quy từ ngữ nghĩa các câu đơn và các phép nối logic tương tự như trong logic mệnh đề. Cụ thể là, nếu $P$, $Q$ là các câu thì:
+\begin{itemize}
+	\item $\neg P$ là phủ định của $P$ và nhận giá trị true trong một minh họa nếu $P$ sai trong minh họa đó và ngược lại.
+	\item $P \wedge Q$  nhận giá trị true nếu cả $P$ và $Q$ đều đúng và nhận giá trị false nếu ít nhất một trong hai câu $P$, $Q$ là sai.
+	\item $P \vee Q$  nhận giá trị true nếu ít nhất một trong hai câu $P$, $Q$ đúng và nhận giá trị false nếu cả hai câu đều sai.
+	\item $P \Rightarrow Q$ nhận giá trị false nếu $P$ đúng và $Q$ sai, nhận giá trị true trong các trường hợp còn lại.
+	\item $P \Leftrightarrow Q$ nhận giá trị true nếu các $P$ và $Q$ cùng đúng hoặc cả $P$ và $Q$ cùng sai, nhận giá trị false trong các trường hợp còn lại.
+	\item $\forall x P$ nhận giá trị true nếu tất cả các câu nhận được từ $P$ bằng cách thay $x$ bởi một đối tượng trong miền giá trị của $x$ đều có giá trị đúng, và nhận giá trị false nếu ít nhất một câu như vậy sai.
+	\item $\exists x P$  nhận giá trị true nếu tồn tại một đối tượng nào đó trong miền giá trị của biến $x$ làm cho câu $P$ nhận giá trị true.
+\end{itemize}
+
+Trừ ngữ nghĩa của các câu có chứa lượng tử, ngữ nghĩa của các phép nối tương tự như trong logic mệnh đề và có thể thể hiện bằng bảng chân lý.
+
+\noindent {\bf Các lượng tử}
+
+Logic mệnh đề sử dụng hai lượng tử: với mọi và tồn tại.
+
+{\it Lượng tử với mọi} (ký hiệu $\forall$) cho phép mô tả tính chất của cả một lớp các đối tượng, chứ không phải của một đối tượng, mà không cần phải liệt kê ra tất cả các đối tượng trong lớp. Ví dụ ta sử dụng vị từ Voi($x$) (đối tượng $x$ là con voi ) và vị từ Xám($x$) (đối tượng $x$ có màu xám) thì câu "tất cả các con voi đều có màu xám" có thể biểu diễn bởi công thức: $\forall x$ (Voi ($x$) $\Rightarrow$ Xám($x$)).
+
+Như vậy câu $\forall x P$ có nghĩa là câu $P$ đúng với mọi đối tượng $x$ thuộc miền giá trị đã được quy định của thế giới bài toán. Lượng tử với mọi có thể coi như phép hội của nhiều câu.
+
+{\it Lưu ý}: Lượng tử với mọi được dùng với "kéo theo" chứ không dùng với "và". Chẳng hạn,
+để nói rằng mọi sinh viên đều chăm học thì câu
+$\forall x$ Sinh\_viên($x$ ) $\Rightarrow$ Chăm\_học($x$ ) là đúng. Dịch là tất cả sinh viên thì chăm học.
+trong khi
+$\forall x$ Sinh\_viên($x$ ) $\wedge$ Chăm\_học($x$ ) là sai do câu này sẽ có ý nghĩa tất cả mọi người đều là sinh viên và đều chăm học.
+
+{\it Lượng tử tồn tại} (ký hiệu $\exists$) cho phép ta tạo ra các câu nói đến một đối tượng nào đó trong một lớp đối tượng mà nó có một tính chất hoặc thoả mãn một quan hệ nào đó. Ví dụ ta sử dụng các câu nguyên tử Sinh\_viên($x$) ($x$ là sinh viên) và Ở\_trong($x$, P308), ($x$ ở trong phòng 308), ta có thể biểu diễn câu "Có một sinh viên ở phòng 308" bởi biểu thức: $\exists x$ (Sinh\_viên($x$) $\wedge$ Ở\_trong ($x$, P308).
+
+Ngữ nghĩa của công thức $\exists x P$ được xác định như là ngữ nghĩa của công thức là tuyển của tất cả các công thức nhận được từ $P$ bằng cách thay $x$ bởi một đối tượng trong miền đối tượng.
+
+{\it Lưu ý:} Lượng tử tồn tại được dùng với "và" chứ không dùng với "kéo theo". Chẳng hạn để nói rằng có một số sinh viên chăm học thì câu:
+$\exists x$ Sinh\_viên$(x) \wedge$ Chăm\_học($x$) là đúng,
+trong khi
+$\exists x$ Sinh\_viên$(x) \Rightarrow$ Chăm\_học($x$)
+là sai. Thật vậy, do phép kéo theo đúng khi tiền đề là sai nên câu trên đúng khi có một người $x$ nào đó không phải là sinh viên, trong khi đây không phải là ý mà ta muốn khẳng định.
+
+{\it Quan hệ giữa lượng tử với mọi và lượng tử tồn tại}: lượng tử này có thể biểu diễn bằng lượng tử kia bằng cách sử dụng phép phủ định. Ví dụ:
+$\forall x$ Thích ($x$, Kem) tương đương với  $\neg \exists x\neg$ Thích($x$, Kem).
+
+("Ai cũng thích kem" tương đương với "Không có ai không thích kem").
+
+$\exists y$ Thích ($x$, Kem) tương đương với  $\neg \forall x \neg$ Thích ($x$, Kem).
+
+("Một số người thích kem" tương đương với "Không phải tất cả mọi người đều không thích kem").
+
+Như vậy, ta có thể dùng một trong hai lượng tử để biểu diễn cho lượng tử còn lại. Tuy
+nhiên để thuận tiện cho việc đọc và hiểu các câu logic, logic vị từ vẫn sử dụng cả hai lượng tử với mọi và tồn tại.
+
+\noindent {\bf Các lượng tử lồng nhau}
+
+Có thể sử dụng đồng thời nhiều lượng tử trong một câu phức tạp. Vùng ảnh hưởng của lượng tử có thể bao hàm lượng tử khác và khi đó ta nói lượng tử lồng nhau. Ví dụ:
+
+$\forall x \forall y$ Anh\_em($x,y$) $\Rightarrow$  Họ\_hàng($x, y$);
+
+$\forall x \exists y$ Yêu ($x, y$).
+
+Nhiều lượng tử cùng loại có thể được viết gọn bằng một ký hiệu lượng tử, ví dụ câu
+thứ nhất có thể viết gọn thành
+
+$\forall x,y$ Anh\_em($x,y$) $\Rightarrow$ Họ\_hàng($x, y$).
+
+Trong trường hợp lượng tử với mọi được sử dụng cùng lượng tử tồn tại thì thứ tự lượng tử ảnh hưởng tới ngữ nghĩa của câu và không được phép thay đổi. Chẳng hạn câu:
+
+$\forall x \exists y$ Yêu ($x, y$) có nghĩa là mọi người đều có ai đấy để yêu, trong khi câu
+
+$\exists y \forall x$ Yêu ($x, y$) có nghĩa là có ai đó mà tất cả đều yêu.
+
+Trong trường hợp nhiều lượng tử khác nhau cùng sử dụng một tên biến thì có thể gây nhầm lẫn vì vậy cần sử dụng tên biến khác nhau cho ký hiệu lượng tử khác nhau.
+
+\noindent {\bf Các công thức tương đương}
+
+Cũng như trong logic mệnh đề, ta nói hai công thức $G$ và $H$ tương đương (viết là $G \equiv H$) nếu chúng cùng đúng hoặc cùng sai trong một minh hoạ. Ngoài các tương đương đã biết trong logic mệnh đề, trong logic vị từ cấp một còn có các tương đương khác liên quan tới các lượng tử.
+
+Sau đây là các tương đương của logic vị từ:
+
+$\forall x G(x) \equiv \forall y G(y)$;
+$\exists x G(x) \equiv \exists G(y)$.
+
+Đặt tên lại biến đi sau lượng tử tồn tại, ta nhận được công thức tương đương:
+
+$\neg (\forall x G(x)) \equiv \exists x (\neg G(x))$;
+
+$\neg (\exists x G(x)) \equiv \forall x (\neg G(x))$;
+
+$\forall x (G(x) \wedge H(x)) \equiv \forall x G(x) \wedge \forall x H(x)$;
+
+$\exists x (G(x) \vee H(x)) \equiv \exists x G(x) \vee \exists x H(x)$.
+
+Ví dụ : $\forall x$ Yêu($x$, Mẹ\_của($x$)) $\equiv$ $\forall$ y Yêu(y, Mẹ\_của($y$)).
+
+\section{Một số ví dụ}
+
+\subsection{Ứng dụng trong mạch điện tử}
+
+Xét mạch sau:
+ \begin{center}
+	\begin{figure}[H]
+		\begin{center}
+	\includegraphics[scale=1]{images/chapter8/mach}
+	\label{mach}
+		\end{center}
+	\end{figure}
+\end{center}
+
+Mạch điện tử $C_1$ là một bộ cộng, có ba tín hiệu đầu vào là 1, 2, 3 và hai tín hiệu đầu ra là 1, 2. Cổng $X_1,X_2$ là cổng XOR, cổng $A_1,A_2$ là cổng AND, cổng $O_1$ là cổng OR. 
+
+Các hàm trong mạch điện tử là:
+\begin{itemize}
+	\item $Terminal(x)$: thiết bị đầu cuối;
+	\item $In(1,X_1)$: input đầu tiên của mạch $X_1$;
+	\item $Out(n,c)$: các output của mạch;
+	\item $Arity(c,i,j)$: mạch $c$ có $i$ input và $j$ output;
+	\item $Connected(Out(1,X_1),In(1,X_2))$: nối output $X_1$ với input đầu tiên của $X_2$;
+	\item Tín hiệu bật tắt: $On(t)$: tín hiệu khi thiết bị bật;
+	\item $Signal(t)$: giá trị tín hiệu của thiết bị $t$, hai giá trị tín hiệu 1 và 0 tương ứng với bật và tắt.
+\end{itemize}
+
+Để biểu diễn mạch điện tử ta cần một số quy tắc chung, ngắn gọn và rõ ràng, các tiên đề chúng ta cần là:
+\begin{itemize}
+	\item Hai thiết bị được kết nối, ta có tín hiệu giống nhau
+	$\forall t_1,t_2\ Terminal(t_1) \wedge Terminal(t_2)\wedge Connected(t_1,t_2) \Rightarrow Signal(t_1)=Signal(t_2).$
+	\item  Tín hiệu ở mỗi thiết bị là 1 hoặc 0;
+	$$
+	\forall t \ Terminal(t) \Rightarrow Signal (t)=1 \wedge Signal(t)=0.$$
+	\item $Connected$ có tính giao hoán
+	$$\forall t_1,t_2 \ Connected(t_1,t_2) \Leftrightarrow Connected(t_2,t_1).$$
+	\item Có 4 loại cổng:
+	$$\forall g \ Gate(g)\wedge k=Type(g)\Rightarrow k=AND\vee k=OR\vee k=XOR\vee k=NOT.$$		
+	\item Output của cổng AND là 0 nếu và chỉ nếu bất kì input bằng 0:
+	$$\forall g\ Gate(g)\wedge Type(g)=AND \Rightarrow$$
+	$$Signal(Out(1,g))=0 \Leftrightarrow \exists n \ Signal(In(n,g))=0.$$
+	\item Output của cổng OR là 1 nếu và chỉ nếu bất kì input bằng 1:
+	$$\forall g\ Gate(g)\wedge Type(g)=OR \Rightarrow$$
+	$$Signal(Out(1,g))=1 \Leftrightarrow \exists n \ Signal(In(n,g))=1.$$
+	\item Output của cổng NOT khác với input của nó:
+	$$\forall g\ Gate(g)\wedge Type(g)=NOT \Rightarrow Signal(Out(1,g))\ne Signal(In(n,g))=0.$$
+	\item Output của cổng XOR là 1 nếu và chỉ nếu các input là khác nhau:
+	$$\forall g\ Gate(g)\wedge Type(g)=XOR \Rightarrow$$
+	$$Signal(Out(1,g))=1 \Leftrightarrow Signal(In(1,g))\ne Signal(In(2,g)).$$
+	\item Tất cả các cổng (ngoại trừ NOT) có 2 input và 1 output:
+	$$\forall g\ Gate(g)\wedge Type(g)=NOT \Rightarrow Arity(g,1,1).$$
+	$\forall g\ Gate(g)\wedge Type(g)=Type(g)\wedge (k=AND\vee k=OR\vee k=XOR) \Rightarrow Arity(g,2,1).$
+	\item Cổng, thiết bị và tín hiệu đều khác biệt:
+	$$\forall g,t,s\ Gate(g)\wedge Terminal(t) \wedge Signal(s) \Rightarrow g\ne t\wedge g\ne s\wedge t\ne s.$$
+	\item Cổng là mạch:
+	$$\forall g\ Gate(g)\Rightarrow Circuit(g).$$	
+\end{itemize}
+
+Mạch trong hình được mã hóa là mạch  $C_1$ với mô tả sau. Trước hết, ta phân loại mạch và các cổng thành phần của nó:
+\begin{align*}
+	& Circuit(C_1)\wedge Arity(C1,3,2)\\
+	& Gate(X_1)\wedge Type(X_1)=XOR\\
+	& Gate(X_2)\wedge Type(X_2)=XOR\\
+	& Gate(A_1)\wedge Type(A_1)=AND\\
+	& Gate(A_2)\wedge Type(A_2)=AND\\
+	& Gate(O_1)\wedge Type(O_1)=OR\\
+\end{align*}
+
+Sau đó, ta có các kết nối giữa các cổng như sau:
+\begin{align*}
+	& Connected(Out(1,X_1),In(1,X_2))\quad & Connected(In(1,C_1),In(1,X_1))\\
+	& Connected(Out(1,X_1),In(2,A_2))\quad & Connected(In(1,C_1),In(1,A_1))\\
+	& Connected(Out(1,A_2),In(1,O_1))\quad & Connected(In(2,C_1),In(2,X_1))\\
+	& Connected(Out(1,A_1),In(2,O_1))\quad & Connected(In(2,C_1),In(2,A_1))\\
+	& Connected(Out(1,X_2),Out(1,C_1))\quad & Connected(In(3,C_1),In(2,X_2))\\
+	&Connected(Out(1,O_1),Out(2,C_1))\quad & Connected(In(3,C_1),In(1,A_2))\\
+\end{align*}
+
+Đây là một ví dụ đơn giản về mạch. Chúng ta cũng có thể sử dụng định nghĩa của mạch để xây dựng các hệ thống kỹ thuật số lớn hơn.
+\subsection{Bài toán vũ khí}
+
+Theo luật, người Mỹ bán vũ khí cho quốc gia thù địch là tội phạm. Quốc gia Nono, kẻ thù của Mỹ, có một số tên lửa và tất cả số tên lửa đã được West, một công dân Mỹ, bán cho Nono. Ta có bài toán sau;
+\begin{itemize}
+	\item Một người Mỹ bán vũ khí cho các quốc gia thù địch là một tội phạm. (Giả sử x, y và z là các biến số).
+	
+	{(1) Mỹ (x) $\wedge$ vũ khí (y) $\wedge$ bán (z, y, z) $\wedge$ thù địch (z) $\Rightarrow$ Tội phạm (x)}.
+	
+	\item Quốc gia Nono có một số tên lửa: {$\exists$ p  Sở hữu (Nono, x) $\wedge$ Tên lửa (x)}.
+	
+	\item Viết thành 2 mệnh đề xác định: 
+	
+	{(2) Sở hữu (Nono, M1)}.
+	
+	{(3) Tên lửa (M1)}.
+	
+	\item Tất cả các tên lửa đã được West bán cho quốc gia Nono.	
+	
+	{Tên lửa (x) $\wedge$ Sở hữu (Nono, x) $\Rightarrow$ Bán (West, x, Nono)}.
+	
+	\item West là người Mỹ: {Mỹ (West) }.
+	
+	\item Tên lửa là vũ khí: {Tên lửa (x) $\Rightarrow$ Vũ khí (x)} .
+	
+	\item Kẻ thù của nước Mỹ được gọi là thù địch: {(7) Kẻ thù (x, Mỹ) $\Rightarrow$ Thù địch (x)}.
+	
+	\item Quốc gia Nono là kẻ thù của Mỹ: {(8) Kẻ thù (Nono, Mỹ)}.
+	
+\end{itemize}
+
+Biểu diễn dữ kiện:
+\begin{itemize}
+	\item Mỹ(West)
+	\item Kẻ thù(Nono, Mỹ)
+	\item Sở hữu(Nono, M1)
+	\item Tên lửa(M1)
+\end{itemize}
+
+ \begin{center}
+	\begin{figure}[H]
+		\begin{center}
+	\includegraphics[scale=0.7]{images/chapter8/vd}
+		\end{center}
+	\end{figure}
+\end{center}
+
+\section{Kết luận}
+
+Như vậy chương đã trình bày về sự cần thiết của logic bậc nhất (logic vị từ), các khái niệm cơ bản trong cú pháp và ngữ nghĩa của logic bậc nhất cũng như một số ví dụ minh họa biểu diễn bài toán bằng logic bậc nhất.

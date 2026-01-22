@@ -1,0 +1,175 @@
+\documentclass[12pt,a4paper,oneside]{book}
+
+\newcommand{\projectname}{
+	Artificial Intelligence:\\ A Modern Approach
+}
+
+\newcommand{\teachername}{Ts. Lê Chí Ngọc}
+
+\usepackage[bottom]{footmisc}
+\usepackage{multirow}
+\usepackage[utf8]{inputenc}
+\usepackage[utf8]{vietnam}
+\usepackage{amsmath} % Required to use mathematical features
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{float} % Fixed positions of figures
+\usepackage{gensymb}
+\usepackage{subcaption}
+\usepackage{geometry}
+\geometry{
+	a4paper,
+	tmargin=35mm,
+	bmargin=30mm,
+	lmargin=35mm,
+	rmargin=20mm,
+}
+\usepackage{hyperref} % for references
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+}
+\usepackage{mathptmx} % the replacement of Times New Roman
+\linespread{1.25} % same as 1.5 line spacing in MS Word
+\usepackage{graphicx}
+\graphicspath{{images/}}
+\usepackage{enumerate}
+\usepackage{indentfirst}
+\usepackage{fancybox}
+\usepackage{fancyhdr}
+\usepackage{multicol}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textit{\chaptername\space\thechapter}}
+\rhead{\textit{GVHD: \teachername}}
+\cfoot{\textit{\thepage}}
+\fancyfoot[C]{\textit{\thepage}}
+\renewcommand{\headrulewidth}{1pt}
+\renewcommand{\footrulewidth}{1pt}
+
+\newcommand{\argmax}{\arg\!\max}
+\makeatletter
+\renewcommand{\ALG@name}{Thuật toán}
+\makeatother
+\renewcommand{\thealgorithm}{}
+
+\fancypagestyle{plain}{
+	\fancyhf{} % clear all header and footer fields
+	\fancyfoot[C]{\textit{\thepage}} % except the center
+	\renewcommand{\headrulewidth}{0pt}
+	\renewcommand{\footrulewidth}{0pt}
+}
+
+\newtheorem{theorem}{Định lý}[chapter]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Hệ quả}
+\newtheorem{cy}[theorem]{Chú ý} 
+% \newtheorem{definition}[theorem]{Định nghĩa}%[section]
+\newtheorem{bd}[theorem]{Bổ đề} 
+\newtheorem{bt}[theorem]{Bài toán}
+\newtheorem{md}[theorem]{Mệnh đề} 
+\newtheorem{remark}[theorem]{Nhận xét} 
+\newtheorem{Bt}[theorem]{Bài toán} 
+\newtheorem{example}[theorem]{Ví dụ} 
+\newtheorem{hq}[theorem]{Hệ quả}
+\newtheorem{kh}[theorem]{Kí hiệu}
+\newtheorem{cor}[theorem]{Hệ quả}
+\newtheorem{dfn}[theorem]{Định nghĩa}%[section]
+\newtheorem{lem}[theorem]{Bổ đề} 
+\newtheorem{prop}[theorem]{Mệnh đề} 
+\newtheorem{dl}[theorem]{Định lý}
+\newtheorem{vd}[theorem]{\bf Ví dụ} 
+\newtheorem{nx}[theorem]{ Nhận xét} 
+\newtheorem{dn}[theorem]{\bf Định nghĩa} 
+\newtheorem{tc}[theorem]{\bf Tính chất} 
+\newtheorem{ch}[theorem]{\bf Câu hỏi} 
+\newtheorem{ttt}[theorem]{\bf Thuật toán} 
+\newtheorem{gt}[theorem]{\bf Giả thiết} 
+
+\usepackage[backend=bibtex,style=ieee, sorting=nty]{biblatex}
+\addbibresource{project_ref.bib}
+
+
+\begin{document}
+\begin{titlepage}
+	\thisfancypage{\setlength{\fboxsep}{10pt}\doublebox}{}
+	\begin{center}
+		\begin{Large}\bfseries
+			TRƯỜNG ĐẠI HỌC BÁCH KHOA HÀ NỘI\par
+			VIỆN TOÁN ỨNG DỤNG VÀ TIN HỌC\par
+		\end{Large}
+		\vspace{1.5cm}
+		\includegraphics[scale=0.3]{images/logo_bk.jpg}\par
+		\vspace{1.5cm}
+		\begin{LARGE}
+			\MakeUppercase{Báo cáo môn học}\par
+		\end{LARGE}
+		\begin{LARGE}
+			\MakeUppercase{Seminar I}\par
+		\end{LARGE}
+		\vspace{1.5cm}
+		\begin{Large}
+			\MakeUppercase{Đề tài: \projectname}
+		\end{Large}
+		\vspace{1cm}
+		\begin{large}
+			\begin{flushleft}
+				\hspace{2cm}
+				Giảng viên hướng dẫn: \MakeUppercase{\textbf{\teachername}}\par
+				\vspace{0.5cm}
+				\hspace{2cm}
+				
+			\end{flushleft}
+		\end{large}
+		\vfill
+		\begin{large}\bfseries
+			HÀ NỘI - \the\year\par
+		\end{large}
+	\end{center}
+\end{titlepage}
+
+\frontmatter
+
+\renewcommand{\listfigurename}{Danh mục hình vẽ}
+\listoffigures
+% \listoftables
+\tableofcontents
+\mainmatter
+\chapter*{Lời cảm ơn}
+Báo cáo được hoàn thành dựa trên sự nghiên cứu, tổng hợp của các thành viên trong lớp Seminar I chương trình Thạc sĩ khoa học Toán Tin kì học 2021A. Chúng em xin được gửi lời cảm ơn chân thành và sâu sắc nhất tới TS.Lê Chí Ngọc - giáo viên hướng dẫn môn Seminar I - đã có những đóng góp quý báu trong quá trình chúng em báo cáo thuyết trình môn học. Do thời gian nghiên cứu và trình bày có giới hạn nên bản báo cáo không thể tránh khỏi có sai sót, rất mong nhận được sự đóng góp, chỉnh sửa của thầy cô và các bạn. \\
+Chúng em xin chân thành cảm ơn!\\
+\begin{flushright}
+Hà Nội, tháng 9 năm 2021\hspace*{1.cm} \\
+\textit{Tập thể lớp Seminar I kì học 2021A}
+\end{flushright}
+
+
+\include{chapters/phancongcongviec}
+\include{chapters/chapter01}
+\include{chapters/chapter06}
+\include{chapters/chapter8}
+\include{chapters/chapter9}
+\include{chapters/chapter10}
+\include{chapters/chapter11}
+\include{chapters/chapter12}
+\include{chapters/chapter13}
+\include{chapters/chapter14}
+\include{chapters/chapter15}
+\include{chapters/chapter16}
+\include{chapters/chapter17}
+\include{chapters/chapter20}
+\include{chapters/chapter21}
+\include{chapters/chapter23}
+\backmatter
+
+% \appendix
+% \include{chapters/appendix}
+
+\printbibliography[heading=bibintoc, title=Tài liệu tham khảo]
+
+\end{document}

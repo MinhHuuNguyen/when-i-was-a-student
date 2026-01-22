@@ -1,0 +1,230 @@
+\chapter{Lý luận xác suất theo thời gian}
+Chúng ta đã tìm hiểu logic mệnh đề, logic vị từ cấp một,...Ngôn ngữ và ngữ nghĩa của các logic này chỉ giới hạn cho các câu đúng/sai. Trong thực tế, nhiều thông tin/tri thức chúng ta không hoàn toàn biết được nó là đúng hay sai và chúng ta vẫn có thể rút ra (lập luận ra) các thông tin/tri thức từ những điều ta không chắc chắn đó mặc dù các thông tin/tri thức rút ra cũng là những cái không chắc chắn. Vậy làm thế nào mà máy tính có thể biểu diễn được các thông tin/tri thức không chắc chắn và lập luận để trả lời các câu truy vấn như trên? Tìm hiểu về lý thuyết xác suất, một ngôn ngữ để biểu diễn các thông tin, tri thức không chắc chắn và lý thuyết xác suất cho phép chúng ta lập luận để rút ra các thông tin và tri thức mới. 
+
+Trong chương này ta sử dụng lý thuyết xác suất để định lượng mức độ tin tưởng vào các yếu tố của trạng thái niềm tin. Trong phần \ref{14.1}, giới thiệu các mô hình chuyển tiếp và mô hình cảm biến có thể không chắc chắn: mô hình chuyển tiếp mô tả phân phối xác suất của các biến tại thời điểm $t$, với các biến trạng thái ở thời điểm trước đó, trong khi mô hình cảm biến mô tả xác suất của từng  đối tượng tại thời điểm $t$, với trạng thái hiện tại của không gian trạng thái. Phần \ref{14.2} xác định các nhiệm vụ suy luận cơ bản và mô tả cấu trúc chung của các thuật toán suy luận cho mô hình thời gian. Sau đó mô tả 3 mô hình cụ thể: mô hình Markov ẩn, lọc Kalman, mạng Bayes động (bao gồm Markov ẩn và lọc Kalman là trường hợp đặc biệt).
+\section{Thời gian và sự không chắc chắn}\label{14.1}
+Chúng ta đã phát triển các kỹ thuật lập luận xác suất trong bối cảnh không gian trạng thái tĩnh, trong đó mỗi biến ngẫu nhiên có một giá trị cố định duy nhất. Ví dụ, khi sửa một cái xe hơi, ta giả sử rằng bất cứ cái gì bị hỏng vẫn bị hỏng trong quá trình chuẩn đoán, công việc của chúng ta là suy ra trạng thái của cái xe từ bằng chứng quan sát được, bằng chứng này cũng không thay đổi.\\
+Bây giờ hãy xem xét một vấn đề hơi khác: điều trị một bệnh nhân đái tháo đường. Như trong trường hợp sửa chữa ô tô, ta có bằng chứng như liều lượng insulin gần đây, lượng thức ăn, số đo đường huyết và các dấu hiệu thể chất khác. Nhiệm vụ là đánh giá tình trạng hiện tại của người bệnh, bao gồm lượng đường huyết thực tế và lượng insulin. Với thông tin này, ta có thể đưa ra quyết định về lượng thức ăn của bệnh nhân và liều lượng insulin. Không giống như trường hợp sửa chữa ô tô, ở đây các biến ngẫu nhiên là động. Tức là lượng đường trong máu và các phép đo của chúng có thể thay đổi nhanh chóng theo thời gian, tùy thuộc vào lượng thức ăn gần đây và liều lượng insulin, hoạt động trao đổi chất, thời gian trong ngày, v.v. Để đánh giá tình trạng hiện tại từ dữ liệu lịch sử và dự đoán kết quả của các hành động điều trị, chúng ta phải lập mô hình những thay đổi này.\\
+Những cân nhắc tương tự cũng nảy sinh trong nhiều trường hợp khác, chẳng hạn như theo dõi vị trí của rô-bốt, theo dõi hoạt động kinh tế của một quốc gia và hiểu chuỗi từ được nói hoặc viết. Làm thế nào để có thể mô phỏng các tình huống động như thế này?
+\subsection{Biến trạng thái và biến quan sát}
+Chương này thảo luận về các mô hình thời gian rời rạc (discrete-time models), trong đó không gian các sự kiện được xem như một chuỗi các bức ảnh chụp nhanh hoặc các lát cắt thời gian (time slice). Chúng tôi sẽ chỉ đánh số các lát thời gian 0, 1, 2, v.v. thay vì ấn định thời gian cụ thể cho chúng. Thông thường, khoảng thời gian  $\Delta$ giữa các lát cắt được giả định là như nhau đối với mọi khoảng thời gian. Đối với bất kỳ ứng dụng cụ thể nào, một giá trị cụ thể của $\Delta$ phải được chọn. Đôi khi điều này được đưa ra bởi cảm biến; ví dụ, một máy quay video có thể cung cấp hình ảnh với khoảng thời gian là $\dfrac{1}{30}$ giây. Trong các trường hợp khác, khoảng thời gian được quyết định bởi tốc độ thay đổi điển hình của các biến có liên quan; ví dụ, trong trường hợp theo dõi đường huyết, mọi thứ có thể thay đổi đáng kể trong vòng mười phút, vì vậy khoảng thời gian một phút có thể thích hợp. Mặt khác, trong việc mô hình hóa sự trôi dạt lục địa theo thời gian địa chất, khoảng thời gian là khoảng một triệu năm có thể ổn.\\
+Mỗi lát cắt thời gian trong mô hình xác suất thời gian rời rạc chứa một tập hợp các biến ngẫu nhiên, một số có thể quan sát được và một số thì không. Để đơn giản, chúng ta sẽ giả định rằng cùng một tập hợp con các biến có thể quan sát được trong mỗi lát thời gian. Chúng ta sẽ sử dụng $X_t$ để biểu thị tập hợp các biến trạng thái tại thời điểm $t$, được giả định là không thể quan sát được và $E_t$ để biểu thị tập hợp các biến bằng chứng có thể quan sát được. Quan sát tại thời điểm $t$ là $E_t = e_t$ đối với một số tập giá trị $e_t$.\\
+Ví dụ: Bạn là nhân viên bảo vệ đóng quân tại một cơ sở bí mật dưới lòng đất. Bạn muốn biết hôm nay trời có mưa hay không, nhưng khả năng tiếp cận thế giới bên ngoài duy nhất của bạn xảy ra vào mỗi buổi sáng khi bạn thấy giám đốc đi vào có mang theo ô hoặc không. Đối với mỗi ngày $t$, tập $E_t$ do đó chứa một biến bằng chứng duy nhất là $Umbrella_t$ hoặc viết tắt $U_t$, và tập $X_t$ chứa một biến trạng thái duy nhất là $Rain_t$ hoặc gọi tắt là $R_t$. Các bài toán khác có thể liên quan đến các tập biến lớn hơn. Trong ví dụ về bệnh tiểu đường, các biến bằng chứng có thể là $MeasuredBloodSugar_t$ và $PulseRate_t$ trong khi các biến trạng thái có thể bao gồm $BloodSugar_t$ và $StomachContents_t$.\\
+Chúng ta sẽ giả sử rằng chuỗi trạng thái bắt đầu từ $t = 0$ và chuỗi bằng chứng bắt đầu đến $t = 1$. Do đó, không gian $Umbrella$ của chúng ta được biểu diễn bằng các biến trạng thái $R_0, R_1, R_2, ...$ và các biến bằng chứng $U_1, U_2, ...$ Chúng ta sẽ sử dụng ký hiệu $a: b$ để biểu thị chuỗi các số nguyên từ $a$ đến $b$ và ký hiệu $X_{a: b}$ để biểu thị tập hợp bao gồm các biến từ $X_a$ đến $X_b$. Ví dụ: $U_{1: 3}$ tương ứng với $U_1, U_2, U_3$.
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\textwidth]{images/chapter14/14.1.png}
+    \caption{(a) Cấu trúc mạng Bayes tương ứng với quy trình Markov bậc nhất với trạng thái được xác định bởi các biến Xt.\\
+    (b) Quy trình Markov bậc hai. }
+    \label{fig:14.1}
+\end{figure}
+\subsection{Mô hình chuyển tiếp và mô hình cảm biến}
+Với tập hợp các biến trạng thái và biến bằng chứng cho một vấn đề nhất định đã được quyết định, bước tiếp theo là xác định cách biến trạng thái tiếp (mô hình chuyển tiếp) và cách các biến bằng chứng nhận được giá trị của chúng (mô hình cảm biến).\\
+Mô hình chuyển tiếp xác định phân phối xác suất trên các biến trạng thái mới nhất, cho trước các giá trị trước đó, nghĩa là $P(X_t | X_{0: t - 1})$. Bây giờ chúng ta phải đối mặt với một vấn đề đó là tập $X_{0: t - 1}$ có kích thước không giới hạn khi $t$ tăng. Chúng ta giải quyết vấn đề bằng cách đưa ra một giả định Markov - rằng trạng thái hiện tại chỉ phụ thuộc vào một số hữu hạn cố định của các trạng thái trước đó. Các quá trình thỏa mãn giả định này lần đầu tiên được nghiên cứu sâu bởi nhà thống kê Andrei Markov (1856 - 1922) và được gọi là quá trình Markov hoặc chuỗi Markov. Chúng có nhiều dạng khác nhau, đơn giản nhất là chuỗi Markov bậc nhất, trong đó trạng thái hiện tại chỉ phụ thuộc vào trạng thái ngay trước đó chứ không phụ thuộc vào bất kỳ trạng thái nào trước đó nữa. Nói cách khác, một trạng thái cung cấp đủ thông tin để làm cho tương lai độc lập có điều kiện so với quá khứ, và chúng ta có
+\begin{equation}
+    P(X_t |X_{0:t-1}) = P(X_t |X_{t-1})
+\end{equation}
+Do đó, trong quá trình Markov bậc nhất, mô hình chuyển tiếp là xác suất có điều kiện $P(X_t | X_{t-1})$. Mô hình chuyển tiếp cho quá trình Markov bậc hai là xác suất có điều kiện $P(X_t | X_{t - 2}, X_{t - 1})$. Hình \ref{fig:14.1} cho thấy các cấu trúc mạng Bayes tương ứng với các quy trình Markov bậc nhất và bậc hai.\\
+Ngay cả với giả thiết Markov vẫn có một vấn đề: có vô số giá trị có thể có của $t$. Chúng ta có cần xác định một phân phối khác nhau cho mỗi bước thời gian không? Chúng ta tránh vấn đề này bằng cách giả định rằng những thay đổi trong tập trạng thái  là do một quá trình đồng nhất về thời gian (Time-homogeneous) gây ra - tức là một quá trình thay đổi được điều chỉnh bởi các luật mà bản thân chúng không thay đổi theo thời gian. Khi đó, trong không gian trạng thái Umbrella, xác suất có điều kiện của mưa $P(R_t | R_{t - 1})$, là như nhau đối với mọi $t$, và chúng ta chỉ cần xác định một bảng xác suất có điều kiện.\\
+Bây giờ đối với mô hình cảm biến. Các biến bằng chứng $E_t$ có thể phụ thuộc vào các biến trước đó cũng như các biến trạng thái hiện tại, nhưng bất kỳ trạng thái nào cũng có khả năng đọc cảm biến chính xác của chính nó. Do đó, ta đưa ra một giả định về cảm biến Markov như sau:
+\begin{equation}
+    P(E_t |X_{0:t} ,E_{1:t-1}) = P(E_t |X_t).
+\end{equation}
+
+Do đó, $P(E_t | X_t)$ là mô hình cảm biến của chúng ta (đôi khi được gọi là mô hình quan sát). Hình \ref{fig:14.2} cho thấy cả mô hình chuyển tiếp và mô hình cảm biến cho ví dụ chiếc ô. Lưu ý hướng của sự phụ thuộc giữa trạng thái và cảm biến: các mũi tên đi từ trạng thái thực tế của không gian trạng thái đến các giá trị cảm biến bởi vì trạng thái khiến cảm biến nhận các giá trị cụ thể: mưa làm xuất hiện ô.
+
+Ngoài việc xác định các mô hình chuyển đổi và cảm biến, chúng ta cần cho biết mọi thứ bắt đầu như thế nào — phân phối xác suất đầu tiên tại thời điểm 0, $P(X_0)$. Đối với bất kỳ bước $t$ thời gian nào,
+\begin{equation*}
+    P(X_{0:t}, E_{1:t}) = P(X_0)\prod_{i=1}^tP(X_i,X_{i-1})P(E_i,X_i)
+\end{equation*}
+Ba số hạng ở bên tay phải là mô hình trạng thái ban đầu $P(X_0)$, mô hình chuyển tiếp $P (X_i | X_{i-1})$ và mô hình cảm biến $P (E_i | X_i)$.\\
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\textwidth]{images/chapter14/14.2.png}
+    \caption{Cấu trúc mạng Bayes và các phân bố có điều kiện mô tả thế giới ô. Mô hình chuyển tiếp là $P(Rain_t | Rain_{t -1})$ và mô hình cảm biến là $P(Umbrella_t | Rain_t)$. }
+    \label{fig:14.2}
+\end{figure}
+Cấu trúc trong Hình \ref{fig:14.2} là một quá trình Markov bậc nhất — xác suất mưa được giả định chỉ phụ thuộc vào việc trời có mưa vào ngày hôm trước hay không. Giả định như vậy có hợp lý hay không phụ thuộc vào chính lĩnh vực đó. Giả thiết Markov bậc nhất nói rằng các biến trạng thái chứa tất cả thông tin cần thiết để đặc trưng cho phân phối xác suất cho lát cắt thời gian tiếp theo. Đôi khi giả định hoàn toàn đúng nhưng đôi khi giả định chỉ là gần đúng, như trong trường hợp dự đoán mưa chỉ dựa trên cơ sở liệu ngày hôm trước trời có mưa hay không.\\
+Có hai cách để cải thiện độ chính xác của phép tính gần đúng:
+\begin{itemize}
+    \item [($1$)] Tăng bậc của mô hình chuỗi Markov. Ví dụ: chúng ta có thể tạo mô hình bậc hai bằng cách thêm $Rain_{t-2}$ làm cha mẹ của $Rain_t$, mô hình này có thể đưa ra các dự đoán chính xác hơn một chút.
+    \item [($2$)] Tăng tập hợp các biến trạng thái. Ví dụ: chúng tôi có thể thêm $Season_t$ để cho phép kết hợp các bản ghi lịch sử về các mùa mưa hoặc có thể thêm $Temperature_t$, $Humidity_t$ , và $Pressure_t$ (có thể ở một số địa điểm) để cho phép sử dụng mô hình vật lý về điều kiện mưa.
+\end{itemize}
+
+\section{Suy luận trong mô hình thời gian}\label{14.2}
+Sau khi thiết lập cấu trúc của một mô hình thời gian chung, chúng ta có thể hình thành các nhiệm vụ suy luận cơ bản phải được giải quyết:
+\begin{itemize}
+    \item \textbf{Lọc} (Filtering) hoặc ước lượng trạng thái (state estimation) là nhiệm vụ tính toán trạng thái niềm tin $P(X_t | e_{1: t})$ —phân phối sau so với trạng thái gần đây nhất với tất cả các bằng chứng cho đến nay. Trong ví dụ về chiếc ô, điều này có nghĩa là tính toán xác suất mưa ngày hôm nay, dựa trên tất cả các quan sát ô được thực hiện cho đến nay. Lọc là những gì một tác nhân thực hiện để theo dõi trạng thái hiện tại để có thể đưa ra các quyết định hợp lý. Nó chỉ ra rằng một phép tính gần như giống hệt nhau cung cấp khả năng xuất hiện của chuỗi bằng chứng, $P(e_{1:t})$.
+    \item \textbf{Dự đoán} (Prediction): Đây là nhiệm vụ tính toán phân phối sau của trạng thái tương lai, dựa trên tất cả các bằng chứng cho đến nay. Tức là, chúng ta muốn tính $P (X_{t + k} | e_{1: t})$ cho một số $k > 0$. Trong ví dụ ô, điều này có nghĩa là tính xác suất mưa ba ngày kể từ bây giờ, dựa trên tất cả các quan sát cho đến nay. Dự đoán hữu ích để đánh giá các hành động có thể có dựa trên kết quả mong đợi của họ.
+    \item \textbf{Làm mịn} (Smoothing): Đây là nhiệm vụ tính toán phân phối sau của một trạng thái trong quá khứ, dựa trên tất cả các bằng chứng cho đến hiện tại. Tức là, chúng ta muốn tính $P(X_k | e_{1: t})$ cho một số $k$ sao cho 
+    $0 \le k < t$. Trong ví dụ về chiếc ô, nó có thể có nghĩa là tính xác suất trời mưa vào thứ Tư tuần trước, dựa trên tất cả các quan sát về người mang ô được thực hiện cho đến ngày hôm nay. Làm mịn cung cấp ước tính tốt hơn về trạng thái tại thời điểm $k$ so với trạng thái có sẵn tại thời điểm đó, bởi vì nó kết hợp nhiều bằng chứng hơn.
+    \item \textbf{Chuỗi có khả năng xảy ra nhất} (Most likely explanation): Với một chuỗi các quan sát, chúng ta có thể muốn tìm chuỗi các trạng thái có nhiều khả năng đã tạo ra các quan sát đó. Tức là chúng ta muốn tính $argmax_{x_{1: t}} P (x_{1: t} | e_{1: t})$. Ví dụ, nếu chiếc ô xuất hiện vào mỗi ngày trong số ba ngày đầu tiên và vắng mặt vào ngày thứ tư, thì lời giải thích khả dĩ nhất là trời mưa vào ba ngày đầu tiên và không mưa vào ngày thứ tư.
+
+\end{itemize}
+
+\subsection{Lọc và dự đoán}
+Trong Phần 7.7.3, một thuật toán lọc hữu ích cần duy trì ước tính trạng thái hiện tại và cập nhật nó, thay vì quay lại toàn bộ lịch sử của các khái niệm cho mỗi lần cập nhật. (Nếu không, chi phí của mỗi lần cập nhật sẽ tăng lên theo thời gian.) Nói cách khác, với kết quả lọc đến thời điểm $t$, tác nhân cần tính toán kết quả cho $t +1$ từ bằng chứng mới $e_{t + 1}$. Vì vậy chúng ta có
+$$P (X_{t+1} | e_{1: t+1}) = f(e_{t+1},P (X_t | e_{1: t}))$$
+đối với một số hàm f. Quá trình này được gọi là ước lượng đệ quy.\\
+Chúng ta có thể xem phép tính này bao gồm hai phần: thứ nhất, phân bố trạng thái hiện tại được dự báo từ $t$ đến $t +$1; sau đó nó được cập nhật bằng cách sử dụng bằng chứng mới $e_{t +1}$. Quá trình gồm hai phần này xuất hiện khá đơn giản khi công thức được sắp xếp lại:
+\begin{align}\label{cthuc14.4}
+        P (X_{t+1} | e_{1: t+1}) &=P(X_{t+1}|e_{1: t}, e_{t+1}) \nonumber\\
+        &= \alpha P(e_{t+1}|X_{t+1}, e_{1: t})P(X_{t+1}|e_{1: t}) \nonumber\\
+        &= \alpha P(e_{t+1}|X_{t+1})P(X_{t+1}|e_{1: t})
+\end{align}
+Ở đây và trong suốt chương này,$\alpha$ là một hằng số chuẩn hóa được sử dụng để tính tổng xác suất bằng 1. Bây giờ chúng ta thêm một biểu thức cho dự đoán một bước $P(X_{t + 1} | e_{1: t})$, thu được bằng cách điều chỉnh trạng thái hiện tại Xt. Phương trình kết quả cho ước lượng trạng thái mới là kết quả trọng tâm trong chương này:
+\begin{align}\label{cthuc14.5}
+        P (X_{t+1} | e_{1: t+1}) 
+        &=\alpha P(e_{t+1}|X_{t+1}) \sum_{x_t} P(X_{t+1}|x_t,e_{1: t})P(x_t|e_{1: t}) \nonumber\\
+        &= \alpha P(e_{t+1}|X_{t+1}) \sum_{x_t} P(X_{t+1}|x_t)P(x_t|e_{1: t}) \quad (\text{giả sử Markov})
+\end{align}
+Trong biểu thức này, tất cả các thuật ngữ đến từ mô hình hoặc từ ước lượng trạng thái trước đó. Do đó, chúng ta có công thức đệ quy mong muốn. Chúng ta có thể coi ước lượng đã lọc $P(X_t | e_{1: t})$ như một “thông báo” $f_{1: t}$ được truyền về phía trước dọc theo chuỗi, được sửa đổi theo từng chuyển tiếp(transition) và được cập nhật bởi mỗi quan sát mới. Quá trình được đưa ra bởi
+$$f_{1:t+1} = FORWARD(f_{1:t} ,e_{t+1}),$$
+trong đó FORWARD thực hiện cập nhật được mô tả trong Công thức \eqref{cthuc14.5} và quá trình bắt đầu với $f_{1: 0} = P (X_0)$. Khi tất cả các biến trạng thái là rời rạc, thời gian cho mỗi lần cập nhật là không đổi (tức là không phụ thuộc vào $t$) và không gian cần thiết cũng không đổi. \\
+Minh họa quá trình lọc cho hai bước trong ví dụ ô cơ bản (Hình \ref{fig:14.2}). Tức là, chúng ta sẽ tính $P (R_2 | u_{1: 2})$ như sau:
+\begin{itemize}
+    \item Vào ngày 0, chúng ta không có quan sát, chỉ có niềm tin trước đó của nhân viên bảo vệ; giả sử rằng bao gồm $P (R_0) = \left<0.5,0.5\right>$.
+    \item Vào ngày thứ nhất, chiếc ô xuất hiện nên $U_1 = true$. Dự đoán từ  $t = 0$ đến $t = 1$ là
+    \begin{align*}
+        P(R_1) &= \sum_{r_0} P(R_1 | r_0)P(r_0)\\
+        &= \left<0.7,0.3\right>×0.5+\left<0.3,0.7\right>×0.5 = \left<0.5,0.5\right>.
+    \end{align*}
+    Sau đó, bước cập nhật chỉ cần nhân với xác suất của bằng chứng cho $t = 1$ và chuẩn hóa, như thể hiện trong Công thức \eqref{cthuc14.4}:
+    \begin{align*}
+        P(R_1|u_1) &= \alpha P(u_1|R_1)P(R_1)\\
+        &= \alpha \left<0.9,0.2\right>\left<0.5,0.5\right>\\
+        &= \alpha \left<0.45,0.1\right> \thickapprox \left<0.818,0.182\right>.
+    \end{align*}
+    \item Vào ngày thứ 2, chiếc ô xuất hiện nên $U2 = true$. Dự đoán từ $t = 1$ đến $t = 2$ là:
+    \begin{align*}
+        P(R_2|u_1) &= \sum_{r_1} P(R_2|u_1)P(r_1|u_1)\\
+        &= \left<0.7,0.3\right>×0.818 +\left<0.3,0.7\right>×0.182 \thickapprox \left<0.627,0.373\right>,
+    \end{align*}
+    và cập nhật nó với bằng chứng cho t = 2 như sau:
+    \begin{align*}
+        P(R_2|u_1,u_2) &= \alpha P(u_2|R_1)P(R_2|u_1) = \alpha \left<0.9,0.2\right>\left<0.627,0.373\right>\\
+        &= \alpha\left<0.565,0.075\right> \thickapprox \left<0.883,0.117\right>.
+    \end{align*}
+\end{itemize}
+Theo trực giác, khả năng mưa sẽ tăng từ ngày 1 đến ngày 2 vì mưa vẫn còn.\\
+Nhiệm vụ dự đoán có thể được xem đơn giản là lọc mà không cần bổ sung bằng chứng mới. Trên thực tế, quá trình lọc đã kết hợp dự đoán một bước và dễ dàng rút ra phép tính đệ quy sau để dự đoán trạng thái tại $t + k +1$ từ dự đoán cho $t + k$:
+\begin{align}\label{cthuc14.6}
+    P(X_{t+k+1}|e_{1:t}) = \display\sum_{x_{t+k}}P(X_{t+k+1}|X_{t+k})P(x_{t+k}|e_{1:t})
+\end{align}
+Đương nhiên, việc tính toán này chỉ liên quan đến mô hình chuyển tiếp chứ không phải mô hình cảm biến.
+\subsection{Làm mượt}
+Như chúng ta đã nói trước đó, làm mượt là quá trình tính toán phân phối qua các trạng thái trong quá khứ được đưa ra bằng chứng cho đến hiện tại - nghĩa là $P (X_k | e_{1: t})$ với $0 \le k <t$. (Xem Hình \ref{fig:14.3}.) 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\textwidth]{images/chapter14/14.3.png}
+    \caption{Tính toán Smoothing $P (X_k | e_{1: t})$, phân phối sau của trạng thái tại một thời điểm $k$ nào đó trong quá khứ cho một chuỗi đầy đủ các quan sát từ 1 đến $t$. }
+    \label{fig:14.3}
+\end{figure}\\
+Chia tập bằng chứng $e_{1:t}$ hành 2 phần: $e_{1:k}$ và $e_{k+1:t}$.
+\begin{align}\label{cthuc14.8}
+        P (X_k | e_{1: t}) 
+        &=P(X_k|e_{1:k},e_{k+1:t})P(e_{k+1:t}|X_k,e_{1:k})  \nonumber\\
+        &= \alpha P(X_k|e_{1:k})P(e_{k+1:t}|X_k) \nonumber\\
+        &= \alpha f_{1:k} \times b_{k+1:t}
+\end{align}
+Ở đây chúng ta đã xác định một thông điệp “back-ward” $b_{k + 1: t} = P (e_{k + 1: t} | X_k)$, tương tự như thông điệp chuyển tiếp $f_{1: k}$. Thông điệp “back-ward” $b_{k + 1: t}$ có thể được tính bằng một quy trình đệ quy chạy ngược từ $t$:
+\begin{align}\label{cthuc14.9}
+        P (e_{k+1: t} | X_k) 
+        &=\sum_{x_{k+1}}P (e_{k+1: t} | X_k,x_{k+1})P(x_{k+1}|X_k)  \nonumber\\
+        &= \sum_{x_{k+1}}P (e_{k+1: t} | x_{k+1})P(x_{k+1}|X_k)  \nonumber\\
+        &= \sum_{x_{k+1}}P (e_{k+1: t} ,e_{k+2: t}| x_{k+1})P(x_{k+1}|X_k)  \nonumber\\
+        &= \sum_{x_{k+1}}P (e_{k+1: t}| x_{k+1})P (e_{k+2: t}| x_{k+1})P(x_{k+1}|X_k) 
+\end{align}
+Do đó ta có công thức đệ quy:
+$$b_{k+1:t} = BACKWARD(b_{k+2:t},e_{k+1})$$
+Thuật toán tiến-lùi để làm mịn: tính toán các xác suất sau của một chuỗi các trạng thái cho một chuỗi các quan sát. Toán tử FORWARD và BACKWARD lần lượt được xác định bởi Công thức \ref{cthuc14.5}  và \ref{cthuc14.9}.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\textwidth]{images/chapter14/14.4.png}
+    \caption{Thuật toán tiến-lùi (forward–backward algorithm)}
+    \label{fig:14.4}
+\end{figure}\\
+Cả đệ quy tiến và lùi đều mất một khoảng thời gian không đổi cho mỗi bước; do đó, độ phức tạp về thời gian của việc làm mịn đối với bằng chứng $e_{1: t}$ là $O(t)$. Đây là độ phức tạp để làm mịn tại một bước thời gian cụ thể $k$. Nếu chúng ta muốn làm mượt toàn bộ quy trình làm mịn một lần cho mỗi bước thời gian được làm mịn. Điều này dẫn đến độ phức tạp thời gian là $O(t ^ 2)$.
+\subsection{Chuỗi có khả năng xảy ra nhất}
+Giả sử rằng \textit{[true, true, false, true, true]} là chuỗi ô được quan sát trong năm ngày đầu tiên làm việc của nhân viên bảo vệ. Trình tự thời tiết nào có khả năng giải thích điều này nhất? Liệu việc không có ô vào ngày thứ 3 có nghĩa là trời không mưa, hay giám đốc quên mang ô? Nếu trời không mưa vào ngày 3, có lẽ (vì thời tiết có xu hướng kéo dài) trời cũng không mưa vào ngày 4, nhưng giám đốc đã mang ô để đề phòng. Tổng cộng, có $2^5$ chuỗi thời tiết có thể xảy ra mà chúng ta có thể chọn. Có cách nào để tìm cái có khả năng xảy ra cao nhất mà không cần liệt kê tất cả chúng và tính toán khả năng xảy ra của chúng không?\\
+Có một thuật toán thời gian tuyến tính để tìm chuỗi có khả năng xảy ra nhất, nhưng nó đòi hỏi nhiều suy luận hơn. Nó dựa trên cùng một thuộc tính Markov mang lại các thuật toán hiệu quả để lọc và làm mịn. Ý tưởng là xem mỗi chuỗi như một đường dẫn (path) qua một đồ thị có các nút là các trạng thái (states) có thể có tại mỗi bước thời gian. Biểu đồ như vậy được thể hiện cho thế giới ô trong Hình \eqref{fig:14.5} (a). Bây giờ hãy xem xét nhiệm vụ tìm đường đi có khả năng xảy ra nhất qua biểu đồ này, trong đó khả năng xảy ra bất kỳ đường đi nào là tích của xác suất chuyển đổi dọc theo đường và xác suất của các quan sát đã cho ở mỗi trạng thái.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\textwidth]{images/chapter14/14.5.png}
+    \caption{(a) Các chuỗi trạng thái có thể có cho $Rain_t$ có thể được xem như các đường dẫn thông qua đồ thị của các trạng thái có thể có tại mỗi bước thời gian.\\
+    (b) Hoạt động của thuật toán Viterbi cho chuỗi quan sát Ô \textit{[true,true,false,true,true]}}
+    \label{fig:14.5}
+\end{figure}\\
+Chúng ta hãy đặc biệt tập trung vào những con đường đạt đến trạng thái $Rain_5 = true$. Do thuộc tính Markov, nó suy ra rằng đường dẫn có khả năng xảy ra nhất đến trạng thái $Rain_5 = true$ bao gồm đường dẫn có khả năng xảy ra nhất đến một số trạng thái tại thời điểm 4, theo sau là sự chuyển đổi sang trạng thái $Rain_5 = true$; và trạng thái tại thời điểm 4 sẽ trở thành một phần của con đường dẫn đến $Rain_5 = true$ là trạng thái nào tối đa hóa khả năng xảy ra của con đường đó. Nói cách khác, có mối quan hệ đệ quy giữa các đường dẫn có khả năng nhất đến mỗi trạng thái $x_{t + 1}$ và các đường dẫn có khả năng nhất đến mỗi trạng thái $x_t$.\\
+
+Chúng ta có thể sử dụng thuộc tính này trực tiếp để xây dựng một thuật toán đệ quy để tính toán đường dẫn có khả năng xảy ra nhất được cho bởi bằng chứng. Chúng ta sẽ sử dụng một thông điệp được tính toán đệ quy $m_{1: t}$, giống như thông điệp chuyển tiếp $f_{1: t}$ trong thuật toán lọc. Thông điệp được định nghĩa như sau:
+$$m_{1:t}=\max_{x_{1:t-1}}P(x_{1:t-1},X_t,e_{1:t})$$
+Để có được mối quan hệ đệ quy giữa $m_{1: t + 1}$ và$ m_{1: t}$, chúng ta có thể lặp lại nhiều hơn hoặc ít hơn các bước giống như chúng ta đã sử dụng cho Phương trình \ref{cthuc14.5}:
+\begin{align}\label{cthuc14.11}
+        m_{1:t+1} &=\max_{x_{1:t}}P(x_{1:t},X_{t+1},e_{1:t+1}) = \max_{x_{1:t}}P(x_{1:t},X_{t+1},e_{1:t},e_{t+1}) \nonumber\\
+        &= \max_{x_{1:t}}P(e_{t+1}|x_{1:t},X_{t+1},e_{1:t})P(x_{1:t},X_{t+1},e_{1:t})  \nonumber\\
+        &= P(e_{t+1}|X_{t+1})\max_{x_{1:t}}P(X_{t+1}|x_t)P(x_{1:t}|e_{1:t})  \nonumber\\
+        &= P(e_{t+1}|X_{t+1})\max_{x_t}P(X_{t+1}|x_t)\max_{x_{1:t-1}}P(x_{1:t-1},x_t,e_{1:t}) 
+\end{align}
+Thuật toán chúng tôi vừa mô tả được gọi là thuật toán Viterbi, theo tên người phát minh ra nó, Andrew Viterbi. Giống như thuật toán lọc, độ phức tạp thời gian của nó là tuyến tính tính theo $t$, độ dài của chuỗi.
+\section{Mô hình Markov ẩn}
+Mô hình Markov ẩn (Hidden Markov Models), ký hiệu HMM. HMM là một mô hình xác suất theo thời gian, trong đó trạng thái của quá trình được mô tả bởi một biến ngẫu nhiên rời rạc duy nhất. \\
+Với một biến trạng thái rời rạc duy nhất $X_t$, chúng ta có thể đưa ra dạng cụ thể cho các biểu diễn của mô hình chuyển tiếp, mô hình cảm biến và các thông báo chuyển tiếp tiến và lùi. Cho biến trạng thái $X_t$ có các giá trị được ký hiệu là các số nguyên $1, ..., S$, trong đó $S$ là số trạng thái có thể có. Mô hình chuyển tiếp $P (X_t | X_{t - 1}$) được biểu diễn dưới dạng ma trận $T$ cỡ $S \times S$ , trong đó $$T_{ij} = P(X_t = j|X_{t-1}=i).$$
+Tức là, Tij là xác suất chuyển từ trạng thái $i$ sang trạng thái $j$. Ví dụ, nếu chúng ta đánh số các trạng thái Rain = true và Rain = false lần lượt là 1 và 2, thì ma trận chuyển tiếp cho thế giới ô được xác định trong Hình \eqref{fig:14.2} là
+\begin{align*}
+T = P(X_t|X_{t-1}) = 
+    \begin{pmatrix}
+        0.7 & 0.3 \\
+        0.3 & 0.7
+    \end{pmatrix}
+\end{align*}
+Ta cũng đặt mô hình cảm biến ở dạng ma trận. Trong trường hợp này, bởi vì giá trị của biến bằng chứng $E_$t đã biết tại thời điểm $t$ (gọi nó là $e_t$), chúng ta chỉ cần xác định, đối với mỗi trạng thái, khả năng trạng thái đó xuất hiện $e_t$ là bao nhiêu: chúng ta cần $P (e_t | X_t = i)$ cho mỗi trạng thái $i$. Để thuận tiện cho việc tính toán ta đặt các giá trị này vào ma trận quan sát đường chéo $S \times S$, $O_t$, một cho mỗi bước thời gian. Mục nhập đường chéo thứ $i$ của $O_t$ là $P(e_t | X_t = i$) và các mục nhập khác là 0. Ví dụ, vào ngày 1 trong thế giới ô của Hình \ref{fig:14.5}, $U_1 = true$ và vào ngày 3, $U_3 = false$, vậy chúng ta có
+\begin{align*}
+O_1 = 
+    \begin{pmatrix}
+        0.9 & 0\\
+        0 & 0.2
+    \end{pmatrix}
+    \hspace{3cm}
+    O_2 = 
+    \begin{pmatrix}
+        0.1 & 03 \\
+        0 & 0.8
+    \end{pmatrix}
+\end{align*}
+Bây giờ, nếu chúng ta sử dụng vectơ cột để đại diện cho các thông báo chuyển tiếp và lùi lại, tất cả các phép tính sẽ trở thành các phép toán vectơ ma trận đơn giản. Phương trình thuận \eqref{cthuc14.5} trở thành
+\begin{align}\label{cthuc14.12}
+    f_{1:t+1} = \alpha O_{t+1}T^Tf_{1:t}
+\end{align}
+và phương trình lùi \eqref{cthuc14.9} trở thành
+\begin{align}\label{cthuc14.13}
+    b_{k+1:t} = TO_{k+1}b_{k+2:t}.
+\end{align}
+Từ các phương trình này, chúng ta có thể thấy rằng độ phức tạp về thời gian của thuật toán tiến-lùi (Hình\ref{fig:14.4}) áp dụng cho một dãy có độ dài $t$ là $O(S ^ 2t)$, vì mỗi bước yêu cầu nhân một vectơ phần tử $S$ với một ma trận $ S \times S$. Yêu cầu độ phức tạp không gian là $O (St$), vì chuyển tiếp tiến lưu trữ $t$ vectơ có kích thước $S$.
+\section{Lọc Kalman}
+Hãy tưởng tượng xem một con chim nhỏ bay qua tán lá rừng rậm rạp vào lúc chạng vạng: bạn thoáng thấy những chuyển động chớp nhoáng, không liên tục; bạn cố gắng đoán xem con chim đang ở đâu và nơi nó sẽ xuất hiện tiếp theo để bạn không đánh mất nó. Hoặc tưởng tượng rằng bạn là một nhân viên điều hành radar trong Thế chiến II đang chăm chú nhìn vào một đốm sáng mờ nhạt, lang thang xuất hiện 10 giây một lần trên màn hình. \\
+Trong tất cả các trường hợp này, bạn đang thực hiện lọc: ước tính các biến trạng thái (ở đây là vị trí và vận tốc của một đối tượng chuyển động) từ các quan sát nhiễu theo thời gian. Nếu các biến rời rạc, chúng ta có thể lập mô hình hệ thống bằng mô hình Markov ẩn. Phần này xem xét các phương pháp xử lý các biến liên tục, sử dụng thuật toán gọi là lọc Kalman, theo tên một trong những người phát minh ra nó, Rudolf Kalman.\\
+Chuyến động bay của con chim có thể được xác định bằng sáu biến số liên tục tại mỗi thời điểm; ba cho vị trí $(X_t, Y_t, Z_t)$ và ba cho vận tốc $(\dot{X}_t, \dot{Y}_t, \dot{Z}_t)$. Chúng ta sẽ cần phân phối có điều kiện phù hợp để đại diện cho các mô hình chuyển tiếp và cảm biến; như trong Chương 13, chúng ta sẽ sử dụng phân phối tuyến tính-Gaussian. Điều này có nghĩa là trạng thái tiếp theo $X_{t + 1}$ phải là một hàm tuyến tính của trạng thái hiện tại $X_t$, cộng với một số nhiễu Gaussian, một điều kiện khá hợp lý trong thực tế.\\
+Bộ lọc Kalman có hai giai đoạn riêng biệt:
+\begin{itemize}
+    \item Dự đoán
+    \item Cập nhật
+\end{itemize}
+Các thuộc tính bắt buộc tương ứng với phép tính lọc hai bước trong Công thức \eqref{cthuc14.5}:
+\begin{itemize}
+    \item Nếu phân phối hiện tại $P (X_t | e_{1: t})$ là Gaussian và mô hình chuyển tiếp $P (X_{t + 1} | x_t)$ là tuyến tính – Gauss, thì phân phối dự đoán một bước được cho bởi
+    $$P(X_{t+1} |e_{1:t}) = \displaystyle \int_{x_t} P(X_{t+1} |x_t)P(x_t|e_{1:t})dx_t$$ cũng là phân phối Gaussian.
+    \item Nếu dự đoán $P (X_{t + 1} | e_{1: t})$ là Gaussian và mô hình cảm biến $P (e_{t + 1} | X_{t + 1})$ là tuyến tính - Gaussian, thì sau khi điều chỉnh bằng chứng mới, phân phối được cập nhật cũng là phân phối Gaussian.
+    $$P(X_{t+1} |e_{1:t+1}) = \alpha P(e_{t+1} |X_{t+1})P(X_{t+1} |e_{1:t})$$
+\end{itemize}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\textwidth]{images/chapter14/14.9.png}
+    \caption{Cấu trúc mạng Bayes cho một hệ thống động lực học tuyến tính với vị trí $X_t$, vận tốc $\dot{X}_t$ và phép đo vị trí $Z_t$.}
+    \label{fig:14.9}
+\end{figure}\\
+Do đó, toán tử FORWARD cho phép lọc Kalman nhận thông điệp chuyển tiếp Gaussian $f_{1: t}$, được chỉ định bởi giá trị kỳ vọng $\mu_t$ và hiệp phương sai $\sum_t$, và tạo ra thông điệp chuyển tiếp Gaussian đa biến mới $f_{1: t + 1}$, được chỉ định bởi giá trị kỳ vọng $\mu_{t + 1}$ và hiệp phương sai  $\sum_{t+1}$.\\
+Vì vậy, nếu chúng ta bắt đầu với một phân phổi Gaussian tiên nhiệm $f_{1: 0} = P (X_0) = N (\mu_0, \sum_0)$, việc lọc bằng mô hình Gaussian tuyến tính sẽ tạo ra phân bố trạng thái Gauss cho mọi thời điểm.\\
+Bộ lọc Kalman được sử dụng trong một loạt các ứng dụng. Ứng dụng "cổ điển" là theo dõi radar của máy bay và tên lửa. Các ứng dụng liên quan bao gồm theo dõi âm thanh của tàu ngầm và các phương tiện trên mặt đất và theo dõi trực quan các phương tiện và con người. Theo một cách bí truyền hơn một chút, bộ lọc Kalman được sử dụng để tái tạo lại quỹ đạo của các hạt từ các bức ảnh chụp buồng bong bóng và các dòng hải lưu từ các phép đo bề mặt vệ tinh. Phạm vi ứng dụng lớn hơn nhiều so với việc chỉ theo dõi chuyển động: bất kỳ hệ thống nào được đặc trưng bởi các biến trạng thái liên tục và các phép đo nhiễu đều sẽ ứng dụng được. Các hệ thống như vậy bao gồm nhà máy bột giấy, nhà máy hóa chất, lò phản ứng hạt nhân, hệ sinh thái thực vật và nền kinh tế quốc gia.
