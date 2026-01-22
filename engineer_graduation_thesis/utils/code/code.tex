@@ -1,0 +1,21 @@
+\def \code{
+    % De su dung "pythoncodestyle", ta can `\usepackage{listings}`
+    \input{utils/code/python_code_style.tex}
+    \pythoncodestyle
+
+    \section*{Phụ lục}
+    \addcontentsline{toc}{section}{Phụ lục}
+    \subsection*{Phụ lục 1: Một số đoạn code}
+    \subsubsection*{Lập trình Content Encoder}
+    \lstinputlisting[language=Python]{codes/content_encoder.py}
+    \subsubsection*{Lập trình Style Encoder}
+    \lstinputlisting[language=Python]{codes/style_encoder.py}
+    \subsubsection*{Lập trình Decoder}
+    \lstinputlisting[language=Python]{codes/decoder.py}
+    \subsubsection*{Lập trình Generator}
+    \lstinputlisting[language=Python]{codes/generator.py}
+    \subsubsection*{Lập trình Discriminator}
+    \lstinputlisting[language=Python]{codes/discriminator.py}
+    \subsubsection*{Lập trình các hàm loss}
+    \lstinputlisting[language=Python]{codes/loss.py}
+}
