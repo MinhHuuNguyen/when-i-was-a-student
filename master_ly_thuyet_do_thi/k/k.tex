@@ -1,0 +1,127 @@
+\documentclass[a4 paper,12pt]{report}
+
+\usepackage[utf8]{vietnam}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathrsfs} 
+\usepackage{mathtools}
+\usepackage{enumerate}
+\usepackage{listings} 
+
+
+\usepackage[left=3.5cm,right=2cm,top=3.5cm,bottom=3cm]{geometry}
+\usepackage{graphicx}
+
+\begin{document}
+	
+\subsection{Conflict-free vertex-connection number at most 3}
+Trong phần này, chúng tôi sẽ trình bày một số kết quả chính sau:
+
+\begin{theorem}
+Cho G là đồ thị liên thông có $n \geq 8$. Nếu $\mid$E(G)$\mid \geq \binom{n-6}{2} +7$, thì $vcfc(G) \leq 3$. 
+\end{theorem}
+
+Trước khi chứng minh định lý 20 chúng ta theo dõi bổ đề sau:
+
+\begin{proposition}
+Nếu tồn tại đồ thị liên thông có $n $ đỉnh và $\mid$E(G)$\mid = \binom{n-6}{2} +6$ thì $vcfc(G) \geq 4.$
+\end{proposition}
+
+Mệnh đề  21 có thể mở rộng đối với số nguyên $k \geq 2$ theo định lý sau đây:
+
+\begin{theorem}
+Với $k \geq 2$ là một số nguyên. Đồ thị liên thông $G$ có $n$ đỉnh và  $\or E(G) \or
+\binom{n-(2^k -2 }{2}$ $+$ $2^k$ $-2$ thì $vcfc(G) \geq k+1.$
+\end{theorem}
+
+\textbf{\textit{Chứng minh.}}
+Ta xây dựng một đồ thị liên thông $G$ như sau. Đồ thị $G $ bao gồm một đồ thị đầy đủ $K_{n-(2^k -2)}$ và một đường đi $P_{2^k -1}= w_1 \dots w_{2^k-1}$. Trong đó $\or V(P_{2^k-1}) \or$ lẻ. Lấy $u$ là một đỉnh tùy ý của  $K_{n-(2^k -2)}$. Đồ thị ta vừa xây dựng có
+\begin{enumerate}
+    \item[i.] $n$ đỉnh
+    \item[ii.]
+    \begin{align*}
+       \or E(G) \or &=E (K_{n-(2^k -2)})+E(P_{2^k -1})\\
+       &= \mathrm{C}_{n-(2^k-2)}^2 + 2^k -2\\
+             &=\binom{n-(2^k -2 }{2} + 2^k -2. 
+    \end{align*}
+\end{enumerate}
+ Bây giờ, ta sẽ chứng minh rằng $vcfc(G) \geq k+1$.\\
+ Theo định lý 4, ta cần sử dụng ít nhất $k $ màu để tô cho $P_{2^k-1}$ khi mà $\or V(P_{2^k-1})=2^k-1$. Do đó $vcfc(G) \geq k $.\\
+ \\ Giả sử, ta sử dụng đúng k màu để tô cho tất cả các đỉnh của đồ thị $G$ thì ta có thể tạo G là conflict-free vertex-connected.\\
+ Dựa trên ý tưởng của conflic-free vertex-connected chắc chắn tồn tại một màu duy nhất trên $P$, gọi là màu $k.$ Màu $k$ được tô cho đỉnh $w_i$. Ta chỉ ra $c(w_{2^{k-1}})=k$. Không làm mất tính tổng quát, ta có thể giả sử rằng $c(w_i)=k$ với $i\in [2^k-1] \backslash [2^{k-1}]$\\
+  Theo định lý 4, $vcfc(w_1P_{2^k-1}w_{2^{k-1}})=k$. Do đó, màu $k $ xuất hiện ít nhất hai lần trên $P_{2^k-1}$, điều này là mâu thuẫn.\\
+ Do đó, $c(w_{2^{k-1}})=k$, thì tập các đỉnh còn lại $V(w_1P_{2^k-1}w_{2^{k-1}-1})$ sẽ nhận các màu còn lại từ màu thứ $[k-1]$.\\
+ Mặt khác, theo định lý 4,  $vcfc(w_1P_{2^k-1}w_{2^{k-1}-1})=k-1$. Tương tự, màu $k-1$ trên $w_1P_{2^k-1}w_{2^{k-1}-1}$ được tô cho $w_{2^{k-2}}$.
+ 
+ Ta tiếp tục lặp giảm $k$ về tới 2. Theo định lý 4, $vcfc(w_1P_{2^{k}-1}w_3)=2$. Điều này có nghĩa là ta có thể sử dụng $2$ màu để tô cho tất cả các đỉnh của đồ thị con $H = G - \{ w_4, w_5, \dots,w_{2^k-1}\}$ để đồ thị con này là đồ thị conflict-free vertex-connected.
+ 
+ $H$ có $2$ đỉnh cắt. Theo hệ quả $15$, $vcfc(H)=3$. Mà ở trên ta tính $vcfc(w_1P_{2^{k}-1}w_3)=2$, nên $k$ không đủ để tô màu cho đồ thị  $G$ conflict-free vertex-connected. Vì thế, $vcfc(G) \geq k+1$. 
+ 
+ Rõ ràng, mệnh đề 21 ứng với $k=3$\\
+\textbf{Định lý 20}
+\textit{ Cho G là đồ thị liên thông có $n \geq 8$.  Nếu
+$ \or E(G) \or \geq
+\binom{n-6}{2} +7,$  thì $vcfc(G) \geq 3.$}\\
+\textbf{Chứng minh} Ta chứng minh định lý trên bởi một số điều kiện dưới đây. $G$ là đồ thị liên thông n đỉnh và $ \or E(G) \or \geq
+\binom{n-6}{2} +7$\\
+\textbf{Điều kiện 23} \textit{$G$ có nhiều nhất 5 đỉnh cắt}\\
+\textbf{Chứng minh} Gọi $t$ là số đỉnh cắt của $G$. Theo bổ đề 12, $|E(G)| \leq \binom{n-t}{2} +t $.
+Nếu $t=6$ thì  $|E(G)| \leq \binom{n-6}{2} +6 $ vô lý.
+
+Nếu $t \geq 7$ , thì theo bổ đề 8 
+\begin{align*}
+    |E(G)| \leq \binom{n-t}{2} +t \leq \binom{n-6}{2} -n+7+t.
+\end{align*}
+Khi $G$ có $n$ đỉnh và có $t$ đỉnh cắt thì $n \geq t+2$. Do đó,  $|E(G)| \leq \binom{n-6}{2} +5 $, vô lý.
+Từ trên, ta kết luận rằng $t\leq 5$.\\
+$B_1,\dots, B_l$ là các khối (blocks) của G chứa ít nhất một đỉnh cắt. $Q_1,\dots, B_k$ là các khối chứa một đỉnh cắt( end-blocks).
+
+Theo định lý 6, hệ quả 15 và bổ đề 16, ta xem xét thêm trường hợp $G$ có ít nhất 4 đỉnh cắt.\\
+\textbf{Điều kiện 24} \textit{Nếu $G$ có 4 đỉnh cắt, thì $vcfc(G)=3$}\\
+\textbf{Chứng minh:} Đặt $S=\{v_1, v_2, v_3, v_4\}$ là tập chứa các đỉnh cắt của $G$. Theo bổ đề 16, ta có thể giả sử rằng có nhiều nhất hai đỉnh của $S$ trong cùng một khối. Theo bổ đề 13, luôn tồn tại một tập con chứa ít nhất ba đỉnh cắt tạo thành một đường đi. Do đó, có hai trường hợp có thể xảy ra. Đặt $B_i$, $i \in [3]$ là ba khối của đồ thị $G$, mỗi khối chứa duy nhất hai đỉnh cắt của $G$.\\
+\textit{Trường hợp 1.} Có nhiều nhất ba đỉnh cắt trên một đường đi. Ta giả sử rằng $v_1, v_2 \in B_1, v_2, v_3 \in B_2$ và $v_2, v_4 \in B_3.$ 
+Ta tô màu 1 cho đỉnh $v_2$, màu 2 tô cho các đỉnh: $v_1, v_3, v_4$ và màu 3 tô cho tất cả các đỉnh còn lại của đồ thị $G$. Dễ dàng nhận thấy đồ thị $G$ có các đỉnh kết nối với nhau không xung đột (conflict-free vertex-connected) với 3 màu. Do đó, $vcfc(G) \leq 3.$\\
+ \textit{Trường hợp 2.} Cả bốn đỉnh cắt nối với nhau bởi một đường đi. 
+ Ta giả sử rằng $v_i, v_{i+1} \in B_i,$ khi $i \in [3]$. Do $v_1, v_4$ là đỉnh cắt của đồ thị $G,$ nên đồ thị $G$ có ít nhất hai end-blocks $Q_i, k \geq 2$. Đặt $v_1 \in Q_1, v_2 \in Q_2$. Do đó,
+ \begin{align*}
+     n &= \sum_{i=1}^k (n_{Q_i}-1) +\sum_{i=1}^3 (n_{B_i}-2) +4\\
+     &= \sum_{i=1}^k n_{Q_i} +\sum_{i=1}^3 n_{B_i} -k-2
+ \end{align*}
+ $|E(G)|= \sum_{i=1}^k |E(Q_i)| +\sum_{i=1}^3 |E(B_i)| $. Theo bổ đề 10, ta có
+ \begin{align*}
+     |E(G)| \leq \binom{n-(k+2)}{2} +k+2. 
+ \end{align*}
+ Theo bổ đề 8 và $n \geq k+4,$ ta kết luận rằng $k\leq 3.$ Khi $k=3,$ do tính đối xứng của $G[V(G)\setminus V(Q_3)]$, ta có thể đổi tên các đỉnh: $v_1 \in Q_3$ hoặc $v_2 \in Q_3.$ Với cách đổi tên như trên, ta sẽ tô màu 1 cho đỉnh $v_2$, tô màu 2 cho hai đỉnh $v_1, v_4$, và màu 3 tô cho các đỉnh còn lại của đồ thị $G$. 
+ 
+ Theo hệ quả 7, $vcfc(G) \geq 3.$ Do đó, $vcfc(G) =3.$\\
+ \textbf{Điều kiện 25} \textit{ Nếu $G$ có 5 đỉnh cắt, thì $vcfc(G) =3.$}\\
+ \textbf{Chứng minh.} Đặt $S=\{v_1, v_2, v_3, v_4, v_5 \}.$ Theo bổ đề 16, ta có thể giả sử rằng có nhiều nhất ba đỉnh của $S$ trong cùng một khối. Ta xét hai trường hợp sau đây
+ 
+ \textit{Trường hợp 1.}  Ba đỉnh của $S$ nằm trong cùng một khối, sẽ có 3 trường hợp con:
+ 
+ Đối với trường hợp 1(a), $4 \leq k \leq n-5$ khi $v_1, v_3, v_4, v_5 $ là các đỉnh cắt và $l=2.$ Do đó, $n =\sum_{i=1}^k n_{Q_i}+ n_{B_1} + n_{B_2} -k-1. $ $|E(G)| \leq \binom{n-(k+1)}{2} +k+1$. Như đã chứng minh ở điều kiện 24, ta dễ dàng được $k \leq 4.$ Do đó $k=4$ và $v_2 \notin Q_i $ với $i \in [4].$ Ta tô màu 1 cho đỉnh $v_2,$ màu 2 cho các đỉnh còn lại của $B_1$ và $B_2$, và màu 3 cho tất cả các màu còn lại của đồ thị $G.$
+ 
+ 
+ Đối với trường hợp 1(b) và 1(c), $3 \leq k \leq n-5$ khi $v_1, v_4, v_5$ là các đỉnh cắt và $l=3.$ Do đó, $n =\sum_{i=1}^k n_{Q_i}+ \sum_{i=1}^3 n_{B_i} + -k-2.$ $|E(G)| \leq \binom{n-(k+2)}{2} +k+2.$ Như đã chứng minh ở điều kiện 24, ta dễ dàng được $k \leq 3.$ Do đó, $k=3$ và $v_2, v_3 \notin Q_i$ với $i \in [3].$ Ta có thể giả sử rằng $v_1 \in Q_1, v_4 \in Q_2, v_5 \in Q_3.$ Ta tô màu 1 cho đỉnh $v_2,$ màu 2 cho đỉnh $v_5$, các đỉnh chưa tô màu trong $V(Q_2)\setminus \{v_4\}$ và $V(Q_1)\setminus \{v_1\}$ và màu 3 tô cho các đỉnh chưa được tô màu của đồ thị $G.$
+ 
+ 
+ Đối với trường hợp 1(d), $4 \leq k \leq n-5$ khi $v_1, v_3, v_4, v_5$ là các đỉnh cắt và $l=3.$ Do đó, $n =\sum_{i=1}^k n_{Q_i}+ n_{B_1} + n_{B_2} + n_{B_3} -k-2. $  $|E(G)| \leq \binom{n-(k+2)}{2} +k+2.$  Như đã chứng minh ở điều kiện 24, ta dễ dàng có được $k\leq 3,$, mâu thuẫn.
+ 
+ 
+Ta dễ dàng thấy $G$ là đồ thị conflict- free vertex-connected. Do đó, $vcfc(G) \leq 3.$
+
+\textit{Trường hợp 2.} Tối đa hai đỉnh của $S$ nằm trong cùng một khối. Dễ dàng thu được 4 khối, mỗi khối chứa 2 đỉnh cắt của đồ thị $G$.Do đó, $n =\sum_{i=1}^k n_{Q_i}+ \sum_{i=1}^4 n_{B_i}  -k-3$ với $2\leq k \leq n-5.$  $|E(G)| \leq \binom{n-(k+3)}{2} +k+3.$  Như đã chứng minh ở điều kiện 24, ta dễ dàng có được $k\leq 2$. Do đó, khi $k=2$ có 2 khối $Q_i$ chứa duy nhất một đỉnh cắt của $G, i \in [2].$ Do đó, luôn tồn tại một đường đi qua cả 5 đỉnh cắt của $G.$ Ta tô màu 1 cho đỉnh $v_3,$ màu 2 cho đỉnh $v_1, v_5$ và màu 3 cho các đỉnh còn lại.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=80mm]{fig2.PNG}
+    \caption{  Cả bốn đỉnh cắt trên một đường đi}
+    \label{fig:my_label}
+\end{figure}
+Dễ dàng ta có $vcfc(G) \leq 3$, $G $ là đồ thị conflict-free vertex-connected. 
+Theo mệnh đề 7. $vcfc(G) \geq 3.$ Do đó, $vcfc(G) =3.$\\
+\textbf{Conjecture 26.} \textit{$k \geq 3$ và $G$ là đồ thị liên thông $n$ đỉnh. Nếu $|E(G)| \geq \binom{n-(2^k-2)}{2} +2^k-1,$ thì $vcfc(G) \leq k.$}
+
+ \end{document}

@@ -1,0 +1,518 @@
+\documentclass{report}
+
+\usepackage[utf8]{vietnam}
+\usepackage{natbib}
+\usepackage{amsfonts,amsmath, amsthm, amssymb,amsxtra,latexsym,amscd,graphics,graphpap}
+\usepackage{amsmath}
+ \usepackage{amsfonts}
+ \usepackage{amssymb}
+ \usepackage{amsthm}
+ \usepackage{mathrsfs} 
+ \usepackage{mathtools}
+ \usepackage{enumerate}
+ \usepackage{listings}
+ \usepackage[left=3.5cm,right=2cm,top=3.5cm,bottom=3cm]{geometry}
+ \usepackage{graphicx}
+
+\newtheorem{thm}{Theorem}
+\newtheorem{theorem}[thm]{Định lý}
+\newtheorem{lemma}[thm]{Bổ đề}
+\newtheorem{proposition}[thm]{Mệnh đề}
+\newtheorem{corollary}[thm]{Hệ quả}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textit{Lý thuyết đồ thị}}
+\fancyfoot[L]{\textit{Toán tin K60 ĐHBKHN}}
+\fancyfoot[R]{\thepage}
+\renewcommand{\headrulewidth}{2pt}
+\renewcommand{\footrulewidth}{1pt}
+
+% MODIFIED CHAPTER
+\newcommand{\mychapter}[2]{
+    \setcounter{chapter}{#1}
+    \setcounter{section}{0}
+    \chapter*{#2}
+    \addcontentsline{toc}{chapter}{#2}
+}
+
+
+\begin{document}
+% \begin{titlepage}
+% 	\centerline{\bf TRƯỜNG ĐẠI HỌC BÁCH KHOA HÀ NỘI }
+% 	\centerline{\bf VIỆN TOÁN ỨNG DỤNG VÀ TIN HỌC}
+% 	\centerline{\textbf{------------------------  *****  -----------------------}}
+% 	\vspace*{2cm}
+	
+% 	\centerline{\fontsize{18pt}{1}\selectfont\textbf{Lê Thị Ngọc Anh }}
+%     \vspace*{2cm}
+	
+% 	\centerline{\fontsize{22pt}{1}\selectfont\textbf{LÝ THUYẾT ĐỒ THỊ}}
+% 	\vspace*{3.2cm}
+
+% 	\centerline{\fontsize{14pt}{1}\selectfont Chuyên ngành: Toán - Tin}
+% 	\vspace*{0.5cm}
+
+% 	\centerline{\textbf{Giảng viên hướng dẫn: ĐOÀN DUY TRUNG}}
+% 	\vspace*{0.5cm}
+% 	\hspace{1.65 cm }
+% 	\textbf{Sinh viên thực hiện:}  
+% 	\hspace*{0.4cm}\vspace*{0.5cm}\\
+% 	\hspace*{2.3cm}\bf{Lớp:\hspace*{3.8cm} Toán Tin 01-K60 }\vspace*{0.5cm}
+% 	\vfill
+% 	\centerline{\bf Hà Nội - 2020}
+% \end{titlepage}
+
+
+\tableofcontents
+
+% ABSTRACT
+\mychapter{0}{Lời nói đầu}
+Một đường đi trong đồ thị tô màu đỉnh được gọi là \textit{"conflict-free"} nếu như mỗi màu được sử dụng một và chỉ một lần trong số các đỉnh của nó. Một đồ thị tô màu đỉnh được gọi là đồ thị liên thông  \textit{"confict-free"} nếu hai đỉnh bất kỳ phân biệt của đồ thị được nối với nhau bởi một đường đi conflict-free. Số liên thông \textit{"conflict-free"}, ký hiệu là \textit{vcfc(G)}, là số màu nhỏ nhất cần để đồ thị \textit{G} trở nên conflict-free vertex-connected. Rõ ràng là  $\textit{vcfc(G)} \geq 2$ với mỗi đồ thị liên thông có $\textit{n} \geq 2$ đỉnh.
+\\
+Kết quả chính của chúng tôi trong bài báo này như sau. Xét \textit{G} là đồ thị liên thông n đỉnh. Nếu $\mid$E(G)$\mid \geq \binom{n-6}{2} + 7$, thì $\textit{vcfc(G)} \leq 3$. Chúng tôi cũng chứng minh rằng, $\textit{vcfc(G)} \leq k + 3 - t$ đúng với mỗi đồ thị liên thông G gồm \textit{k} đỉnh cắt và t là số đỉnh cắt lớn nhất thuộc mỗi block của \textit{G}
+\\
+\\
+\textbf{Keywords:} vertex-colouring, conflict-free vertex-connection number, size of graph.
+\mychapter{1}{Nội dung}
+% INTRODUCTION
+\section{Giới thiệu bài toán:}
+Ta sử dụng bài báo số  23 cho các thuật ngữ và ký hiệu mà không được định nghĩa ở đây, và để đơn giản thì ta chỉ xét đến đồ thị hữu hạn và vô hướng. Xét đồ thị G, ta ký hiệu \textit{V(G), E(G), n, m} lần lượt là tập các đỉnh, tập các cạnh, số lượng đỉnh và số lượng cạnh của đồ thị. Một block được gọi là \textit{end-block} nếu nó chỉ có một "cut-vetex". Ta viết tắt tập hợp {1,...,k} là [k].
+\par
+Một đường đi \textit{P} trong đồ thị tô màu cạnh \textit{G} được gọi là \textit{rainbow path} nếu mỗi cạnh của nó có màu khác nhau. Một đồ thị tô màu cạnh G được gọi là \textit{rainbow-connected} nếu mỗi hai đỉnh trong đồ thị được nối với nhau bằng ít nhất một rainbow path trong G. Trong đồ thị liên thông G, \textit{rainbow connection number} của G, ký hiệu là rc(G), được định nghĩa là số màu nhỏ nhất cần dùng để đồ thị G là rainbow-connected. Ý tưởng về rainbow connection number được giới thiệu lần đầu tiên bởi Chartrand et al..
+\par
+Được lấy động lực từ "proper colouring" và "rainbow connection", Borozan et al. và Andrews et al., độc lập giới thiệu ý tưởng về \textit{proper connection}. Một đường đi \textit{P} trong đồ thị tô màu cạnh \textit{G} được gọi là \textit{proper path} nếu hai cạnh liên tiếp của nó có màu khác nhau. Một đồ thị tô màu cạnh G được gọi là \textit{properly connected} nếu mỗi hai đỉnh trong đồ thị được nối với nhau bằng ít nhất một proper path trong G. Trong đồ thị liên thông G, \textit{proper connection number} của G, ký hiệu là pc(G), được định nghĩa là số màu nhỏ nhất cần dùng để đồ thị G là properly connected. Kể từ đó, rất nhiều kết quả của ý tưởng này đã được kết luận, bạn đọc có thể tham khảo khảo sát.
+\par
+Gần đây, Czap et al. giới thiệu ý tưởng về \textit{conflict-free connection}.  Một đường đi \textit{P} trong đồ thị tô màu cạnh \textit{G} được gọi là \textit{conflict-free} nếu có một màu được sử dụng đúng một lần trong đường đi đó. Một đồ thị tô màu cạnh G được gọi là \textit{conflict-free connected} nếu mỗi hai đỉnh trong đồ thị được nối với nhau bằng ít nhất một conflict-free path trong G. Trong đồ thị liên thông G, \textit{conflict-free connection number} của G, ký hiệu là cfc(G), được định nghĩa là số màu nhỏ nhất cần dùng để đồ thị G là conflict-free connected.
+\par
+Tương tự với các ý tưởng về rainbow connection, proper connection và  conflict-free connection, các ý tưởng về \textit{rainbow vertex-connection, proper vertex-connection, và conflict-free vertex-connection} cũng lần lượt được giới thiệu.
+\par
+Ý tưởng về \textit{rainbow vertex-connection} được giới thiệu lần đầu tiên bởi Krivelevich et al.. Một đường đi \textit{P} trong đồ thị tô màu đỉnh \textit{G} được gọi là \textit{vertex rainbow path} nếu mỗi đỉnh trong đường đi đó được tô bằng một màu khác nhau. Một đồ thị tô màu đỉnh G được gọi là \textit{rainbow vertex- connected} nếu mỗi hai đỉnh trong đồ thị được nối với nhau bằng ít nhất một vertex rainbow path trong G. Trong đồ thị liên thông G, \textit{rainbow vertex-connection number} của G, ký hiệu là rvc(G), được định nghĩa là số màu nhỏ nhất cần dùng để đồ thị G là rainbow vertex-connected. Gần đây, nhiều kết quả về chủ đề này đã đạt được, bạn đọc có thể xem tại.
+\par
+Tương tự, Jiang et al. và Chizmar et al. độc lập giới thiệu ý tưởng về \textit{proper vertex-connection}. Một đường đi \textit{P} trong đồ thị tô màu đỉnh \textit{G} được gọi là \textit{proper vertex-path} nếu hai đỉnh liên tiếp của nó có màu khác nhau. Một đồ thị tô màu cạnh G được gọi là \textit{properly vertex-connectedd} nếu mỗi hai đỉnh trong đồ thị được nối với nhau bằng ít nhất một proper path trong G. Trong đồ thị liên thông G, \textit{proper vertex-connection number,} của G, ký hiệu là pvc(G), được định nghĩa là số màu nhỏ nhất cần dùng để đồ thị G là properly vertex-connected.
+\par
+Lấy cảm hứng từ những ý tưởng trên, Li et al. giới thiệu ý tưởng về \textit{conflict-free vertex-connection}. Một đường đi \textit{P} trong đồ thị tô màu đỉnh \textit{G} được gọi là \textit{conflict-free vertex-path} nếu có một màu được sử dụng đúng một lần trong đường đi đó. Một đồ thị tô màu đỉnh G được gọi là \textit{conflict-free vertex-connected} nếu mỗi hai đỉnh trong đồ thị được nối với nhau bằng ít nhất một conflict-free vertex-path trong G. Trong đồ thị liên thông G, \textit{conflict-free vertex-connection number} của G, ký hiệu là vcfc(G), được định nghĩa là số màu nhỏ nhất cần dùng để đồ thị G là conflict-free vertex-connected.
+\par
+Nghiên cứu của chúng ta được lấy động lực từ những kết quả sau về proper connection number và rainbow connection number của đồ thị dựa vào số đỉnh của nó.
+\begin{theorem}(Kemnitz et al. Xét G là đồ thị liên thông n đỉnh, m cạnh. Nếu $\binom{n-1}{2} + 1 \leq m \leq \binom{n}{2} - 1$, thì rc(G) = 2.
+\end{theorem}
+\begin{theorem}(Aardt et al. Xét $\textit{k} \geq 3$ là số nguyên và G là đồ thị liên thông n đỉnh. Nếu $\mid$E(G)$\mid \geq \binom{n-k-1}{2} + k + 2$, thì $pc(G) \leq k$.
+\end{theorem}
+Theo bài báo, tác giả cũng xem xét trường hợp \textit{k} = 2. Xét $G_1 = K_1 \vee (2K_1 + K_2)$ và $G_2 = K_1 \vee (K_1 + 2K_2)$ với $G + H = (V_G  \cup V_H, E_G  \cup E_H)$ là "disjoint union" và $G \vee H = (V_G \cup V_H, E_G \cup E_H \cup \{ uv : u \in V_G, v \in V_H \})$ là giao của hai tập hợp $G = (V_G, E_G)$ và $H = (V_H, E_H)$.
+\begin{theorem}(Aardt et al.) Xét G là đồ thị liên thông n đỉnh. Nếu  $\mid$E(G)$\mid \geq \binom{n-3}{2} + 4$, thì $pc(G) \leq 2$ nếu $G \notin \{G_1, G_2\}$. 
+\end{theorem}
+
+\section{Kết quả phụ trợ:}
+Trong phần này, chúng tôi sẽ nêu ra các kết quả nền tảng, được sử dụng trong các chứng minh xuyên suốt các kết quả. Đầu tiên cần phải lưu ý rằng với một đồ thị liên thông G gồm $n \geq 2$, ta có thể dễ dàng thấy rằng $\textit{vcfc(G)} \geq 2$.
+\\
+Số liên thông conflict-free của một đường đi được tính theo bài báo của Li et al.
+
+\begin{theorem}(Li et al.) Nếu $P_n$ là một đường đi gồm n đỉnh, thì $vcfc(P_n) = \lceil log_2(n + 1)\rceil$.
+\end{theorem}
+
+Chứng minh Định lý 4 tương tự như Định lý 3 theo bài báo. Kết quả sau đây, rất quan trọng trong việc xác định sự tồn tại của đường đi conflict-free của một đồ thị con hoặc đồ thị 2-connected, được chứng minh bởi tác giả của bài báo.
+
+\begin{theorem}(Li et al.) Nếu G là 2-connected đồ thị và w là một đỉnh của G, thì với hai đỉnh u và v bất kỳ trong G, có một đường đi u - v bao gồm w.
+\end{theorem}
+
+\begin{theorem}(Li et al.) Xét G là đồ thị liên thông có ít nhất 3 đỉnh, thì vcfc(G) = 2 nếu và chỉ nếu G là 2-connected hoặc G chỉ có một đỉnh cắt.
+\end{theorem}
+
+Vì \textit{vcfc(G) = 2} nếu và chỉ nếu G là 2-connected hoặc G chỉ có một đỉnh cắt, nó có thể dễ dàng xác định số liên thông conflict-free của đồ thị có ít nhất hai đỉnh cắt. Vì thế, Hệ quả dưới đây có thể thu được ngay lập tức bởi tác giả của bài báo.
+
+\begin{corollary}(Li et al.) Xét G là đồ thị liên thông. Thì $vcfc(G) \geq 3$ nếu và chỉ nếu G có ít nhất hai đỉnh cắt
+\end{corollary}
+
+Bổ đề tiếp theo cung cấp một phương trình và bất phương trình tổ hợp, sẽ được dùng vài lần trong các chứng minh sau này.
+
+\begin{lemma}
+(i) Với mỗi số nguyên a, ta có\\
+\centerline{$\binom{a+1}{2} = \binom{a}{2} + a$}
+(ii) Với mỗi ba số nguyên n, t, a mà $t \geq a + 1$, ta có\\
+\centerline{$\binom{n - t}{2} \leq \binom{n - a}{2} - n + a + 1$}
+\end{lemma}
+
+\textbf{\textit{Chứng minh.}}
+Trường hợp (i) có thể dễ dàng thu được sau vài thao tác biến đổi.\\
+Sử dụng trường hợp (i) và $t \geq a + 1$, ta thu được trường hợp (ii) như sau:
+\\
+\centerline{$\binom{n - t}{2} \leq \binom{n - (a + 1)}{2} = \binom{n - a}{2} - (n - (a - 1) = \binom{n - a}{2} - n + a + 1$}
+
+\begin{lemma} Xét $k \geq 2$ là số nguyên. Nếu $a_1, ..., a_k$ là các số nguyên và tất cả đều lớn hơn 1, thì\\
+\centerline{$\sum_{i=1}^{k}\binom{a_i}{2} < \binom{\sum_{i=1}^{k}a_i - (k - 1)}{2}$.}
+\end{lemma}
+
+\textbf{\textit{Chứng minh.}}
+Ta chứng minh bổ đề này bằng phương pháp quy nạp đối với k. Xét k = 2. Rõ ràng là $(a_1 - 1)(a_2 - 1) > 0$ vì $a_i \geq 2$ với mỗi $i \in [k]$. Sau một vài thao tác biến đổi, ta thu được\\
+\centerline{$\binom{a_1}{2} + \binom{a_2}{2} < \binom{a_1 + a_2 - 1}{2}$}
+Ta có thể giả sử rằng bất phương trình đúng với một vài $k = t \geq 2$. Vì thế,
+\\
+\centerline{$\sum_{i=1}^{t}\binom{a_i}{2} < \binom{\sum_{i=1}^{t}a_i - (t - 1)}{2}$.}
+Bằng phương pháp quy nạp, ta suy ra rằng\\
+\centerline{$\sum_{i=1}^{t}\binom{a_i}{2} + \binom{a_{t+1}}{2} < \binom{\sum_{i=1}^{t}a_i - (t - 1)}{2} + \binom{a_{t+1}}{2} < \binom{\sum_{i=1}^{t+1}a_i - t)}{2}$}
+Kết quả đã thu được.
+\begin{lemma}  Xét $k \geq 2$ là số nguyên. Nếu $a_1, ..., a_k$ là các số nguyên và tất cả đều lớn hơn 1, thì\\
+\centerline{$\sum_{i=1}^{k}\binom{a_i}{2} \leq \binom{\sum_{i=1}^{k}a_i - 2(k - 1)}{2} + (k - 1)$.}
+\end{lemma}
+\textbf{\textit{Chứng minh.}}
+Ta chứng minh bổ đề này bằng phương pháp quy nạp đối với k. Xét k = 2. Rõ ràng là $(a_1 - 1)(a_2 - 1) > 0$ vì $a_i \geq 2$ với mỗi $i \in [k]$. Sau một vài thao tác biến đổi, ta thu đượ
+c\\
+\centerline{$\binom{a_1}{2} + \binom{a_2}{2} < \binom{a_1 + a_2 - 2}{2} + 1$}
+
+Sử dụng phương pháp quy nạp với k, tương tự như chứng minh bổ đề 9, kết quả sẽ thu được.\\
+Bằng bổ đề 10, cận trên số cạnh của một đồ thị G có chính xác k block đạt được bởi hệ quả sau.
+
+\begin{corollary}
+Xét đồ thị G và số nguyên $k \geq 2$. Nếu G có đúng k block $B_i$, mỗi block gồm $n_i$ đỉnh, ta có:
+\end{corollary}
+
+\centerline{$|E(G)| \leq \binom{\sum_{i=1}^{k}n_i - 2(k - 1)}{2} + (k - 1)$.}
+
+Bây giờ ta xem xét đến một số kết quả dựa trên số đỉnh cắt của một đồ thị liên thông. Bằng việc sử dụng Bổ đề 9 và Bổ đề 10, chúng ta có thể sẵn sàng thu được kết quả tiếp theo, kết quả về đỉnh tương tự như trong bài báo. Hơn nữa, kết quả này rất quan trọng trong việc chứng minh kết quả chính của chúng ta.
+
+\begin{lemma} 
+Đồ thị liên thông G có n đỉnh và t đỉnh cắt, thì ta có:\\
+\centerline{$\left | E(G) \right | \leq \binom{n-t}{2}+t$} 
+\end{lemma}
+\textbf{\textit{Chứng minh.}}
+Ta chứng minh quy nạp theo $t$. Với $t=0$ thì \\
+\centerline{$\left| E(G) \right | \leq \binom{n}{2}$} (luôn đúng, dấu bằng xảy ra khi G là đồ thị đầy đủ).\\
+Với $t\geq 1$, đặt $v$ là một đỉnh cắt của G, như vậy $v \in V(B_i)$, trong đó $B_i$ là tất cả các end-block.\\
+Với tất cả các khối $B_i$ chứa $v$, ta xóa $V(B_i -v)$ đỉnh và tất cả các cạnh kề với các đỉnh này. Gọi đồ thì kết quả là $G'$, dễ thấy $G'$ có chính xác $t-1$ đỉnh cắt khác $v$.\\
+Gọi $n_{B_i}$ là bậc của khối $B_i$ với $\forall i$, $n_{G'}$ là bậc của khối $G'$. Theo quy nạp toán học, có :\\
+\centerline{$\left| E(G') \right | \leq \binom{n_{G'}-(t-1)}{2}+(t-1)$}
+Gọi k là số lượng các khối $B_i$ của $G$ kề với $v$. Vì tất cả các khối $B_i$ và các thành phần $G'$ có đỉnh chung là $v$ nên:
+\centerline{$n=\sum_{i=1}^{k}(n_{B_i}-1)+n_G' -1 +1 =\sum_{i=1}^{k}n_{B_i}+n_G'-k$}
+ Vì vậy, \\
+ \centerline{$\sum_{i=1}^k \left | E(B_i) \right| +\left | E(G') \right| \leq\sum_{i=1}^k \binom{n_{B_i}}{2}+ |E(G')|$}
+ Áp dụng $Lemma$ $9$ với $k$ khối $B_i$ có :\\
+ \centerline{$\sum_{i=1}^{k}\binom{n_{B_i}}{2} \leq \binom {\sum_{i=1}^{k} n_{B_i} -(k-1)}{2}$}
+ Kết hợp với $Lemma$ $10$, ta có:\\
+\centerline{ $|E(G)|\leq  \binom{\sum_{i=1}^{k} n_{B_i}-(k-1)+n_G'-(t-1)-2}{2} + 1 + (t-1) =\binom{n-t}{2}+t.$}
+  \begin{lemma}
+  Cho số nguyên $t\geq 3$ và đồ thị liên thông $G$. Nếu đồ thị $G$ có $t$ đỉnh cắt thì luôn tồn tại tập con có ít nhất 3 đỉnh cắt nằm trên một đường.
+\end{lemma}
+\textbf{\textit{Chứng minh.}}
+Theo \textit{Định lý 5}, nếu $G$ là \textit{2-connected}, $w \in V(G)$ thì với 2 đỉnh $u,v$ bất kỳ trong $G$
+luôn có một đường đi từ $u$ đến $v$ qua $w$.\\
+Giả sử $u, v$ là 2 đỉnh cắt của $G$ thuộc cùng một khối, $w$ là đỉnh cắt thứ 3 thuộc $G$. 
+Gọi $P_1$ là đường nối $u$ và $v$, $P_2$ là đường nối $w$ và $u$.\\
+Nếu $P_2$ chứa $v$ thì $P_2$ chứa cả 3 đỉnh cắt.
+Nếu $P_2$ không chứa $v$ thì đường $wP_2uP_1v$ phải có tính chất đó.
+\begin{figure}[h]
+ \centering
+    \includegraphics{1.PNG}
+    \caption{$P_2$ không chứa $v$}
+    \label{fig:my_label}
+\end{figure}
+\section{Kết quả chính:}
+\subsection{Cận trên:}
+
+\begin{theorem}
+Cho $G$ là đồ thị liên thông. Nếu  k là số đỉnh cắt của $G$, $t$ là số đỉnh cắt tối đa thuộc một block của $G$, thì $vcfc(G)\leq k+3 -t$ \\
+
+\end{theorem}
+\textbf{\textit{Chứng minh.}}
+Giả sử $B_i$ là khối thuộc $G$ có số đỉnh cắt tối đa.\\
+Theo \textit{định lý 6}, nếu $t=1$ thì $k=1$ (hiển nhiên), vậy $G$ chỉ có duy nhất một đỉnh cắt.\\
+Với $t\geq 2$, đặt $S =\begin{Bmatrix}
+v_1, v_2, ..., v_t
+\end{Bmatrix}$ là tập hợp các đỉnh cắt của $G$ thuộc $B_1$. Ta gán màu 2 cho $v_1$, màu 3 cho tất cả các đỉnh còn lại $S \setminus   \begin{Bmatrix} v_1
+\end{Bmatrix}$. Mỗi đỉnh cắt của $G$ không thuộc $S$ được gán lần lượt các màu $\begin{Bmatrix}
+4, 5, ..., k+3-t
+\end{Bmatrix}$.\\
+Tiếp theo, các đỉnh còn lại của $G$ ta tô màu 1.\\
+
+Với mỗi khối $B_i$, dễ thấy luôn tồn tại ít nhất 1 đỉnh cắt có màu khác với màu của các đỉnh còn lại của $B_i$. Hay tồn tại một \textit{conflict-free path} giữa 2 đỉnh bất kỳ thuộc cùng một khối.\\
+
+Giả sử ta có 2 đỉnh $x, y$ tùy ý thuộc 2 khối khác nhau, gọi là $B_x, B_y$ . Vì $G$ liên thông nên tồn tại đường $P$ nối $x$ và $y$. Đặt $v_x \in V(P)$, $v_y \in V(P)$ là các đỉnh cắt của $B_x$ và $ B_y$. Nếu $v_x \equiv v_y$ hoặc $c(v_x)\neq c(v_y)$ thì P là \textit{conflict-free vertex path} với màu độc nhất là $c(v_x)$ hoặc $c(v_y)$.\\
+Nếu $v_x \neq v_y$ và $c(v_x) =c(v_y)$ thì $v_x, v_y \in B_i$ .\\
+Theo \textit{định lý 5}, $v_x-v_y$ là một path thuộc $B_i$, gọi là $P'$ và chứa $v_1$, thì $xPv_xP'v_yPy$ là \textit{conflict-free vertex path}.\\
+\begin{figure}[h]
+ \centering
+    \includegraphics{3.PNG}
+    \caption{$x,y$ thuộc hai khối khác nhau}
+    \label{fig:my_label}
+\end{figure}
+Như vậy, tồn tại ít nhất một \textit{conflict-free vertex path} nối 2 đỉnh thuộc $G$.\\
+
+Giả sử $G$ là đồ thị liên thông có ít nhất 2 đỉnh cắt và cùng thuộc một khối, tức là $k=t\geq 2$. Theo \textit{hệ quả 7} thì $vcfc(G)\geq 3$.\\
+Mặt khác, theo \textit{định lý 14} thì $vcfc(G) \leq 2+3-2 =3$ nên ta có $vcfc(G) =3$. Rõ ràng nếu $G$ có đúng 2 đỉnh cắt thì nó thuộc chung một khối.\\
+\begin{corollary}
+Đồ thị liên thông $G$, nếu $G$ có chính xác 2 đỉnh cắt thì $vcfc(G)=3$.
+\end{corollary}
+
+\begin{lemma}
+Với số nguyên $k \geq$3, cho đồ thị liên thông $G$ có $k$ đỉnh cắt. Nếu ít nhất $(k-1)$ đỉnh cắt thuộc một khối duy nhất thì $vcfc(G)=3$. 
+\end{lemma}
+\textbf{\textit{Chứng minh.}}
+Theo \textit{hệ quả 7}, $G$ có ít nhất 2 đỉnh cắt nên $vcfc(G) \geq 3$.\\
+Đặt $\begin{Bmatrix}
+v_1,v_2,...,v_k
+\end{Bmatrix}$ là các đỉnh cắt thuộc $G$. Có $k-1\geq 2$ đỉnh cắt thuộc cùng một khối. Ta có thể cho rằng $\begin{Bmatrix}
+v_1,...v_{k-1}
+\end{Bmatrix} \in V(B)$
+và $v_k \notin V(B)$.\\
+Vì $G$ liên thông, nên tồn tại đường dẫn $P$ nối $v_k$ với $V(B)$. Rõ ràng đỉnh cuối của $P$ là một đỉnh cắt của G. Nếu không thì $G$ chứa ít nhất $k+1$
+ đỉnh cắt vì $v_k\notin V(B)$.\\
+\begin{figure}[h]
+ \centering
+    \includegraphics{4.PNG}
+    \caption{}
+    \label{fig:my_label}
+\end{figure}
+ Ta có thể giả sử rằng đỉnh cuối của $P$ là $v_1$. Đặt $B'$  khối chứa $v_1$ và $v_k$. Rõ ràng, $V (B) \cap V (B') = {v1}$. Nếu $v_1,v_k$ là cầu nối của $G$, thì $B'$ là tầm thường. Nếu không thì, $B'$ là không tầm thường. Ta gán màu 1 cho đỉnh $v_1$, màu 2 cho tất cả các đỉnh trong $V (B) \cup V (B') \setminus  {v1}$, màu 3 cho tất cả các đỉnh còn lại chưa được tô màu của $G$. Bằng cách phân tích từng trường hợp, $G$ là \textit{conflict-free vertex connected}. \\ 
+Do đó, $vcfc (G) ≤ 3$. Như vậy $vcfc (G) = 3$.\\
+
+Đồ thị liên thông $G$, độ lệch tâm $\epsilon_G(v)$ của đỉnh $v \in V(G)$ là giá trị tối đa khoảng cách giữa $v$ và các đỉnh khác thuộc $G$.\\
+Bán kính $rad(G)$ là độ lệch tâm tối thiểu trong số tất cả các đỉnh của $G$.
+
+ \begin{theorem}
+ Nếu $T$ là cây có bán kính $rad(T)$, thì $vcfc(T) \leq rad(T)+1$.
+\end{theorem}
+\begin{corollary}
+Nếu $G$ là đồ thị liên thông thì $vcfc(G) \leq rad(G)+1$
+\end{corollary}
+\textbf{\textit{Chứng minh.}}
+$G$ là đồ thị liên thông với $k\geq 2$ đỉnh cắt, $t$ là số đỉnh cắt tối đa thuộc một khối. Suy ra, $t \geq 2$.\\
+Các đỉnh cắt $(k-t)\notin B$. Đặt $S=\begin{Bmatrix} 
+v_1,v_2,...,v_t,v_{t+1},..,v_k 
+\end{Bmatrix}$  là tập hợp đỉnh cắt của $G$ sao cho $\begin{Bmatrix} v_1,...,v_t  
+\end{Bmatrix} \in V(B)$  và  $\begin{Bmatrix} v_{t+1},...,v_k  \end{Bmatrix} \notin V(B$).Hai khối là hàng xóm nếu có một đỉnh cắt chung.
+\begin{enumerate}
+\item Mỗi $v_i \in V(B)$ là gốc của $T_{v_i}^*$.
+\item Xét tất cả các hàng xóm của $B$ chứa $v_i$, gọi là $B_j$ chứa các đỉnh cắt của $G$. Gọi các đỉnh cắt này là $v_j \in V(B_j)$, trong $T^*$ gọi là $v_j^{T^*}$và thêm vào $T_{v_i}^*$ bằng cách thêm cạnh $v_i$ $v_{j}^{T^*}$. Lặp lại quá trình này cho đến end-blocks.
+\end{enumerate}
+Bây giờ áp dụng các bước 1 và 2 ở trên, chúng ta xây dựng cây $T^*$ bằng cách xác định tất cả  $v_i$ của $T_{v_i}^*$, trong đó $i \in [t]$, theo đỉnh $v$. Do đó, $|V (T ^*)|  = k - t + 1$ và $v$ là gốc của $T^*$. Một ví dụ về $T^*$ được mô tả trong Hình 1. Theo \textit{định lý 17}, ta thu được kết quả trên.
+\begin{figure}[h]
+ \centering
+    \includegraphics{5.PNG}
+    \caption{Khối $B$ và đỉnh cắt $v_k$}
+    \label{fig:my_label}
+\end{figure}
+
+\begin{theorem}
+Nếu $G$ là đồ thị liên thông có ít nhất 2 đỉnh cắt, thì $vcfc(G) <= rad(T^*) +4$
+\end{theorem}
+\textbf{\textit{Chứng minh.}}
+Theo \textit{đinh lý 17}, $T^*$ là \textit{conflict-free vertex-connected} với $rad (T^*) + 1$
+màu sắc. Ta gán $rad (T^*) + 1$ màu từ $\begin{Bmatrix}
+4, 5,..., rad(T^*)+4
+\end{Bmatrix}$ để khiến $T^*$ thành \textit{conflict-free vertex-connected}. Vì $T$ là một cây, nên mỗi hai đỉnh của nó đều được nối với nhau bằng duy nhất một đường.\\
+Ta tô màu tất cả các đỉnh của $G$ như sau: $c (v_j) = c (v_j^{T^*})$, với mọi $j \in [k] \setminus [t]$. Ta gán màu 2 cho đỉnh $v_1$, màu 3 cho tất cả $(t - 1)$ đỉnh cắt còn lại trong $B$. Do đó, tất cả các đỉnh cắt của $G$ đều được tô màu.\\
+Ta tô màu tất cả các đỉnh còn lại của G theo màu 1. Có thể dễ dàng thấy rằng luôn tồn tại ít nhất một \textit{conflict-free vertex-path} giữa hai đỉnh cắt của $G$ vì $T^*$ là \textit{conflict-free vertex-connected} và $B$  là \textit{conflict-free vertex-connected} với $vcfc(B)=3$. Hơn nữa, mỗi khối có ít nhất một đỉnh cắt có màu khác với tất cả các đỉnh còn lại của nó. Theo \textit{định lý 14}, luôn tồn tại ít nhất một \textit{conflict-free vertex-path} giữa hai đỉnh bất kỳ tùy ý của $G$.
+
+\subsection{Conflict-free vertex-connection number at most 3}
+Trong phần này, chúng tôi sẽ trình bày một số kết quả chính sau:
+\begin{theorem}
+Cho G là đồ thị liên thông có $n \geq 8$. Nếu $\mid$E(G)$\mid \geq \binom{n-6}{2} +7$, thì $vcfc(G) \leq 3$. 
+\end{theorem}
+Trước khi chứng minh định lý 20 chúng ta theo dõi bổ đề sau:
+\begin{proposition}
+Nếu tồn tại đồ thị liên thông có $n $ đỉnh và $\mid$E(G)$\mid = \binom{n-6}{2} +6$ thì $vcfc(G) \geq 4.$
+\end{proposition}
+Mệnh đề  21 có thể mở rộng đối với số nguyên $k \geq 2$ theo định lý sau đây:
+\begin{theorem}
+Với $k \geq 2$ là một số nguyên. Đồ thị liên thông $G$ có $n$ đỉnh và  $| E(G)| \binom{n-(2^k -2 }{2}$ $+$ $2^k$ $-2$ thì $vcfc(G) \geq k+1.$
+\end{theorem}
+\textbf{\textit{Chứng minh.}}
+Ta xây dựng một đồ thị liên thông $G$ như sau. Đồ thị $G $ bao gồm một đồ thị đầy đủ $K_{n-(2^k -2)}$ và một đường đi $P_{2^k -1}= w_1 \dots w_{2^k-1}$. Trong đó $| V(P_{2^k-1})| $ lẻ. Lấy $u$ là một đỉnh tùy ý của  $K_{n-(2^k -2)}$. Đồ thị ta vừa xây dựng có
+\begin{enumerate}
+    \item[i.] $n$ đỉnh
+    \item[ii.]
+    \begin{align*}
+        |E(G)| &=E (K_{n-(2^k -2)})+E(P_{2^k -1})\\
+       &= \mathrm{C}_{n-(2^k-2)}^2 + 2^k -2\\
+             &=\binom{n-(2^k -2 }{2} + 2^k -2. 
+    \end{align*}
+\end{enumerate}
+ Bây giờ, ta sẽ chứng minh rằng $vcfc(G) \geq k+1$.\\
+ Theo định lý 4, ta cần sử dụng ít nhất $k $ màu để tô cho $P_{2^k-1}$ khi mà $ |V(P_{2^k-1})|=2^k-1$. Do đó $vcfc(G) \geq k $.\\
+ \\ Giả sử, ta sử dụng đúng k màu để tô cho tất cả các đỉnh của đồ thị $G$ thì ta có thể tạo G là conflict-free vertex-connected.\\
+ Dựa trên ý tưởng của conflic-free vertex-connected chắc chắn tồn tại một màu duy nhất trên $P$, gọi là màu $k.$ Màu $k$ được tô cho đỉnh $w_i$. Ta chỉ ra $c(w_{2^{k-1}})=k$. Không làm mất tính tổng quát, ta có thể giả sử rằng $c(w_i)=k$ với $i\in [2^k-1] \backslash [2^{k-1}]$\\
+  Theo định lý 4, $vcfc(w_1P_{2^k-1}w_{2^{k-1}})=k$. Do đó, màu $k $ xuất hiện ít nhất hai lần trên $P_{2^k-1}$, điều này là mâu thuẫn.\\
+ Do đó, $c(w_{2^{k-1}})=k$, thì tập các đỉnh còn lại $V(w_1P_{2^k-1}w_{2^{k-1}-1})$ sẽ nhận các màu còn lại từ màu thứ $[k-1]$.\\
+ Mặt khác, theo định lý 4,  $vcfc(w_1P_{2^k-1}w_{2^{k-1}-1})=k-1$. Tương tự, màu $k-1$ trên $w_1P_{2^k-1}w_{2^{k-1}-1}$ được tô cho $w_{2^{k-2}}$.\\
+ Ta tiếp tục lặp giảm $k$ về tới 2. Theo định lý 4, $vcfc(w_1P_{2^{k}-1}w_3)=2$. Điều này có nghĩa là ta có thể sử dụng $2$ màu để tô cho tất cả các đỉnh của đồ thị con $H = G - \{ w_4, w_5, \dots,w_{2^k-1}\}$ để đồ thị con này là đồ thị conflict-free vertex-connected.\\
+ $H$ có $2$ đỉnh cắt. Theo hệ quả $15$, $vcfc(H)=3$. Mà ở trên ta tính $vcfc(w_1P_{2^{k}-1}w_3)=2$, nên $k$ không đủ để tô màu cho đồ thị  $G$ conflict-free vertex-connected. Vì thế, $vcfc(G) \geq k+1$. \\
+ Rõ ràng, mệnh đề 21 ứng với $k=3$\\
+\textbf{Định lý 20}
+\textit{ Cho G là đồ thị liên thông có $n \geq 8$.  Nếu
+$ |E(G)| \geq \binom{n-6}{2} +7,$  thì $vcfc(G) \leq 3.$}\\
+\textbf{Chứng minh} Ta chứng minh định lý trên bởi một số điều kiện dưới đây. $G$ là đồ thị liên thông n đỉnh và $| E(G)| \geq
+\binom{n-6}{2} +7$\\
+\textbf{Điều kiện 23} \textit{$G$ có nhiều nhất 5 đỉnh cắt}\\
+\textbf{Chứng minh} Gọi $t$ là số đỉnh cắt của $G$. Theo bổ đề 12, $|E(G)| \leq \binom{n-t}{2} +t $.
+Nếu $t=6$ thì  $|E(G)| \leq \binom{n-6}{2} +6 $ vô lý.
+
+Nếu $t \geq 7$ , thì theo bổ đề 8 
+\begin{align*}
+    |E(G)| \leq \binom{n-t}{2} +t \leq \binom{n-6}{2} -n+7+t.
+\end{align*}
+Khi $G$ có $n$ đỉnh và có $t$ đỉnh cắt thì $n \geq t+2$. Do đó,  $|E(G)| \leq \binom{n-6}{2} +5 $, vô lý.
+Từ trên, ta kết luận rằng $t\leq 5$.\\
+$B_1,\dots, B_l$ là các khối (blocks) của G chứa ít nhất hai đỉnh cắt. $Q_1,\dots, B_k$ là các khối chứa một đỉnh cắt( end-blocks).
+
+Theo định lý 6, hệ quả 15 và bổ đề 16, ta xem xét thêm trường hợp $G$ có ít nhất 4 đỉnh cắt.\\
+\textbf{Điều kiện 24} \textit{Nếu $G$ có 4 đỉnh cắt, thì $vcfc(G)=3$}\\
+\textbf{Chứng minh:} Đặt $S=\{v_1, v_2, v_3, v_4\}$ là tập chứa các đỉnh cắt của $G$. Theo bổ đề 16, ta có thể giả sử rằng có nhiều nhất hai đỉnh của $S$ trong cùng một khối. Theo bổ đề 13, luôn tồn tại một tập con chứa ít nhất ba đỉnh cắt tạo thành một đường đi. Do đó, có hai trường hợp có thể xảy ra. Đặt $B_i$, $i \in [3]$ là ba khối của đồ thị $G$, mỗi khối chứa duy nhất hai đỉnh cắt của $G$.\\
+\begin{figure}[h]
+    \centering
+    \includegraphics{fig12.PNG}
+    \caption{Có nhiều nhất ba đỉnh cắt trên một đường đi}
+    \label{fig:my_label}
+\end{figure}
+\textit{Trường hợp 1.} Có nhiều nhất ba đỉnh cắt trên một đường đi.
+
+Ta giả sử rằng $v_1, v_2 \in B_1, v_2, v_3 \in B_2$ và $v_2, v_4 \in B_3.$
+Ta tô màu 1 cho đỉnh $v_2$, màu 2 tô cho các đỉnh: $v_1, v_3, v_4$ và màu 3 tô cho tất cả các đỉnh còn lại của đồ thị $G$. Dễ dàng nhận thấy đồ thị $G$ có các đỉnh kết nối với nhau không xung đột (conflict-free vertex-connected) với 3 màu. Do đó, $vcfc(G) \leq 3.$\\
+ \textit{Trường hợp 2.} Cả bốn đỉnh cắt nối với nhau bởi một đường đi. 
+ \begin{figure}[h]
+    \centering
+    \includegraphics{fig2.PNG}
+    \caption{Cả bốn đỉnh cắt nối với nhau bởi một đường đi }
+    \label{fig:my_label}
+\end{figure}
+ Ta giả sử rằng $v_i, v_{i+1} \in B_i,$ khi $i \in [3]$. Do $v_1, v_4$ là đỉnh cắt của đồ thị $G,$ nên đồ thị $G$ có ít nhất hai end-blocks $Q_i, k \geq 2$. Đặt $v_1 \in Q_1, v_4 \in Q_2$. Do đó,
+ \begin{align*}
+     n &= \sum_{i=1}^k (n_{Q_i}-1) +\sum_{i=1}^3 (n_{B_i}-2) +4\\
+     &= \sum_{i=1}^k n_{Q_i} +\sum_{i=1}^3 n_{B_i} -k-2
+ \end{align*}
+ $|E(G)|= \sum_{i=1}^k |E(Q_i)| +\sum_{i=1}^3 |E(B_i)| $. Theo bổ đề 10, ta có
+ \begin{align*}
+     |E(G)| \leq \binom{n-(k+2)}{2} +k+2. 
+ \end{align*}
+ Theo bổ đề 8 và $n \geq k+4,$ ta kết luận rằng $k\leq 3.$ Khi $k=3,$ do tính đối xứng của $G[V(G)\setminus V(Q_3)]$, ta có thể đổi tên các đỉnh: $v_1 \in Q_3$ hoặc $v_2 \in Q_3.$ Với cách đổi tên như trên, ta sẽ tô màu 1 cho đỉnh $v_2$, tô màu 2 cho hai đỉnh $v_1, v_4$, và màu 3 tô cho các đỉnh còn lại của đồ thị $G$. \\\\
+ Theo hệ quả 7, $vcfc(G) \geq 3.$ Do đó, $vcfc(G) =3.$\\
+ \textbf{Điều kiện 25} \textit{ Nếu $G$ có 5 đỉnh cắt, thì $vcfc(G) =3.$}\\
+ \textbf{Chứng minh.} Đặt $S=\{v_1, v_2, v_3, v_4, v_5 \}.$ Theo bổ đề 16, ta có thể giả sử rằng có nhiều nhất ba đỉnh của $S$ trong cùng một khối. Ta xét hai trường hợp sau đây\\\\
+ \textit{Trường hợp 1.}  Ba đỉnh của $S$ nằm trong cùng một khối, sẽ có 3 trường hợp con:\\\\
+ Đối với trường hợp 1(a):
+ \begin{figure}[h]
+    \centering
+    \includegraphics{fig3.PNG}
+    \caption{Mỗi khối chứa ba đỉnh cắt }
+    \label{fig:my_label}
+\end{figure}
+ $4 \leq k \leq n-5$  và $l=2.$ \\ Do đó, $n =\sum_{i=1}^k n_{Q_i}+ n_{B_1} + n_{B_2} -k-1. $ $|E(G)| \leq \binom{n-(k+1)}{2} +k+1$. Như đã chứng minh ở điều kiện 24, ta dễ dàng được $k \leq 4.$ Do đó $k=4$ và $v_2 \notin Q_i $ với $i \in [4].$ Ta tô màu 1 cho đỉnh $v_2,$ màu 2 cho các đỉnh còn lại của $B_1$ và $B_2$, và màu 3 cho tất cả các màu còn lại của đồ thị $G.$\\\\
+ Đối với trường hợp 1(b) và 1(c):
+ \begin{figure}[h]
+    \centering
+    \includegraphics{fig4.PNG}
+    \caption{Một khối chứa ba đỉnh cắt }
+    \label{fig:my_label}
+\end{figure}
+ $3 \leq k \leq n-5$  và $l=3.$ \\Do đó, $n =\sum_{i=1}^k n_{Q_i}+ \sum_{i=1}^3 n_{B_i} + -k-2.$ $|E(G)| \leq \binom{n-(k+2)}{2} +k+2.$ Như đã chứng minh ở điều kiện 24, ta dễ dàng được $k \leq 3.$ Do đó, $k=3$ và $v_2, v_3 \notin Q_i$ với $i \in [3].$ Ta có thể giả sử rằng $v_1 \in Q_1, v_4 \in Q_2, v_5 \in Q_3.$ Ta tô màu 1 cho đỉnh $v_2,$ màu 2 cho đỉnh $v_5$, các đỉnh chưa tô màu trong $V(Q_2)\setminus \{v_4\}$ và $V(Q_1)\setminus \{v_1\}$ và màu 3 tô cho các đỉnh chưa được tô màu của đồ thị $G.$\\\\
+  \begin{figure}[h]
+    \centering
+    \includegraphics{fig5.PNG}
+    \caption{Trường hợp 1(d): Một khối chứa ba đỉnh cắt }
+    \label{fig:my_label}
+\end{figure}
+ Đối với trường hợp 1(d):
+ $4 \leq k \leq n-5$  và $l=3.$ \\Do đó, $n =\sum_{i=1}^k n_{Q_i}+ n_{B_1} + n_{B_2} + n_{B_3} -k-2. $  $|E(G)| \leq \binom{n-(k+2)}{2} +k+2.$  Như đã chứng minh ở điều kiện 24, ta dễ dàng có được $k\leq 3,$, mâu thuẫn.\\
+Ta dễ dàng thấy $G$ là đồ thị conflict- free vertex-connected. Do đó, $vcfc(G) \leq 3.$\\\\
+\textit{Trường hợp 2.} Tối đa hai đỉnh của $S$ nằm trong cùng một khối.
+\begin{figure}[h]
+    \centering
+    \includegraphics{fig6.PNG}
+    \caption{Trường hợp 2: Đồ thị có 5 đỉnh cắt, mỗi khối chứa 2 đỉnh cắt  }
+    \label{fig:my_label}
+\end{figure}
+\\Dễ dàng thu được 4 khối, mỗi khối chứa 2 đỉnh cắt của đồ thị $G$.Do đó, $n =\sum_{i=1}^k n_{Q_i}+ \sum_{i=1}^4 n_{B_i}  -k-3$ với $2\leq k \leq n-5.$  $|E(G)| \leq \binom{n-(k+3)}{2} +k+3.$  Như đã chứng minh ở điều kiện 24, ta dễ dàng có được $k\leq 2$. Do đó, khi $k=2$ có 2 khối $Q_i$ chứa duy nhất một đỉnh cắt của $G, i \in [2].$\\ Do đó, luôn tồn tại một đường đi qua cả 5 đỉnh cắt của $G.$ Ta tô màu 1 cho đỉnh $v_3,$ màu 2 cho đỉnh $v_1, v_5$ và màu 3 cho các đỉnh còn lại.\\\\
+Dễ dàng ta có $vcfc(G) \leq 3$, $G $ là đồ thị conflict-free vertex-connected. 
+Theo mệnh đề 7. $vcfc(G) \geq 3.$ Do đó, $vcfc(G) =3.$\\
+\textbf{Conjecture 26.} \textit{$k \geq 3$ và $G$ là đồ thị liên thông $n$ đỉnh. Nếu $|E(G)| \geq \binom{n-(2^k-2)}{2} +2^k-1,$ thì $vcfc(G) \leq k.$}
+ Rõ ràng, Conjecture 26 đúng với $k=3$ theo định lý 20.
+ 
+\mychapter{2}{Câu hỏi}
+\begin{enumerate}
+\item \textbf{Nguyễn Hữu Minh}\\
+\textbf{Câu hỏi:} Đối với \textit{Hệ quả 11}, đặc trưng đồ thị sao cho biểu thức xảy ra dấu "="\\
+Đồ thị $G$ có $k$ khối với bậc là $n_i$. Để biểu thức trên xảy ra dấu bằng $"="$ thì $G$ phải gồm:
+\begin{itemize}
+    \item (k-1) khối trivial block.
+    \item Khối còn lại là một đồ thị đầy đủ 
+\end{itemize}
+Đồ thị $G$ có đặc điểm như trên sẽ có (k-1) đỉnh cắt. Dưới đây là một ví dụ về đồ thị $G$.\\
+G có 4 khối, trong đó:
+\begin{itemize}
+    \item 3 khối trivial.
+    \item 1 khối có bậc n bất kỳ 
+    \item 3 đỉnh cắt ứng với 3 khối trivial
+\end{itemize}
+\textbf{Ví dụ: Xét đồ thị đặc trưng như trên, chọn n = 5}\\
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=80mm]{minh.JPG}
+    \caption{}
+\end{figure}
+E(G) = $\binom{5}{2}$ + 3 = $\binom{2+2+2+5-2(4-1)}{2}$ + 3 = 13
+\item \textbf{Nguyễn Thị Thùy Linh}\\
+\textbf{Câu hỏi 1:} Đối với \textit{Bổ đề 12}, với $t=2$ thì đặc trưng đồ thị sao cho biểu thức xảy ra dấu "=". \\
+Đồ thị $G$ có $n$ đỉnh và 2 đỉnh cắt, để dấu $"="$ xảy ra thì $G$ gồm 3 khối. 
+\begin{itemize}
+    \item Khối 1 là khối gồm $n-2$ đỉnh trong đó có 2 đỉnh cắt, gọi là khối $B$. Khối $B$ là một đồ thị đầy đủ.
+    \item Khối 2 và 3 là các khối gồm 2 đỉnh, một đỉnh là đỉnh cắt của $G$ tương ứng với 2 đỉnh cắt của khối $B$
+\end{itemize}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=50mm]{6.PNG}
+    \caption{Đồ thị $G$ có 7 đỉnh và 2 đỉnh cắt}
+    \label{fig:my_label}
+\end{figure}
+\textbf{Câu hỏi 2:} Đối với \textit{Định lý 14}, ví dụ một trường hợp đồ thị để biểu thức xảy ra dấu $"="$.
+Đồ thị $G$ có $n$ đỉnh, trong đó có 5 đỉnh cắt. Khối $B$ có 3 đỉnh cắt và cũng là khối có số đỉnh cắt lớn nhất thuôc $G$. Ta có, $vcfc(G)=5-3+3 =5$
+
+ \begin{figure}[hp]
+    \centering
+    \includegraphics[width=60mm]{2.PNG}
+    \caption{Đồ thị $G$ có $vcfc(G)=5$ }
+    \label{fig:my_label}
+\end{figure}
+Ta tô màu đồ thị $G$ bằng cách:
+\begin{itemize}
+    \item Khối $B$ là khối có 3 đỉnh cắt, gồm \begin{Bmatrix}
+    {v_1, v_2,v_3}
+    \end{Bmatrix}. Tô màu 2 cho $v_1$, màu 3 cho $v_2$ và $v_3$.
+    \item Với 2 đỉnh cắt còn lại của $G$, tô màu 4 cho $v_4$, màu 5 cho $v_5$.
+    \item Với các đỉnh còn lại của $G$, ta tô màu 1.
+\end{itemize}
+Như vậy, đồ thị $G$ được tô bằng chính xác $k-t+3=5-3+3=5$ màu.
+
+\item \textbf{Lê Thị Ngọc Anh}\\
+\textbf{Câu hỏi 1:} Với trường hợp 3 đỉnh cắt, tại sao áp dụng bổ đề 16 được \\
+\textbf{ Trả lời:}\\
+ Theo bổ đề 16 :
+Với số nguyên $k \geq$3, cho đồ thị liên thông $G$ có $k$ đỉnh cắt. Nếu ít nhất $(k-1)$ đỉnh cắt thuộc một khối  thì $vcfc(G)=3$\\
+Với $k =3$:
+Nếu ít nhất 2 đỉnh cắt thuộc 1 khối  thì  $vcfc(G)=3$\\
+Ta cần chứng minh $G$ có ít nhất 2 đỉnh cắt thuộc cùng 1 khối.\\
+Sử dụng phương pháp phản chứng: Giả sử có 1 đỉnh cắt thuộc 1 khối .\\ 
+Vì đồ thị liên thông nên tồn tại một đường đi nối các block với nhau. Rõ ràng đỉnh cuối cùng của đường đi này là đỉnh cắt, do đó số đỉnh căt của đồ thị $G$ sẽ lớn hơn 3 đỉnh ( vô lý), suy ra, đỉnh cuối của đường đi  thuộc tập đỉnh cắt ban đầu => tồn tại ít nhất hai đỉnh cắt thuộc cùng 1 block => theo bổ đề 16 , có ít nhất 2 đỉnh cắt thuộc một khối thì   thì $vcfc(G)=3$\\\\
+\textbf{Câu hỏi 2:}
+  Lấy ví dụ cho trường hợp $ |E(G)| \geq \binom{n-6}{2} +7,$ \begin{itemize}
+     \item  $vcfc(G) =2 $: đồ thị 2 phía đầy đủ (tổng số đỉnh : 8 đỉnh)
+     \item  $vcfc(G) =3$: 
+     \begin{figure}[h]
+         \centering
+         \includegraphics[width=80mm]{vidu.jpg}
+         \caption{Ví dụ  $vcfc(G) =3$}
+         \label{fig:my_label}
+     \end{figure}
+     
+ \end{itemize} 
+\end{enumerate}
+
+\mychapter{3}{Phân chia công việc}
+\begin{tabular}{|1|1{10cm}|1{10cm}|} \hline
+     MSSV & Họ và tên & Các phần thực hiện  \\ \hline
+     20152464& Nguyễn Hữu Minh &  Từ đầu đến \textit{ Hệ quả 11}\\
+     20152210 & Nguyễn Thị Thùy Linh & Từ \textit{Bổ đề 13} đến hết \textit{Định lý 19}\\
+     20150070 & Lê Thị Ngọc Anh & Từ \textit{Định lý 20} đến hết bài báo. \\ \hline
+\end{tabular}
+\bibliographystyle{plain}
+\bibliography{references.bib}
+
+\end{document}
