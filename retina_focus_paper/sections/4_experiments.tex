@@ -1,0 +1,35 @@
+\section{Experiments}
+\label{secExperiments}
+
+\subsection{Datasets}
+\textbf{WIDER FACE dataset.}
+One of the most popular dataset to benchmark the face detection models is WIDER FACE dataset \cite{yang2016wider}.
+The dataset contains 32,203 images with 393,703 face bounding boxes.
+Face bounding boxes in WIDER FACE dataset are in various scales, poses, expressions, occlusions and illuminations.
+The WIDER FACE dataset is split into three subsets: training (40\%), validation (10\%) and testing (50\%) with three level of difficulty: Easy, Medium and Hard based on the detection rate of EdgeBox \cite{zitnick2014edge}.
+Moreover, five facial landmarks annotation was added into the training and validation subset of WIDER FACE by \cite{deng2020retinaface}.
+
+\textbf{WIDER FACE 4K validation subset.}
+In order to benchmark the performance of face detection solutions while working with high resolution images, we propose an extra validation subset of WIDER FACE dataset.
+This subset consists of images which was made by concatenating multiple images from original WIDER FACE validation subset.
+
+\subsection{Implementation details}
+\textbf{Detection branch.}
+
+\textbf{Focus branch.}
+
+\textbf{Data augmentation.}
+
+\textbf{Training configs.} We use ... optimizer with .... to train our RetinaFocus.
+The learning rate scheduler starts from ...., ....., .....
+It takes ... days to finish the whole ... epoch training process on two NVIDIA RTX 2080Ti (12Gb) GPUs.
+
+\textbf{Inference configs.}
+
+\subsection{Ablation Study}
+\textbf{Parameters for Focus Pixel.}
+
+\textbf{FPN feature maps for Focus branch.}
+
+\subsection{Face detection accuracy and speed trade-off}
+\textbf{.}

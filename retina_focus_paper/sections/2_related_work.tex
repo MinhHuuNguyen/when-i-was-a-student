@@ -1,0 +1,22 @@
+\section{Related Work}
+\label{secRelatedWork}
+
+\textbf{Generic object detection.}
+In the deep learning era, to solve generic object detection problem, lots of ideas have been proposed and achieved remarkable results.
+These methods can be categorized into two groups: the two-stage and the single-stage methods.
+\cite{girshick2013rich}, \cite{girshick2015fast} and \cite{ren2016faster} which belong to the two-stage methods aim at creating proposals and refining them to achieve higher accuracy.
+The three models have shown the improvement on model speed by changing region proposals module from \cite{uijlings2013selective} to deep learning module named RPN.
+On the other hand, the single-stage methods \cite{Liu_2016, lin2017feature, lin2018focal, redmon2016look, redmon2016yolo9000, redmon2018yolov3, bochkovskiy2020yolov4} sample lots of object location in multiple scale and ratio which help improving detection speed significantly.
+The single-stage methods have been attracted researchers recent years, compared with the two-stage methods, by the model performance while model accuracy is still improving.
+
+\textbf{Face detection.}
+With a wide application field, face detection has been developing rapidly to solve some indentical problems such as scale, occlusion, pose, illumination, expression, makeup, age, blur and etc..
+TinaFace \cite{zhu2020tinaface} has shown that \textit{there is no gap between face detection and generic object detection} and face detection methods can be inherited a lot from methods solving generic object detection problem but some proposed ideas are customized to handle face features better.
+Inspired by \cite{Liu_2016}, \cite{zhang2017s3fd} proposed a scale compensation anchor matching strategy to improve model accuracy on small faces.
+\cite{tang2018pyramidbox, li2019pyramidbox++}, based on the architecture of \cite{lin2017feature}, propose a new module to improve performance working on face.
+Inherited from \cite{lin2018focal}, \cite{deng2020retinaface} proposed five facial landmarks an extra annotation and multi-task loss function for better learning facial features.
+
+\textbf{Large-scale variance.}
+Although the proposed object detection solutions have achieved remarkable results, the large scale variance problem still be sore because it severely degrade performance of object detector.
+\cite{singh2018analysis} has shown that the CNN-based models don't perform very well while changing in scale of objects.
+Some ideas have been proposed to overcome the multiple scales problem such as combining the feature maps from multiple layers \cite{lin2017feature}, modifying training or inference scheme \cite{singh2018analysis, najibi2019autofocus}, preprocessing training dataset \cite{singh2018sniper}.

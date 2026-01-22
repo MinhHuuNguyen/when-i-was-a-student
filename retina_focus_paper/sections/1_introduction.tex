@@ -1,0 +1,27 @@
+\begin{figure*}[ht]
+    \includegraphics[width=\linewidth]{figures/retinafocus_architecture}
+    \caption{RetinaFocus overall architecture}
+    \label{fig:retinafocus_architecture}
+\end{figure*}
+
+\section{Introduction}
+Since face detection becomes a fist and foremost part in lots of face applications like face attributes classification, face identity recognition, face translation etc., intensive attention has been paying to face detection problem.
+Many solutions have been published and archieve incredible results in localizing in-the-wild faces in different condition.
+To improve model performance, some works \cite{zhang2020asfd, zhang2020refineface, tang2018pyramidbox, li2019pyramidbox++, najibi2017ssh, najibi2019fa, zhang2017s3fd} focus on re-designing model architecture while \cite{zhang2020asfd, zhang2020refineface, li2019dsfd, deng2020retinaface} present auxiliary loss function.
+Besides, some others pay more attention to extra data annotation \cite{deng2020retinaface, earp2019face, yashunin2020maskface} or data augmentation \cite{li2019pyramidbox++, tang2018pyramidbox}.
+In spite of the remarkable results of these works, they can run efficiently on low resolution image.
+The majority of above models use \cite{yang2016wider, jain2010fddb, koestinger2011annotated, sagonas2013300, yan2014face} to benchmark model performance but images in these datasets are quite small, mostly under 1000 pixels.
+Lacking of public datasets with high resolution images is also an obstacle for researcher to study and improve their model to work with such huge images.
+
+With the improvement of modern cameras, images captured by these devices have resolution as high as 4K (3840×2160 pixels) or 8K (7680×4320 pixels) or even more and they contains much more information.
+Forwarding such huge images through the deep learning model requires lots of computation cost, memory usage and time and training the deep learning model with these images is almost impossible.
+Naive idea like resizing these images into smaller size before forwarding through the model will exclude lots of information especially on the tiny object.
+Specifically, in face detection problem, rescaling the images into popular size for research such as 112×112, 256×256 or even bigger still make all the small faces almost disappear.
+This raises a problem is that we need a solution to handle the high resolution images efficiently without losing tiny objects information in both training and inference phase.
+In the training phase, some works \cite{singh2018analysis, singh2018sniper} propose an idea to train model with high resolution image which requires shorter training time and lower memory usage while maintaining model performance.
+Moreover, in the inference phase, \cite{ruuvzivcka2018fast} can ensure memory constraint by cropping an image into multiple regions before forwarding through the model, but processing a dozen of cropped regions still takes lots of time.
+Some others \cite{najibi2019autofocus, gao2018dynamic} pay attention to both memory usage and inference time by creating a module to learn which are the best region to be cropped and ignore the majority background on the image.
+
+To solve face detection problem but working with 4K or 8K images, our key contributions can be summarize as follow: \\
+- Inspired by \cite{deng2020retinaface} and \cite{najibi2019autofocus}, we propose a novel solution named RetinaFocus, which can handle face detection problem effectively on high resolution images. \\
+- To benchmark the performance of solution on high resolution images, we propose a new idea to generate high resolution validation subset of WIDER FACE dataset.

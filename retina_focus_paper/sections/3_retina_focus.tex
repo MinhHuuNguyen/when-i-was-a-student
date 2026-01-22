@@ -1,0 +1,61 @@
+\section{RetinaFocus}
+\label{secRetinaFocus}
+Inspired by \cite{deng2020retinaface} and \cite{najibi2019autofocus}, our RetinaFocus was built to take advantage of both of the models and fix the problems.
+Despite having FPN architecture \cite{lin2017feature} in the backbone, \cite{deng2020retinaface} still meets difficult while working with small face in the image.
+With image pyramids inference strategy, \cite{deng2020retinaface} archieves a good result on WIDER FACE dataset \cite{yang2016wider} but it takes time and computation cost as shown in figure \ref{fig:retinaface_compare_speed}.
+To improve model accuracy from ... to ..., image pyramids strategy increases inference time of \cite{deng2020retinaface} about ... \%.
+
+\begin{figure}[H]
+    \includegraphics[width=8.5cm]{figures/retinaface_compare_speed}
+    \caption{Comparison between \textit{using} and \textit{not using} image pyramids strategy of \cite{deng2020retinaface}}
+    \label{fig:retinaface_compare_speed}
+\end{figure}
+
+Besides, \cite{najibi2019autofocus} proposes a smart way to run image pyramids inference strategy while reducing number of processing pixels and save time while working with high-resolution images.
+That's why we come to an idea to combine both of them to be one single RetinaFocus model.
+
+\subsection{Model architecture}
+Our RetinaFocus consists of two branches: detection branch and focus branch shown in figure \ref{fig:retinafocus_architecture}.
+
+\textbf{Detection branch.} Instead of using detector \cite{ren2016faster} like in \cite{najibi2019autofocus}, we employ the model from \cite{deng2020retinaface} to be the the detection branch.
+The architecture of detection model is unchanged and the output of the model will be used for the multi-task loss function from \cite{deng2020retinaface}.
+
+\textbf{Focus branch.} The feature maps from FPN backbone not only be forwarded to the Context Module like \cite{deng2020retinaface} but one of them also become the input of Focus branch.
+In figure \ref{fig:retinafocus_architecture}, we show an example of the architecture using $P3$ feature maps of FPN \cite{} as an input of Focus branch.
+In some other configs, we can use other feature maps such as $C_3, C_4, C_5, P_4$ or $P_5$ to be the input of Focus branch.
+Focus branch is simply a series of convolution layers and gives an output predicted mask to compare with a generated focus mask from Focus Pixel like in \cite{najibi2019autofocus}.
+To optimize the difference, we employ a Focal loss function from \cite{lin2018focal} to handle imbalance data.
+
+\subsection{Hyper-parameters study for Focus Pixel}
+To effectively use \cite{najibi2019autofocus}, we need to build a set of hyper-parameters for Focus Pixel, especially \textit{don't care low} and \textit{small threshold}.
+Based on performance of the original detector from \cite{deng2020retinaface} on WIDER FACE dataset, we study the size of groundtruth bbox which are fed to the Focus branch and then conclude these hyper-parameters for the Focus Pixel from \cite{najibi2019autofocus}.
+
+From figure \ref{fig:retinafocus_compare_percent}, on all of three IoU threshold, percentage of number of small bounding box from 0x0 pixels to 30x30 pixels which \cite{deng2020retinaface} cannot predict exactly is high, especially, from 0x0 pixels to 10x10 pixels.
+
+\begin{figure}[H]
+    \centering
+    \subfigure[]{\includegraphics[width=4cm]{figures/iou_50_compare_percent}} 
+    \subfigure[]{\includegraphics[width=4cm]{figures/iou_75_compare_percent}} 
+    \subfigure[]{\includegraphics[width=4cm]{figures/iou_90_compare_percent}} 
+    \caption{IoU 0.5 (a), IoU 0.75 (b), IoU 0.9 (c)}
+    \label{fig:retinafocus_compare_percent}
+\end{figure}
+
+More specifically, from figure \ref{fig:retinafocus_iou_lower}, on all of three IoU threshold, percentage of number of cannot-predicted bounding box from 0x0 pixels to 60x60 pixels over all cannot-predicted bounding box is high.
+
+\begin{figure}[H]
+    \centering
+    \subfigure[]{\includegraphics[width=4cm]{figures/iou_50_lower}} 
+    \subfigure[]{\includegraphics[width=4cm]{figures/iou_75_lower}} 
+    \subfigure[]{\includegraphics[width=4cm]{figures/iou_90_lower}} 
+    \caption{IoU 0.5 (a), IoU 0.75 (b), IoU 0.9 (c)}
+    \label{fig:retinafocus_iou_lower}
+\end{figure}
+
+Moreover, with FPN backbone, a $4 \times 4$ bounding box will approximately become a $2 \times 2$ region on the feature maps ${C}_{2}$ and ${P}_{2}$, a $1 \times 1$ region on the feature maps ${C}_{3}$ and ${P}_{3}$, and almostly disappear from the feature maps ${C}_{4}$ and ${P}_{4}$.
+Forcing the Focus branch to learn these super tiny boxes will extremely downgrade it performance.
+
+From the analysis above, we choose $a = 5, b = 60, c = 150$ for Focus Pixel from \cite{najibi2019autofocus}.
+In the training phase, bounding box whose size is from $5 \times 5$ to $60 \times 60$ will be focused, ones smaller than $5 \times 5$ or between $60 \times 60$ and $150 \times 150$ will be ignored and bounding box which is bigger than $150 \times 150$ will be considered as background.
+
+\subsection{Inference strategy}

@@ -1,0 +1,66 @@
+\documentclass[11pt]{article}
+\usepackage{pixta}
+\usepackage{ragged2e}
+\usepackage{graphicx}
+\graphicspath{ {./figures/} }
+\usepackage{amsmath,amssymb}
+\usepackage{bbold}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{float}
+\usepackage{subfigure}
+% \usepackage[style=ieee, url=false, isbn=false, doi=false, eprint=false, natbib=true, backend=biber]{biblatex}
+% \addbibresource{main.bib}
+\usepackage{hyperref} % for references
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+}
+\usepackage{tabularx}
+\usepackage{mathtools}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\usepackage[inline]{enumitem}
+
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+
+\title{Day la cai tieu de cua paper Reiew Assistant nhe!!!}
+
+\author{
+  Minh Huu Nguyen$^{1,2}$ \\
+  {\tt minh.nguyenhuu@pixta.co.jp} \\
+  \And
+  Hieu Trong Phung$^{1,2}$ \\
+  {\tt hieu.phungtrong@pixta.co.jp} \\
+  \And
+  Tung Dinh Nguyen$^{1}$ \\
+  {\tt tung.nguyendinh@pixta.co.jp} \\
+  \AND
+  \\
+  \normalsize{$^{1}$PIXTA Vietnam, 8th Floor, Truong Thinh Building, Phung Chi Kien, Cau Giay District, Hanoi, Vietnam.}
+  \\
+  \normalsize{$^{2}$Hanoi University of Science and Technology, 1 Dai Co Viet Road, Ha Noi, Viet Nam.}
+}
+
+
+\begin{document}
+\sloppy % Fix overfull hbox problem
+\maketitle
+
+\input{sections/0_abstract}
+\input{sections/1_introduction}
+\input{sections/2_related_work}
+\input{sections/3_retina_focus}
+\input{sections/4_experiments}
+\input{sections/5_conclusion}
+\input{sections/6_acknowledgments}
+
+% \printbibliography[heading=bibintoc]
+\bibliography{main.bib}
+\bibliographystyle{unsrt}
+
+\end{document}
