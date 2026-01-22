@@ -1,0 +1,185 @@
+\documentclass[11pt]{article}
+\usepackage{pixta}
+\usepackage{natbib}
+\usepackage{ragged2e}
+\usepackage{graphicx}
+\usepackage[hidelinks]{hyperref}
+\graphicspath{ {./figures/} }
+\usepackage{amsmath,amssymb}
+
+\title{Progressive-MUNIT-GAN}
+\author{
+  First Author \\
+  Affiliation / Address line 1 \\
+  Affiliation / Address line 2 \\
+  {\tt email@domain} \\
+  \And
+  Second Author \\
+  Affiliation / Address line 1 \\
+  Affiliation / Address line 2 \\
+  {\tt email@domain} \\
+  \And
+  Third Author \\
+  Affiliation / Address line 1 \\
+  Affiliation / Address line 2 \\
+  {\tt email@domain} \\
+  \AND
+  First Author \\
+  Affiliation / Address line 1 \\
+  Affiliation / Address line 2 \\
+  {\tt email@domain} \\
+  \And
+  Second Author \\
+  Affiliation / Address line 1 \\
+  Affiliation / Address line 2 \\
+  {\tt email@domain} \\
+  }
+
+
+\begin{document}
+\maketitle
+\begin{abstract}
+\textit{
+Image-to-image Translation and Style Transfer are important problems in computer vision. Given an image in the source domain, the goal is to translate this image into a new domain while remain its content. Without having a corresponding image in this pair of domain, we need to build an unsupervised model. Moreover, we want our model to translate not only perfectly but also in a high resolution.To address all of these issues, we propose a ...... framework. Our model can run perfectly on some popular tasks such as ...... and especially on Changing Nationality problem. We have a dataset of 10,000 faces of Japanese and Korean models and we try to translate Japanese model's faces into Korean style and vice versa. Code and pre-trained models are available at ......
+}
+\end{abstract}
+
+
+\textbf{Keywords:} GANs, image-to-image translation, style transfer, high resolution
+
+\section{Introduction}
+Our model bases on the Auto-encoder architecture of MUNIT and the Progressive idea of StyleGAN.
+In this work, we propose: Progressive Auto-Encoder to translate high resolution images.
+\section{Related Works}
+\textbf{Generative adversarial networks (GANs):\\}
+Since Ian Goodfellow et al. introduced the GANs framework \citep{gan} in 2014, many papers have utilized GANs to achieve impressive results \citep{progressive-growing-gans, style-gan, style-gan2} in Image Generation problem. GANs are comprised of both generator and discriminator models. The generator is trained to generate new samples that look like the real images, and the discriminator is responsible for classifying whether samples are real or fake (generated). The success of GANs is based on the idea of the adversarial loss which tries to minimize distribution divergence between generated images and real images. Up to now, GANs are used to address many problems such as Image Generation, Image Inpainting, Image Translation, Style Transfer, Semantic Segmentation, etc. Our model uses GANs framework to align the distribution of generated images with real images' distribution.
+\\
+\textbf{Unsupervised Image-to-Image Translation:\\}
+Unsupervised I2I translation models require no label for each input image, or in other words, they don't require pair images to train. In order to build an unsupervised I2I translation model, recent proposals use cycle consistency loss \citep{cycle-gan, disco-gan, dual-gan, munit} which enforces the similarity between two images, one is from the source domain and another is translated back from target domain. Like MUNIT \cite{munit}, our model uses cycle consistency loss to ensure the similarity between original image and reconstructed image including both content information and style information.
+\\
+\textbf{Multimodal Image-to-Image Translation:\\}
+\#Note: Multimodal use shared latent space idea from unit, not talk about unit
+In 2018, Liu et al. introduced UNIT \citep{unit} which assumed that images from different domains can be encoded into a shared latent space. However, UNIT and most of I2I translation frameworks at that time couldn't generate various images. In other words, they lack of diversity in the translated outputs. Some solutions were proposed to address the aforementioned problem such as \citep{}. BicycleGAN \citep{bicyle-gan} proposed by Zhu et al. can model continuous and multimodal distributions. StarGAN \citep{star-gan} introduced by Choi et al. can learn to translate an image into multiple domains using only a single model. However, aforementioned methods can only generate one image each domain, MUNIT \citep{munit}, DRIT/DRIT++ \citep{drit, drit-plus} were proposed to disentangle latent space and generate diverse translation results. Our model, like MUNIT can translate one image from the original domain into multiple images in the target domain.
+\\
+\textbf{High-resolution images generation:\\}
+Although the GANs frameworks have witnessed rapid advances, generating images in high resolution is still difficult. The first reason is memory constraints. High resolution training requires small minibatches and it compromises training stability. The second reason is gradient problem which pulls the generated images far apart from real images.
+\\
+In 2018, Tero Karras et al. proposed Progressive Growing of GANs \cite{progressive-growing-gans} which tried to train the GANs framework from a low resolution. Their core idea is to grow progressively both generator and discriminator by adding new layers during training time. This key insight plays an important role in increasing training speed and stabilizing high resolution training process.
+\\
+Based on the idea of Progressive Growing of GANs, StyleGAN \cite{style-gan}, and StyleGAN2 \citep{style-gan2} were introduced by Tero Karras et al. in 2018 and 2019. StyleGAN \cite{style-gan} re-designed the generator architecture in order to control the image synthesis process and StyleGAN2 \cite{style-gan2} fixed some ... of images from StyleGAN \cite{style-gan} and found other ways to progressively grow images from low resolution. Both of them have archived incredible results in Image Generation.\\
+About Image-to-Image Translation, Pix2PixHD \citep{high-resolution-conditional-gan} can translate images with resolution up to 2048x1024 but this model requires semantic labels of image.
+\\
+We apply the idea of StyleGAN to our model in order to solve Image-to-Image Translation in high resolution.
+\section{Background}
+\subsection{Auto-encoder architecture of MUNIT}
+Let $x_{i}\in\mathcal{X}_{i}$ be an image from domain \textit{i}, MUNIT assumes that $x_{i}$ can be generated from a content latent $c\in \mathcal{C}$ which is shared for every domain, and a style latent $s_{i}\in \mathcal{S}_{i}$ which is specific for each domain. Specifically, $x_{i} = G^{*}_{i}(c, s_{i})$, where $G^{*}_{i}$ denotes generators of domain \textit{i}. Furthermore, MUNIT assumes that $G^{*}_{i}$ is a deterministic function and it has an inversion which is an encoder $E^{*}_{i}=(G^{*}_{i})^{-1}$. That called a \textit{partially shared latent space assumption}. In short, according to MUNIT, content can be encoded into shared latent space by content encoder and style is domain specific.
+\\
+\textbf{Content Encoder:}
+According to MUNIT, content encoder is comprised of several strided convolution layers which downsample the input images. This convolution layers are followed by multiple residual blocks \citep{resnet} which finalize content code. Instance Normalization (IN) \cite{in} is used in all convolution layers.
+\\
+\textbf{Style Encoder:}
+Like the content encoder, the style encoder also consists of several strided convolution layers to downsample the input. However, instead of using residual blocks, the style encoder contains a global average pooling layer and a fully connected layer. In addition, the author of MUNIT eliminates IN layers in the style encoder in order to preserve the salient style information.
+\\
+\textbf{Decoder:}
+The main task of decoder is generating images from content code and style code. To transfer content code into new style, decoder get affine transformation parameters of style code by MLP, and then it uses these parameters in AdaIN layer \citep{adain}. Decoder processes content code by multiple residual blocks with AdaIN layers and generates images by several upsample layers and convolution layers.
+\\
+\textbf{Discriminator:}
+Multi-scale discriminators proposed \cite{high-resolution-conditional-gan} by Wang et al. are used in MUNIT because they can guide the generators to produce both realistic details and correct global structure.
+\\
+\subsection{Loss functions in MUNIT}
+\textbf{Bidirectional reconstruction loss:} To build an auto-encoder model in which the encoders are inversions of the decoders and vice versa, MUNIT build a bidirectional reconstruction loss to maintain similarity in both directions: image $\rightarrow$ latent $\rightarrow$ image and latent $\rightarrow$ image $\rightarrow$ latent. MUNIT uses $\mathcal{L}_{1}$ as reconstruction loss
+\\
+\textbf{- Image reconstruction:} Put an image sampled from data distribution through Encoder first and then Decoder, MUNIT want to get an output image same as input one.
+\begin{align}
+\mathcal{L}^{x_{i}}_{1} = \mathbb{E}_{x_{i} \sim p(x_{i})}[||G_{i}(E_{i}^{c}(x_{i}), E_{i}^{s}(x_{i}))-x_{i}||_{1}]
+\end{align}
+\textbf{- Latent reconstruction:} Put a content code and style code from latent distribution through decoding and encoding phase, they want to be able to reconstruct original latent codes. The content reconstruction loss $\mathcal{L}^{c_{i}}_{1}$ forces translated image to preserve semantic features of original image. The style reconstruction loss $\mathcal{L}^{s_{i}}_{1}$ encourages output images diversity while giving various style codes.
+\begin{align}
+\mathcal{L}^{c_{i}}_{1} = \mathbb{E}_{c_{i}\sim p(c_{i}), s_{j}\sim q(s_{j})}[||E^{c}_{j}(G_{j}(c_{i},s_{j}))-c_{i}||_{1}]
+\end{align}
+\begin{align}
+\mathcal{L}^{s_{i}}_{1} = \mathbb{E}_{c_{j}\sim p(c_{j}), s_{i}\sim q(s_{i})}[||E^{s}_{i}(G_{i}(c_{j},s_{i}))-s_{i}||_{1}]
+\end{align}
+\textbf{Adversarial loss:} In order to pull the distribution of generated images close to data distribution in target domain, MUNIT employ GANs framework. Specifically, MUNIT uses LSGAN \cite{lsgan} proposed by Mao et al. as adversarial loss
+\begin{multline}
+\mathcal{L}^{x_{2}}_{\text{GAN}} = \mathbb{E}_{c_{1} \sim p(c_{1}), s_{2} \sim q(s_{2})} [\log(1 - D_{2}(G_{2}(c_{1}, s_{2})))]\\
++ \mathbb{E}_{x_{2} \sim p(x_{2})} [\log D_{2}(x_{2})]
+\end{multline}
+\textbf{Total loss:} MUNIT calculates total loss as a weighted sum of all bidirectional loss terms and adversarial loss terms to train Encoders, Decoders and Discriminators.
+\begin{multline}
+\underset{E_{i}, E_{j}, G_{i}, G_{j}} \min \underset {D_{i}, D_{j}} \max \mathcal{L}(E_{i}, E_{j}, G_{i}, G_{j}, D_{i}, D_{j}) =\\
+\mathcal{L}^{x_{i}}_{\text{GAN}} + \mathcal{L}^{x_{j}}_{\text{GAN}} + \lambda_{x}(\mathcal{L}^{x_{i}}_{\text{recon}} +  \mathcal{L}^{x_{j}}_{\text{recon}})\\
++ \lambda_{c}(\mathcal{L}^{c_{1}}_{\text{recon}} +  \mathcal{L}^{c_{2}}_{\text{recon}}) +  \lambda_{s}(\mathcal{L}^{s_{1}}_{\text{recon}} +  \mathcal{L}^{s_{2}}_{\text{recon}})
+\end{multline}
+where $\lambda_{x}$, $\lambda_{c}$, $\lambda_{s}$ are weights of each terms.
+
+\subsection{Idea from Progressive Growing GANs}
+The key idea of Progressive Growing of GANs \citep{progressive-growing-gans} has been inherited in other models and and archived many excellent results in generating high resolution images up to 1024x1024. PGGANs starts the training process with a low resolution of images 4x4; then the resolution is increased up to 1024x1024 by adding a new block which contains several upsample, convolution and normalization layers. This idea forces the model to discover large-scale structure before shifting attention to finer scale detail. In order to maintain the stability while adding new layers, they calculate output images as combination of new layer and trained layers. This protects well-trained layers from sudden shock. In this architecture, the generator and the discriminator are symmetric. When a block is added into the generator, another is added into the discriminator, too.\\
+According to PGGANs paper, training using a progressive way brings several benefits. First, starting with low resolution makes training process more stable because information from small images is simple and easy to learn. Increasing the resolution little by little just like step-by-step increase the complexity of image information. The second benefit is the faster training speed. Most of the training iterations are done in low resolution and the model could reduce the time consumption about two to six times.\\\\
+\textbf{\#Note:} Detail about symmetric architecture, alpha and how to fade smoothly will be explain in Figure\\
+\section{Name-of-our-model}
+In this section, we present {Name of our model} to build an unsupervised image-to-image translation multimodal which can generate high-resolution images. Firstly, the paper describes our progressive auto-encoder architecture and then, our discriminator.
+\subsection{Progressive Auto-encoder with additional ResBlocks}
+Our encoder uses low-resolution images as an input and tries to encode their content code and style code. With encoded content, our decoder tries to generate a new image which is in target domain by affine transformation parameters from style code (Figure \ref{fig:phase1}). However, instead of starting training from 4x4 images as Progressive Growing GANs does, we starts training with 32x32 image size. Starting wwih\\
+After one training phase, while all existing layers are well-trained, we add a downsample block and a upsample block above on the encoder and the decoder respectively. With new layers, our model tries to work with higher-resolution images. We also use weighted sum $\alpha$ and $(1 - \alpha)$ like PGGANs to smoothly fade new block. One problem while training in high resolution is additional information which our model has to learn to reconstruct image. So, to store more information , we propose to add new residual blocks every time we add a new downsample layer and to ensure correspondence between the encoder and the decoder, a new residual block is also added into decoder (Figure \ref{fig:phase2}).
+\begin{figure*}[h!]
+\centering
+\includegraphics[width=\linewidth]{figures/phase1.jpg}
+\caption{In the first training phase, our auto-encoder architecture is similar to MUNIT but we use 32x32 images as an input and try to reconstruct them}
+\label{fig:phase1}
+\end{figure*}
+
+\begin{figure*}[h!]
+\includegraphics[width=\linewidth]{figures/phase2.jpg}
+\caption{From second phase, we add new blocks for each resolution such as a content encoder block, a style encoder block and a decoder block. (a) In the new content encoder block, a downsample block and a residual block need to be trained in each phase. To avoid shocking model, like PGGANs, we weighted sum the output of new block with the feature maps from global average pooling layer and fromRGB layer by $\alpha$ and $(1 - \alpha)$. FromRGB is a convolution 1x1 transform a RGB image into feature maps. (b) In the style encoder, only a new downsample block need to be trained. (c) In the decoder, to smoothly fade from well-trained block into new decoding block, we double the output of the previous decoder by a nearest neighbor layer and use $\alpha$ and $(1 - \alpha)$ as weights of it and the output of the new decoding block}
+\label{fig:phase2}
+\end{figure*}
+
+\noindent We use IN in all convolution layers in content encoder. But in style encoder, we don't use any normalization in order to get original style statistics as parameters for AdaIN layer. AdaIN is used in decoder's residual blocks to transform content code into new style. To maintain the statistics of each sample after AdaIN, we use Layer Normalization \citep{layer_norm} after each convolution layers while upsampling content code into new images (Figure \ref{fig:details_of_blocks}).
+
+\begin{figure}[h!]
+\includegraphics[width=\linewidth] {figures/details.jpeg}
+\caption{Details of each block. \textbf{(a)} Blocks in the content encoder, \textbf{(a.1)} Downsample block, \textbf{(a.2)} Residual block, \textbf{(b)} Downsample block in the style encoder, \textbf{(c)} Blocks in the decoder, \textbf{(c.1)} Upsample block, \textbf{(c.2)} Residual block, \textbf{(d)} Downsample block in the discriminator}
+\label{fig:details_of_blocks}
+\end{figure}
+
+\subsection{Multi-scale Progressive Discriminator}
+We inherit the idea of multi-scale discriminators \cite{high-resolution-conditional-gan} with a new adjustment which helps growing progressively from 32x32 resolution (Figure \ref{fig:discriminator}). Detail of each block in the Discriminator is presented in Figure \ref{fig:details_of_blocks}.\\
+One of the most common problems in GANs training process is vanishing gradient. Recently, Lipschitz constraint has been proved to have effect in avoiding vanishing gradient and stabilizing GANs training process \citep{lipschitz1, lipschitz2}. In order to follow Lipschitz constraint in our GANs framework, we normalize the weights of the discriminator by using Spectral Normalization \citep{spectral}
+
+\begin{figure}[h!]
+\includegraphics[width=\linewidth] {figures/dis_phase1.jpg}
+\caption{In the first training phase, our discriminator is the same as multi-scale  discriminators. Specifically, we downscale an input image 3 times in our model.}
+\label{fig:discriminator}
+\end{figure}
+
+\begin{figure}[h!]
+\includegraphics[width=\linewidth] {figures/dis_phase2.jpg}
+\caption{From the second phase, we add new blocks into the discriminator while increasing resolution. To avoid shocking, we use $\alpha$ and $(1-\alpha)$ as the weight of new block's output and the downscaled image from GAP. Blocks with the same input resolution doesn't share their weights with others.}
+\label{fig:discriminator}
+\end{figure}
+
+\section{Experiment}
+In this section, we present some experiments of our model with several datasets to compare with MUNIT
+\subsection{Evaluation Metrics}
+\subsection{Datasets}
+\textbf{CelebA-HQ dataset:}
+CelebA-HQ is the high-quality version of the CelebA dataset \cite{celeba}. CelebA-HQ is a large-scale face image dataset that contains 30,000 images in 1024x1024 resolution. Processing pipeline to create CelebA-HQ dataset is described in \citep{progressive-growing-gans}. We split the dataset into two domains: male and female.\\
+\textbf{JK dataset:}
+We propose JK dataset which contains .... images of Japanese and Korean face. To enlarge the dataset, we use our original images as real sample in StyleGAN2 and train this model to generate some additional images. These images in our dataset are generated using the official implementation of StyleGAN2\\
+\#Note: 3 parts: JK dataset from Pixta, from Google Images and from StyleGAN2 (which part should we share? Maybe only third part)\\
+\textbf{(Optional) Other I2I Translation Dataset}
+\subsection{Results}
+\textbf{CelebA-HQ Our Model vs MUNIT}\\
+Generated images\\
+Other metrics table or graph
+\\
+\textbf{JK datasets Our Model vs MUNIT}\\
+Generated images\\
+Other metrics table or graph
+\\
+\section{Conclusion and Future Work}
+
+\bibliography{references.bib}
+\bibliographystyle{unsrt}
+\end{document}

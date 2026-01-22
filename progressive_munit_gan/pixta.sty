@@ -1,0 +1,62 @@
+
+\setlength{\paperwidth}{8.5in}   % US letter
+\setlength{\paperheight}{11in}% US letter
+\setlength\topmargin{-0.5in}    
+\setlength\oddsidemargin{-0.25in}   
+\setlength\textheight{9.75in} 
+\setlength\textwidth{7in}
+\setlength\columnsep{0.25in}  
+\newlength\titlebox 
+\setlength\titlebox{7cm}
+\setlength\headheight{5pt}   
+\setlength\headsep{0pt}
+\thispagestyle{empty}        
+\pagestyle{empty}
+
+
+
+\def\maketitle{\par
+ \begingroup
+   \def\thefootnote{\fnsymbol{footnote}}
+   \def\@makefnmark{\hbox to 0pt{$^{\@thefnmark}$\hss}}
+   \twocolumn[\@maketitle] \@thanks
+ \endgroup
+ \setcounter{footnote}{0}
+ \let\maketitle\relax \let\@maketitle\relax
+ \gdef\@thanks{}\gdef\@author{}\gdef\@title{}\let\thanks\relax}
+\def\@maketitle{\vbox to \titlebox{\hsize\textwidth
+ \linewidth\hsize \vskip 0.125in minus 0.125in \centering
+ {\Large\bf \@title \par} \vskip 0.2in plus 1fil minus 0.1in
+ {\def\and{\unskip\enspace{\rm and}\enspace}%
+  \def\And{\end{tabular}\hss \egroup \hskip 1in plus 2fil 
+           \hbox to 0pt\bgroup\hss \begin{tabular}[t]{c}\bf}%
+  \def\AND{\end{tabular}\hss\egroup \hfil\hfil\egroup
+          \vskip 0.25in plus 1fil minus 0.125in
+           \hbox to \linewidth\bgroup\large \hfil\hfil
+             \hbox to 0pt\bgroup\hss \begin{tabular}[t]{c}\bf}
+  \hbox to \linewidth\bgroup\large \hfil\hfil
+    \hbox to 0pt\bgroup\hss \begin{tabular}[t]{c}\bf\@author 
+                            \end{tabular}\hss\egroup
+    \hfil\hfil\egroup}
+  \vskip 0.3in plus 2fil minus 0.1in
+}}
+
+% margins for abstract
+\renewenvironment{abstract}%
+		 {\centerline{\large\bf Abstract}%
+		  \begin{list}{}%
+		     {\setlength{\rightmargin}{0cm}%
+		      \setlength{\leftmargin}{0cm}}%
+		   \item[]\ignorespaces}%
+		 {\unskip\end{list}}
+		 
+\def\thebibliography#1{\section*{References}
+  \global\def\@listi{\leftmargin\leftmargini
+               \labelwidth\leftmargini \advance\labelwidth-\labelsep
+               \topsep 1pt plus 2pt minus 1pt
+               \parsep 0.25ex plus 1pt \itemsep 0.25ex plus 1pt}
+  \list {[\arabic{enumi}]}{\settowidth\labelwidth{[#1]}\leftmargin\labelwidth
+    \advance\leftmargin\labelsep\usecounter{enumi}}
+    \def\newblock{\hskip .11em plus .33em minus -.07em}
+    \sloppy
+    \sfcode`\.=1000\relax}
