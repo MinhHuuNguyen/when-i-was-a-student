@@ -1,0 +1,216 @@
+\section{Định lý Routh}
+Cho đa thức $p(\lambda)=\lambda^{n}+a_1\lambda^{n-1}+...+a_n$, với $\lambda \in \mathbb{C}$. Định lý Routh kiểm tra tính ổn định của đa thức $p(\lambda)$ với các hệ số thực trong một số hữu hạn bước. Như ta đã biết, đa thức ổn định có tất cả các hệ số đều dương, tuy nhiên trường hợp này không thỏa mãn tính ổn định nếu $n>3$. Cho $U$ và $V$ là các đa thức với hệ số thực cho trước:
+\begin{equation}
+    U(x)+iV(x)=p(ix), x\in \mathbb{R}
+\end{equation}
+Ta có $\text{deg}(U)=n$, $\text{deg}(V)=n-1$ nếu $n$ là số chẵn, đặt $f_1=U$, $f_2=V$ và $\text{deg}(U)=n-1$, $\text{deg}(V)=n$ nếu n là số lẻ, đặt $f_1=V$, $f_2=U$.\\
+Gọi $f_3, f_4, ..., f_m$ là các đa thức được tạo thành từ $f_1, f_2$ bằng cách áp dụng thuật toán Euclid. Do đó, $\text{deg}(f_{k+1}) < \text{deg}(f_k)$ với $k=2, ..., m-1$ và tồn tại các đa thức $\kappa_1, ..., \kappa_m$ sao cho:
+\begin{equation}
+    f_{k-1}=\kappa_kf_k-f_{k+1}, f_{m-1}=\kappa_mf_m
+\end{equation}
+Do đó, đa thức $f_m$ bằng ước số chung lớn nhất của $f_1$, $f_2$ nhân với một hằng số. 
+
+%-------------------------ĐỊNH LÝ 2.5--------------------------
+\begin{theorem} {\label{1}}
+Đa thức $p$ được gọi là ổn định khi và chỉ khi $m=n+1$ và dấu của các hệ số đầu tiên của các đa thức $f_1$, ..., $f_{n+1}$ luân phiên thay đổi
+\end{theorem}
+\begin{proof}
+Giả sử $\Gamma(r)$ với $r>0$ là đường cong hướng ngược chiều kim đồng hồ bao gồm đoạn $I(r)$ với các điểm cuối $ir$ và $-ir$ và các nửa đường tròn $S(r)$, $S(r, \theta)=re^{i \theta}$ ($\frac{-1}{2}\pi\leq\theta\leq \frac{1}{2}\pi$).
+
+%------------------------BỔ ĐỀ 2.2-----------------------------
+Để chứng minh định lý \eqref{1}, ta sử dụng các bổ đề sau:
+\begin{lemma}
+Nếu đa thức $p$ không có nghiệm trên đường cong $\Gamma(r)$ và $D_r$ là số nghiệm nằm bên trong $\Gamma(r)$, tính đến tính đa dạng của chúng, thì:
+\begin{equation}
+    \frac{1}{i} \int_{\Gamma{r}} \frac{p'(\lambda)}{p(\lambda)} d\lambda = 2\pi D_r.
+\end{equation}
+\end{lemma}
+Giả sử $p$ là đa thức ổn định. Khi đó $D_r=0$ với $r>0$ bất kỳ. Ta có:
+\begin{equation}
+    \frac{p'(\lambda)}{p(\lambda)}=\frac{n}{\lambda}(1-q(\lambda)),
+\end{equation}
+trong đó
+\begin{equation}
+    q(\lambda)=\frac{\lambda^{n-2}+b_1\lambda^{n-3}+...+b_{n-2}}{\lambda^{n-1}+c_1\lambda^{n-2}+...+c_{n-1}}, \lambda \in \mathbb{C},
+\end{equation}
+với $b_1, ..., b_{n-2}, c_1, ..., c_{n-1}$ là các hằng số. Khi đó, tồn tại $M>0$ và $r_0>0$ thỏa mãn:
+\begin{equation}
+    \text{sup}_{\lambda \in S(r)}|q(\lambda)|\leq\frac{M}{r}, r>r_0.
+\end{equation}
+Do đó:
+\begin{equation}
+    \frac{1}{i} \int_{S(r)} \frac{p'(\lambda)}{p(\lambda)} d\lambda = \frac{n}{i}\int_{S(r)} \frac{1}{\lambda} d\lambda - \frac{n}{i} \int_{S(r)} \frac{q(\lambda)}{\lambda} d\lambda,
+\end{equation}
+\begin{equation}\label{2.4}
+    \lim_{r\rightarrow +\infty} \frac{1}{i} \int_{I(r)} \frac{p'(\lambda)}{p(\lambda)}d\lambda =n\pi.
+\end{equation}
+Gọi $\gamma(r)$ là ảnh của $I(r)$ qua phép biến đổi $\lambda \rightarrow p(\lambda)$. Ta có:
+\begin{equation}
+    \frac{1}{i} \int_{I(r)} \frac{p'(\lambda)}{p(\lambda)}d\lambda = \frac{1}{i} \int_{\gamma(r)}\frac{1}{\lambda}d\lambda.
+\end{equation}
+Giả sử rằng bậc của $p$ là một số chẵn $n=2m$. Trường hợp $n$ lẻ tương tự, trục ảo được thay thế bởi trục thực. Giả sử $x_1<x_2<...<x_l$ là các nghiệm thực của phương trình $f_1=U$. Suy ra $0\leq l\leq n$ và các điểm $p_1=p(ix_1)$, ..., $p_l=p(ix_l)$ là các giao điểm của cung $\gamma(r)$ với trục ảo. Cung có hướng $\gamma(r)$ gồm các cung con có hướng $\gamma_1(r)$, $\gamma_2(r)$, ..., $\gamma_l(r)$, $\gamma_{l+1}(r)$ với các điểm cuối tương ứng $p_0=p(-ri)$, $p_1, ..., p_l$, $p(ri)=p_{l+1}(r)$ và $r>0$ là một số dương sao cho $-r<x_1, x_l<r$.\\
+
+Kí hiệu $\mathbb{C}_+$ và $\mathbb{C}_-$ lần lượt là nửa mặt phẳng đóng bên phải và bên trái của mặt phẳng phức $\mathbb{C}$. Nếu $\gamma$ là một đường cong trơn có hướng, không đi qua 0, nằm trong $\mathbb{C}_+$ với điểm đầu $a$ và điểm cuối $b$, khi đó
+\begin{equation}
+    \frac{1}{i} \int_{\gamma} \frac{1}{\lambda}d\lambda = \frac{1}{i} \ln{\vert \dfrac{b}{a}\vert} + \textit{Arg } b - \textit{Arg } a,
+\end{equation}
+trong đó $\text{Arg } a$ và $\text{Arg } b$ là các argument của $a$ và $b$ trong khoảng $\left[-\dfrac{1}{2}\pi, \dfrac{1}{2}\pi\right]$.
+
+Tương tự, với đường cong $\gamma$ nằm trong $\mathbb{C}_-$:
+\begin{equation}
+    \frac{1}{i} \int_{\gamma} \frac{1}{\lambda}d\lambda = \frac{1}{i} \ln{\vert \dfrac{b}{a}\vert} + \arg b - \arg a,
+\end{equation}
+trong đó $\arg a, \arg b \in \left[\dfrac{1}{2}\pi, \dfrac{3}{2}\pi \right ]$.
+
+%---------------------------BỔ ĐỀ 2.3-------------------------------
+\begin{lemma}{\label{2.3}}
+Nếu đường cong trơn có hướng $\gamma$ nằm trong $\mathbb{C}_+$ và $b=i\beta$, $\beta \neq 0$, $\beta \in \mathbb{R}$. Khi đó
+\begin{equation}
+    \frac{1}{i}\int_{\gamma} \frac{1}{z}dz= \frac{1}{i} \ln{\vert \frac{\beta}{a}\vert} + \frac{\pi}{2} \text{sgn } \beta - \text{Arg } a.
+\end{equation}
+Nếu $a=i\alpha, \alpha \neq 0, \alpha \in \mathbb{R}$ thì
+\begin{equation}
+    \frac{1}{i}\int_{\gamma} \frac{1}{z}dz= \frac{1}{i} \ln{\vert \frac{\beta}{a}\vert}+ \varepsilon(\alpha, \beta)\pi,
+\end{equation}
+trong đó
+\par
+\[
+\varepsilon(\alpha, \beta)=
+\left\{
+\begin{array}{ccc}
+1, & \alpha<0, \beta >0\\
+0, & \alpha \beta>0\\
+-1, & \alpha>0, \beta <0.
+\end{array}
+\right.
+\]
+Nếu đường cong $\gamma$ nằm trong $\mathbb{C}_-$ thì công thức trên đúng bằng cách thay Arg $a$ bởi $\arg a$, $\frac{1}{2} \text{sgn } \beta$ bởi $\pi-\frac{1}{2}\pi \text{sgn }\beta$ và thay $\varepsilon$ bởi $-\varepsilon$. 
+\end{lemma}
+Từ bổ đề \eqref{2.3}:
+\begin{eqnarray}\label{2.5}
+    \frac{1}{i} \int_{\gamma(r)} \frac{1}{\lambda} d\lambda &=& \sum_{j=1}^{l+1} \frac{1}{i} \int_{\gamma_j(r)}\frac{1}{\lambda} d\lambda \\
+    &=& \frac{1}{i} \int_{\gamma_j(r)}\frac{1}{\lambda} d\lambda + \sum_{j=2}^{l} \left(\varepsilon_j+\ln{\frac{|p_j|}{|p_{j-1}|}}\right) + \frac{1}{i} \int_{\gamma_{l+1}(r)}\frac{1}{\lambda} d\lambda,
+\end{eqnarray}
+trong đó, $\varepsilon_j=1, -1 \text{hoặc } 0$ với $j=2, ..., l$.
+
+Giả sử $n=2k$ trong đó $k$ là một số chẵn.
+
+Do 
+\begin{equation}\label{2.6}
+    p_0(r)=p(-ir)=r^n(1+c_0(r)),
+\end{equation}
+\begin{equation}\label{2.7}
+    p_{l+1}(r)=p(ir)=r^n(1+c_1(r)),
+\end{equation}
+trong đó, $\lim_{r\rightarrow +\infty}c_0(r)=\lim_{r\rightarrow +\infty}c_l(r)=0$. Do đó, $p_0(r) \in \mathbb{C}_+$, $p_{l+1}(r)\in \mathbb{C}_+$ với $r>0$ đủ lớn và
+\begin{equation}\label{2.8}
+    \lim_{r\rightarrow +\infty}\text{Arg }p_0(r)= \lim_{r\rightarrow +\infty}\text{Arg }p_{l+1}(r)=0.
+\end{equation}
+Từ công thức \eqref{2.5} và bổ đề \eqref{2.3}:
+\begin{eqnarray*}
+f(x) & = & x^2 - x - 2 \\
+& = & (x-2)(x+1)
+\end{eqnarray*}
+\begin{eqnarray}
+    \frac{1}{i} \int_{\gamma(r)} \frac{1}{\lambda} d\lambda & = & \ln{\frac{|p_1|}{|p_0(r)|}} +\frac{\pi}{2}\varepsilon_1 - \text{Arg }p_0(r)+\sum_{j=2}^{l}\left(\varepsilon_j\pi+\ln{\frac{|p_j|}{|p_{j-1}|}}\right)+ \ln{\frac{|p_{l+1}(r)|}{|p_l|}} + \frac{\pi}{2}\varepsilon_{l+1} + \text{Arg }p_{l+1}(r),\\
+    & = & \ln{\frac{|p_{l+1}(r)|}{|p_0(r)|}}+\varepsilon_0\frac{\pi}{2}+\sum_{j=2}^{l}\varepsilon_j\pi+\varepsilon_{l+1}\frac{\pi}{2}+\text{Arg }p_{l+1}(r), r>0,
+\end{eqnarray}
+với $\varepsilon_1, ..., \varepsilon_{l+1} = 0, 1 \text{hoặc } -1$. Sử dụng công thức \eqref{2.6}, \eqref{2.7} và \eqref{2.8}, ta có:
+\begin{equation}
+    \lim_{r\rightarrow+\infty} \frac{1}{i}\int_{\gamma(r)}\frac{1}{\lambda}d\lambda=\varepsilon_1\frac{\pi}{2}+\varepsilon_{l+1}\frac{\pi}{2}+\sum_{j=2}^{l}\varepsilon_j\pi.
+\end{equation}
+Theo công thức \eqref{2.4}:
+\begin{equation}
+    \varepsilon_1\frac{1}{2}\pi+\varepsilon_{l+1}\frac{1}{2}\pi+\sum_{j=2}^{l}\varepsilon_j\pi=n\pi.
+\end{equation}
+Do đó, $l=n$ và $\varepsilon_1=...=\varepsilon_{n+1}=1$. Tương tự, ta thu được kết quả giống hệt với trường hợp $k$ là số lẻ.\\
+
+Nếu $\varepsilon_1=...=\varepsilon_{n+1}=1$ thì với $r>0$ đủ lớn, đường cong $\gamma(r)$ đi qua trục ảo từ góc phần tư thứ nhất đến góc phần tư thứ hai hoặc từ góc phần tư thứ ba đến góc phần tư thứ tư. Do đó, với mọi $x$ xấp xỉ và nhỏ hơn $x_k$, $U(x)$ và $V(x)$ cùng dấu và với mọi $x$ xấp xỉ và lớn hơn $x_k$, $U(x)$ và $V(x)$ trái dấu. Giả sử $Z(x)$ là số lần thay đổi dấu của chuỗi hàm $f_1(x), f_2(x), ..., f_m(x)$ bằng cách xóa đi tất cả các số 0 (hai số lân cận, $f_k, f_{k+1}$ tạo thành một lần thay đổi dấu nếu $f_kf_{k+1}<0$). Nhận xét: hàm $Z(x), x\in \mathbb{R}$ chỉ có thể thay đổi giá trị tại một nghiệm của $f_1, ..., f_m$. Tuy nhiên, nếu với $k=2, ..., m-1$ và $\tilde{x}\in \mathbb{R}, f_k(\tilde{x})=0$ thìd
+\begin{equation*}
+    f_{k-1}(\tilde{x})=-f_{k+1}(\tilde{x}).
+\end{equation*}
+Vì hàm $f_1$ và $f_2$ không có ước số chung nên $f_{k-1}$ và $f_{k+1}$ cũng không có ước chung, đặc biệt $f_{k-1}(\tilde{x})\neq 0, f_{k+1}(\tilde{x})\neq 0$. Do đó, $f_{k-1}(\tilde{x})f_{k+1}(\tilde{x})<0$ và với $x\neq\tilde{x}$ nhưng xấp xỉ $\tilde{x}$, dấu của $f_{k-1}(x), f_k(x), f_{k+1}(x)$ có thể là một trong các trường hợp sau: (+, +, -); (+, -, -); (-, +, +); (-, -, +). Khi đó, hàm $Z(x), x\in \mathbb{R}$ không đổi khi $x$ đi qua $\tilde{x}$. Vì đa thức $f_m$ có bậc không, $Z$ chỉ có thể thay đổi giá trị của nó tại nghiệm của $f_1$. Đặc biệt, $Z(-\infty)$ và $Z(+\infty)$ không đổi với $x<x_1$ hoặc $x>x_n$. Tuy nhiên, với $x$ xấp xỉ và nhỏ hơn một nghiệm $x_k$, $f_1(x)$ và $f_2(x)$ cùng dấu; ngược lại, với $x$ xấp xỉ và lớn hơn $x_k$, $f_1(x)$ và $f_2(x)$ ngược dấu. Do đó, $Z$ tăng lên 1 tại điểm $x_k$, $Z(+\infty)-Z(-\infty)=n$. Vì với $x$ bất kì, $Z(x)\geq 0, Z(x)\leq m-1\leq n$ nên $Z(+\infty)=n+Z(-\infty)\geq n$ và $m=n+1, Z(+\infty)=n, Z(-\infty)=0$. Dễ thấy $Z(+\infty)$ bằng số lần thay đổi dấu của các hệ số đầu tiên của các đa thức $f_1, ..., f_{n+1}$, và do $Z(+\infty)=n$ nên các dấu này luân phiên thay đổi.\\
+
+Để chứng minh điều ngược lại, nhận xét với $m=n+1$ thì $U$ và $V$ không có ước chung. Cụ thể, đa thức $p$ không có nghiệm ảo hoàn toàn, áp dụng định lý 2.2, từ
+\begin{equation*}
+    \lim_{r\rightarrow +\infty}\frac{1}{i}\int_{S(r)}\frac{p'(\lambda)}{p(\lambda)}d\lambda=n\pi,
+\end{equation*}
+\begin{equation*}
+    \Rightarrow \frac{1}{i}\int_{I(r)}\frac{p'(\lambda)}{p(\lambda)}d\lambda\rightarrow n\pi -D_r.
+\end{equation*}
+Mặt khác, với $x$ đủ lớn, $Z(x)=Z(+\infty)=n$, do đó $Z(-\infty)=0$. Vì vậy, $Z$ chỉ thay đổi giá trị tại nghiệm của $f_1=U$ và thay đổi chỉ khi dấu của $f_1$ và $f_2$ thay đổi. Khi đó, đường cong $\gamma(r)$ đi qua góc phần tư thứ nhất đến góc phần tư thứ hai hoặc từ góc phần tư thứ ba đến góc phần tư thứ tư của mặt phẳng ảo ($n$ là số chẵn). Số các lần đi qua bằng $n$ và argument của các điểm đầu và điểm cuối của $\gamma(r)$ tiến đến 0 hoặc $\pi$, khi $r\rightarrow +\infty$, do đó
+\begin{equation}
+    \frac{1}{i}\int_{I(r)}\frac{p'(\lambda)}{p(\lambda)}d\lambda=\frac{1}{i}\int_{\gamma(r)}\frac{1}{z}dz\rightarrow n\pi, r\rightarrow +\infty.
+\end{equation}
+Do đó, $D_r=0$ với $r>0$.
+\end{proof}
+
+%---------------------------------------ÁP DỤNG--------------------------
+Áp dụng định lý trên với đa thức bậc 4:
+\begin{equation}
+    p(\lambda)=\lambda^4+a\lambda^3+b\lambda^2+c\lambda+d, \lambda\in \mathbb{C}.
+\end{equation}
+Ta có:
+\begin{eqnarray*}
+U(x)&=&x^4-bx^2+d=f_1(x),\\
+    V(x)&=&-ax^3+cx=f_2(x), x\in \mathbb{R}.
+\end{eqnarray*}
+Khi đó:
+\begin{eqnarray*}
+f_3(x)&=&\left(b-\frac{c}{a}\right)x^2-d,\\
+    f_4(x)&=&-\left(c-ad(b-\frac{c}{a})^{-1}\right) x,\\
+    f_5(x)&=&d.
+\end{eqnarray*}
+Hệ số đầu tiên của các đa thức $f_1, f_2, f_3, f_4, f_5$ lần lượt là $1, -a, \left(b-\frac{c}{a}\right), -\left(c-ad\left(b-\frac{c}{a}\right)\right), d$.
+
+Theo định lý Routh, điều kiện cần và đủ để đa thức $p$ ổn định là:
+\begin{equation*}
+    a>0, b-\frac{c}{a}>0, c-ad\left(b-\frac{c}{a}\right)>0, d>0,
+\end{equation*}
+Nếu $a_1, a_2, ..., a_n$ là các hệ số của đa thức $p$, đặt $a_k=0$ với $k>n=\deg(p)$. Dãy Routh là một ma trận với vô số hàng thu được từ hai hàng đầu tiên
+\begin{eqnarray*}
+    1, a_2, a_4, a_6, ...,\\
+    a_1, a_3, a_5, a_7,...,
+\end{eqnarray*}
+bằng cách tính toán lần lượt các hàng của dãy Routh theo hai hàng liền trước đó. Quá trình tính toán dừng khi cột đầu tiên xuất hiện số 0. Thuật toán Routh có thể được phát biểu như sau
+
+%-----------------------------ĐỊNH LÝ 2.6-----------------------------
+\begin{theorem}
+    Xét $p$ là đa thức bậc $n$. $p$ được gọi là ổn định khi và chỉ khi $n+1$ thành phần đầu tiên của các cột đầu tiên của dãy Routh đều dương.
+\end{theorem}
+Có thể sử dụng phương pháp bảng để xác định sự ổn định khi các nghiệm của một đa thức đặc trưng bậc cao khó xác định được. Đối với đa thức bậc $n$
+$$
+p(\lambda)=a_n\lambda^n+a_{n-1}\lambda^{n-1}+\cdot+a_1\lambda+a_0
+$$
+Bảng đối với đa thức bận $n$ này có $n+1$ hàng và có dạng sau:
+
+\begin{figure}[ht]
+ \centering
+    \includegraphics[scale=1]{images/bang1.png}
+    \caption{Bảng hệ số đối với đa thức bậc $n$}
+    \label{fig: bang_1}
+\end{figure}
+
+trong đó các thành phần $b_i$ và $c_i$ có thể được tính toán như sau:
+\begin{itemize}
+\item $b_i=\frac{a_{n-1}\times a_{n-2i}-a_n\times a_{n-2i-1}}{a_{n-1}}$
+\item $c_i=\frac{b_1\times a_{n-2i-1}-a_{n-1}\times b_{i+1}}{b_1}$
+\end{itemize}
+Ví dụ: $b_1=\frac{a_{n-1}\times a_{n-2}-a_n\times a_{n-3}}{a_{n-1}}$, $c_1=\frac{b_1\times a_{n-3}-a_{n-1}\times b_{2}}{b_1}$\\
+
+Sau khi tính toán xong, số dấu thay đổi trong cột đầu tiên sẽ là số các nghiệm không âm. 
+
+\begin{figure}[ht]
+ \centering
+    \includegraphics[scale=1]{images/bang2.png}
+    \caption{Bảng hệ số sau khi tính toán các giá trị của các cột}
+    \label{fig: bang_1}
+\end{figure}
+
+Trong cột đầu tiên có hai lần hệ số đổi dấu ($0.75 \rightarrow -3, -3 \rightarrow 3$), do đó có hai nghiệm không âm, như vậy hệ thống không ổn định.
+%------------------------------VÍ DỤ 2.4---------------------------
+
+%------------------------------------------------
+%--------------------------------------------
+
+

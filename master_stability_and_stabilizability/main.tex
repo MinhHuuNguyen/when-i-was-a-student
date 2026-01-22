@@ -1,0 +1,95 @@
+\documentclass[12pt, a4paper]{article}
+\usepackage[utf8]{vietnam}
+
+\usepackage{amsmath, amsfonts, amssymb, amsthm, graphicx, picture, fancyhdr, tikz}
+
+\renewcommand{\baselinestretch}{1.5}
+\usepackage[left=2.50cm, right=2.cm, top=2.cm, bottom = 2.cm]{geometry}
+\setlength{\columnsep}{5mm} 
+
+\author{Nguyễn Thị Thùy Linh\\
+Nguyễn Hữu Minh
+}
+\title{Stability and Stabilizability}
+\date{03 - 2021}
+\setlength{\parindent}{0pt}
+
+\numberwithin{equation}{section}
+
+\newtheorem{theorem}{Định lý}[section]
+\newtheorem{lemma}{Bổ đề}[section]
+\newtheorem{remark}{Chú ý}[section]
+\newtheorem{exercise}{Ví dụ}[section]
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\itshape GV: PGS. TS. Đỗ Đức Thuận}
+\fancyhead[RE,LO]{SEMINAR}
+\fancyfoot[LE,RO]{\thepage}
+\fancyfoot[RE,LO]{\itshape Stability and Stabilizability}
+
+\renewcommand{\headrulewidth}{1pt}
+\renewcommand{\footrulewidth}{0.5pt}
+
+\begin{document}
+	\begin{titlepage}
+	\begin{tikzpicture}[remember picture,overlay,inner sep=0,outer sep=0]
+		\draw[black!70!black,line width=2pt] ([xshift=-1.5cm,yshift=-2cm]current page.north east) coordinate (A)--([xshift=2cm,yshift=-2cm]current page.north west) coordinate(B)--([xshift=2cm,yshift=2cm]current page.south west) coordinate (C)--([xshift=-1.5cm,yshift=2cm]current page.south east) coordinate(D)--cycle;
+		\end{tikzpicture}
+	\begin{center}
+		\vspace{7pt}
+		\fontsize{15pt}{0.15cm}\selectfont 
+		\textbf{TRƯỜNG ĐẠI HỌC BÁCH KHOA HÀ NỘI\\
+	VIỆN TOÁN ỨNG DỤNG VÀ TIN HỌC}\\
+	\textbf{------------ oOo ------------}\\
+		\vspace{3cm}
+	\end{center}
+	\begin{center}
+		
+		\fontsize{23pt}{0.15cm}\selectfont
+		\textbf{SEMINAR TOÁN}
+		
+		\vspace{1.5cm}
+		\fontsize{21pt}{0.15cm}\selectfont 
+		\textbf{TÍNH ỔN ĐỊNH \& ỔN ĐỊNH HÓA ĐƯỢC} 
+		
+		\vspace{1cm}
+		
+	\end{center}	
+	\begin{tabbing}
+		\hspace{4.5cm}\=\hspace{5cm}\=\hspace{5cm} 
+		\kill{\it }\>{\it}\\				
+		\begin{bfseries}\fontsize{13pt}{0.15cm}\hspace{2cm} Giảng viên hướng dẫn:\end{bfseries}\> \begin{bfseries}\fontsize{13pt}{0.15cm} \hspace{2.3cm} PGS. TS. Đỗ Đức Thuận\end{bfseries}\>\\
+		\begin{bfseries}\fontsize{13pt}{0.15cm}\hspace{2cm} Viện:\end{bfseries}\> 
+		\begin{bfseries}\fontsize{13pt}{0.15cm}\hspace{2.5cm} Toán ứng dụng và tin học\end{bfseries}\> \\
+        \begin{bfseries}\fontsize{13pt}{0.15cm}\hspace{2cm} Sinh viên:\end{bfseries}\> 
+		\\
+		
+        \begin{bfseries}\fontsize{13pt}{0.15cm}\hspace{2cm} \end{bfseries}\> 
+		\begin{bfseries}\fontsize{13pt}{0.15cm}\hspace{2.5cm} Nguyễn Thị Thùy Linh - MHV: 20211355M\end{bfseries}\> \\
+		
+      \begin{bfseries}\fontsize{13pt}{0.15cm}\hspace{2cm} \end{bfseries}\> 
+		\begin{bfseries}\fontsize{13pt}{0.15cm}\hspace{2.5cm} Nguyễn Hữu Minh - MHV: 20202955M\end{bfseries}\>
+	\end{tabbing}
+    
+		
+	\begin{center}
+		\vfill
+        
+		\fontsize{13pt}{0.15cm}
+		\textbf{HÀ NỘI - 09/2021}
+	\end{center}
+	
+\end{titlepage}
+
+\newpage
+\begin{titlepage}
+\tableofcontents
+\end{titlepage}
+
+
+\include{2.1_2}
+\include{2.3_4}
+
+
+\end{document}

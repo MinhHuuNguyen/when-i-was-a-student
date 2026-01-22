@@ -1,0 +1,434 @@
+\documentclass{beamer}
+\usepackage[utf8]{vietnam}
+\usetheme{Madrid}
+\usepackage{wrapfig}
+\usepackage{amsmath, amsfonts, amssymb, graphicx, array, hyperref, caption, cases}
+\renewcommand{\baselinestretch}{1.5}
+\usepackage{tikz} 
+\usepackage[framemethod = TikZ]{mdframed}
+\usepackage{scrextend, xcolor}
+\usepackage{multicol}
+\numberwithin{equation}{section}
+\newtheorem{remark}{Chú ý}[section]
+
+\title[Seminar Toán]{TÍNH ỔN ĐỊNH VÀ ỔN ĐỊNH HÓA ĐƯỢC}
+\author[SAMI - HUST]{
+Giảng viên hướng dẫn:  \hspace{.1cm}PGS.TS. Đỗ Đức Thuận \\
+Sinh viên thực hiện:   Nguyễn Thị Thùy Linh \hspace{.5cm}\\
+\hspace{2.8cm} Nguyễn Hữu Minh
+}
+\date[09/2021]{Hà Nội - 09/2021}
+
+
+\begin{document}
+
+\begin{frame}
+    \maketitle
+\end{frame}
+
+\begin{frame}{Nội dung}
+    \tableofcontents
+    \vspace{4cm}
+\end{frame}
+
+%---------------------------------------------
+
+\section{Hệ tuyến tính ổn định}
+\begin{frame}{Hệ tuyến tính ổn định}
+Cho $A \in M(n,n)$ và hệ tuyến tính dưới đây
+
+\begin{align}
+\label{equation_1}
+\dot{z} = Ax,  \quad z(0) = x \in \mathbb{R}^{n} 
+\end{align}
+
+Nghiệm của hệ trên được kí hiệu bởi  $z^{x}(t),  t \geq 0$ ta có
+
+$$
+    z^{x}(t) = Z(t)x = (e ^{tA})x, \quad t \geq 0
+$$
+
+Hệ (\ref{equation_1}) được gọi là ổn định nếu với mỗi giá trị của $x \in \mathbb{R}^{n}$ ta có 
+
+$$
+    z^{x}(t) \rightarrow 0, \quad t \rightarrow \infty
+$$
+\end{frame}
+
+\begin{frame}{Hệ tuyến tính ổn định}
+
+\begin{remark}
+\begin{itemize}
+\item Một hệ tuyến tính được gọi là ổn định nếu mà nghiệm xuất phát từ $x_0$ sẽ hội tụ dần đến điểm cân bằng.
+\item Một hệ tuyến tính như hệ (\ref{equation_1}) thì có điểm cân bằng là 0.
+\item Điểm cân bằng là một nghiệm tầm thường, nghiệm hằng số của hệ tuyến tính.
+\end{itemize}
+\end{remark}
+\end{frame}
+
+\begin{frame}{Hệ tuyến tính ổn định}
+Một vài ví dụ về đồ thị của hệ tuyến tính ổn đinh và không ổn định.
+\begin{figure}[h!]
+ \centering
+    \includegraphics[scale=1]{images/vidu1.png}
+    \caption{Đồ thị các trạng thái ổn định của hệ thống tuyến tính}
+    \label{fig: vidu_1}
+\end{figure}
+
+\end{frame}
+\begin{frame}{Hệ tuyến tính ổn định}
+Ma trận A trong hệ (\ref{equation_1}) khi đó được gọi là ổn đinh.  Khi đó, nếu tồn tại một ma trận không suy biến $P$ làm chéo hóa ma trận $A$ thì ma trận chéo $P^{-1}AP$ là ổn định.\\
+
+Điều kiện cần và đủ để một ma trận chéo hóa được là ma trận đó có đủ $n$ vec tơ riêng độc lập tuyến tính. Hay, nếu ma trận $A$ có $n$ trị riêng phân biệt thì nó chéo hóa được. \\
+
+Từ đó, ta có thể xác định tính ổn định của ma trận $A$ bằng việc tìm\\
+$\sigma(A)$: Tập hợp các giá trị riêng của ma trận $A$, \\
+hay tập các giá trị $\lambda$ sao cho $\exists a \neq 0 : Aa=\lambda a$.
+
+\end{frame}
+
+\begin{frame}{Hệ tuyến tính ổn định}
+Để tìm $\sigma (A)$, ta giải phương trình đặc trưng: $p(\lambda)= \text{det}(A-\lambda I)=0$ với $\lambda \in \mathbb{C}$.\\
+
+Tập $\sigma(A)$ gồm nhiều nhất $n$ phần tử và không rỗng.
+\end{frame}
+
+\begin{frame}{Định lý 1}
+    
+\begin{theorem}
+
+Với mỗi ma trận $A \in M(n, n; \mathbb{C})$ tồn tại một ma trận không suy biến $P \in M(n, n; \mathbb{C})$ sao cho 
+\begin{align}
+\label{equation_2}
+PAP^{-1} =
+    \begin{bmatrix}
+    J_{1} & 0 & ... & 0 & 0 \\
+    0 & J_{2} & ... & 0 & 0 \\
+    \vdots & \vdots & \ddots & \vdots & \vdots \\
+    0 & 0 & ... & 0 & J_{r} 
+    \end{bmatrix}=\tilde{A}
+\end{align}
+
+\end{theorem}
+\end{frame}
+
+
+
+
+\begin{frame}{Định lý 1}
+    
+\begin{theorem}
+trong đó $J_{1}, J_{2}, \dots, J_{r}$ được gọi là các khối Jordan
+
+$$
+J_{k} =
+    \begin{bmatrix}
+    \lambda_{k} & \gamma_{k} & ... & 0 & 0 \\
+    0 & \lambda_{k} & ... & 0 & 0 \\
+    \vdots & \vdots & \ddots & \vdots & \vdots \\
+    0 & 0 & ... & 0 & \lambda_{k}
+    \end{bmatrix}
+$$
+
+với $\gamma_{k} \ \neq 0 $ hoặc $J_{k} = [\lambda_{k}], k = 1, \dots, r$
+\end{theorem}
+\end{frame}
+
+\begin{frame}{Định lý 1}
+Trong cách biểu diễn bằng ma trận $\tilde{A}$ (ma trận (\ref{equation_2})), có ít nhất một khối Jordan ứng với giá trị riêng $\lambda_k$ . Nếu ta chọn ma trận $P$ đúng cách thì ta sẽ thu được ma trận với các giá trị $\gamma_k \neq 0$ tối ưu.\\
+ Với ma trận gồm các phần thực, ta có dạng biểu diễn ma trận như Định lý 2.
+\end{frame}
+
+\begin{frame}{Định lý 2}
+    
+\begin{theorem}
+Với mỗi ma trận $A \in M(n, n)$ tồn tại một ma trận không suy biến $P \in M(n, n)$ sao cho hệ (\ref{equation_2}) với khối thực $I_{k}$ (gồm các phần tử thực). Khối $I_{k}, k =. , \dots, r$, giá trị riêng thực $\lambda_{k} = \alpha_{k} \in \mathbb{R}$ được cho dưới dạng sau
+
+$$
+[\alpha_{k}] =
+    \begin{bmatrix}
+    \alpha_{k} & \gamma_{k} & ... & 0 & 0 \\
+    0 & \alpha_{k} & ... & 0 & 0 \\
+    \vdots & \vdots & \ddots & \vdots & \vdots \\
+    0 & 0 & ... & 0 & \alpha_{k}
+    \end{bmatrix}
+$$
+
+với $\gamma_{k} \in R$, $\gamma_{k} \ 0$ và $\lambda_{k} = \alpha_{k} + i\beta_{k}, \beta_{k} \neq 0, \alpha_{k}, \beta_{k} \in \mathbb{R}$
+\end{theorem}
+\end{frame}
+
+\begin{frame}{Định lý 2}
+\begin{theorem}
+\begin{equation*}
+    \begin{bmatrix}
+    K_{k} & L_{k} & ... & 0 & 0 \\
+    0 & K_{k} & ... & 0 & 0 \\
+    \vdots & \vdots & \ddots & \vdots & \vdots \\
+    0 & 0 & ... & 0 & K_{k}
+    \end{bmatrix}
+\end{equation*}
+Trong đó 
+\begin{multicols}{2}
+\begin{align}
+\label{equation_3}
+K_{k} =
+    \begin{bmatrix}
+    \alpha_{k} & \beta_{k} \\
+    -\beta_{k} & \alpha_{k}
+    \end{bmatrix}
+\end{align},
+\begin{align}
+\label{equation_4}
+L_{k} =
+    \begin{bmatrix}
+    \gamma_{k} & 0 \\
+    0 & \gamma_{k}
+    \end{bmatrix}
+\end{align}
+\end{multicols}
+
+\end{theorem}
+\end{frame}
+
+\begin{frame}{Định lý 3}
+    Định lý gồm 4 điều kiện tương đương.
+\begin{theorem}
+Cho ma trận $A \in M(n, n)$, khi đó ta có các mệnh đề sau
+\begin{itemize}
+    \item $z^{x}(t) \rightarrow 0$ khi $t \rightarrow \infty$ với mỗi $x \in \mathbb{R}^{n}$
+    \item $z^{x}(t) \rightarrow 0$ theo cấp số mũ khi $t \rightarrow \infty$ với mỗi $x \in \mathbb{R}^{n}$
+    \item $w(A) = \sup\{\text{Re}\lambda; \lambda \in \sigma(A)\} < 0$
+    \item $\int_0^\infty |z^x(t)|^2dt \le +\infty$ với mỗi giá trị $x \in \mathbb{R}^n$
+\end{itemize}
+\end{theorem}
+\end{frame}
+
+\begin{frame}{Mệnh đề 1}
+    \begin{lemma}
+Cho $w > w(A)$. Với mỗi giá trị chuẩn $|| . || $ trên $\mathbb{R}^n$ tồn tại M sao cho
+\begin{equation*}
+    ||z^x(t)|| \leq Me^{wt}||X||, t \geq 0, x \in \mathbb{R}^n
+\end{equation*}
+\end{lemma}
+
+\end{frame}
+
+\begin{frame}{Chứng minh định lý 3}
+Giả sử $\omega_0  \ge 0$. Tồn tại $\lambda = \alpha+i\beta$ , $\text{Re}\lambda=\alpha \geq 0$ và véc tơ $a\neq 0$, $a=a_1+ia_2$ với $a_1,a_2 \in \mathbb{R}^n$ sao cho:
+$$
+A(a_1+ia_2)=(\alpha+i\beta)(a_1+ia_2).
+$$
+Ta có nghiệm của hệ tuyến tính (\ref{equation_1})
+$$
+z(t)=z_1(t)+iz_2(t)=e^{(\alpha+i\beta)}a, \quad t \ge 0,
+$$
+Có $a\neq 0$ khi $a_1 \neq 0$ hoặc $a_2 \neq 0$. Giả sử $a_1 \ne 0$ và $\beta \ne 0$. Ta có phần thực của nghiệm: (có $e^{ix} = \cos x + i \sin x$)
+
+\begin{align*}
+z_1(t) = &e^{\alpha t}[(\cos \beta t) a_1-(\sin \beta t)a_2]
+\end{align*}
+\end{frame}
+\begin{frame}{Chứng minh định lý 3}
+Thay $t=\frac{2\pi k}{\beta}$, ta có
+$$
+|z_1(t) = e^{\alpha t}|a_1|
+$$
+và khi $k$ càng lớn thì $z_1(t)$ không hội tụ về 0. 
+ Với $\omega_0 <0$ và $\alpha \in (0, -\omega_0)$. Theo bổ đề 1, ta có:
+ $$
+ |z^x(t)| \leq Me^{wt}|x|, \quad t \geq 0, x \in \mathbb{R}^n
+$$
+hay $z^x(t)$ tiến dần tới 0 theo tốc độ mũ. \\
+Khi hệ tuyến tính ổn định thì đồng thời cũng sẽ tiến về tới 0 với tốc độ mũ (điều kiện (1), (2) của định lý 3).
+\end{frame}
+\begin{frame}{Chứng minh định lý 3}
+Điều kiện (3) của định lý 3 là đặc trưng để kiểm tra ma trận $A$ có ổn định không. Dễ dàng thấy điều kiện (3) đúng dựa vào chứng minh điều kiện (1) và (2).\\
+
+Điều kiện (4) được suy ra từ điều kiện (2) và (3).  Giả sử $\omega_0 \ge 0$, ta có $|z_1(t)|=e^{\alpha t}|a_1|$ với $t\ge 0$. Từ đó:
+$$
+\int_0^\infty |z^x(t)|^2dt = +\infty
+$$
+Do đó, ta có điều kiện (4) được chứng minh.
+\end{frame}
+
+
+
+\section{Đa thức ổn định}
+\begin{frame}{Đa thức ổn định}
+   Ta thấy điều kiện (3) của Định lý 3 là một đặc trưng để ta kiểm tra tính ổn định của ma trận $A$. Nhận thấy tầm quan trọng đó, nên ta nỗ lực tìm các điều kiện cần và đủ để một đa thức ổn định.\\
+Xét đa thức sau
+\begin{align}
+\label{equation_2.1}
+ p(\lambda) = \lambda^n + a_1\lambda^{n-1} + \dots + a_n, \quad\lambda \in \mathbb{C}
+\end{align}
+   
+\end{frame}
+
+\begin{frame}{Đa thức ổn định}
+\begin{theorem}
+(1) Đa thức với hệ số thực
+\begin{enumerate}[i]
+    \item $\lambda + a$
+    \item $\lambda^2 + a\lambda + b$
+    \item $\lambda^3 + a\lambda^2 + b\lambda + c$
+    \item $\lambda^4 + a\lambda^3 + b\lambda^2 + c\lambda + d$
+\end{enumerate}
+là ổn định khi và chỉ khi 
+\end{theorem}
+\end{frame}
+
+\begin{frame}{Đa thức ổn định}
+\begin{theorem}
+\begin{enumerate}[i*]
+    \item $a > 0$
+    \item $a > 0, b > 0$
+    \item $a > 0, b > 0, c > 0, ab > c$
+    \item $a > 0, b > 0, c > 0, d > 0, abc > c^2 + a^2d$
+\end{enumerate}
+
+
+
+(2) Nếu đa thức \ref{equation_2.1} là ổn định thì khi đó các hệ số $a_1, a_2, \dots, a_n$ đều dương
+\end{theorem}
+\end{frame}
+
+\begin{frame}{Chứng minh định lý:}
+(1) Dễ thấy $(i) \Leftrightarrow (i^*)$.\\
+Để chứng minh $(ii) \Leftrightarrow (ii^*)$ ta giả sử các nghiệm của đa thức là $\lambda$ có dạng $\lambda_1 =-\alpha+i\beta$, $\lambda_2 =-\alpha-i\beta$ với $\beta \ne 0$. Do đó, $p(\lambda)=\lambda^2 + \alpha\lambda + \beta^2$, với $\lambda \in \mathbb{C}$ (từ định lý Vi-et), từ đó ta có điều kiện ổn định của đa thức trong trường hợp này là $a>0$ và $b>0$ ($a=\alpha, b=\beta^2$). 
+Với trường hợp các nghiệm $\lambda_1,\lambda_2$ của đa thức $p$ là các số thực thì $a=-(\lambda_1+\lambda_2)$, $b=\lambda_1\lambda_2$ (Định lý Vi-et). Do đó, các nghiệm này chỉ âm khi $a>0,b>0$. (đpcm)
+\end{frame}
+\begin{frame}{Chứng minh định lý}
+Để chứng minh $(iii) \Leftrightarrow (iii^*)$, chú ý rằng ta có thể phân tích đa thức thành các đa thức con với các hệ số $\alpha,\beta,\gamma$:
+\begin{align*}
+p(\lambda) &= \lambda^3 + a\lambda^2 + b\lambda + c\\
+&= (\lambda + \alpha)(\lambda^2 + \beta\lambda + \gamma)\\
+&=	\lambda^3 + (\alpha+\beta)\lambda^2+(\gamma+\alpha\beta)\lambda+\alpha\gamma
+\end{align*}
+Từ (i) và (ii), ta có đa thức $p$ ổn định khi và chỉ khi $\alpha>0,\beta>0$ và $\gamma>0$.  So sánh các hệ số với: 
+$$
+a=\alpha+\beta, \quad b=\gamma+\alpha\beta, \quad c=\alpha\gamma
+$$
+từ đó có $ab-c=\beta(\alpha^2+\gamma+\alpha\beta)=\beta(\alpha^2+b)$.
+\end{frame}
+\begin{frame}{Chứng minh định lý}
+Giả sử rằng $a > 0, b > 0, c > 0, ab > c$. Từ $b>0$ và $ab-c>0$ thì có $\beta>0$. Từ $c=\alpha\gamma$ có $\alpha$ và $\gamma$ đồng thời dương hoặc đồng thời âm. Tuy nhiên, chúng không thể cùng âm vì khi đó $\gamma+\alpha\beta<0$. Do đó $\alpha>0$ và $\gamma>0$ kéo theo $\alpha>0,\beta>0,\gamma>0$. (đpcm)
+Để chứng minh $(iv) \Leftrightarrow (iv^*)$, ta lại phân rã đa thức thành các đa thức con với các hệ số $\alpha>0, \beta>0,\gamma>0,\sigma>0$:
+$$
+\lambda^4 + a\lambda^3 + b\lambda^2 + c\lambda + d=(\lambda^2 + \alpha\lambda + \beta)(\lambda^2 + \gamma\lambda + \sigma)
+$$
+với sự phân rã: 
+$$
+a= \alpha+\gamma, \quad b=\alpha\gamma+\beta+\sigma,\quad c= \alpha\sigma +\beta\gamma, \quad d=\beta\sigma
+$$
+\end{frame}
+\begin{frame}{Chứng minh định lý}
+Ta kiểm tra trực tiếp được:
+$$
+abc-c^2-a^2d=\alpha\gamma((\beta-\sigma)^2+ac).
+$$
+Do đó, dễ dàng thấy rằng $\alpha>0,\beta>0,\gamma>0$ và $\sigma>0$. 
+
+Giả sử bất đẳng thức ở $(iv)^*$ đúng. Do đó $\alpha\gamma>0$ và từ $a=\alpha+\gamma$ ta có $\alpha>0$ và $\gamma>0$. Hơn nữa, $d=\beta\sigma>0$  và $c=\alpha\sigma +\beta\gamma>0$ nên $\beta>0,\sigma>0$.\\
+Cuối cùng $\alpha>0,\beta>0,\gamma>0,\sigma>0$, và đa thức $p$ là ổn định (đpcm).\\
+
+(2) Đa thức $p$ có thể phân rã thành các đa thức con bậc nhỏ hơn nên ta thấy (2) đúng.
+\end{frame}
+
+\section{Định lý Routh}
+\begin{frame}{Định lý Routh}
+Xét đa thức $p(\lambda)=\lambda^{n}+a_1\lambda^{n-1}+...+a_n$, với $\lambda \in \mathbb{C}$. \\
+Định lý Routh kiểm tra tính ổn định của đa thức $p(\lambda
+)$ với các hệ số thực trong một số hữu hạn bước. Như ta đã biết, đa thức ổn định có tất cả các hệ số đều dương, tuy nhiên trường hợp này không thỏa mãn tính ổn định nếu n > 3. 
+\end{frame}
+
+\begin{frame}{Định lý Routh}
+Đa thức $U$ và $V$ là các đa thức với hệ số thực cho trước thỏa mãn:
+$$
+    U(x)+iV(x)=p(ix), x\in \mathbb{R}
+$$
+Ta có $\text{deg}(U)=n$, $\text{deg}(V)=n-1$ nếu $n$ là số chẵn, đặt $f_1=U$, $f_2=V$ và $\text{deg}(U)=n-1$, $\text{deg}(V)=n$ nếu n là số lẻ, đặt $f_1=V$, $f_2=U$.\\
+Gọi $f_3, f_4, ..., f_m$ là các đa thức được tạo thành từ $f_1, f_2$ bằng cách áp dụng thuật toán Euclid. Do đó, $\text{deg}(f_{k+1}) < \text{deg}(f_k)$ với $k=2, ..., m-1$ và tồn tại các đa thức $\kappa_1, ..., \kappa_m$ sao cho:
+$$
+    f_{k-1}=\kappa_kf_k-f_{k+1}, f_{m-1}=\kappa_mf_m
+$$
+Do đó, đa thức $f_{m}$ bằng ước số chung lớn nhất của $f_{1}$, $f_{2}$ nhân với một hằng số.
+\end{frame}
+
+\begin{frame}{Định lý Routh}
+\begin{theorem} {\label{1}}
+Đa thức $p$ được gọi là ổn định khi và chỉ khi $m=n+1$ và dấu của các hệ số đầu tiên của các đa thức $f_1$, ..., $f_{n+1}$ luân phiên thay đổi
+\end{theorem}
+ Áp dụng định lý trên với đa thức bậc 4:
+$$
+    p(\lambda)=\lambda^4+a\lambda^3+b\lambda^2+c\lambda+d, \lambda\in \mathbb{C}.
+$$
+Ta có:
+\begin{eqnarray*}
+U(x)&=&x^4-bx^2+d=f_1(x),\\
+    V(x)&=&-ax^3+cx=f_2(x), x\in \mathbb{R}.
+\end{eqnarray*}
+\end{frame}
+
+\begin{frame}{Định lý Routh}
+Khi đó:
+\begin{eqnarray*}
+f_3(x)&=&\left(b-\frac{c}{a}\right)x^2-d,\\
+    f_4(x)&=&-\left(c-ad(b-\frac{c}{a})^{-1}\right) x,\\
+    f_5(x)&=&d.
+\end{eqnarray*}
+
+Theo định lý Routh, điều kiện cần và đủ để đa thức $p$ ổn định là:
+\begin{equation*}
+    a>0, b-\frac{c}{a}>0, c-ad\left(b-\frac{c}{a}\right)>0, d>0,
+\end{equation*}
+\end{frame}
+
+\begin{frame}{Định lý Routh}
+Với hai dãy $(\alpha_k)$, $(\beta_k)$ tùy ý, dãy Routh $(\gamma_k)$ được định nghĩa như sau:
+\begin{equation}
+    \gamma_k=-\frac{1}{\beta_1}\det \left[
+\begin{array}{cc}
+\alpha_1 & \alpha_{k+1} \\
+\beta_1 & \beta_{k+1}
+\end{array}
+\right], k=1,2,...
+\end{equation}
+\begin{theorem}
+    Xét $p$ là đa thức bậc $n$. $p$ được gọi là ổn định khi và chỉ khi $n+1$ thành phần đầu tiên của các cột đầu tiên của dãy Routh đều dương.
+\end{theorem}
+\end{frame}
+
+\begin{frame}{Định lý Routh}
+Có thể sử dụng phương pháp bảng để xác định sự ổn định khi các nghiệm của một đa thức đặc trưng bậc cao khó xác định được. Đối với đa thức bậc $n$
+$$
+p(\lambda)=a_n\lambda^n+a_{n-1}\lambda^{n-1}+\cdot+a_1\lambda+a_0
+$$
+Bảng đối với đa thức bận $n$ này có $n+1$ hàng và có dạng sau:
+\begin{figure}[h!]
+ \centering
+    \includegraphics[scale=0.5]{images/bang1.png}
+    \caption{Bảng hệ số đối với đa thức bậc $n$}
+    \label{fig: bang_1}
+\end{figure}
+
+\end{frame}
+\begin{frame}{Định lý Routh}
+trong đó các thành phần $b_i$ và $c_i$ có thể được tính toán như sau:
+\begin{itemize}
+\item $b_i=\frac{a_{n-1}\times a_{n-2i}-a_n\times a_{n-2i-1}}{a_{n-1}}$
+\item $c_i=\frac{b_1\times a_{n-2i-1}-a_{n-1}\times b_{i+1}}{b_1}$
+\end{itemize}
+Ví dụ: $b_1=\frac{a_{n-1}\times a_{n-2}-a_n\times a_{n-3}}{a_{n-1}}$, $c_1=\frac{b_1\times a_{n-3}-a_{n-1}\times b_{2}}{b_1}$
+\end{frame}
+\begin{frame}{Định lý Routh}
+Sau khi tính toán xong, số dấu thay đổi trong cột đầu tiên sẽ là số các nghiệm không âm. 
+\begin{figure}[h!]
+ \centering
+    \includegraphics[scale=0.5]{images/bang2.png}
+    \caption{Bảng hệ số sau khi tính toán các giá trị của các cột}
+    \label{fig: bang_1}
+\end{figure}
+Trong cột đầu tiên có hai lần hệ số đổi dấu ($0.75 \rightarrow -3, -3 \rightarrow 3$), do đó có hai nghiệm không âm, như vậy hệ thống không ổn định.
+\end{frame}
+\end{document}

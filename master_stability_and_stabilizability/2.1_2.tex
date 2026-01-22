@@ -1,0 +1,309 @@
+\section{Hệ tuyến tính ổn định}
+Cho $A \in M(n,n)$ và hệ tuyến tính dưới đây
+
+\begin{align}
+\label{equation_1}
+\dot{z} = Ax,  \quad z(0) = x \in \mathbb{R}^{n} 
+\end{align}
+
+Nghiệm của hệ trên được kí hiệu bởi  $z^{x}(t),  t \geq 0$ ta có
+
+$$
+    z^{x}(t) = Z(t)x = (e ^{tA})x, \quad t \geq 0
+$$
+
+Hệ (\ref{equation_1}) được gọi là ổn định nếu với mỗi giá trị của $x \in \mathbb{R}^{n}$ ta có 
+
+$$
+    z^{x}(t) \rightarrow 0, \quad t \rightarrow \infty
+$$
+
+\begin{itemize}
+\item Một hệ tuyến tính được gọi là ổn định nếu mà nghiệm xuất phát từ $x_0$ sẽ hội tụ dần đến điểm cân bằng.
+\item Một hệ tuyến tính như hệ (\ref{equation_1}) thì có điểm cân bằng là 0.
+\item Điểm cân bằng là một nghiệm tầm thường, nghiệm hằng số của hệ tuyến tính.
+\end{itemize}
+
+
+Một vài ví dụ về đồ thị của hệ tuyến tính ổn đinh và không ổn định.
+\begin{figure}[h!]
+ \centering
+    \includegraphics[scale=1]{images/vidu1.png}
+    \caption{Đồ thị các trạng thái ổn định của hệ thống tuyến tính}
+    \label{fig: vidu_1}
+\end{figure}
+
+Thay vì nói rằng hệ (2.1) ổn định người ta thường nói rằng ma trận A ổn định. Khái niệm về sự ổn định không phụ thuộc vào việc chọn không gian $R^{n}$. Khi đó, nếu tồn tại một ma trận không suy biến $P$ làm chéo hóa ma trận $A$ thì ma trận chéo $P^{-1}AP$ là ổn định.\\
+
+Điều kiện cần và đủ để một ma trận chéo hóa được là ma trận đó có đủ $n$ vec tơ riêng độc lập tuyến tính. Hay, nếu ma trận $A$ có $n$ trị riêng phân biệt thì nó chéo hóa được. \\
+
+Kí hiệu $M(n, m; \mathbb{C})$ là tập tất cả các ma trận với n hàng, m cột. $\lambda \in \mathbb{C}$ là giá trị riêng của ma trận $A \in M(n, m; \mathbb{C})$ nếu tồn tại một vector $a \in \mathbb{C}^{n}, a \neq 0$ sao cho $Aa = \lambda a$. Tập tất cả các giá trị riêng của ma trận A được kí hiệu bởi $\sigma (A)$. \\
+
+$\lambda \in \sigma (A)$ khi và chỉ khi ma trận $\lambda I - A$ là suy biến, do đó $\lambda \in \sigma (A)$ khi và chỉ khi $p(\lambda) = 0$ trong đó $p$ là đa thức thoả mãn điều kiện $p(\lambda) = \text{det}(\lambda I - A), \lambda \in \mathbb{C}$. \\
+
+Tập $\sigma (A)$ chứa nhiều nhất n phần tử và khác rỗng.
+
+\begin{theorem}
+
+Với mỗi ma trận $A \in M(n, n; \mathbb{C})$ tồn tại một ma trận không suy biến $P \in M(n, n; \mathbb{C})$ sao cho 
+\begin{equation}
+PAP^{-1} =
+    \begin{bmatrix}
+    J_{1} & 0 & ... & 0 & 0 \\
+    0 & J_{2} & ... & 0 & 0 \\
+    \vdots & \vdots & \ddots & \vdots & \vdots \\
+    0 & 0 & ... & 0 & J_{r} 
+    \end{bmatrix}
+\end{equation}
+trong đó $J_{1}, J_{2}, \dots, J_{r}$ được gọi là các khối Jordan
+
+\begin{equation}
+J_{k} =
+    \begin{bmatrix}
+    \lambda_{k} & \gamma_{k} & ... & 0 & 0 \\
+    0 & \lambda_{k} & ... & 0 & 0 \\
+    \vdots & \vdots & \ddots & \vdots & \vdots \\
+    0 & 0 & ... & 0 & \lambda_{k}
+    \end{bmatrix}
+\end{equation}
+
+với $\gamma_{k} \neq 0 $ hoặc $J_{k} = [\lambda_{k}], k = 1, \dots, r$
+\end{theorem}
+
+\begin{theorem}
+Với mỗi ma trận $A \in M(n, n)$ tồn tại một ma trận không suy biến $P \in M(n, n)$ sao cho hệ (\ref{equation_2}) với khối thực $I_{k}$ (gồm các phần tử thực). Khối $I_{k}, k =. , \dots, r$, giá trị riêng thực $\lambda_{k} = \alpha_{k} \in \mathbb{R}$ được cho dưới dạng sau
+
+
+\begin{equation}
+[\alpha_{k}] =
+    \begin{bmatrix}
+    \alpha_{k} & \gamma_{k} & ... & 0 & 0 \\
+    0 & \alpha_{k} & ... & 0 & 0 \\
+    \vdots & \vdots & \ddots & \vdots & \vdots \\
+    0 & 0 & ... & 0 & \alpha_{k}
+    \end{bmatrix}
+\end{equation}
+với $\gamma_{k} \in R$, $\gamma_{k} \ 0$ và $\lambda_{k} = \alpha_{k} + i\beta_{k}, \beta_{k} \neq 0, \alpha_{k}, \beta_{k} \in \mathbb{R}$
+\begin{equation*}
+    \begin{bmatrix}
+    K_{k} & L_{k} & ... & 0 & 0 \\
+    0 & K_{k} & ... & 0 & 0 \\
+    \vdots & \vdots & \ddots & \vdots & \vdots \\
+    0 & 0 & ... & 0 & K_{k}
+    \end{bmatrix}
+\end{equation*}
+    
+Trong đó 
+\begin{equation}
+K_{k} =
+    \begin{bmatrix}
+    \alpha_{k} & \beta_{k} \\
+    -\beta_{k} & \alpha_{k}
+    \end{bmatrix}
+\end{equation},
+
+\begin{equation}
+L_{k} =
+    \begin{bmatrix}
+    \gamma_{k} & 0 \\
+    0 & \gamma_{k}
+    \end{bmatrix}
+\end{equation}
+(Đa thức bậc 2 có nghiệm phức biểu diễn bởi $K_k$ và nghiệm thực biểu diễn bởi $L_k$).
+\end{theorem}
+
+
+\begin{theorem}
+Cho ma trận $A \in M(n, n)$, khi đó ta có các mệnh đề sau
+\begin{itemize}
+    \item $z^{x}(t) \rightarrow 0$ khi $t \rightarrow \infty$ với mỗi $x \in \mathbb{R}^{n}$
+    \item $z^{x}(t) \rightarrow 0$ theo cấp số mũ khi $t \rightarrow \infty$ với mỗi $x \in \mathbb{R}^{n}$
+    \item $w(A) = \sup\{\text{Re}\lambda; \lambda \in \sigma(A)\} < 0$
+    \item $\int_0^\infty |z^x(t)|^2dt < +\infty$ với mỗi giá trị $x \in \mathbb{R}^n$
+\end{itemize}
+\end{theorem}
+
+Để chứng minh định lý trên ta cần mệnh đề sau
+\begin{lemma}
+Cho $w > w(A)$. Với mỗi giá trị chuẩn $|| . || $ trên $\mathbb{R}^n$ tồn tại M sao cho
+\begin{equation*}
+    ||z^x(t)|| \leq Me^{wt}||X||, t \geq 0, x \in \mathbb{R}^n
+\end{equation*}
+\end{lemma}
+
+Từ đẳng thức (1.1) với ma trận ta có
+\begin{equation*}
+    \dot{w} = Aw, w(0) = x \in \mathbb{C}^n
+\end{equation*}
+
+Với $a = a_1 + ia_2$ trong đó $a_1, a_2 \in \mathbb{R}^n$ thoả mãn $||a|| = ||a_1|| + ||a_2||$. Ta phân tích vector $w(t), t \leq 0$ và $w_1(t), w_2(t), \dots, w_r(t), t \leq 0, x_1, \dots, x_r$. Khi đó
+\begin{equation*}
+    \dot{w}_k = J_kw_k,\quad w_k(0) = x_k, \quad k = 1, \dots, r.
+\end{equation*}
+
+$j_1, \dots, j_r$ kí hiệu cho số chiều của ma trận $J_1, \dots, J_r, j_1 + j_2 + \dots + j_r = n$.
+
+Nếu $j_k = 1$ thì
+\begin{equation*}
+    w_k(t) = e^{\lambda_kt}x_k, \quad t \leq 0
+\end{equation*}
+
+Do đó $||w_k(t)|| == e^{(Re\lambda_k)}t||x_k||,\quad t \leq 0$
+
+Nếu $j_k > 1$ thì
+
+\begin{equation*}
+    w_k(t) = e^{\lambda_kt}\Sigma_{l = 0}^{j_k - 1}     \begin{bmatrix}
+    0 & \gamma_{k} & ... & 0 & 0 \\
+    0 & 0 & ... & 0 & 0 \\
+    \vdots & \vdots & \ddots & \vdots & \vdots \\
+    0 & 0 & ... & 0 & 0
+    \end{bmatrix} x_k \frac{t^l}{l!}
+\end{equation*}
+
+Do đó 
+\begin{equation*}
+    ||w_k(t)|| \leq e^{(Re\lambda_k)t}||x_k||\Sigma_{l = 0}^{j_k - 1}(M_k)^l\frac{t^l}{l!}, t \geq 0
+\end{equation*}
+
+trong đó $M$ là chuẩn của ma trận 
+\begin{equation*}
+    \begin{bmatrix}
+    0 & \gamma_{k} & ... & 0 & 0 \\
+    0 & 0 & ... & 0 & 0 \\
+    \vdots & \vdots & \ddots & \vdots & \vdots \\
+    0 & 0 & ... & 0 & 0
+    \end{bmatrix} 
+\end{equation*}
+
+Đặt $w_o = w(A)$ ta có 
+\begin{equation*}
+    \Sigma_{k = 1}^r||w_k(t)|| \leq e^{w_ot}q(t)\Sigma_{k = 1}^r||x_k||, \quad t \geq 0
+\end{equation*}
+
+trong đó $q$ là đa thức bậc cao nhất $\max(j_k - 1), k = 1, \dots, r$. Nếu $w \ge w_o$ và 
+\begin{equation*}
+    M_0 = \sup\{q(t)e^{(w_0-w)t}, \quad t \geq 0 \},
+\end{equation*}
+
+khi đó $M_0 \le \infty$ và 
+\begin{equation*}
+    \Sigma_{k = 1}^r ||w_k(t)|| \leq M_0e^{wt}\Sigma_{k = 1}^r||x_k||,\quad t \geq 0
+\end{equation*}
+
+Do đó với mỗi giá trị cố định của $M_1$
+
+\begin{equation*}
+    ||w(t)|| \leq M_1e^{wt}||x||, \quad t \geq 0
+\end{equation*}
+
+Cuối cùng ta có
+
+\begin{equation*}
+    ||z^x(t)|| = ||Pw(t)P^{-1}|| \leq M_1||P||||P^{-1}||||x||, \quad t \geq 0,
+\end{equation*}
+và $M$ được định nghĩa bảng $M_1||P||||p^{-1}||$.\\
+
+\textbf{Chứng minh định lý 3:}
+Giả sử $\omega_0  \ge 0$. Tồn tại $\lambda = \alpha+i\beta$ , $\text{Re}\lambda=\alpha \geq 0$ và véc tơ $a\neq 0$, $a=a_1+ia_2$ với $a_1,a_2 \in \mathbb{R}^n$ sao cho:
+$$
+A(a_1+ia_2)=(\alpha+i\beta)(a_1+ia_2).
+$$
+Ta có nghiệm của hệ tuyến tính (\ref{equation_1})
+$$
+z(t)=z_1(t)+iz_2(t)=e^{(\alpha+i\beta)}a, \quad t \ge 0,
+$$
+Có $a\neq 0$ khi $a_1 \neq 0$ hoặc $a_2 \neq 0$. Giả sử $a_1 \ne 0$ và $\beta \ne 0$. Ta có phần thực của nghiệm: (có $e^{ix} = \cos x + i \sin x$)
+
+\begin{align*}
+z_1(t) = &e^{\alpha t}[(\cos \beta t) a_1-(\sin \beta t)a_2]
+\end{align*}
+Thay $t=\frac{2\pi k}{\beta}$, ta có
+$$
+|z_1(t) = e^{\alpha t}|a_1|
+$$
+và khi $k$ càng lớn thì $z_1(t)$ không hội tụ về 0. \\
+ Với $\omega_0 <0$ và $\alpha \in (0, -\omega_0)$. Theo bổ đề 1, ta có:
+ $$
+ |z^x(t)| \leq Me^{wt}|x|, \quad t \geq 0, x \in \mathbb{R}^n
+$$
+hay $z^x(t)$ tiến dần tới 0 theo tốc độ mũ. \\
+Khi hệ tuyến tính ổn định thì đồng thời cũng sẽ tiến về tới 0 với tốc độ mũ (điều kiện (1), (2) của định lý 3).\\
+
+Điều kiện (3) của định lý 3 là đặc trưng để kiểm tra ma trận $A$ có ổn định không. Dễ dàng thấy điều kiện (3) đúng dựa vào chứng minh điều kiện (1) và (2).\\
+
+Điều kiện (4) được suy ra từ điều kiện (2) và (3).  Giả sử $\omega_0 \ge 0$, ta có $|z_1(t)|=e^{\alpha t}|a_1|$ với $t\ge 0$. Từ đó:
+$$
+\int_0^\infty |z^x(t)|^2dt = +\infty
+$$
+Do đó, ta có điều kiện (4) được chứng minh.
+
+
+
+\section{Đa thức ổn định}
+Ta thấy điều kiện (3) của Định lý 3 là một đặc trưng để ta kiểm tra tính ổn định của ma trận $A$. Nhận thấy tầm quan trọng đó, nên ta nỗ lực tìm các điều kiện cần và đủ để một đa thức ổn định.\\
+
+Xét đa thức sau
+\begin{equation}
+    p(\lambda) = \lambda^n + a_1\lambda^{n-1} + \dots + a_n, \lambda \in \mathbb{C}
+\end{equation}
+
+\begin{theorem}
+(1). Đa thức với hệ số thực
+
+\begin{itemize}
+    \item $\lambda + a$
+    \item $\lambda^2 + a\lambda + b$
+    \item $\lambda^3 + a\lambda^2 + b\lambda + c$
+    \item $\lambda^4 + a\lambda^3 + b\lambda^2 + c\lambda + d$
+\end{itemize}
+
+là ổn định khi và chỉ khi 
+\begin{itemize}
+    \item $a > 0$
+    \item $a > 0, b > 0$
+    \item $a > 0, b > 0, c > 0, ab > c$
+    \item $a > 0, b > 0, c > 0, d > 0, abc > c^2 + a^2d$
+\end{itemize}
+
+(2). Nếu đa thức \ref{equation_2.1} là ổn định thì khi đó các hệ số $a_1, a_2, \dots, a_n$ đều dương.
+\end{theorem}
+\textbf{Chứng minh định lý:}
+(1) Dễ thấy $(i) \Leftrightarrow (i^*)$.\\
+Để chứng minh $(ii) \Leftrightarrow (ii^*)$ ta giả sử các nghiệm của đa thức là $\lambda$ có dạng $\lambda_1 =-\alpha+i\beta$, $\lambda_2 =-\alpha-i\beta$ với $\beta \ne 0$. Do đó, $p(\lambda)=\lambda^2 + \alpha\lambda + \beta^2$, với $\lambda \in \mathbb{C}$ (từ định lý Vi-et), từ đó ta có điều kiện ổn định của đa thức trong trường hợp này là $a>0$ và $b>0$ ($a=\alpha, b=\beta^2$). \\
+
+Với trường hợp các nghiệm $\lambda_1,\lambda_2$ của đa thức $p$ là các số thực thì $a=-(\lambda_1+\lambda_2)$, $b=\lambda_1\lambda_2$ (Định lý Vi-et). Do đó, các nghiệm này chỉ âm khi $a>0,b>0$ (đpcm).\\
+
+Để chứng minh $(iii) \Leftrightarrow (iii^*)$, chú ý rằng ta có thể phân tích đa thức thành các đa thức con với các hệ số $\alpha,\beta,\gamma$:
+\begin{align*}
+p(\lambda) &= \lambda^3 + a\lambda^2 + b\lambda + c\\
+&= (\lambda + \alpha)(\lambda^2 + \beta\lambda + \gamma)\\
+&=	\lambda^3 + (\alpha+\beta)\lambda^2+(\gamma+\alpha\beta)\lambda+\alpha\gamma
+\end{align*}
+Từ (i) và (ii), ta có đa thức $p$ ổn định khi và chỉ khi $\alpha>0,\beta>0$ và $\gamma>0$.  So sánh các hệ số với: 
+$$
+a=\alpha+\beta, \quad b=\gamma+\alpha\beta, \quad c=\alpha\gamma
+$$
+từ đó có $ab-c=\beta(\alpha^2+\gamma+\alpha\beta)=\beta(\alpha^2+b)$.\\
+
+Giả sử rằng $a > 0, b > 0, c > 0, ab > c$. Từ $b>0$ và $ab-c>0$ thì có $\beta>0$. Từ $c=\alpha\gamma$ có $\alpha$ và $\gamma$ đồng thời dương hoặc đồng thời âm. Tuy nhiên, chúng không thể cùng âm vì khi đó $\gamma+\alpha\beta<0$. Do đó $\alpha>0$ và $\gamma>0$ kéo theo $\alpha>0,\beta>0,\gamma>0$  (đpcm).\\
+
+Để chứng minh $(iv) \Leftrightarrow (iv^*)$, ta lại phân rã đa thức thành các đa thức con với các hệ số $\alpha>0, \beta>0,\gamma>0,\sigma>0$:
+$$
+\lambda^4 + a\lambda^3 + b\lambda^2 + c\lambda + d=(\lambda^2 + \alpha\lambda + \beta)(\lambda^2 + \gamma\lambda + \sigma)
+$$
+với sự phân rã: 
+$$
+a= \alpha+\gamma, \quad b=\alpha\gamma+\beta+\sigma,\quad c= \alpha\sigma +\beta\gamma, \quad d=\beta\sigma
+$$
+Ta kiểm tra trực tiếp được:
+$$
+abc-c^2-a^2d=\alpha\gamma((\beta-\sigma)^2+ac).
+$$
+Do đó, dễ dàng thấy rằng $\alpha>0,\beta>0,\gamma>0$ và $\sigma>0$. 
+
+Giả sử bất đẳng thức ở $(iv^*)$ đúng. Do đó $\alpha\gamma>0$ và từ $a=\alpha+\gamma$ ta có $\alpha>0$ và $\gamma>0$. Hơn nữa, $d=\beta\sigma>0$  và $c=\alpha\sigma +\beta\gamma>0$ nên $\beta>0,\sigma>0$.\\
+
+Cuối cùng $\alpha>0,\beta>0,\gamma>0,\sigma>0$, và đa thức $p$ là ổn định (đpcm).\\
+
+(2) Đa thức $p$ có thể phân rã thành các đa thức con bậc nhỏ hơn nên ta thấy (2) đúng.
