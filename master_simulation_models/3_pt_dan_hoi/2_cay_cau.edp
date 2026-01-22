@@ -1,0 +1,109 @@
+
+// Khoi tao
+// Chan cau 0
+border s1(t = -0.5, 1){x = t; y = 0; label = 1;};
+border s2(t = 0, 1){x = 1 + t; y = t; label = 2;};
+border s3(t = 1, 0){x = 2; y = t; label = 3;};
+border s4(t = 2, 3){x = t; y = 0; label = 4;};
+border s5(t = 0, 2){x = 3; y = t; label = 5;};
+border s6(t = 0, 1){x = 3 + 2 * t; y = 2 + 2 * t; label = 6;};
+// Chan cau 1
+border s7(t = 4, 0){x = 5; y = t; label = 7;};
+border s8(t = 5, 6){x = t; y = 0; label = 8;};
+border s9(t = 0, 4){x = 6; y = t; label = 9;};
+border s10(t = 6, 8){x = t; y = 4; label = 10;};
+// Chan cau 2
+border s11(t = 4, 0){x = 8; y = t; label = 11;};
+border s12(t = 8, 9){x = t; y = 0; label = 12;};
+border s13(t = 0, 4){x = 9; y = t; label = 13;};
+border s14(t = 9, 11){x = t; y = 4; label = 14;};
+// Chan cau 3
+border s15(t = 4, 0){x = 11; y = t; label = 15;};
+border s16(t = 11, 12){x = t; y = 0; label = 16;};
+border s17(t = 0, 4){x = 12; y = t; label = 17;};
+border s18(t = 12, 14){x = t; y = 4; label = 18;};
+// Chan cau 4
+border s19(t = 4, 0){x = 14; y = t; label = 19;};
+border s20(t = 14, 15){x = t; y = 0; label = 20;};
+border s21(t = 0, 4){x = 15; y = t; label = 21;};
+border s22(t = 15, 17){x = t; y = 4; label = 22;};
+// Chan cau 5
+border s23(t = 4, 0){x = 17; y = t; label = 23;};
+border s24(t = 17, 18){x = t; y = 0; label = 24;};
+border s25(t = 0, 4){x = 18; y = t; label = 25;};
+border s26(t = 18, 20){x = t; y = 4; label = 26;};
+// Chan cau 6
+border s27(t = 4, 0){x = 20; y = t; label = 27;};
+border s28(t = 20, 21){x = t; y = 0; label = 28;};
+border s29(t = 0, 4){x = 21; y = t; label = 29;};
+border s30(t = 21, 23){x = t; y = 4; label = 30;};
+// Chan cau 7
+border s31(t = 4, 0){x = 23; y = t; label = 31;};
+border s32(t = 23, 24){x = t; y = 0; label = 32;};
+border s33(t = 0, 4){x = 24; y = t; label = 33;};
+border s34(t = 0, 1){x = 24 + 2 * t; y = 4 - 2 * t; label = 34;};
+// Chan cau 8( Chan cheo xuong)
+border s35(t = 2, 0){x = 26; y = t; label = 35;};
+border s36(t = 26, 27){x = t; y = 0; label = 36;};
+border s37(t = 0, 1){x = 27; y = t; label = 37;};
+border s38(t = 0, 1){x = 27 + t; y = 1 - t; label = 38;};
+border s39(t = 28, 29.5){x = t; y = 0; label = 39;};
+// Phia tren cau
+border s40(t = 1, 0){x = 24 + 5.5 * t; y = 5.5 -5.5 * t; label = 40;};
+border s41(t = 24, 5){x = t; y = 5.5; label = 41;};
+border s42(t = 1, 0){x = -0.5 + 5.5 * t; y = 5.5 * t; label = 42;};
+
+// Khoi tao luoi
+int m = 80;
+int n = 15;
+int p = 40;
+mesh meshCayCau = buildmesh(s1(n) + s2(n) + s3(n) + s4(n) + s5(n) + s6(n) + s7(n) + s8(n) + s9(n) +
+                            s10(n) + s11(n) + s12(n) + s13(n) + s14(n) + s15(n) + s16(n) + s17(n) + s18(n) +
+                            s19(n) + s20(n) + s21(n) + s22(n) + s23(n) + s24(n) + s25(n) + s26(n) + s27(n) +
+                            s28(n) + s29(n) + s30(n) + s31(n) + s32(n) + s33(n) + s34(n) + s35(n) + s36(n) +
+                            s37(n) + s38(n) + s39(n) + s40(p) + s41(m) + s42(p));
+plot(meshCayCau);
+
+
+// Tao khong gian thu
+fespace Vh(meshCayCau, P2); // P2 thuat toan giai
+Vh u, v, uu, vv;
+real sqrt2 = sqrt(2.);
+macro epsilon(u1, u2) [dx(u1), dy(u2), (dy(u1)+dx(u2))/sqrt2] //
+macro div(u,v) (dx(u) + dy(v)) // EOM
+
+real E = 21e5; // <= de bai cho E
+real nu = 0.28; // <= de bai cho v
+real mu = E / (2 * (1 + nu));
+real lambda = E * nu / ((1 + nu) * (1 - 2 * nu));
+real fx = 0; // Ngoai luc tac dung theo truc x (thuong la trong luc)
+real fy = -9.81; // Ngoai luc tac dung theo truc y (thuong la trong luc)
+real gx = 0; // Luc khac tac dung truc tiep len bien theo truc x (thuong la luc do con nguoi)
+real gy = 0; // Luc khac tac dung truc tiep len bien theo truc y (thuong la luc do con nguoi)
+solve Elastic([u, v], [uu, vv]) 
+    = int2d(meshCayCau)(lambda * div(u, v) * div(uu, vv) +
+                          2. * mu *(epsilon(u, v)' * epsilon(uu, vv))) // Bien dang dan hoi can tim
+	- int2d(meshCayCau)(fx * uu + fy * vv) // Luc tac dung trong mien
+    - int1d(meshCayCau, 1)(gx * uu + gy * vv) // Luc tac dung tren bien <= thay label cua bien vao day
+	+ on(1, u = 0, v = 0) // Dieu kien cua bien <= thay label cua bien vao day
+    + on(4, u = 0, v = 0)
+    + on(8, u = 0, v = 0)
+    + on(12, u = 0, v = 0)
+    + on(16, u = 0, v = 0)
+    + on(20, u = 0, v = 0)
+    + on(24, u = 0, v = 0)
+    + on(28, u = 0, v = 0)
+    + on(32, u = 0, v = 0)
+    + on(36, u = 0, v = 0)
+    + on(39, u = 0, v = 0);
+
+
+real coef = 1000000; // Do bien dang dan hoi
+plot([u, v], wait = 1, coef = coef);
+mesh deformedCayCau = movemesh(meshCayCau, [x + u * coef, y + v * coef]); // Bien dang luoi Th tao ra luoi movedTh
+plot(deformedCayCau, wait = 1);
+
+real dxmin = u[].min;
+real dymin = v[].min;
+cout << "dep. max x = " << dxmin << "y = " << dymin << endl;
+cout << "dep. (20, 0) = " << u(20, 0) << ", " << v(20, 0) << endl;

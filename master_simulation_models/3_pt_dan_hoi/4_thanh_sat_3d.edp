@@ -1,0 +1,46 @@
+include "cube.idp"
+
+// Parameters
+real E = 21.5e4;
+real sigma = 0.29;
+real gravity = -0.05;
+
+// Mesh
+int[int] Nxyz = [20, 5, 5];
+real [int, int] Bxyz = [[0., 5.], [0., 1.], [0., 1.]];
+int [int, int] Lxyz = [[1, 2], [2, 2], [2, 2]];
+mesh3 meshThanhSat3D = Cube(Nxyz, Bxyz, Lxyz);
+
+// Fespace
+fespace Vh(meshThanhSat3D, [P1, P1, P1]);
+Vh [u1, u2, u3], [v1, v2, v3];
+
+// Macro
+real sqrt2 = sqrt(2.);
+macro epsilon(u1, u2, u3)[dx(u1),
+                          dy(u2),
+                          dz(u3),
+                          (dz(u2) + dy(u3)) / sqrt2,
+                          (dz(u1) + dx(u3)) / sqrt2,
+                          (dy(u1) + dx(u2)) / sqrt2] //
+macro div(u1, u2, u3)(dx(u1) + dy(u2) + dz(u3)) //
+
+// Problem
+real mu = E / (2 * (1 + sigma));
+real lambda = E * sigma / ((1 + sigma) * (1 - 2 * sigma));
+solve lame([u1, u2, u3], [v1, v2, v3])
+    = int3d(meshThanhSat3D)(lambda * div(u1, u2, u3) * div(v1, v2, v3) 
+                            + 2. * mu * (epsilon(u1, u2, u3)' * epsilon(v1, v2, v3)))
+    - int3d(meshThanhSat3D)(gravity * v3)
+    + on(1, u1 = 0, u2 = 0, u3 = 0);
+
+// Display
+real dmax = u1[].max;
+cout << "max displacement = " << dmax << endl;
+
+// Movemesh
+real coef = 0.1 / dmax;
+int[int] ref2 = [1, 0, 2, 0];
+mesh3 deformedThanhSat3D = movemesh3(meshThanhSat3D, transfo=[x + u1 * coef, y + u2 * coef, z + u3 * coef], label=ref2);
+// deformedThanhSat3D = change(deformedThanhSat3D, label=ref2);
+plot(meshThanhSat3D, deformedThanhSat3D, wait = true, cmm="coef amplification = " + coef);

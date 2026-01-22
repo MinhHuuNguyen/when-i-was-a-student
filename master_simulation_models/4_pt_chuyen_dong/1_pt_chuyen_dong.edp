@@ -1,0 +1,25 @@
+load"medit"
+int x0 = 0, y0 = 0;
+int r = 4;
+border c(t = 0, 2 * pi){x = x0 + r * cos(t); y = y0 + r * sin(t); label = 1;}
+
+int n = 100;
+mesh Th = buildmesh (c(n));
+
+real T = 10;
+real dt = 0.1;
+func u1 = y;
+func u2 = -x;
+func phi0 = sqrt((x - 1) ^ 2 + y ^ 2) - 1;
+
+fespace Vh(Th, P1);
+Vh phi = phi0, v, phiold;
+
+for (real i = 0; i <= T; i += dt)
+{
+	phiold = phi;
+	phi = convect([u1, u2], -dt, phiold);
+	plot(phi);
+	// savesol("Th." + string(i) + ".sol", Th, phi);
+	// savemesh(Th,"Th." + string(i) + ".mesh");
+}

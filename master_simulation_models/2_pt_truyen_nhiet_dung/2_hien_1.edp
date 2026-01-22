@@ -1,0 +1,31 @@
+
+mesh Th = square(20, 20);
+
+fespace Vh(Th, P1);
+Vh u, v, uold;
+Vh u0, f;
+
+real T = 0.01;
+real dt = 0.0001;
+
+// Dieu kien ban dau
+u0 = sin(pi * x) * sin(pi * y);
+// Gan dieu kien ban dau
+uold = u0;
+for (int i = 0; i * dt < T; i++)
+{
+	// Nguon nhiet t = i * dt
+	// Doi voi bai hien, t chay tu 0
+	f = (1 + 2 * pi * pi) * exp(i * dt) * sin(pi * x) * sin(pi * y);
+	solve Heat(u, v, solver = LU)
+		= int2d(Th)(u * v) // a(u, v)
+		+ int2d(Th)(dt * (dx(uold) * dx(v) + dy(uold) * dy(v))) // l(v)
+		- int2d(Th)(uold * v) - int2d(Th)(dt * f * v) // l(v)
+		+ on(1, 2, 3, 4, u = 0); // u = 0 tai bien Dirichlet
+	uold = u;
+	plot(u);
+}
+
+// Nghiem chinh xac
+func ue = sin(pi * x) * sin(pi * y) * exp(T);
+cout << "L2 error: " << sqrt(int2d(Th)((ue - u) ^ 2))  << endl;

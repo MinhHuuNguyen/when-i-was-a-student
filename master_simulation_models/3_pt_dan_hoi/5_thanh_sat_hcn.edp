@@ -1,0 +1,55 @@
+
+// Khoi tao thanh sat hinh chu nhat
+// t la vector chi phuong cua duong thang
+// (x, y) la toa do diem di qua
+border s1(t = 0, 20){x = t; y = -1; label = 1;}
+border s2(t = -1, 1){x = 20; y = t; label = 2;}
+border s3(t = 20, 0){x = t; y = 1; label = 3;}
+border s4(t = 1, -1){x = 0; y = t; label = 4;}
+
+// Khoi tao duong tron
+// r la ban kinh, (x0, y0) la toa do tam
+real r = 0.5;
+real x0 = 10;
+real y0 = 0;
+border c(t = 0, 2 * pi){x = x0 + r * cos(t); y = y0 + r * sin(t);}
+
+// Khoi tao luoi
+// m, n la so phan tu tren luoi
+int n = 100;
+int m = 20;
+mesh meshThanhSatCoLoHinhTron = buildmesh(s1(n) + s2(n) + s3(n) + s4(n) + c(-m));
+mesh meshThanhSat = buildmesh(s1(n) + s2(n) + s3(n) + s4(n));
+
+// Tao khong gian thu
+fespace Vh(meshThanhSat, P2); // P2 thuat toan giai
+Vh u, v, uu, vv;
+real sqrt2 = sqrt(2.);
+macro epsilon(u1, u2) [dx(u1), dy(u2), (dy(u1)+dx(u2))/sqrt2] //
+macro div(u,v) (dx(u) + dy(v)) //
+
+real E = 21e5; // <= de bai cho E
+real nu = 0.28; // <= de bai cho v
+real mu = E / (2 * (1 + nu));
+real lambda = E * nu / ((1 + nu) * (1 - 2 * nu));
+real fx = 0; // Ngoai luc tac dung theo truc x (thuong la trong luc)
+real fy = -9.81; // Ngoai luc tac dung theo truc y (thuong la trong luc)
+real gx = 0; // Luc khac tac dung truc tiep len bien theo truc x (thuong la luc do con nguoi)
+real gy = 0; // Luc khac tac dung truc tiep len bien theo truc y (thuong la luc do con nguoi)
+solve lame([u, v], [uu, vv]) 
+    = int2d(meshThanhSat)(lambda * div(u, v) * div(uu, vv) +
+                          2. * mu *(epsilon(u, v)' * epsilon(uu, vv))) // Bien dang dan hoi can tim
+	- int2d(meshThanhSat)(fx * uu + fy * vv) // Luc tac dung trong mien
+    - int1d(meshThanhSat, 1)(gx * uu + gy * vv) // Luc tac dung tren bien
+	+ on(4, u = 0, v = 0); // Dieu kien cua bien <= thay so vao day
+
+
+real coef = 10; // Do bien dang dan hoi
+plot([u, v], wait = 1, coef = coef);
+mesh deformedThanhSat = movemesh(meshThanhSat, [x + u * coef, y + v * coef]); // Bien dang luoi Th tao ra luoi movedTh
+plot(deformedThanhSat, wait = 1);
+
+real dxmin = u[].min;
+real dymin = v[].min;
+cout << "dep. max x = " << dxmin << "y = " << dymin << endl;
+cout << "dep. (20, 0) = " << u(20, 0) << ", " << v(20, 0) << endl;

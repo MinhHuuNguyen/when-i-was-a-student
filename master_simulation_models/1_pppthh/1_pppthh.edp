@@ -1,0 +1,13 @@
+
+int n = 50;
+mesh Th=square(n, n);
+plot (Th);
+
+fespace Vh(Th, P1);
+Vh u, v;
+func f = -2 * (x ^ 2 + y ^ 2 - x - y); // - Laplace (dao ham bac 2) = Ham f
+solve Poisson(u, v, solver = LU) 
+	= int2d(Th)(dx(u) * dx(v) + dy(u) * dy(v)) 
+	- int2d(Th)(f * v)
+	+ on(1, 2, 3, 4, u = 0);
+plot(u);

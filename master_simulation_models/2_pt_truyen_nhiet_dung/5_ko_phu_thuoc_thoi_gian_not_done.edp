@@ -1,0 +1,15 @@
+
+mesh Th=square(50, 50);
+
+fespace Vh(Th, P1);
+Vh u, v;
+
+func f = 2 * pi ^ 2 * sin(pi * x) * sin(pi * y);
+solve Poisson(u, v, solver = LU)
+    = int2d(Th)(dx(u) * dx(v) + dy(u) * dy(v))
+    - int2d(Th)(f * v)
+    + on(1, 2, 3, 4, u = 0);	
+plot(u);
+
+func ue = sin(pi * x) * sin(pi * y);
+cout << "L2error: " << sqrt(int2d(Th)((ue - u) ^ 2))  << endl;

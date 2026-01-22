@@ -1,0 +1,20 @@
+border C(t=0,2*pi){x=cos(t);y=sin(t);}
+int n=50;
+mesh Th = buildmesh (C(n));
+plot(Th);
+
+fespace Vh(Th,P1);
+Vh u,v;
+func f = -1;
+func g = 0; // Ve phai cua dieu kien bien
+func h = dx(u) * N.x + dy(u) * N.y; // gradient(u) theo n
+
+solve Poisson(u, v, solver = LU) 
+	= int2d(Th)(dx(u) * dx(v) + dy(u) * dy(v))
+	- int2d(Th)(f * v)
+	// int1d(Th)(h * v) ma h = g - u nen ta co dong 16 va 17
+	+ int1d(Th)(u * v)
+	- int1d(Th)(g * v)
+	+ on(C, u = g - h);
+
+plot(u);

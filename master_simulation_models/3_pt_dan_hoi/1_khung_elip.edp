@@ -1,0 +1,52 @@
+
+// Khoi tao
+border s1(t = 0, 5){x = t; y = 0; label = 1;}
+border s2(t = 15, 20){x = t; y = 0; label = 3;}
+int a1 = 5;
+int b1 = 15;
+int x0 = 10;
+int y0 = 0;
+border e1(t = pi, 0){x = x0 + a1 * cos(t); y = y0 + b1 * sin(t); label = 2;}
+int a2 = 10;
+int b2 = 20;
+border e2(t = 0, pi){x = x0 + a2 * cos(t); y = y0 + b2 * sin(t); label = 4;}
+
+// Khoi tao luoi
+// m, n la so phan tu tren luoi
+int n = 100;
+mesh meshKhungElip = buildmesh(s1(n) + e1(n) + s2(n) + e2(n));
+plot(meshKhungElip, wait = 1);
+
+// Tao khong gian thu
+fespace Vh(meshKhungElip, P2); // P2 thuat toan giai
+Vh u, v, uu, vv;
+real sqrt2 = sqrt(2.);
+macro epsilon(u1, u2) [dx(u1), dy(u2), (dy(u1)+dx(u2))/sqrt2] //
+macro div(u,v) (dx(u) + dy(v)) //
+
+real E = 21e5; // <= de bai cho E
+real nu = 0.28; // <= de bai cho v
+real mu = E / (2 * (1 + nu));
+real lambda = E * nu / ((1 + nu) * (1 - 2 * nu));
+real fx = 0; // Ngoai luc tac dung theo truc x (thuong la trong luc)
+real fy = -9.81; // Ngoai luc tac dung theo truc y (thuong la trong luc)
+real gx = 0; // Luc khac tac dung truc tiep len bien theo truc x (thuong la luc do con nguoi)
+real gy = 0; // Luc khac tac dung truc tiep len bien theo truc y (thuong la luc do con nguoi)
+solve lame([u, v], [uu, vv]) 
+    = int2d(meshKhungElip)(lambda * div(u, v) * div(uu, vv) +
+                          2. * mu *(epsilon(u, v)' * epsilon(uu, vv))) // Bien dang dan hoi can tim
+	- int2d(meshKhungElip)(fx * uu + fy * vv) // Luc tac dung trong mien
+    - int1d(meshKhungElip, 1)(gx * uu + gy * vv) // Luc tac dung tren bien
+	+ on(1, u = 0, v = 0) // Dieu kien cua bien <= thay so vao day
+    + on(3, u = 0, v = 0);
+
+
+real coef = 1000; // Do bien dang dan hoi
+plot([u, v], wait = 1, coef = coef);
+mesh deformedKhungElip = movemesh(meshKhungElip, [x + u * coef, y + v * coef]); // Bien dang luoi Th tao ra luoi movedTh
+plot(deformedKhungElip, wait = 1);
+
+real dxmin = u[].min;
+real dymin = v[].min;
+cout << "dep. max x = " << dxmin << "y = " << dymin << endl;
+cout << "dep. (20, 0) = " << u(20, 0) << ", " << v(20, 0) << endl;

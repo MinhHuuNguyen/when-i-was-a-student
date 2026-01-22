@@ -1,0 +1,57 @@
+load "medit"
+
+//mesh Th = square(30, 30);
+int n = 20;
+border a1(t = 0.5, 4){x = t; y = 0;}
+border a2(t = 0, 2){x = 4; y = t;}
+border a3(t = 0.5, 4){x = t; y = 2;}
+border a4(t = 0, 2){x = 0.5; y = t;}
+border c1(t = 0, 2*pi){x = 1.+0.1*cos(t); y = 0.6+0.1*sin(t); label = 5;}
+border c2(t = 0, 2*pi){x = 1.+0.1*cos(t); y = 1.4+0.1*sin(t); label = 5;}
+border c3(t = 0, 2*pi){x = 2.+0.1*cos(t); y = 1+0.1*sin(t); label = 5;}
+border c4(t = 0, 2*pi){x = 3.+0.1*cos(t); y = 0.6+0.1*sin(t); label = 5;}
+border c5(t = 0, 2*pi){x = 3.+0.1*cos(t); y = 1.4+0.1*sin(t); label = 5;}
+
+mesh Th = buildmesh(a1(3*n) + a2(1.5*n) + a3(-3*n) + a4(-1.5*n)
+					+ c1(-n)+c2(-n) +c3(-n)+c4(-n)+c5(-n));
+plot(Th);
+
+fespace Uh(Th, P1b); Uh u1,u2,v1,v2, uold1 = 0, uold2 = 0, psi, phi;
+fespace Ph(Th, P1);  Ph p, q;
+macro Grad(u)[dx(u), dy(u)]//
+func f1 = 0;
+func f2 = 0;
+
+real T = 1, nu = 0.000001, dt = 0.01;
+int count = 0;
+
+solve NavierStokes (u1,u2,p,v1,v2,q,solver=Crout) =
+	int2d(Th)((u1*v1 + u2*v2)/dt)
+	+ int2d(Th)( nu*(Grad(u1)'*Grad(v1) + nu*Grad(u2)'*Grad(v2))
+				- 1e-8*p*q
+				- p*dx(v1) - p*dy(v2)
+				- dx(u1)*q - dy(u2)*q)
+	- int2d(Th)(f1*v1 + f2*v2)
+	- int2d(Th)(convect([uold1,uold2],-dt,uold1)*v1/dt 
+			  	+ convect([uold1,uold2],-dt,uold2)*v2/dt)
+	+ on(4,u1=1,u2=0)
+	+ on(1,3,5, u1=0,u2=0);
+
+solve streamlines(psi,phi) =
+	int2d(Th)( dx(psi)*dx(phi) + dy(psi)*dy(phi))
+	+ int2d(Th)( -phi*(dy(u1)-dx(u2)))
+	+ on(1,2,3,4,psi=0);
+
+for (real t = 0; t <= T; t += dt)
+{
+	uold1 = u1;
+	uold2 = u2;	
+	NavierStokes;
+	streamlines;
+	plot([u1, u2],p);
+
+//	savemesh(Th, "Th." + count + ".mesh");
+//	savesol("Th." + count + ".sol", Th, [u1, u2], p);
+//	count ++;
+}
+plot(psi);

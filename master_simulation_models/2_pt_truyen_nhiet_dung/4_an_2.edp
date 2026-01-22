@@ -1,0 +1,35 @@
+load "medit"
+
+mesh Th = square(20, 20);
+
+fespace Vh(Th, P1);
+Vh u, v, uold1, uold2;
+Vh u0, u1, f;
+
+real T = 1;
+real dt = 0.1;
+
+// Dieu kien ban dau
+u0 = sin(pi * x) * sin(pi * y);
+u1 = u0 + dt * sin(pi * x) * sin(pi * y); // u1 = u0 + dt * u0
+uold2 = u0;
+uold1 = u1;
+for (int i = 0; i * dt < T; i++)
+{
+	// Nguon nhiet t = (i + 1) * dt
+	// Doi voi bai an, t chay tu dt
+	f = (1 + 2 * pi * pi) * exp((i + 1) * dt) * sin(pi * x) * sin(pi * y);
+	solve Heat(u, v, solver = LU)
+		= int2d(Th)(3 * u * v) + int2d(Th)(2 * dt * (dx(u) * dx(v) + dy(u) * dy(v))) // a(u, v)
+		- int2d(Th)(2 * dt * f * v) - int2d(Th)(4 * uold1 * v) + int2d(Th)(uold2 * v) // l(v)
+		+ on(1, 2, 3, 4, u = 0); // u = 0 tai bien Dirichlet
+	uold2 = uold1;
+	uold1 = u;
+	plot(u, wait=1);
+	// savesol("Th." + i + ".sol", Th, u);
+	// savemesh(Th, "Th." + i + ".mesh");
+}
+
+// Nghiem chinh xac
+func ue = sin(pi * x) * sin(pi * y) * exp(T);
+cout << "L2 error: " << sqrt(int2d(Th)((ue - u) ^ 2))  << endl;
