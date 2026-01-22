@@ -1,0 +1,55 @@
+\def\widerfacefourk{
+    Kế thừa những điểm mạnh về sự đa dạng của khuôn mặt trong bộ dữ liệu WIDER FACE \cite{yang2016wider}, tôi đề xuất một phương pháp xây dựng bộ dữ liệu WIDER FACE kích thước lớn gồm có nhiều ảnh có độ phân giải cao, giúp đánh giá khách quan độ chính xác và tốc độ của các mô hình giải bài toán nhận diện khuôn mặt với ảnh chất lượng cao.
+
+    \begin{figure}[H]
+        \centering
+        \subfigure[]{\includegraphics[width=7.3cm]{images/widerface_highres_1}}
+        \subfigure[]{\includegraphics[width=7.3cm]{images/widerface_highres_2}}
+        \subfigure[]{\includegraphics[width=9.4cm]{images/widerface_highres_3}}
+        \caption{Một ví dụ ảnh trong bộ dữ liệu WIDER FACE \cite{yang2016wider} (a) so sánh với bộ dữ liệu WIDER FACE kích thước lớn dạng lưới $2 X 2$ (b) và $3 X 3$ (c)}
+        \label{fig:widerface_4k_example}
+    \end{figure}
+
+    \subsubsection*{Ý tưởng xây dựng bộ dữ liệu WIDER FACE kích thước lớn}
+    Nhằm tận dụng hết những điểm mạnh như tỷ lệ kích thước, kiểu dáng, biểu cảm, che chắn, góc quay và ánh sáng của bộ dữ liệu WIDER FACE, tôi không tác động gì đến dữ liệu ảnh của bộ dữ liệu WIDER FACE mà chỉ nối chúng lại với nhau theo dạng lưới nhằm tạo ra bộ dữ liệu ảnh có kích thước lớn hơn.
+    Với số lượng cũng như độ đa dạng của khuôn mặt được giữ nguyên của bộ dữ liệu WIDER FACE, nhưng với kích thước ảnh lớn hơn, bộ dữ liệu WIDER FACE kích thước lớn sẽ đánh giá tốt khả năng của các mô hình nhận diện khuôn mặt, không chỉ ở độ chính xác, mà còn ở thời gian chạy cũng như khối lượng bộ nhớ cần dùng.
+
+    \noindent
+    Trong khuôn khổ của luận văn, tôi chỉ xây dựng các bộ dữ liệu WIDER FACE kích thước lớn với dạng lưới có kích thước $2 X 2$, và $3 X 3$, tuy nhiên, ý tưởng xây dựng bộ dữ liệu WIDER FACE kích thước lớn này hoàn toàn có thể áp dụng với các kích thước lưới lớn hơn $n X n$ nhằm tạo ra bộ dữ liệu ảnh có kích thước lớn hơn nữa.
+
+    \begin{figure}[H]
+        \centering
+        \subfigure[]{\includegraphics[width=7.3cm, trim={0.5cm 0.5cm 3cm 2cm}, clip]{images/widerface_nk_img_size_1K}}
+        \subfigure[]{\includegraphics[width=7.3cm, trim={0.5cm 0.5cm 3cm 2cm}, clip]{images/widerface_nk_img_size_2K}}
+        \subfigure[]{\includegraphics[width=7.3cm, trim={0.5cm 0.5cm 3cm 2cm}, clip]{images/widerface_nk_img_size_3K}}
+        \caption{Phân phối về kích thước ảnh trong bộ dữ liệu WIDER FACE \cite{yang2016wider} (a) so sánh với bộ dữ liệu WIDER FACE kích thước lớn dạng lưới $2 X 2$ (b) và $3 X 3$ (c)}
+        \label{fig:widerface_4k_img_size}
+    \end{figure}
+
+    \subsubsection*{Các thông số của bộ dữ liệu WIDER FACE kích thước lớn}
+    Bộ dữ liệu WIDER FACE kích thước lớn, đúng với mục đích ra đời, đã làm tăng kích thước dữ liệu ảnh đáng kể.
+    So sánh với bộ dữ liệu WIDER FACE với kích thước ảnh trung bình nằm trong khoảng từ 750 đến 1250 điểm ảnh mỗi chiều, bộ dữ liệu WIDER FACE kích thước lớn đã tăng kích thước ảnh trung bình từ 1500 đến 2500 điểm ảnh mỗi chiều đối với dạng lưới $2 X 2$ và 2200 đến 4000 điểm ảnh mỗi chiều đối với dạng lưới $3 X 3$.
+
+    \noindent
+    Hơn nữa, kích thước ảnh tối đa trên bộ dữ liệu WIDER FACE kích thước lớn cũng được cải thiện, so sánh với kích thước 2250 điểm ảnh của bộ dữ liệu WIDER FACE, bộ dữ liệu WIDER FACE kích thước lớn có kích thước ảnh tối đa là 4500 điểm ảnh với dạng lưới $2 X 2$ và 7000 điểm ảnh với dạng lưới $3 X 3$.
+
+    \begin{figure}[H]
+        \centering
+        \subfigure[]{\includegraphics[width=7.3cm, trim={0.5cm 0.5cm 3cm 3cm}, clip]{images/widerface_nk_scale_1K}}
+        \subfigure[]{\includegraphics[width=7.3cm, trim={0.5cm 0.5cm 3cm 3cm}, clip]{images/widerface_nk_scale_2K}}
+        \subfigure[]{\includegraphics[width=7.3cm, trim={0.2cm 0.5cm 3cm 3cm}, clip]{images/widerface_nk_scale_3K}}
+        \caption{Phân phối về tỷ lệ giữa kích thước của hộp giới hạn và kích thước ảnh trong bộ dữ liệu WIDER FACE \cite{yang2016wider} (a) so sánh với bộ dữ liệu WIDER FACE kích thước lớn dạng lưới $2 X 2$ (b) và $3 X 3$ (c)}
+        \label{fig:widerface_4k_scale}
+    \end{figure}
+
+    \noindent
+    Với việc kích thước ảnh được tăng lên đáng kể, việc nhận diện các khuôn mặt trong ảnh trở nên khó khăn hơn, đặc biệt là với các khuôn mặt có kích thước nhỏ.
+    Trong bộ dữ liệu WIDER FACE kích thước lớn, số lượng các mặt có kích thước nhỏ so sánh tỷ lệ với kích thước ảnh trong bộ dữ liệu lớn hơn.
+    Cụ thể, đối với bộ dữ liệu WIDER FACE, trung bình kích thước hộp giới hạn của khuôn mặt bằng khoảng 2\% kích thước của ảnh.
+
+    \noindent
+    Đối với bộ dữ liệu WIDER FACE kích thước lớn, trung bình kích thước hộp giới hạn của khuôn mặt bằng khoảng 1\% kích thước của ảnh đối với dạng lưới $2 X 2$ và 0.6\% kích thước của ảnh đối với dạng lưới $3 X 3$.
+
+    \noindent
+    Với những thông số trên, bộ dữ liệu WIDER FACE kích thước lớn được kỳ vọng giúp đánh giá khách quan độ chính xác và tốc độ của các mô hình giải bài toán nhận diện khuôn mặt với ảnh chất lượng cao.
+}

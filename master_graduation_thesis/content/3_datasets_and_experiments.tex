@@ -1,0 +1,23 @@
+\def\datasetsandexperiments{
+    \section{Dữ liệu và thực nghiệm}
+    Các bộ dữ liệu nổi tiếng được sử dụng nhiều trong các bài toán học sâu như ImageNet \cite{russakovsky2015imagenet}, MS-COCO \cite{lin2014microsoft} hay PASCAL-VOC \cite{everingham2010pascal} đều có đặc điểm chung là kích thước ảnh nhỏ, khoảng dưới 1500 điểm ảnh\index{điểm ảnh}.
+    Những bộ dữ liệu mới được chia sẻ gần đây có kích thước dữ liệu lớn, phục vụ những bài toán khác nhau như như Floodnet \cite{rahnemoonfar2021floodnet} cho bài toán xử lý ảnh vệ tinh, PEViD-UHD \cite{korshunov2014uhd} cho bài toán nhận diện con người trong an ninh, Pexels \cite{pfister2021self} cho bài toán đánh giá thẩm mỹ của ảnh, VisDrone2018 \cite{zhu2020detection} phục vụ bài toán nhận diện đối tượng nói chung, \cite{dollar2009pedestrian} dùng cho bài toán nhận diện người đi bộ.
+
+    \noindent
+    Đối với bài toán nhận diện khuôn mặt, một số bộ dữ liệu như FDDB \cite{jain2010fddb}, ALW \cite{zhu2012face}, AFLW \cite{koestinger2011annotated}, 300 Faces in-the-Wild Challenge \cite{sagonas2013300}, PASCAL Face \cite{yan2014face}, MALF \cite{yang2015fine}, UFDD \cite{cheney2015unconstrained}, VGGFace2 \cite{cao2018vggface2} và WIDER FACE \cite{yang2016wider} thường được sử dụng để đánh giá chất lượng của mô hình.
+    Tuy nhiên, các bộ dữ liệu này vẫn gồm các ảnh có kích thước nhỏ, khoảng dưới 1500 điểm ảnh\index{điểm ảnh}, nên việc đánh giá đúng về độ chính xác và tốc độ của mô hình giải quyết bài toán nhận diện khuôn mặt trên ảnh chất lượng cao gặp nhiều khó khăn.
+    Gần đây, bộ dữ liệu PANDA \cite{wang2020panda} ra đời với kích thước ảnh tương đối lớn, tuy nhiên, bộ dữ liệu này gần với bài toán nhận diện đầu người hơn là nhận diện mặt người.
+
+    \subsection{Bộ dữ liệu WIDER FACE}
+    \input{content/chapter_3/3_1_widerface}
+    \widerface
+
+    \subsection{Bộ dữ liệu WIDER FACE kích thước lớn}
+    \input{content/chapter_3/3_2_widerface_4k}
+    \widerfacefourk
+
+    \subsection{Các thí nghiệm và kết quả của mô hình RetinaFocus}
+    \input{content/chapter_3/3_3_retinafocus_results}
+    \retinafocusresults
+
+}

@@ -1,0 +1,35 @@
+\def\problems{
+    \section*{Phát biểu các bài toán}
+    \addcontentsline{toc}{section}{Phát biểu các bài toán}
+    \subsection*{Bài toán nhận diện đối tượng\index{nhận diện đối tượng}}
+    Bài toán nhận diện đối tượng\index{nhận diện đối tượng} (object detection\index{object detection}) là một bài toán rất phổ biến trong lĩnh vực thị giác máy tính và được coi là một trong số các bài toán máy học kinh điển.
+    Một số ứng dụng của bài toán như: trong y tế giúp nhận diện vị trí bị bệnh trong cơ thể, trong bảo mật giúp định nhận diện con người trong khu vực cấm, trong nông nghiệp giúp xác định số lượng nông sản.
+
+    \noindent
+    Bài toán nhận diện đối tượng\index{nhận diện đối tượng} là sự tổng hợp của hai bài toán con: bài toán định vị đối tượng\index{định vị đối tượng} (object localization\index{object localization}) và bài toán phân loại ảnh\index{phân loại ảnh} (image classification\index{image classification}).
+    Cụ thể hơn, bài toán định vị đối tượng là bài toán xác định vị trí của đối tượng trong ảnh bằng các hộp giới hạn\index{hộp giới hạn} (bounding box\index{bounding box}) đại diện cho vị trí của từng đối tượng.
+    Trong khi đó, bài toán phân loại ảnh\index{bài toán phân loại ảnh} giúp xác định đối tượng vừa được định vị là đối tượng nào.
+
+    \noindent
+    Với sự quan tâm của giới nghiên cứu cho bài toán nhận diện đối tượng\index{nhận diện đối tượng}, đã có rất nhiều các nghiên cứu và giải pháp ra đời đạt được độ chính xác cao và chạy trong thời gian thực.
+
+    \subsection*{Bài toán nhận diện khuôn mặt}
+    Bài toán nhận diện khuôn mặt\index{nhận diện khuôn mặt} (face detection\index{face detection}) là một bài toán nền tảng cực kỳ quan trọng cho rất nhiều các bài toán khác về khuôn mặt như xác thực khuôn mặt, sinh ra ảnh khuôn mặt, phân lớp các thuộc tính trên khuôn mặt.
+    Những ứng dụng của nhóm bài toán liên quan đến khuôn mặt có thể kể đến như nhận diện khách hàng, điểm danh chấm công, phân tích cảm xúc.
+    Với những tiềm năng trên, nhận diện khuôn mặt trở thành một nhánh nghiên cứu thu hút rất nhiều sự quan tâm của giới nghiên cứu vì tính ứng dụng cao và động lực đẩy độ chính xác của mô hình giải bài toán này lên đến tuyệt đối.
+    
+    \noindent
+    Nhiều nghiên cứu đã nhấn mạnh vào những đặc thù riêng biệt của khuôn mặt con người so với đối tượng sự vật nói chung để đưa ra những giải pháp nhằm thúc đẩy độ chính xác của mô hình.
+    Tuy vậy, trong nghiên cứu \cite{zhu2020tinaface}, nhóm tác giả đã chỉ ra rằng nhận diện khuôn mặt vẫn chỉ là một bài toán con của bài toán nhận diện đối tượng\index{nhận diện đối tượng} và vẫn có thể được giải một cách hiệu quả bằng các mô hình nhận diện đối tượng\index{nhận diện đối tượng} nói chung.
+
+    \subsection*{Bài toán nhận diện khuôn mặt với ảnh chất lượng cao}
+    Mặc dù đã có nhiều các nghiên cứu quan tâm đến bài toán nhận diện đối tượng\index{nhận diện đối tượng} và nhận diện khuôn mặt, nhưng vẫn tồn tại vấn đề nan giải là bài toán nhận diện đối với ảnh chất lượng cao được chụp từ những camera hiện đại.
+    Việc xử lý những hình ảnh có kích thước lớn như 4K (3840×2160) hay 8K (7680×4320) bằng các mô hình học sâu gây ra nhiều vấn đề về chi phí và thời gian tính toán.
+    Do đó, việc sử dụng những hình ảnh chất lượng cao trong quá trình dự đoán đã khó, việc huấn luyện mô hình với những hình ảnh này gần như bất khả thi.
+
+    \noindent
+    Một cách đơn giản là thu nhỏ kích thước ảnh trước khi đưa vào mô hình học sâu.
+    Tuy nhiên cách làm này gây ra việc mất mát rất nhiều thông tin của các đối tượng ở trên ảnh, đặc biệt đối với các đối tượng có kích thước nhỏ.
+    Sau khi thu nhỏ ảnh ban đầu, những đối tượng này gần như biến mất khỏi ảnh và gây ra khó khăn cho mô hình để có thể thu thập được các đặc trưng của các đối tượng này.
+    Vì vậy, ta cần giải pháp tốt hơn để xử lý ảnh chất lượng cao, sao cho vừa đảm bảo về độ chính xác vừa đảm bảo về chi phí và thời gian tính toán của mô hình.
+}

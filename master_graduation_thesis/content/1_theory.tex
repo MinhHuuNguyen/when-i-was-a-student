@@ -1,0 +1,33 @@
+\def\theory{
+    \section{Cơ sở lý thuyết}
+    Các nghiên cứu hiện đại nhất về việc giải quyết bài toán nhận diện khuôn mặt và nhận diện khuôn mặt trong ảnh chất lượng cao kế thừa rất nhiều ý tưởng từ các nghiên cứu giải quyết bài toán nhận diện đối tượng\index{nhận diện đối tượng}.
+
+    \noindent
+    Các mô hình giải quyết bài toán nhận diện đối tượng\index{nhận diện đối tượng} được chia thành hai nhóm: nhóm các mô hình hai pha\index{hai pha} (two-stage\index{two-stage}) và nhóm các mô hình một pha\index{một pha} (single-stage\index{single-stage}).
+    Các mô hình hai pha\index{hai pha} phổ biến là R-CNN \cite{girshick2014rich}, Fast R-CNN \cite{girshick2015fast}, Faster R-CNN \cite{ren2015faster} và FPN \cite{lin2017feature}.
+    Các mô hình hai pha\index{hai pha} này đạt độ chính xác rất cao, tuy nhiên, tốc độ chạy không thật sự nhanh và đây là động lực để các mô hình một pha\index{một pha} ra đời. 
+    Các mô hình một pha\index{một pha} nổi tiếng và thu hút nhiều sự quan tâm như SSD \cite{liu2016ssd}, chuỗi các mô hình YOLO \cite{redmon2016look, redmon2016yolo9000, redmon2018yolov3, bochkovskiy2020yolov4}, RetinaNet \cite{lin2017focal}.
+
+    \noindent
+    Bên cạnh đó, nhiều nghiên cứu trong những năm gần đây đã tập trung vào việc xử lý ảnh chất lượng cao.
+    Các mô hình này hướng tới việc duy trì và tăng cường độ chính xác của mô hình nhận diện đối tượng\index{nhận diện đối tượng} và tiết kiệm tối đa chi phí tính toán.
+    Một số nghiên cứu đáng chú ý như SNIP \cite{singh2018analysis}, SNIPER\index{SNIPER} \cite{singh2018sniper}, Scale Match \cite{yu2020scale} hướng đến quá trình huấn luyện của mô hình với ảnh chất lượng cao, AutoFocus \cite{najibi2019autofocus}, Attention pipeline \cite{ruuvzivcka2018fast}, Dynamic Zoom-in \cite{gao2018dynamic}, PeleeNet \cite{ozge2019power} đưa ra các ý tưởng cải thiện quá trình dự đoán của mô hình với ảnh chất lượng cao.
+
+    \noindent
+    Lấy nền tảng từ các mô hình nhận diện đối tượng\index{nhận diện đối tượng}, các mô hình nhận diện khuôn mặt bổ sung hoặc chỉnh sửa một số điểm nhằm tăng độ chính xác trên các bộ dữ liệu về khuôn mặt.
+    Dựa trên SSD \cite{liu2016ssd}, mô hình S3FD \cite{zhang2017s3fd} thay đổi chiến lược sinh khu vực mỏ neo\index{khu vực mỏ neo} nhằm đạt độ chính xác cao hơn trên dữ liệu khuôn mặt.
+    Mô hình Pyramid Box \cite{tang2018pyramidbox} và Pyramid Box++ \cite{li2019pyramidbox++} thay đổi kiến trúc của mô hình FPN \cite{lin2017feature} phù hợp hơn đối với bài toán nhận diện khuôn mặt.
+    Hay mô hình RetinaFace \cite{deng2020retinaface}, kế thừa từ RetinaNet \cite{lin2017focal}, sử dụng thêm dữ liệu và hàm mất mát đặc trưng của khuôn mặt.
+
+    \subsection{Mô hình Faster R-CNN}
+    \input{content/chapter_1/1_1_faster_rcnn}
+    \fasterrcnn
+
+    \subsection{Kiến trúc Feature Pyramid Networks}
+    \input{content/chapter_1/1_2_fpn}
+    \fpn
+
+    \subsection{Mô hình RetinaNet}
+    \input{content/chapter_1/1_3_retinanet}
+    \retinanet
+}
